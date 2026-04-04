@@ -24,6 +24,8 @@ export default function CreatePage() {
   const [activeCategory, setActiveCategory] = useState('Canvas')
   const [cartExtras, setCartExtras] = useState<string[]>([])
   const [wantBundle, setWantBundle] = useState(false)
+  const [wantAllImages, setWantAllImages] = useState(false)
+  const [wantSong, setWantSong] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
   const handleFile = (file: File) => {
@@ -254,15 +256,16 @@ export default function CreatePage() {
               </div>
             )}
 
-            {/* Category tabs */}
+            {/* Category tabs — prints only */}
             <div style={{borderBottom:'1px solid rgba(245,240,232,.06)',marginBottom:28}}>
-              {PRODUCT_CATEGORIES.map(c=>(
+              {['Canvas','Prints'].map(c=>(
                 <button key={c} className={`cat-tab${activeCategory===c?' on':''}`} onClick={()=>setActiveCategory(c)}>{c}</button>
               ))}
             </div>
+            <div style={{fontSize:11,color:'var(--muted)',marginBottom:16,opacity:.7}}>🎁 Mugs, blankets, apparel &amp; more available after you see your portraits</div>
 
             <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(185px,1fr))',gap:2,marginBottom:32}}>
-              {PRODUCTS.filter(p=>p.category===activeCategory).map(p=>(
+              {PRODUCTS.filter(p=>['Canvas','Prints'].includes(p.category)&&p.category===activeCategory).map(p=>(
                 <div key={p.id} className={`product-card${primaryProduct?.id===p.id?' on':''}`} onClick={()=>{setPrimaryProduct(p);setPrimarySize('')}}>
                   {p.popular&&<div style={{position:'absolute',top:8,right:8,background:'var(--gold)',color:'var(--ink)',fontSize:7,fontWeight:700,letterSpacing:'.15em',textTransform:'uppercase',padding:'3px 7px'}}>Popular</div>}
                   {primaryProduct?.id===p.id&&<div style={{position:'absolute',top:8,left:8,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:20,height:20,display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,fontWeight:700}}>✓</div>}
@@ -485,45 +488,94 @@ export default function CreatePage() {
         {step==='upsell'&&picked&&(
           <div>
             <div style={{textAlign:'center',marginBottom:48}}>
-              <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Almost There</div>
-              <h1 className="serif" style={{fontSize:'clamp(28px,5vw,48px)',fontWeight:400,marginBottom:12}}>Love It? Put It Everywhere.</h1>
-              <p style={{color:'var(--muted)',fontSize:15,lineHeight:1.8}}>Your portrait looks amazing on more than just a canvas. Add more products for family, friends, or yourself.</p>
+              <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Step 5 of 5</div>
+              <h1 className="serif" style={{fontSize:'clamp(28px,5vw,48px)',fontWeight:400,marginBottom:12}}>Make It A Complete Package</h1>
+              <p style={{color:'var(--muted)',fontSize:15,lineHeight:1.8,maxWidth:520,margin:'0 auto'}}>Your portrait is gallery-ready. Add digital files, a custom song, and more products — all with the same portrait.</p>
             </div>
 
-            {/* Selected portrait */}
-            <div style={{display:'flex',gap:20,alignItems:'center',padding:'20px',background:'#141414',border:'1px solid rgba(201,168,76,.2)',marginBottom:36}}>
+            {/* Selected portrait + print confirmation */}
+            <div style={{display:'flex',gap:20,alignItems:'center',padding:'20px',background:'#141414',border:'1px solid rgba(201,168,76,.2)',marginBottom:8}}>
               <img src={picked.url} alt="Your portrait" style={{width:88,height:88,objectFit:'cover'}}/>
               <div style={{flex:1}}>
-                <div style={{fontSize:12,fontWeight:600,marginBottom:4}}>Your {picked.styleName} Portrait</div>
-                <div style={{fontSize:11,color:'var(--muted)'}}>Printing on: {primaryProduct?.name} {primaryProduct?.size}</div>
+                <div style={{fontSize:11,color:'var(--gold)',letterSpacing:'.1em',textTransform:'uppercase',marginBottom:4}}>Your Portrait</div>
+                <div style={{fontSize:15,fontWeight:600,marginBottom:2}}>{picked.styleName}</div>
+                <div style={{fontSize:12,color:'var(--muted)'}}>Printing on: {primaryProduct?.name} {primaryProduct?.size}</div>
               </div>
-              <div className="serif" style={{fontSize:20,color:'var(--gold)'}}>${primaryProduct?.price}</div>
+              <div className="serif" style={{fontSize:22,color:'var(--gold)'}}>${primaryProduct?.price}</div>
+            </div>
+            {isMemory&&(
+              <div style={{padding:'10px 20px',background:'rgba(201,168,76,.06)',border:'1px solid rgba(201,168,76,.15)',borderTop:'none',marginBottom:36,display:'flex',justifyContent:'space-between'}}>
+                <span style={{fontSize:12,color:'var(--muted)'}}>✨ Memory Portrait upgrade</span>
+                <span style={{fontSize:12,color:'var(--gold)'}}>+${MEMORY_UPGRADE_PRICE.toFixed(2)}</span>
+              </div>
+            )}
+            {!isMemory&&<div style={{marginBottom:36}}/>}
+
+            {/* ── DIGITAL ADD-ONS SECTION ── */}
+            <div style={{fontSize:10,letterSpacing:'.25em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>⚡ Digital Add-Ons — Instant Delivery, Zero Shipping</div>
+
+            {/* All 36 portraits */}
+            <div onClick={()=>setWantAllImages(b=>!b)} style={{background:'#141414',border:`1px solid ${wantAllImages?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'24px',marginBottom:3,cursor:'pointer',transition:'all .2s',position:'relative'}}>
+              {wantAllImages&&<div style={{position:'absolute',top:16,right:16,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:24,height:24,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:12}}>✓</div>}
+              <div style={{display:'flex',alignItems:'center',gap:20}}>
+                <div style={{fontSize:36}}>🖼️</div>
+                <div style={{flex:1}}>
+                  <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:6}}>
+                    <div className="serif" style={{fontSize:20,fontWeight:400}}>All 36 Portrait Files</div>
+                    <div style={{background:'rgba(201,168,76,.15)',color:'var(--gold)',fontSize:9,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase',padding:'3px 8px'}}>Best Value</div>
+                  </div>
+                  <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>Every portrait from all 3 AI models — GPT, FLUX, and Astria — in full resolution. Print anywhere, share with family, use as wallpaper. Yours forever.</div>
+                </div>
+                <div style={{textAlign:'right',flexShrink:0}}>
+                  <div className="serif" style={{fontSize:24,color:'var(--gold)'}}>$29.99</div>
+                  <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>36 hi-res files</div>
+                </div>
+              </div>
             </div>
 
-            {/* Digital bundle */}
-            <div onClick={()=>setWantBundle(b=>!b)} style={{background:'#141414',border:`1px solid ${wantBundle?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'24px',marginBottom:32,cursor:'pointer',transition:'all .2s',position:'relative'}}>
+            {/* Pet Song */}
+            <div onClick={()=>setWantSong(b=>!b)} style={{background:'#141414',border:`1px solid ${wantSong?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'24px',marginBottom:3,cursor:'pointer',transition:'all .2s',position:'relative'}}>
+              {wantSong&&<div style={{position:'absolute',top:16,right:16,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:24,height:24,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:12}}>✓</div>}
+              <div style={{display:'flex',alignItems:'center',gap:20}}>
+                <div style={{fontSize:36}}>🎵</div>
+                <div style={{flex:1}}>
+                  <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:6}}>
+                    <div className="serif" style={{fontSize:20,fontWeight:400}}>Custom Pet Song</div>
+                    <div style={{background:'rgba(139,92,246,.2)',color:'#A78BFA',fontSize:9,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase',padding:'3px 8px'}}>New</div>
+                  </div>
+                  <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>A one-of-a-kind song written and composed for your pet — using the same memory details from your portrait. Delivered as an MP3. The ultimate keepsake.</div>
+                </div>
+                <div style={{textAlign:'right',flexShrink:0}}>
+                  <div className="serif" style={{fontSize:24,color:'var(--gold)'}}>$19</div>
+                  <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>Custom MP3</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Digital Bundle (select prints) */}
+            <div onClick={()=>setWantBundle(b=>!b)} style={{background:'#141414',border:`1px solid ${wantBundle?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'24px',marginBottom:36,cursor:'pointer',transition:'all .2s',position:'relative'}}>
               {wantBundle&&<div style={{position:'absolute',top:16,right:16,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:24,height:24,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:12}}>✓</div>}
               <div style={{display:'flex',alignItems:'center',gap:20}}>
                 <div style={{fontSize:36}}>💾</div>
                 <div style={{flex:1}}>
-                  <div className="serif" style={{fontSize:20,fontWeight:400,marginBottom:6}}>Download All 12 Portraits</div>
-                  <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>Get all 12 high-resolution digital files from your session. Print anywhere, use as wallpaper, share with family — yours forever.</div>
+                  <div className="serif" style={{fontSize:20,fontWeight:400,marginBottom:6}}>Your Favorite Portrait — Digital File</div>
+                  <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>High-resolution file of your selected portrait. Perfect for digital frames, phone wallpaper, or printing yourself.</div>
                 </div>
-                <div style={{textAlign:'right'}}>
+                <div style={{textAlign:'right',flexShrink:0}}>
                   <div className="serif" style={{fontSize:24,color:'var(--gold)'}}>${DIGITAL_BUNDLE_PRICE}</div>
                   <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>Instant download</div>
                 </div>
               </div>
             </div>
 
-            {/* Additional products */}
-            <div style={{fontSize:10,letterSpacing:'.25em',textTransform:'uppercase',color:'var(--muted)',marginBottom:20}}>Add More Products — Same Portrait</div>
-            {PRODUCT_CATEGORIES.map(cat=>{
+            {/* ── PHYSICAL PRODUCTS SECTION ── */}
+            <div style={{fontSize:10,letterSpacing:'.25em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>📦 More Products — Same Portrait, Shipped to You</div>
+            {['Home','Apparel','Accessories'].map(cat=>{
               const items = PRODUCTS.filter(p=>p.category===cat&&p.id!==primaryProduct?.id)
               if(!items.length) return null
               return (
-                <div key={cat} style={{marginBottom:32}}>
-                  <div style={{fontSize:9,letterSpacing:'.25em',textTransform:'uppercase',color:'rgba(245,240,232,.3)',marginBottom:12}}>{cat}</div>
+                <div key={cat} style={{marginBottom:28}}>
+                  <div style={{fontSize:9,letterSpacing:'.25em',textTransform:'uppercase',color:'rgba(245,240,232,.35)',marginBottom:12}}>{cat}</div>
                   <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))',gap:2}}>
                     {items.map(p=>{
                       const isOn = cartExtras.includes(p.id)
@@ -543,19 +595,21 @@ export default function CreatePage() {
             })}
 
             {/* Final total */}
-            <div style={{background:'#141414',border:'1px solid rgba(201,168,76,.2)',padding:'24px',marginBottom:24}}>
+            <div style={{background:'#141414',border:'1px solid rgba(201,168,76,.2)',padding:'24px',marginBottom:24,marginTop:16}}>
               <div style={{fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>Order Total</div>
               <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}>
                 <span style={{fontSize:14}}>{primaryProduct?.name} {primaryProduct?.size}</span>
                 <span style={{fontSize:14}}>${primaryProduct?.price}</span>
               </div>
-              {isMemory&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>Memory Portrait upgrade</span><span style={{fontSize:14}}>${MEMORY_UPGRADE_PRICE.toFixed(2)}</span></div>}
-              {wantBundle&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>All 12 digital files</span><span style={{fontSize:14}}>${DIGITAL_BUNDLE_PRICE}</span></div>}
-              {cartExtras.map(id=>{const p=PRODUCTS.find(x=>x.id===id)!;return <div key={id} style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>{p.name} {p.size}</span><span style={{fontSize:14}}>${p.price}</span></div>})}
+              {isMemory&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>✨ Memory Portrait upgrade</span><span style={{fontSize:14}}>${MEMORY_UPGRADE_PRICE.toFixed(2)}</span></div>}
+              {wantAllImages&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>🖼️ All 36 Portrait Files</span><span style={{fontSize:14}}>$29.99</span></div>}
+              {wantSong&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>🎵 Custom Pet Song</span><span style={{fontSize:14}}>$19.00</span></div>}
+              {wantBundle&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>💾 Portrait Digital File</span><span style={{fontSize:14}}>${DIGITAL_BUNDLE_PRICE}</span></div>}
+              {cartExtras.map(id=>{const p=PRODUCTS.find(x=>x.id===id)!;return <div key={id} style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>{p.emoji} {p.name} {p.size}</span><span style={{fontSize:14}}>${p.price}</span></div>})}
               <div style={{borderTop:'1px solid rgba(245,240,232,.08)',paddingTop:16,marginTop:8,display:'flex',justifyContent:'space-between'}}>
                 <span style={{fontSize:15,fontWeight:600}}>Total</span>
                 <span className="serif" style={{fontSize:24,color:'var(--gold)'}}>
-                  ${((primaryProduct?.price||0)+(isMemory?MEMORY_UPGRADE_PRICE:0)+(wantBundle?DIGITAL_BUNDLE_PRICE:0)+cartExtras.reduce((sum,id)=>sum+(PRODUCTS.find(p=>p.id===id)?.price||0),0)).toFixed(2)}
+                  ${((primaryProduct?.price||0)+(isMemory?MEMORY_UPGRADE_PRICE:0)+(wantBundle?DIGITAL_BUNDLE_PRICE:0)+(wantAllImages?29.99:0)+(wantSong?19:0)+cartExtras.reduce((sum,id)=>sum+(PRODUCTS.find(p=>p.id===id)?.price||0),0)).toFixed(2)}
                 </span>
               </div>
             </div>

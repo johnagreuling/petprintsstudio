@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
                   prompt,
                   n: 1,
                   size: '1024x1024',
-                  quality: 'medium',
+                  quality: 'high',
                 }),
               })
 
@@ -196,7 +196,7 @@ export async function POST(req: NextRequest) {
               const prompt = style.prompt.replace('{subject}', subject)
               const negPrompt = 'blurry, low quality, distorted, watermark, text, ugly, deformed'
 
-              const falResponse = await fetch('https://fal.run/fal-ai/flux-pro/v1.1/image-to-image', {
+              const falResponse = await fetch('https://fal.run/fal-ai/flux-pro/v1.1-ultra/image-to-image', {
                 method: 'POST',
                 headers: {
                   'Authorization': `Key ${process.env.FAL_API_KEY}`,
@@ -206,8 +206,8 @@ export async function POST(req: NextRequest) {
                   image_url: imageUrl,
                   prompt,
                   negative_prompt: negPrompt,
-                  strength: 0.72,
-                  num_inference_steps: 28,
+                  strength: 0.80,
+                  num_inference_steps: 50,
                   guidance_scale: 7.5,
                   seed: Math.floor(Math.random() * 999999) + v * 13579,
                   image_size: 'square_hd',

@@ -13,7 +13,7 @@ function getStripe() {
 export async function POST(req: NextRequest) {
   try {
     const stripe = getStripe()
-    const { imageUrl, primaryProduct, primarySize, extras, wantBundle, styleName, petName, isMemory } = await req.json()
+    const { imageUrl, primaryProduct, primarySize, extras, wantBundle, wantAllImages, wantSong, styleName, petName, isMemory } = await req.json()
 
     const petLabel = petName ? `${petName}'s` : 'Your Pet'
     const lineItems: any[] = []
@@ -59,6 +59,30 @@ export async function POST(req: NextRequest) {
           currency: 'usd',
           product_data: { name: 'All 12 Digital Portrait Files', description: 'High-resolution digital files of all 12 generated portraits' },
           unit_amount: Math.round(DIGITAL_BUNDLE_PRICE * 100),
+        },
+        quantity: 1,
+      })
+    }
+
+    // All 36 portrait digital files
+    if (wantAllImages) {
+      lineItems.push({
+        price_data: {
+          currency: 'usd',
+          product_data: { name: `All 36 Portrait Files — ${petLabel} Session`, description: 'Every portrait from all 3 AI models (GPT, FLUX, Astria) in full resolution. Delivered digitally.' },
+          unit_amount: 2999,
+        },
+        quantity: 1,
+      })
+    }
+
+    // Custom pet song
+    if (wantSong) {
+      lineItems.push({
+        price_data: {
+          currency: 'usd',
+          product_data: { name: `Custom Song for ${petLabel} Pet`, description: 'A one-of-a-kind AI-composed song written for your pet using their memory portrait details. Delivered as MP3.' },
+          unit_amount: 1900,
         },
         quantity: 1,
       })
@@ -118,6 +142,8 @@ export async function POST(req: NextRequest) {
         primaryProductId: primaryProduct.id,
         isMemory: String(isMemory),
         wantBundle: String(wantBundle),
+        wantAllImages: String(wantAllImages),
+        wantSong: String(wantSong),
         extraProductIds: (extras || []).map((e: any) => e.id).join(','),
       },
     })
