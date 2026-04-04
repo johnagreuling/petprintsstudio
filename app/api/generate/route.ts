@@ -196,7 +196,7 @@ export async function POST(req: NextRequest) {
               const prompt = style.prompt.replace('{subject}', subject)
               const negPrompt = 'blurry, low quality, distorted, watermark, text, ugly, deformed'
 
-              const falResponse = await fetch('https://fal.run/fal-ai/flux/dev/image-to-image', {
+              const falResponse = await fetch('https://fal.run/fal-ai/flux-pro/v1.1/image-to-image', {
                 method: 'POST',
                 headers: {
                   'Authorization': `Key ${process.env.FAL_API_KEY}`,
@@ -255,7 +255,7 @@ export async function POST(req: NextRequest) {
 
           for (const astriaPrompt of astriaScenes) {
             try {
-              const aRes = await fetch(`${process.env.ASTRIA_API}/tunes/${process.env.ASTRIA_TUNE_ID}/prompts`, {
+              const aRes = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts`, {
                 method: 'POST',
                 headers: {
                   'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}`,
@@ -278,7 +278,7 @@ export async function POST(req: NextRequest) {
                 let attempts = 0
                 while (attempts < 40) {
                   await new Promise(r => setTimeout(r, 5000))
-                  const poll = await fetch(`${process.env.ASTRIA_API}/tunes/${process.env.ASTRIA_TUNE_ID}/prompts/${promptId}`, {
+                  const poll = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts/${promptId}`, {
                     headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}` },
                   })
                   const pollData = await poll.json()
