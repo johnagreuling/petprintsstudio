@@ -29,134 +29,240 @@ async function uploadB64ToR2(b64: string, ext = 'png'): Promise<string> {
 }
 
 // ════════════════════════════════════════════════════════════════
-//  STYLE FAMILIES
+//  PROMPT BUILDER — OpenAI recommended structure:
+//  subject identity → style definition → composition →
+//  paint handling → background → constraints
 //
-//  Per OpenAI best practices:
-//  - Separate calls per style family (keeps style lane clean)
-//  - /images/edits with input_fidelity: "high" to lock identity
-//  - Structured prompts: medium → texture → mood → identity rule
-//  - Each prompt describes WHAT the style IS visually, not just a name
-//  - "Nissa" and "Lea" styles defined by their visual characteristics,
-//    not by name (the API doesn't know those labels)
+//  Key rules from OpenAI best practices:
+//  - Do NOT use private style names like "Nissa" or "Lea"
+//    The API doesn't know these labels. Define them visually.
+//  - Every prompt gets the GPT Vision description of the
+//    actual pet injected under SUBJECT IDENTITY
+//  - Separate calls per style family (never mix Nissa + Lea)
+//  - input_fidelity: "high" on every edit call
 // ════════════════════════════════════════════════════════════════
 
-const STYLE_FAMILIES = [
-  {
-    id: 'nissa',
-    name: 'Fine Art — Painterly',
-    emoji: '🎨',
-    variations: 4,
-    buildPrompt: (desc: string) =>
-      `Fine art painterly portrait. Subject: ${desc}. ` +
-      `Medium: oil and acrylic on canvas. ` +
-      `Texture: visible hand-painted brushwork, imperfect surface, painterly blending of realism and soft abstraction. ` +
-      `Atmosphere: soft, ethereal, dreamlike. Muted expressive background with loose botanical or natural elements. ` +
-      `Mood: gentle, emotional, quiet dignity. ` +
-      `Palette: warm muted tones — ivory, sage, dusty rose, golden ochre. ` +
-      `Lighting: soft diffused natural light. ` +
-      `Identity rule: preserve exact coat color, markings, eye color, muzzle shape, ear shape, and all accessories. ` +
-      `Avoid: glossy digital rendering, vector art, anime, cartoon, photorealism.`,
-  },
-  {
-    id: 'lea',
-    name: 'Fine Art — Bold Contemporary',
-    emoji: '✨',
-    variations: 4,
-    buildPrompt: (desc: string) =>
-      `Bold contemporary fine art portrait. Subject: ${desc}. ` +
-      `Medium: thick oil paint on canvas, heavy impasto. ` +
-      `Style: vibrant contemporary surrealism, luxury still-life energy. ` +
-      `Texture: heavy textured brushstrokes, hyper-detailed gemstone-like accents. ` +
-      `Palette: jewel tones — deep sapphire, emerald, ruby, gold. Sharp contrast. ` +
-      `Backdrop: dramatic oversized florals, lush botanicals, or rich dark velvet. ` +
-      `Mood: bold, opulent, confident, gallery-wall statement. ` +
-      `Lighting: dramatic directional light, rich shadows, gem-like highlights. ` +
-      `Identity rule: preserve exact coat color, markings, eye color, muzzle shape, ear shape, and all accessories. ` +
-      `Avoid: watercolor, sketch, minimalism, flat design, illustration.`,
-  },
-  {
-    id: 'watercolor',
-    name: 'Watercolor',
-    emoji: '💧',
-    variations: 2,
-    buildPrompt: (desc: string) =>
-      `Watercolor painting portrait. Subject: ${desc}. ` +
-      `Medium: transparent watercolor on cold-press paper. ` +
-      `Texture: loose fluid brushwork, soft bleeding edges, luminous washes, visible paper texture in highlights. ` +
-      `Palette: soft pastels — warm ivory, blush, sky blue, pale gold. ` +
-      `Mood: delicate, luminous, peaceful. ` +
-      `Lighting: soft airy natural light. ` +
-      `Identity rule: preserve exact coat color, markings, eye color, muzzle, ear shape. ` +
-      `Avoid: digital art, oil paint, harsh outlines, heavy shadows.`,
-  },
-  {
-    id: 'pencil',
-    name: 'Pencil Sketch',
-    emoji: '✏️',
-    variations: 2,
-    buildPrompt: (desc: string) =>
-      `Fine pencil sketch portrait. Subject: ${desc}. ` +
-      `Medium: graphite pencil on white paper. ` +
-      `Texture: fine hatching and cross-hatching, varying line weight, individual fur strokes. ` +
-      `Background: clean white with minimal loose gestural strokes. ` +
-      `Mood: classical, elegant, intimate. ` +
-      `Lighting: soft even light with subtle tonal shading. ` +
-      `Identity rule: preserve exact coat, markings, eye shape, muzzle, ears, accessories. ` +
-      `Avoid: color, ink wash, digital, cartoon.`,
-  },
-]
+function buildNissaPrompt(petDesc: string): string {
+  return `Create a fine-art painted portrait of this exact dog.
 
-// ── MEMORY SCENE STYLES (used for Memory Portrait tier) ──────────
-const MEMORY_SCENE_STYLES = [
-  { id: 'mem_adventure',   name: 'Adventure Scene',   emoji: '🚗' },
-  { id: 'mem_royal',       name: 'Royal Portrait',    emoji: '👑' },
-  { id: 'mem_golden_hour', name: 'Golden Hour',       emoji: '🌅' },
-  { id: 'mem_holiday',     name: 'Holiday Scene',     emoji: '🎄' },
-  { id: 'mem_city',        name: 'City Portrait',     emoji: '🏙️' },
-  { id: 'mem_perfect_day', name: 'Perfect Day',       emoji: '✨' },
-]
+SUBJECT IDENTITY
+Preserve the exact dog from the input photo:
+- ${petDesc}
+- exact coat color and markings
+- exact eye color and shape
+- exact muzzle shape and proportions
+- exact ear shape and placement
+- exact facial proportions and breed appearance
+- preserve any visible accessories (collar, harness, tags)
+- do not invent different markings or change age or body type
 
-function buildMemoryScenePrompt(answers: Record<string, string>, desc: string, sceneId: string): string {
+STYLE
+Render as a soft, ethereal fine-art oil painting:
+- painterly texture blending realism with abstraction
+- muted but expressive atmosphere
+- visible hand-applied brushwork throughout
+- emotionally warm and poetic feeling
+- organic natural symbolism
+- handmade oil-paint surface quality
+- not glossy, not digital illustration, not cartoon, not photorealistic
+
+COMPOSITION
+- centered portrait, dog is clear focal point
+- elegant gallery composition
+- refined museum-quality framing
+- natural relaxed posture
+- subtle atmospheric depth
+
+PAINT SURFACE
+- rich layered brush texture with slight real-paint imperfections
+- soft edges in background, more definition in eyes and muzzle
+- premium fine-art portrait finish
+
+BACKGROUND
+- atmospheric, understated, poetic environment
+- softly abstracted florals and natural organic shapes
+- muted tones that support and frame the dog without competing
+
+CONSTRAINTS
+- no text, no watermark, no extra animals, no duplicate limbs
+- no distorted anatomy, not photorealistic, not graphic design, not anime`
+}
+
+function buildLeaPrompt(petDesc: string): string {
+  return `Create a bold fine-art painted portrait of this exact dog.
+
+SUBJECT IDENTITY
+Preserve the exact dog from the input photo:
+- ${petDesc}
+- exact coat color and markings
+- exact eye color and shape
+- exact muzzle shape and proportions
+- exact ear shape and placement
+- exact facial proportions and breed appearance
+- preserve any visible accessories (collar, harness, tags)
+- do not invent different markings or change age or body type
+
+STYLE
+Render as bold contemporary fine-art oil painting:
+- thick impasto oil paint, heavy textured brushstrokes
+- vibrant contemporary surrealism with luxury still-life energy
+- jewel-toned palette: deep sapphire, emerald, ruby, rich gold
+- sharp contrast between subject and environment
+- hyper-detailed gemstone-like accents on accessories
+- premium gallery-wall statement piece
+- visible painted texture, not vector art, not illustration
+
+COMPOSITION
+- centered portrait, dog is commanding focal point
+- bold dramatic composition
+- dog exudes confidence and presence
+- surreal scale welcome — dog larger than environment
+
+PAINT SURFACE
+- thick impasto texture, visible directional strokes
+- rich highlights that catch light like gemstones
+- deep dramatic shadows with luminous midtones
+- premium fine-art canvas finish
+
+BACKGROUND
+- dramatic oversized florals, lush botanicals, or rich dark velvet
+- surreal props or symbolic objects that create narrative
+- jewel tones throughout — nothing muted or pastel
+
+CONSTRAINTS
+- no text, no watermark, no extra animals, no duplicate limbs
+- no distorted anatomy, not watercolor, not sketch, not minimalist, not anime`
+}
+
+function buildWatercolorPrompt(petDesc: string): string {
+  return `Create a watercolor painting portrait of this exact dog.
+
+SUBJECT IDENTITY
+Preserve the exact dog from the input photo:
+- ${petDesc}
+- exact coat color and markings
+- exact eye color and shape
+- exact muzzle and ear shape
+- preserve all visible accessories
+
+STYLE
+Transparent watercolor on cold-press paper:
+- loose fluid brushwork with soft bleeding edges
+- luminous transparent washes layered for depth
+- visible paper texture in the lightest areas
+- soft halo effect around fur edges
+- delicate and luminous overall feeling
+
+COMPOSITION
+- centered portrait with airy open composition
+- dog is focal point with soft vignette edges
+- light flows from above or one side
+
+PAINT SURFACE
+- transparent layered washes, not opaque
+- wet-on-wet soft blooms in background
+- more defined brushwork only on eyes and muzzle
+
+BACKGROUND
+- very loose abstract washes, soft pastel suggestion of environment
+- warm ivory, blush, sky blue palette
+- minimal — lets the dog breathe
+
+CONSTRAINTS
+- no text, no watermark, no extra animals
+- not digital art, not oil paint texture, not harsh outlines`
+}
+
+function buildPencilPrompt(petDesc: string): string {
+  return `Create a detailed fine pencil sketch portrait of this exact dog.
+
+SUBJECT IDENTITY
+Preserve the exact dog from the input photo:
+- ${petDesc}
+- exact coat color rendered in graphite tones
+- exact eye shape and expression
+- exact muzzle and ear shape
+- exact fur texture and volume
+- preserve all visible accessories
+
+STYLE
+Graphite pencil on white paper:
+- fine hatching and cross-hatching for fur and shadow
+- varying line weight — heavy for outline, fine for fur texture
+- individual pencil strokes suggesting fur direction
+- classical portrait tradition, elegant and intimate
+
+COMPOSITION
+- centered three-quarter or front-facing portrait
+- clean white background with minimal gestural strokes suggesting space
+- strong tonal range from near-white to deep graphite
+
+PENCIL SURFACE
+- visible individual pencil marks throughout
+- smooth tonal gradients in shadows
+- crisp detail on eyes, nose, whiskers
+- soft blended fur texture in lighter areas
+
+BACKGROUND
+- minimal — clean white with only very light gestural marks
+- focus stays entirely on the dog
+
+CONSTRAINTS
+- no color, no ink wash, no digital art, no cartoon
+- not photographic, not illustration`
+}
+
+// ── Memory Portrait scenes ────────────────────────────────────
+function buildMemoryPrompt(answers: Record<string, string>, petDesc: string, sceneId: string): string {
   const name  = answers.petName || 'the pet'
-  const place = answers.favPlace || answers.favOutdoorSpot || 'a beautiful outdoor setting'
+  const place = answers.favPlace || answers.favOutdoorSpot || 'a beautiful setting'
   const mood  = answers.timeAndSeason || 'golden hour'
   const extras = [
     answers.favCar   ? `posed with or in a ${answers.favCar}` : '',
     answers.favTeam  ? `wearing a ${answers.favTeam} collar or bandana` : '',
     answers.favToy   ? `holding a ${answers.favToy}` : '',
-    answers.favFood  ? `with ${answers.favFood} visible in the scene` : '',
+    answers.favFood  ? `with ${answers.favFood} visible` : '',
   ].filter(Boolean).join(', ')
 
-  const base =
-    `Fine art portrait painting. Subject: ${desc} named ${name}. ` +
-    `Identity rule: preserve exact coat color, markings, eye color, muzzle, ears, accessories. ` +
-    (extras ? `Personal details: ${extras}. ` : '') +
-    `Mood: ${mood}. `
+  const identity = `Create a fine-art painted portrait of this exact dog.
+
+SUBJECT IDENTITY
+Preserve the exact dog from the input photo:
+- ${petDesc}
+- exact coat color and markings, exact eye color, exact muzzle and ear shape
+- preserve all visible accessories
+- do not change the dog's appearance${extras ? `\n- Personal details to include: ${extras}` : ''}
+
+STYLE
+Fine art oil painting, gallery quality, painterly brushwork, emotionally resonant.
+Mood: ${mood}.
+
+`
 
   switch (sceneId) {
     case 'mem_adventure':
-      return base + `Scene: ${name} adventuring at ${place}. Cinematic landscape. Painterly oil style, warm light, gallery quality.`
+      return identity + `SCENE\nAdventure portrait: ${name} at ${place}. Cinematic outdoor landscape, natural light, sense of freedom and joy. Warm painterly atmosphere.`
     case 'mem_royal':
-      return base + `Scene: ${name} as royalty — ornate gold frame, velvet drapes, regal pose. Old Masters oil technique, museum quality.`
+      return identity + `SCENE\nRegal oil portrait: ${name} as royalty. Ornate gold-leaf frame implied, velvet drapes, jeweled collar, commanding pose. Old Masters oil technique.`
     case 'mem_golden_hour':
-      return base + `Scene: ${name} at ${place}, golden hour. Warm amber light, impressionist painterly style.`
+      return identity + `SCENE\nGolden hour portrait: ${name} at ${place}. Warm amber and gold light catching the fur, impressionist atmosphere, emotionally beautiful.`
     case 'mem_holiday':
-      return base + `Scene: ${name} in a cozy holiday scene — fireplace, Christmas tree, warm candlelight. Fine art oil style.`
+      return identity + `SCENE\nHoliday scene: ${name} in a cozy festive setting — fireplace glow, decorated tree, warm candlelight. Fine art oil, intimate and warm.`
     case 'mem_city':
-      return base + `Scene: ${name} in ${place || 'a vibrant city'} at dusk, city lights bokeh. Contemporary fine art.`
+      return identity + `SCENE\nUrban portrait: ${name} in ${place || 'a vibrant city'} at dusk. City lights bokeh background, contemporary fine art energy, confident and stylish.`
     case 'mem_perfect_day':
       return answers.perfectDay
-        ? base + `Scene: ${answers.perfectDay}. Painterly fine art, emotionally resonant.`
-        : base + `Scene: ${name}'s perfect day at ${place}. Painterly, joyful, gallery quality.`
+        ? identity + `SCENE\n${answers.perfectDay}. Fine art painterly style, emotionally resonant, gallery quality.`
+        : identity + `SCENE\n${name}'s perfect day at ${place}. Joyful, painterly, warm light, gallery quality.`
     default:
-      return base + `Painterly fine art portrait, gallery quality.`
+      return identity + `SCENE\nFine art painterly portrait of ${name}, gallery quality, warm light.`
   }
 }
 
 export async function POST(req: NextRequest) {
   const { imageUrl, isMemory, answers, petType, petName } = await req.json()
 
-  // Generate presigned GET URL so the Vercel server can fetch the image
+  // Presigned GET URL so Vercel server can fetch the R2 image
   const r2PublicBase = process.env.R2_PUBLIC_URL?.replace(/\/$/, '') || ''
   const imageKey = imageUrl.startsWith(r2PublicBase)
     ? imageUrl.slice(r2PublicBase.length + 1)
@@ -181,7 +287,7 @@ export async function POST(req: NextRequest) {
         const allImages: Array<{ url: string; styleId: string; styleName: string; model: string }> = []
         send({ type: 'progress', value: 5, message: 'Analyzing your pet...' })
 
-        // ── Step 1: Fetch pet image as buffer ───────────────────
+        // ── Step 1: Fetch pet image buffer ──────────────────────
         let petImageBuffer: Buffer | null = null
         try {
           const imgRes = await fetch(accessibleImageUrl, {
@@ -196,12 +302,13 @@ export async function POST(req: NextRequest) {
           }
         } catch(e) { console.error('Fetch error:', e) }
 
-        // ── Step 2: GPT-4o-mini Vision — describe the actual pet ─
-        // The API doesn't know what Mason looks like unless we tell it.
-        // This description gets injected into every single prompt.
-        let petDescription = `${petType || 'dog'} named ${petName || 'the pet'}`
+        // ── Step 2: GPT-4o-mini Vision — get exact pet description ─
+        // The API doesn't know what the dog looks like from a name.
+        // This description is injected into EVERY prompt under
+        // SUBJECT IDENTITY — the single most important fix.
+        let petDesc = `a ${petType || 'dog'} named ${petName || 'the pet'}`
         try {
-          const visionRes = await fetch('https://api.openai.com/v1/chat/completions', {
+          const vRes = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -211,100 +318,126 @@ export async function POST(req: NextRequest) {
                 role: 'user',
                 content: [
                   { type: 'image_url', image_url: { url: accessibleImageUrl, detail: 'low' } },
-                  { type: 'text', text: 'Describe this pet for a fine art painter. One precise sentence. Include: breed/mix, coat color and texture, distinctive markings, face shape, ear type, eye color, any visible accessories (collar, harness, tags). Be visual and specific. Start with the breed.' }
+                  { type: 'text', text: 'Describe this dog precisely for a fine art painter. One sentence. Cover: exact breed or mix, coat color and texture (e.g. curly golden fur), any distinctive markings, face shape, ear type, eye color, visible accessories. Be specific. Start with the breed.' }
                 ]
               }]
             })
           })
-          if (visionRes.ok) {
-            const vd = await visionRes.json()
-            const desc = vd.choices?.[0]?.message?.content?.trim()
-            if (desc && desc.length > 10) {
-              petDescription = desc
-              console.log('Vision description:', petDescription)
-            }
+          if (vRes.ok) {
+            const vd = await vRes.json()
+            const d = vd.choices?.[0]?.message?.content?.trim()
+            if (d && d.length > 10) { petDesc = d; console.log('Pet description:', petDesc) }
           }
         } catch(e) { console.error('Vision failed:', e) }
 
-        send({ type: 'progress', value: 12, message: 'Creating your portraits...' })
+        send({ type: 'progress', value: 12, message: 'Starting portrait generation...' })
 
         if (!isMemory) {
-          // ════════════════════════════════════════════════════
+          // ══════════════════════════════════════════════════════
           //  TIER 1: STYLE TRANSFER
           //
-          //  Uses /images/edits with input_fidelity: "high"
-          //  Separate call per style family (keeps style lane clean)
-          //  Each variation gets its own independent call
-          // ════════════════════════════════════════════════════
-          const totalVariations = STYLE_FAMILIES.reduce((s, f) => s + f.variations, 0)
-          let completedCount = 0
+          //  4 style families, each run as a separate batch:
+          //    • Nissa (4 variants, medium quality)
+          //    • Lea   (4 variants, medium quality)
+          //    • Watercolor (2 variants, medium quality)
+          //    • Pencil Sketch (2 variants, medium quality)
+          //
+          //  All use /images/edits with:
+          //    • pet photo as image[]
+          //    • input_fidelity: "high"
+          //    • quality: "medium" (fast, cheap — good for selection)
+          //
+          //  Per OpenAI best practice:
+          //    • Separate calls per style family (never mix Nissa + Lea)
+          //    • subject identity → style → composition → surface →
+          //      background → constraints
+          // ══════════════════════════════════════════════════════
 
-          for (const family of STYLE_FAMILIES) {
-            const prompt = family.buildPrompt(petDescription)
-            console.log(`[${family.name}] prompt preview:`, prompt.slice(0, 150))
+          const styleFamilies = [
+            { id: 'nissa',     name: '🎨 Fine Art — Painterly',        prompt: buildNissaPrompt(petDesc),     count: 4 },
+            { id: 'lea',       name: '✨ Fine Art — Bold Contemporary', prompt: buildLeaPrompt(petDesc),       count: 4 },
+            { id: 'watercolor',name: '💧 Watercolor',                   prompt: buildWatercolorPrompt(petDesc),count: 2 },
+            { id: 'pencil',    name: '✏️ Pencil Sketch',               prompt: buildPencilPrompt(petDesc),    count: 2 },
+          ]
 
-            const familyTasks = Array.from({ length: family.variations }, (_, v) => async () => {
+          const total = styleFamilies.reduce((s, f) => s + f.count, 0)
+          let done = 0
+
+          for (const family of styleFamilies) {
+            console.log(`[${family.name}] running ${family.count} variants`)
+
+            const tasks = Array.from({ length: family.count }, (_, v) => async () => {
               try {
-                let b64: string | undefined
+                if (!petImageBuffer) {
+                  console.error(`No pet image buffer for ${family.name}`)
+                  return
+                }
 
-                if (petImageBuffer) {
-                  const fd = new FormData()
-                  fd.append('model', 'gpt-image-1.5')
-                  fd.append('prompt', prompt)
-                  fd.append('n', '1')
-                  fd.append('size', '1024x1024')
-                  fd.append('quality', 'high')
-                  fd.append('input_fidelity', 'high')
-                  fd.append('image[]', new Blob([petImageBuffer as unknown as BlobPart], { type: 'image/jpeg' }), 'pet.jpg')
+                const fd = new FormData()
+                fd.append('model', 'gpt-image-1.5')
+                fd.append('prompt', family.prompt)
+                fd.append('n', '1')
+                fd.append('size', '1024x1024')
+                fd.append('quality', 'medium')       // Medium for selection pass
+                fd.append('input_fidelity', 'high')  // Lock identity
+                // Primary subject image — always first
+                fd.append('image[]', new Blob([petImageBuffer as unknown as BlobPart], { type: 'image/jpeg' }), 'pet.jpg')
 
-                  const res = await fetch('https://api.openai.com/v1/images/edits', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
-                    body: fd,
-                  })
-                  if (res.ok) {
-                    const d = await res.json()
-                    b64 = d.data?.[0]?.b64_json
-                  } else {
-                    const t = await res.text()
-                    console.error(`Edit error [${family.name} v${v}]:`, res.status, t.slice(0, 300))
+                const res = await fetch('https://api.openai.com/v1/images/edits', {
+                  method: 'POST',
+                  headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
+                  body: fd,
+                })
+
+                if (res.ok) {
+                  const d = await res.json()
+                  const b64 = d.data?.[0]?.b64_json
+                  if (b64) {
+                    const imgUrl = await uploadB64ToR2(b64)
+                    const img = { url: imgUrl, styleId: `${family.id}_${v}`, styleName: family.name, model: 'gpt' }
+                    allImages.push(img)
+                    send({ type: 'image', image: img })
                   }
+                } else {
+                  const t = await res.text()
+                  console.error(`Edit error [${family.name} v${v}]:`, res.status, t.slice(0, 400))
                 }
 
-                if (b64) {
-                  const imgUrl = await uploadB64ToR2(b64)
-                  const img = { url: imgUrl, styleId: `${family.id}_${v}`, styleName: `${family.emoji} ${family.name}`, model: 'gpt' }
-                  allImages.push(img)
-                  send({ type: 'image', image: img })
-                }
-
-                completedCount++
-                const pct = 12 + Math.round((completedCount / totalVariations) * 78)
-                send({ type: 'progress', value: Math.min(pct, 90), message: `${allImages.length} of ${totalVariations} portraits ready...` })
+                done++
+                const pct = 12 + Math.round((done / total) * 78)
+                send({ type: 'progress', value: Math.min(pct, 90), message: `${allImages.length} of ${total} portraits ready...` })
 
               } catch(e) { console.error(`Task error [${family.name} v${v}]:`, e) }
             })
 
-            // All variations for this family run in parallel
-            await Promise.all(familyTasks.map(t => t()))
+            // Run all variants of this family in parallel
+            // (separate family batches keep style lanes clean)
+            await Promise.all(tasks.map(t => t()))
           }
 
         } else {
-          // ════════════════════════════════════════════════════
+          // ══════════════════════════════════════════════════════
           //  TIER 2: MEMORY PORTRAIT
           //  Custom scenes from questionnaire answers
-          //  Still uses /images/edits + pet image for identity
-          // ════════════════════════════════════════════════════
-          const sceneTasks = MEMORY_SCENE_STYLES.flatMap(scene =>
+          //  Still uses /images/edits + input_fidelity: high
+          // ══════════════════════════════════════════════════════
+          const scenes = ['mem_adventure','mem_royal','mem_golden_hour','mem_holiday','mem_city','mem_perfect_day']
+          const sceneNames: Record<string, string> = {
+            mem_adventure:'🚗 Adventure Scene', mem_royal:'👑 Royal Portrait',
+            mem_golden_hour:'🌅 Golden Hour', mem_holiday:'🎄 Holiday Scene',
+            mem_city:'🏙️ City Portrait', mem_perfect_day:'✨ Perfect Day',
+          }
+
+          const memTasks = scenes.flatMap(sceneId =>
             Array.from({ length: 3 }, (_, v) => async () => {
               try {
-                const prompt = buildMemoryScenePrompt(answers || {}, petDescription, scene.id)
+                const prompt = buildMemoryPrompt(answers || {}, petDesc, sceneId)
                 const fd = new FormData()
                 fd.append('model', 'gpt-image-1.5')
                 fd.append('prompt', prompt)
                 fd.append('n', '1')
                 fd.append('size', '1024x1024')
-                fd.append('quality', 'high')
+                fd.append('quality', 'medium')
                 fd.append('input_fidelity', 'high')
                 if (petImageBuffer) {
                   fd.append('image[]', new Blob([petImageBuffer as unknown as BlobPart], { type: 'image/jpeg' }), 'pet.jpg')
@@ -319,31 +452,30 @@ export async function POST(req: NextRequest) {
                   const b64 = d.data?.[0]?.b64_json
                   if (b64) {
                     const imgUrl = await uploadB64ToR2(b64)
-                    const img = { url: imgUrl, styleId: `${scene.id}_${v}`, styleName: `${scene.emoji} ${scene.name}`, model: 'gpt' }
-                    allImages.push(img)
-                    send({ type: 'image', image: img })
+                    const img = { url: imgUrl, styleId: `${sceneId}_${v}`, styleName: sceneNames[sceneId] || sceneId, model: 'gpt' }
+                    allImages.push(img); send({ type: 'image', image: img })
                   }
                 } else {
                   const t = await res.text()
-                  console.error(`Memory error [${scene.name}]:`, res.status, t.slice(0, 200))
+                  console.error(`Memory error [${sceneId}]:`, res.status, t.slice(0, 200))
                 }
               } catch(e) { console.error('Memory task error:', e) }
             })
           )
 
-          send({ type: 'progress', value: 15, message: 'Generating memory scenes...' })
-          for (let i = 0; i < sceneTasks.length; i += 3) {
-            await Promise.all(sceneTasks.slice(i, i + 3).map(t => t()))
-            send({ type: 'progress', value: 15 + Math.round(((i + 3) / sceneTasks.length) * 80), message: `${allImages.length} memory portraits ready...` })
+          send({ type: 'progress', value: 15, message: 'Creating memory scenes...' })
+          for (let i = 0; i < memTasks.length; i += 3) {
+            await Promise.all(memTasks.slice(i, i + 3).map(t => t()))
+            send({ type: 'progress', value: 15 + Math.round(((i + 3) / memTasks.length) * 80), message: `${allImages.length} memory portraits ready...` })
           }
         }
 
-        // ── Astria LoRA (when configured) ─────────────────────
+        // ── Astria LoRA (when ASTRIA_TUNE_ID is configured) ────
         if (process.env.ASTRIA_API_KEY && process.env.ASTRIA_TUNE_ID) {
           send({ type: 'progress', value: 92, message: 'Generating exact likeness portraits...' })
           for (const aPrompt of [
-            `portrait of sks ${petType || 'dog'}, fine art oil painting, ${petDescription}`,
-            `sks ${petType || 'dog'} golden hour, painterly portrait, ${petDescription}`,
+            `portrait of sks ${petType||'dog'}, fine art oil painting, ${petDesc}`,
+            `sks ${petType||'dog'} golden hour, painterly, ${petDesc}`,
           ]) {
             try {
               const aRes = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts`, {
@@ -352,18 +484,13 @@ export async function POST(req: NextRequest) {
                 body: JSON.stringify({ prompt: { text: aPrompt, num_images: 3, super_resolution: true, face_correct: true, w: 1024, h: 1024 } }),
               })
               if (aRes.ok) {
-                const aData = await aRes.json(); const promptId = aData.id; let attempts = 0
+                const aData = await aRes.json(); const pid = aData.id; let attempts = 0
                 while (attempts < 40) {
                   await new Promise(r => setTimeout(r, 5000))
-                  const poll = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts/${promptId}`, {
-                    headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}` }
-                  })
+                  const poll = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts/${pid}`, { headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}` } })
                   const pd = await poll.json()
                   if (pd.images?.length > 0) {
-                    for (const img of pd.images) {
-                      allImages.push({ url: img.url, styleId: 'astria_exact', styleName: '🎯 Exact Likeness', model: 'astria' })
-                      send({ type: 'image', image: allImages[allImages.length - 1] })
-                    }
+                    for (const img of pd.images) { allImages.push({ url: img.url, styleId: 'astria', styleName: '🎯 Exact Likeness', model: 'astria' }); send({ type: 'image', image: allImages[allImages.length-1] }) }
                     break
                   }
                   attempts++
@@ -376,7 +503,7 @@ export async function POST(req: NextRequest) {
         send({ type: 'progress', value: 100, message: 'All portraits ready!' })
         send({ type: 'done', images: allImages, counts: {
           gpt: allImages.filter(x => x.model === 'gpt').length,
-          fal: allImages.filter(x => x.model === 'fal').length,
+          fal: 0,
           astria: allImages.filter(x => x.model === 'astria').length,
           total: allImages.length,
         }})
