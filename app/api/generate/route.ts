@@ -158,8 +158,19 @@ export async function POST(req: NextRequest) {
           // Fetch the image as a buffer to send to GPT edits endpoint
           let petImageBuffer: Buffer | null = null
           try {
-            const imgRes = await fetch(accessibleImageUrl)
-            if (imgRes.ok) petImageBuffer = Buffer.from(await imgRes.arrayBuffer())
+            console.log('Fetching pet image from:', accessibleImageUrl.slice(0, 100))
+            const imgRes = await fetch(accessibleImageUrl, {
+              headers: { 'User-Agent': 'PetPrintsStudio/1.0' },
+              signal: AbortSignal.timeout(30000),
+            })
+            console.log('Pet image fetch status:', imgRes.status, imgRes.headers.get('content-type'))
+            if (imgRes.ok) {
+              petImageBuffer = Buffer.from(await imgRes.arrayBuffer())
+              console.log('Pet image fetched, size:', petImageBuffer.length)
+            } else {
+              const errText = await imgRes.text()
+              console.error('Pet image fetch failed:', imgRes.status, errText.slice(0, 200))
+            }
           } catch(e) { console.error('Failed to fetch pet image for GPT:', e) }
 
           for (let i = 0; i < gptArtStyles.length; i += 2) {
@@ -174,7 +185,7 @@ export async function POST(req: NextRequest) {
                   fd.append('n', '1')
                   fd.append('size', '1024x1024')
                   fd.append('quality', 'high')
-                  fd.append('image[]', new Blob([petImageBuffer as unknown as BlobPart], {type: 'image/jpeg'}), 'pet.jpg')
+                  fd.append('image', new Blob([petImageBuffer as unknown as BlobPart], {type: 'image/jpeg'}), 'pet.jpg')
                   const res = await fetch('https://api.openai.com/v1/images/edits', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
