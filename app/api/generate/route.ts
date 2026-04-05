@@ -146,29 +146,55 @@ export async function POST(req: NextRequest) {
             send({ type: 'progress', value: 10 + Math.round(((i + 4) / fluxTasks.length) * 40), message: `FLUX: ${allImages.filter(x => x.model === 'fal').length} portraits ready...` })
           }
 
-          // GPT Image 1 — 4 artistic renders
-          const gptPrompts = [
-            `Beautiful oil painting portrait of ${subject}. Rich brushstrokes, warm golden light, gallery quality, museum-worthy fine art.`,
-            `Impressionist painting of ${subject} in the style of Monet. Dappled sunlight, soft focus, vibrant blended colors.`,
-            `Vintage art deco poster illustration of ${subject}. Bold graphic design, 1930s aesthetic, limited color palette.`,
-            `Charming children's book illustration of ${subject}. Clean line art, flat colors, friendly expression, Pixar-quality warmth.`,
+          // GPT Image 1 — 4 artistic edits of the ACTUAL pet photo
+          const gptArtStyles = [
+            { id: 'oil', name: 'Oil Painting', prompt: `Transform this pet photo into a rich oil painting portrait. Impasto brushstrokes, warm golden light, dramatic chiaroscuro, museum-quality fine art. Keep the pet's exact appearance, breed, and features.` },
+            { id: 'impressionist', name: 'Impressionist', prompt: `Transform this pet photo into an impressionist painting in the style of Monet. Dappled sunlight, soft focus, vibrant blended colors, plein air style. Keep the pet's exact appearance and features.` },
+            { id: 'artdeco', name: 'Art Deco', prompt: `Transform this pet photo into a vintage art deco poster illustration. Bold graphic design, 1930s aesthetic, limited warm color palette, geometric elements. Keep the pet's exact appearance.` },
+            { id: 'childrens', name: "Children's Book", prompt: `Transform this pet photo into a charming children's book illustration. Clean line art, flat colors, warm friendly expression, Pixar-quality warmth and charm. Keep the pet's exact appearance.` },
           ]
-          send({ type: 'progress', value: 52, message: 'Adding GPT artistic variations...' })
-          for (let i = 0; i < gptPrompts.length; i += 2) {
-            await Promise.all(gptPrompts.slice(i, i + 2).map(async (prompt, idx) => {
+          send({ type: 'progress', value: 52, message: 'Creating artistic portraits from your photo with GPT...' })
+
+          // Fetch the image as a buffer to send to GPT edits endpoint
+          let petImageBuffer: Buffer | null = null
+          try {
+            const imgRes = await fetch(accessibleImageUrl)
+            if (imgRes.ok) petImageBuffer = Buffer.from(await imgRes.arrayBuffer())
+          } catch(e) { console.error('Failed to fetch pet image for GPT:', e) }
+
+          for (let i = 0; i < gptArtStyles.length; i += 2) {
+            await Promise.all(gptArtStyles.slice(i, i + 2).map(async (style, idx) => {
               try {
-                const res = await fetch('https://api.openai.com/v1/images/generations', {
-                  method: 'POST',
-                  headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ model: 'gpt-image-1', prompt, n: 1, size: '1024x1024', quality: 'high' }),
-                })
-                if (res.ok) {
-                  const d = await res.json(); const b64 = d.data?.[0]?.b64_json
-                  if (b64) { const imgUrl = await uploadB64ToR2(b64); const img = { url: imgUrl, styleId: `gpt_art_${i+idx}`, styleName: 'GPT Portrait', model: 'gpt' }; allImages.push(img); send({ type: 'image', image: img }) }
-                } else { const t = await res.text(); console.error('GPT error', res.status, t.slice(0,300)) }
+                let b64: string | undefined
+                if (petImageBuffer) {
+                  // Use /edits to transform the actual pet photo
+                  const fd = new FormData()
+                  fd.append('model', 'gpt-image-1')
+                  fd.append('prompt', style.prompt)
+                  fd.append('n', '1')
+                  fd.append('size', '1024x1024')
+                  fd.append('quality', 'high')
+                  fd.append('image[]', new Blob([petImageBuffer as unknown as BlobPart], {type: 'image/jpeg'}), 'pet.jpg')
+                  const res = await fetch('https://api.openai.com/v1/images/edits', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
+                    body: fd,
+                  })
+                  if (res.ok) { const d = await res.json(); b64 = d.data?.[0]?.b64_json }
+                  else { const t = await res.text(); console.error('GPT edit error', res.status, t.slice(0,300)) }
+                } else {
+                  // Fallback: text-to-image if we couldn't fetch the photo
+                  const res = await fetch('https://api.openai.com/v1/images/generations', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: 'gpt-image-1', prompt: style.prompt, n: 1, size: '1024x1024', quality: 'high' }),
+                  })
+                  if (res.ok) { const d = await res.json(); b64 = d.data?.[0]?.b64_json }
+                }
+                if (b64) { const imgUrl = await uploadB64ToR2(b64); const img = { url: imgUrl, styleId: `gpt_${style.id}`, styleName: style.name, model: 'gpt' }; allImages.push(img); send({ type: 'image', image: img }) }
               } catch (e) { console.error('GPT art error:', e) }
             }))
-            send({ type: 'progress', value: 55 + Math.round(((i + 2) / gptPrompts.length) * 20), message: `GPT: ${allImages.filter(x => x.model === 'gpt').length} portraits ready...` })
+            send({ type: 'progress', value: 55 + Math.round(((i + 2) / gptArtStyles.length) * 20), message: `GPT: ${allImages.filter(x => x.model === 'gpt').length} portraits ready...` })
           }
 
           // Astria LoRA — exact likeness (if configured)
