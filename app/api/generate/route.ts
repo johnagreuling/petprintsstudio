@@ -144,10 +144,10 @@ export async function POST(req: NextRequest) {
 
           // GPT Image 1 — 4 artistic edits of the ACTUAL pet photo
           const gptArtStyles = [
-            { id: 'oil', name: 'Oil Painting', prompt: `Transform this pet photo into a rich oil painting portrait. Impasto brushstrokes, warm golden light, dramatic chiaroscuro, museum-quality fine art. Keep the pet's exact appearance, breed, and features.` },
-            { id: 'impressionist', name: 'Impressionist', prompt: `Transform this pet photo into an impressionist painting in the style of Monet. Dappled sunlight, soft focus, vibrant blended colors, plein air style. Keep the pet's exact appearance and features.` },
-            { id: 'artdeco', name: 'Art Deco', prompt: `Transform this pet photo into a vintage art deco poster illustration. Bold graphic design, 1930s aesthetic, limited warm color palette, geometric elements. Keep the pet's exact appearance.` },
-            { id: 'childrens', name: "Children's Book", prompt: `Transform this pet photo into a charming children's book illustration. Clean line art, flat colors, warm friendly expression, Pixar-quality warmth and charm. Keep the pet's exact appearance.` },
+            { id: 'oil', name: 'Oil Painting (GPT)', prompt: `Transform this pet photo into a rich oil painting portrait. Impasto brushstrokes, warm golden light, dramatic chiaroscuro, museum-quality fine art. Keep the pet's exact appearance, breed, and features.` },
+            { id: 'impressionist', name: 'Impressionist ✨', prompt: `Transform this pet photo into an impressionist painting in the style of Monet. Dappled sunlight, soft focus, vibrant blended colors, plein air style. Keep the pet's exact appearance and features.` },
+            { id: 'artdeco', name: 'Art Deco ✨', prompt: `Transform this pet photo into a vintage art deco poster illustration. Bold graphic design, 1930s aesthetic, limited warm color palette, geometric elements. Keep the pet's exact appearance.` },
+            { id: 'childrens', name: "Children's Book ✨", prompt: `Transform this pet photo into a charming children's book illustration. Clean line art, flat colors, warm friendly expression, Pixar-quality warmth and charm. Keep the pet's exact appearance.` },
           ]
           send({ type: 'progress', value: 52, message: 'Creating artistic portraits from your photo with GPT...' })
 
