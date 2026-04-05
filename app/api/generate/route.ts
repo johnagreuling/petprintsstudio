@@ -1,6 +1,5 @@
 import { NextRequest } from 'next/server'
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { S3Client, PutObjectCommand, CopyObjectCommand } from '@aws-sdk/client-s3'
 import { v4 as uuidv4 } from 'uuid'
 
 const r2 = new S3Client({
@@ -72,8 +71,8 @@ Mood: ${mood}. Make it beautiful and uniquely theirs.`
 export async function POST(req: NextRequest) {
   const { imageUrl, styles, isMemory, answers, petType, petName } = await req.json()
 
-  // Generate a presigned GET URL so external services (fal.ai) can access the image
-  // Extract key from the public URL
+  // Make the uploaded photo publicly accessible for FLUX by copying it to generated/ prefix
+  // The uploads/ path is private (403), but generated/ is publicly readable
   const r2PublicBase = process.env.R2_PUBLIC_URL?.replace(/\/$/, '') || ''
   const imageKey = imageUrl.startsWith(r2PublicBase)
     ? imageUrl.slice(r2PublicBase.length + 1)
@@ -82,14 +81,30 @@ export async function POST(req: NextRequest) {
   let accessibleImageUrl = imageUrl
   if (imageKey) {
     try {
-      accessibleImageUrl = await getSignedUrl(
-        r2,
-        new GetObjectCommand({ Bucket: process.env.R2_BUCKET_NAME!, Key: imageKey }),
-        { expiresIn: 3600 }
-      )
-      console.log('Using presigned GET URL for image access')
+      // Copy from uploads/ to generated/public/ so it's publicly accessible
+      const { GetObjectCommand, CopyObjectCommand } = await import('@aws-sdk/client-s3')
+      const publicKey = `generated/src/${uuidv4()}.jpg`
+      await r2.send(new CopyObjectCommand({
+        Bucket: process.env.R2_BUCKET_NAME!,
+        CopySource: `${process.env.R2_BUCKET_NAME}/${imageKey}`,
+        Key: publicKey,
+        ContentType: 'image/jpeg',
+      }))
+      accessibleImageUrl = `${r2PublicBase}/${publicKey}`
+      console.log('Copied upload to public path:', accessibleImageUrl.slice(0, 100))
     } catch (e) {
-      console.error('Failed to generate presigned GET URL:', e)
+      console.error('Failed to copy to public path, using presigned URL:', e)
+      // Fallback to presigned URL
+      try {
+        const { GetObjectCommand } = await import('@aws-sdk/client-s3')
+        const { getSignedUrl } = await import('@aws-sdk/s3-request-presigner')
+        accessibleImageUrl = await getSignedUrl(
+          r2,
+          new GetObjectCommand({ Bucket: process.env.R2_BUCKET_NAME!, Key: imageKey }),
+          { expiresIn: 3600 }
+        )
+        console.log('Using presigned GET URL fallback')
+      } catch (e2) { console.error('Both approaches failed:', e2) }
     }
   }
 
@@ -260,6 +275,7 @@ export async function POST(req: NextRequest) {
           const fluxMemTasks = FLUX_ART_STYLES.flatMap(style =>
             Array.from({ length: 3 }, (_, v) => async () => {
               try {
+                console.log('FLUX image_url:', accessibleImageUrl.slice(0, 120))
                 const falRes = await fetch('https://fal.run/fal-ai/flux-pro/v1.1-ultra/redux', {
                   method: 'POST',
                   headers: { 'Authorization': `Key ${process.env.FAL_API_KEY}`, 'Content-Type': 'application/json' },
