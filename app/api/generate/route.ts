@@ -111,16 +111,12 @@ export async function POST(req: NextRequest) {
           const fluxTasks = FLUX_ART_STYLES.flatMap(style =>
             Array.from({ length: 3 }, (_, v) => async () => {
               try {
-                const falRes = await fetch('https://fal.run/fal-ai/flux-pro/v1.1-ultra/image-to-image', {
+                const falRes = await fetch('https://fal.run/fal-ai/flux-pro/v1.1-ultra/redux', {
                   method: 'POST',
                   headers: { 'Authorization': `Key ${process.env.FAL_API_KEY}`, 'Content-Type': 'application/json' },
                   body: JSON.stringify({
                     image_url: accessibleImageUrl,
                     prompt: style.prompt.replace('{subject}', subject),
-                    negative_prompt: 'blurry, low quality, distorted, watermark, text, ugly, deformed',
-                    strength: 0.80,
-                    num_inference_steps: 50,
-                    guidance_scale: 7.5,
                     seed: Math.floor(Math.random() * 999999) + v * 13579,
                     image_size: 'square_hd',
                     output_format: 'jpeg',
@@ -261,7 +257,7 @@ export async function POST(req: NextRequest) {
           const fluxMemTasks = FLUX_ART_STYLES.flatMap(style =>
             Array.from({ length: 3 }, (_, v) => async () => {
               try {
-                const falRes = await fetch('https://fal.run/fal-ai/flux-pro/v1.1-ultra/image-to-image', {
+                const falRes = await fetch('https://fal.run/fal-ai/flux-pro/v1.1-ultra/redux', {
                   method: 'POST',
                   headers: { 'Authorization': `Key ${process.env.FAL_API_KEY}`, 'Content-Type': 'application/json' },
                   body: JSON.stringify({ image_url: accessibleImageUrl, prompt: style.prompt.replace('{subject}', subject) + ' Personal memory scene.', strength: 0.75, num_inference_steps: 50, guidance_scale: 7.5, seed: Math.floor(Math.random() * 999999) + v * 31337, image_size: 'square_hd', output_format: 'jpeg', num_images: 1 }),
