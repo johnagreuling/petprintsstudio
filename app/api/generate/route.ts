@@ -111,17 +111,20 @@ export async function POST(req: NextRequest) {
           const fluxTasks = FLUX_ART_STYLES.flatMap(style =>
             Array.from({ length: 3 }, (_, v) => async () => {
               try {
-                const falRes = await fetch('https://fal.run/fal-ai/flux-pro/v1.1-ultra/redux', {
+                // FLUX Kontext Pro — preserves pet identity while applying art styles
+                const stylePrompt = style.prompt.replace('{subject}', subject)
+                const falRes = await fetch('https://fal.run/fal-ai/flux-pro/kontext', {
                   method: 'POST',
                   headers: { 'Authorization': `Key ${process.env.FAL_API_KEY}`, 'Content-Type': 'application/json' },
                   body: JSON.stringify({
                     image_url: accessibleImageUrl,
-                    prompt: style.prompt.replace('{subject}', subject),
+                    prompt: `Transform this exact pet photo into ${stylePrompt}. Preserve the pet's exact identity, face, fur color, markings, breed, and unique features. Keep the same pet, just change the artistic style.`,
                     seed: Math.floor(Math.random() * 999999) + v * 13579,
                     image_size: 'square_hd',
                     output_format: 'jpeg',
                     num_images: 1,
-                    enable_safety_checker: true,
+                    guidance_scale: 3.5,
+                    safety_tolerance: '2',
                   }),
                 })
                 if (falRes.ok) {
