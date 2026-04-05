@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { v4 as uuidv4 } from 'uuid'
 
 const r2 = new S3Client({
@@ -11,8 +12,6 @@ const r2 = new S3Client({
   },
 })
 
-// Upload base64 image to R2 and return public URL
-// This avoids sending huge base64 strings through SSE stream
 async function uploadB64ToR2(b64: string, ext = 'png'): Promise<string> {
   const key = `generated/${uuidv4()}.${ext}`
   const buffer = Buffer.from(b64, 'base64')
@@ -25,48 +24,6 @@ async function uploadB64ToR2(b64: string, ext = 'png'): Promise<string> {
   }))
   return `${process.env.R2_PUBLIC_URL?.replace(/\/$/, '')}/${key}`
 }
-
-
-// ═══════════════════════════════════════════════════════════════
-//  PET PRINTS STUDIO — Generation Pipeline
-//  TIER 1: Style Transfer — FLUX artistic styles + GPT art
-//  TIER 2: Memory Portrait — GPT custom scenes from questionnaire
-const r2 = new S3Client({
-  region: 'auto',
-  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
-  },
-})
-
-// Upload base64 image to R2 and return public URL
-// This avoids sending huge base64 strings through SSE stream
-async function uploadB64ToR2(b64: string, ext = 'png'): Promise<string> {
-  const key = `generated/${uuidv4()}.${ext}`
-  const buffer = Buffer.from(b64, 'base64')
-  await r2.send(new PutObjectCommand({
-    Bucket: process.env.R2_BUCKET_NAME!,
-    Key: key,
-    Body: buffer,
-    ContentType: `image/${ext}`,
-    CacheControl: 'public, max-age=86400',
-  }))
-  return `${process.env.R2_PUBLIC_URL?.replace(/\/$/, '')}/${key}`
-}
-
-
-// ═══════════════════════════════════════════════════════════════
-
-const r2 = new S3Client({
-  region: 'auto',
-  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
-  },
-})
-
 const FLUX_ART_STYLES = [
   { id: 'oil_painting',  name: 'Oil Painting',   prompt: 'rich oil painting portrait of {subject}, impasto brushstrokes, warm golden light, museum quality, old masters style, dramatic chiaroscuro lighting' },
   { id: 'watercolor',    name: 'Watercolor',      prompt: 'watercolor painting of {subject}, loose fluid brushwork, soft edges, luminous pastel colors, white paper texture, impressionistic style' },
