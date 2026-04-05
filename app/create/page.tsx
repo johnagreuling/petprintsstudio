@@ -587,35 +587,44 @@ export default function CreatePage() {
 
         {/* ── STEP 5: GALLERY — pick your favorite ── */}
         {step==='gallery'&&(
-          <div>
+          <div style={{paddingBottom:140}}>
             <div style={{textAlign:'center',marginBottom:48}}>
               <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Step 4 of 5</div>
               <h1 className="serif" style={{fontSize:'clamp(28px,5vw,48px)',fontWeight:400,marginBottom:12}}>Pick Your Favorite</h1>
               <p style={{color:'var(--muted)',fontSize:15,lineHeight:1.8}}>{generated.length} portraits generated — click to select your favorite</p>
             </div>
 
-            {ART_STYLES.filter(s=>selectedStyles.includes(s.id)).map(style=>{
-              const imgs = generated.filter(g=>g.styleId===style.id)
-              if(!imgs.length) return null
-              return (
-                <div key={style.id} style={{marginBottom:48}}>
-                  <div style={{fontSize:10,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16,display:'flex',alignItems:'center',gap:12}}>
-                    <span>{style.emoji} {style.name}</span>
-                    <span style={{flex:1,height:1,background:'rgba(245,240,232,.06)'}}/>
+            {(()=>{
+              // Group images by styleName, showing all images regardless of model
+              const groups: Record<string, typeof generated> = {}
+              generated.forEach(img => {
+                const key = img.styleName || img.styleId
+                if (!groups[key]) groups[key] = []
+                groups[key].push(img)
+              })
+              return Object.entries(groups).map(([name, imgs]) => {
+                const style = ART_STYLES.find(s => s.id === imgs[0]?.styleId)
+                const emoji = style?.emoji || (imgs[0]?.model === 'gpt' ? '✨' : imgs[0]?.model === 'astria' ? '🎯' : '🎨')
+                return (
+                  <div key={name} style={{marginBottom:48}}>
+                    <div style={{fontSize:10,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16,display:'flex',alignItems:'center',gap:12}}>
+                      <span>{emoji} {name}</span>
+                      <span style={{flex:1,height:1,background:'rgba(245,240,232,.06)'}}/>
+                    </div>
+                    <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:4}}>
+                      {imgs.map((img,i)=>(
+                        <div key={i} style={{position:'relative',cursor:'pointer'}} onClick={()=>setPicked(img)}>
+                          <img src={img.url} alt={`${name} ${i+1}`} className={`img-card${picked?.url===img.url?' picked':''}`}/>
+                          {picked?.url===img.url&&<div style={{position:'absolute',top:10,right:10,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:13}}>✓</div>}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:4}}>
-                    {imgs.map((img,i)=>(
-                      <div key={i} style={{position:'relative',cursor:'pointer'}} onClick={()=>setPicked(img)}>
-                        <img src={img.url} alt={`${style.name} ${i+1}`} className={`img-card${picked?.url===img.url?' picked':''}`}/>
-                        {picked?.url===img.url&&<div style={{position:'absolute',top:10,right:10,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:13}}>✓</div>}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )
-            })}
+                )
+              })
+            })()}
 
-            <div style={{position:'sticky',bottom:20,background:'rgba(10,10,10,.96)',padding:'20px',border:'1px solid rgba(245,240,232,.08)',backdropFilter:'blur(12px)'}}>
+            <div style={{position:'fixed',bottom:0,left:0,right:0,zIndex:100,background:'rgba(10,10,10,.96)',padding:'16px 24px',borderTop:'1px solid rgba(245,240,232,.08)',backdropFilter:'blur(12px)'}}>
               {picked&&(
                 <div style={{display:'flex',gap:16,alignItems:'center',marginBottom:16}}>
                   <img src={picked.url} alt="Selected" style={{width:56,height:56,objectFit:'cover'}}/>
