@@ -1,103 +1,90 @@
 import { NextRequest } from 'next/server'
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 // ═══════════════════════════════════════════════════════════════
 //  PET PRINTS STUDIO — Generation Pipeline
-//
-//  TWO TIERS:
-//
-//  TIER 1 — Style Transfer (Standard)
-//    "A beautiful artistic painting of your photo"
-//    • Astria LoRA — exact likeness portraits (fine-tuned on pet face)
-//    • FLUX 1.1 Pro Ultra — painterly art style variations
-//    • GPT Image 1.5 — additional artistic interpretations
-//
-//  TIER 2 — Memory Portrait (THE HERO PRODUCT)
-//    "A custom scene featuring your pet with YOUR memories"
-//    • GPT Image 1.5 — custom scenes with cars, teams, locations,
-//      accessories, food, toys — everything from the questionnaire
-//    • FLUX 1.1 Pro Ultra — artistic style variations of those scenes
-//    • Astria LoRA — hyper-accurate face within the custom scenes
+//  TIER 1: Style Transfer — FLUX artistic styles + GPT art
+//  TIER 2: Memory Portrait — GPT custom scenes from questionnaire
 // ═══════════════════════════════════════════════════════════════
 
-// ── MEMORY PORTRAIT SCENE STYLES ────────────────────────────────
-// Used by GPT Image 1.5 for custom scene generation
-const MEMORY_SCENE_STYLES = [
-  { id: 'mem_adventure',  name: 'Adventure Scene',    emoji: '🚗', description: 'Your pet in their favorite car at their favorite place' },
-  { id: 'mem_royal',      name: 'Royal Portrait',     emoji: '👑', description: 'Regal oil painting with personal accessories and backdrop' },
-  { id: 'mem_sunset',     name: 'Golden Hour',        emoji: '🌅', description: 'Golden hour at their favorite outdoor spot' },
-  { id: 'mem_holiday',    name: 'Holiday Scene',      emoji: '🎄', description: 'Festive scene with personal touches' },
-  { id: 'mem_city',       name: 'City Portrait',      emoji: '🏙️', description: 'Urban backdrop with their favorite gear' },
-  { id: 'mem_perfect_day',name: 'Perfect Day',        emoji: '✨', description: 'Their ideal day brought to life' },
-]
+const r2 = new S3Client({
+  region: 'auto',
+  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+  },
+})
 
-// ── ART STYLES FOR FLUX ─────────────────────────────────────────
-// Used for both tiers — pure artistic transformation
 const FLUX_ART_STYLES = [
   { id: 'oil_painting',  name: 'Oil Painting',   prompt: 'rich oil painting portrait of {subject}, impasto brushstrokes, warm golden light, museum quality, old masters style, dramatic chiaroscuro lighting' },
-  { id: 'watercolor',    name: 'Watercolor',     prompt: 'watercolor painting of {subject}, loose fluid brushwork, soft edges, luminous pastel colors, white paper texture, impressionistic style' },
-  { id: 'pop_art',       name: 'Pop Art',        prompt: 'Andy Warhol pop art portrait of {subject}, bold flat colors, high contrast, halftone dots, vivid neon palette, graphic design aesthetic' },
-  { id: 'pencil_sketch', name: 'Pencil Sketch',  prompt: 'detailed pencil sketch of {subject}, fine graphite lines, cross-hatching shading, white background, expressive eyes, sketchbook quality' },
+  { id: 'watercolor',    name: 'Watercolor',      prompt: 'watercolor painting of {subject}, loose fluid brushwork, soft edges, luminous pastel colors, white paper texture, impressionistic style' },
+  { id: 'pop_art',       name: 'Pop Art',         prompt: 'Andy Warhol pop art portrait of {subject}, bold flat colors, high contrast, halftone dots, vivid neon palette, graphic design aesthetic' },
+  { id: 'pencil_sketch', name: 'Pencil Sketch',   prompt: 'detailed pencil sketch of {subject}, fine graphite lines, cross-hatching shading, expressive eyes, artist sketchbook quality' },
 ]
 
-// ── BUILD GPT MEMORY SCENE PROMPT ──────────────────────────────
-function buildMemoryPrompt(answers: Record<string, string>, scene: typeof MEMORY_SCENE_STYLES[0]): string {
+const MEMORY_SCENE_STYLES = [
+  { id: 'mem_adventure',   name: 'Adventure Scene',  emoji: '🚗' },
+  { id: 'mem_royal',       name: 'Royal Portrait',   emoji: '👑' },
+  { id: 'mem_sunset',      name: 'Golden Hour',      emoji: '🌅' },
+  { id: 'mem_holiday',     name: 'Holiday Scene',    emoji: '🎄' },
+  { id: 'mem_city',        name: 'City Portrait',    emoji: '🏙️' },
+  { id: 'mem_perfect_day', name: 'Perfect Day',      emoji: '✨' },
+]
+
+function buildMemoryPrompt(answers: Record<string, string>, sceneId: string): string {
   const name = answers.petName || 'the pet'
   const breed = answers.petBreed || 'dog'
-  const feature = answers.petFeature || ''
-
-  let subject = `a ${breed} named ${name}`
-  if (feature) subject += ` with ${feature}`
-
-  const details: string[] = []
-  if (answers.favTeam)        details.push(`wearing a ${answers.favTeam} collar or bandana`)
-  if (answers.favCar)         details.push(`posed with or inside a ${answers.favCar}`)
-  if (answers.favToy)         details.push(`holding their favorite ${answers.favToy}`)
-  if (answers.favFood)        details.push(`with ${answers.favFood} visible in the scene`)
-  if (answers.favRestaurant)  details.push(`near a ${answers.favRestaurant} sign`)
-  if (answers.petPersonality) details.push(`expression conveying: ${answers.petPersonality}`)
-
   const location = answers.favOutdoorSpot || answers.favPlace || 'a beautiful outdoor setting'
   const mood = answers.timeAndSeason || 'golden hour lighting'
+  const details: string[] = []
+  if (answers.favTeam)        details.push(`wearing ${answers.favTeam} gear`)
+  if (answers.favCar)         details.push(`near a ${answers.favCar}`)
+  if (answers.favToy)         details.push(`holding a ${answers.favToy}`)
+  if (answers.favFood)        details.push(`with ${answers.favFood} nearby`)
+  if (answers.petPersonality) details.push(`expression: ${answers.petPersonality}`)
+  const detailStr = details.length ? ` Personal touches: ${details.join(', ')}.` : ''
 
-  let sceneAddition = ''
-  switch (scene.id) {
-    case 'mem_adventure':
-      sceneAddition = answers.favCar
-        ? `${name} riding in a ${answers.favCar} at ${location}, wind in their fur`
-        : `${name} adventuring at ${location}, exploring joyfully`
-      break
-    case 'mem_royal':
-      sceneAddition = `regal oil painting portrait, ${name} dressed as royalty with ornate backdrop and gold accents`
-      break
-    case 'mem_sunset':
-      sceneAddition = `${name} at ${location} during golden hour, warm light catching their fur, peaceful and beautiful`
-      break
-    case 'mem_holiday':
-      sceneAddition = `cozy holiday scene, ${name} by a fireplace with Christmas tree and festive decorations, warm amber light`
-      break
-    case 'mem_city':
-      sceneAddition = `${name} in an urban setting at ${location || 'a vibrant city'}, stylish and confident`
-      break
-    case 'mem_perfect_day':
-      sceneAddition = answers.perfectDay
-        ? `Scene: ${answers.perfectDay}`
-        : `${name}'s perfect day — playing at ${location} in ${mood}`
-      break
+  const sceneMap: Record<string, string> = {
+    mem_adventure:   answers.favCar ? `${name} riding in a ${answers.favCar} at ${location}` : `${name} adventuring at ${location}`,
+    mem_royal:       `regal oil painting portrait of ${name} as royalty with ornate backdrop and gold accents`,
+    mem_sunset:      `${name} at ${location} during golden hour, warm light on their fur`,
+    mem_holiday:     `${name} in a cozy holiday scene with fireplace, Christmas tree, festive decorations`,
+    mem_city:        `${name} in a stylish urban scene at ${location || 'a vibrant city'}, evening lights`,
+    mem_perfect_day: answers.perfectDay ? `Scene: ${answers.perfectDay}. ${name} the ${breed}.` : `${name}'s perfect day at ${location}`,
   }
 
-  const detailStr = details.length > 0 ? `\n\nPersonal touches to include: ${details.join(', ')}.` : ''
+  return `Oil painting portrait style. ${sceneMap[sceneId] || sceneMap.mem_adventure}.${detailStr}
 
-  return `Oil painting portrait style. ${subject}. ${sceneAddition}.${detailStr}
-
-Artistic direction: painterly oil painting with visible brushstrokes, rich warm colors, cinematic lighting, gallery quality. The scene should feel deeply personal and emotional — like a cherished memory.
-
-Include the pet's name "${name.toUpperCase()}" subtly somewhere in the scene (collar tag, license plate, or nameplate).
-
-Mood: ${mood}. Make it beautiful, emotional, and uniquely theirs.`
+Artistic style: painterly oil painting, rich warm colors, cinematic lighting, gallery quality, deeply personal.
+Include the name "${name.toUpperCase()}" subtly on a collar tag or nameplate.
+Mood: ${mood}. Make it beautiful and uniquely theirs.`
 }
 
 export async function POST(req: NextRequest) {
   const { imageUrl, styles, isMemory, answers, petType, petName } = await req.json()
+
+  // Generate a presigned GET URL so external services (fal.ai) can access the image
+  // Extract key from the public URL
+  const r2PublicBase = process.env.R2_PUBLIC_URL?.replace(/\/$/, '') || ''
+  const imageKey = imageUrl.startsWith(r2PublicBase)
+    ? imageUrl.slice(r2PublicBase.length + 1)
+    : imageUrl.split('/uploads/').pop() ? `uploads/${imageUrl.split('/uploads/').pop()}` : null
+
+  let accessibleImageUrl = imageUrl
+  if (imageKey) {
+    try {
+      accessibleImageUrl = await getSignedUrl(
+        r2,
+        new GetObjectCommand({ Bucket: process.env.R2_BUCKET_NAME!, Key: imageKey }),
+        { expiresIn: 3600 }
+      )
+      console.log('Using presigned GET URL for image access')
+    } catch (e) {
+      console.error('Failed to generate presigned GET URL:', e)
+    }
+  }
 
   const encoder = new TextEncoder()
   const stream = new ReadableStream({
@@ -112,27 +99,17 @@ export async function POST(req: NextRequest) {
         send({ type: 'progress', value: 5, message: 'Starting generation...' })
 
         if (!isMemory) {
-          // ════════════════════════════════════════════════════
-          //  TIER 1: STYLE TRANSFER
-          //  Pure artistic reimagining of the uploaded photo
-          //
-          //  • FLUX 1.1 Pro Ultra — 12 artistic style portraits
-          //  • GPT Image 1.5 — 4 additional artistic renders
-          //  • Astria LoRA — exact likeness (if tune exists)
-          // ════════════════════════════════════════════════════
-
-          // ── FLUX 1.1 Pro Ultra — 4 styles × 3 variations = 12 ──
-          const fluxStyles = FLUX_ART_STYLES
-          const fluxTasks = fluxStyles.flatMap(style =>
+          // ── TIER 1: STYLE TRANSFER ──────────────────────────────
+          // FLUX 1.1 Pro Ultra — 4 styles × 3 = 12 images
+          const fluxTasks = FLUX_ART_STYLES.flatMap(style =>
             Array.from({ length: 3 }, (_, v) => async () => {
               try {
-                const prompt = style.prompt.replace('{subject}', subject)
-                const falResponse = await fetch('https://fal.run/fal-ai/flux-pro/v1.1-ultra/image-to-image', {
+                const falRes = await fetch('https://fal.run/fal-ai/flux-pro/v1.1-ultra/image-to-image', {
                   method: 'POST',
                   headers: { 'Authorization': `Key ${process.env.FAL_API_KEY}`, 'Content-Type': 'application/json' },
                   body: JSON.stringify({
-                    image_url: imageUrl,
-                    prompt,
+                    image_url: accessibleImageUrl,
+                    prompt: style.prompt.replace('{subject}', subject),
                     negative_prompt: 'blurry, low quality, distorted, watermark, text, ugly, deformed',
                     strength: 0.80,
                     num_inference_steps: 50,
@@ -144,234 +121,147 @@ export async function POST(req: NextRequest) {
                     enable_safety_checker: true,
                   }),
                 })
-                if (falResponse.ok) {
-                  const falData = await falResponse.json()
-                  const imgUrl = falData.images?.[0]?.url
-                  if (imgUrl) {
-                    const img = { url: imgUrl, styleId: style.id, styleName: style.name, model: 'fal' }
-                    allImages.push(img)
-                    send({ type: 'image', image: img })
-                  } else {
-                    console.error('FLUX no image URL in response:', JSON.stringify(falData).slice(0,200))
-                  }
+                if (falRes.ok) {
+                  const d = await falRes.json()
+                  const imgUrl = d.images?.[0]?.url
+                  if (imgUrl) { const img = { url: imgUrl, styleId: style.id, styleName: style.name, model: 'fal' }; allImages.push(img); send({ type: 'image', image: img }) }
+                  else console.error('FLUX no url:', JSON.stringify(d).slice(0, 200))
                 } else {
-                  const errText = await falResponse.text()
-                  console.error('FLUX error', falResponse.status, errText.slice(0,300))
+                  const t = await falRes.text(); console.error('FLUX error', falRes.status, t.slice(0, 300))
                 }
-              } catch (err) { console.error('FLUX style error:', err) }
+              } catch (e) { console.error('FLUX task error:', e) }
             })
           )
 
-          send({ type: 'progress', value: 10, message: 'Creating artistic style portraits with FLUX...' })
+          send({ type: 'progress', value: 10, message: 'Creating FLUX artistic portraits...' })
           for (let i = 0; i < fluxTasks.length; i += 4) {
             await Promise.all(fluxTasks.slice(i, i + 4).map(t => t()))
-            send({ type: 'progress', value: 10 + Math.round(((i + 4) / fluxTasks.length) * 40), message: `FLUX: ${allImages.filter(x => x.model === 'fal').length} art portraits ready...` })
+            send({ type: 'progress', value: 10 + Math.round(((i + 4) / fluxTasks.length) * 40), message: `FLUX: ${allImages.filter(x => x.model === 'fal').length} portraits ready...` })
           }
 
-          // ── GPT Image 1.5 — 4 additional artistic renders ──
-          const gptArtPrompts = [
+          // GPT Image 1 — 4 artistic renders
+          const gptPrompts = [
             `Beautiful oil painting portrait of ${subject}. Rich brushstrokes, warm golden light, gallery quality, museum-worthy fine art.`,
-            `Impressionist painting of ${subject} in the style of Monet. Dappled sunlight, soft focus, vibrant blended colors, plein air style.`,
-            `Vintage art deco poster illustration of ${subject}. Bold graphic design, 1930s aesthetic, limited color palette, letterpress texture.`,
+            `Impressionist painting of ${subject} in the style of Monet. Dappled sunlight, soft focus, vibrant blended colors.`,
+            `Vintage art deco poster illustration of ${subject}. Bold graphic design, 1930s aesthetic, limited color palette.`,
             `Charming children's book illustration of ${subject}. Clean line art, flat colors, friendly expression, Pixar-quality warmth.`,
           ]
-
           send({ type: 'progress', value: 52, message: 'Adding GPT artistic variations...' })
-          const gptArtTasks = gptArtPrompts.map(prompt => async () => {
-            try {
-              const response = await fetch('https://api.openai.com/v1/images/generations', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ model: 'gpt-image-1', prompt, n: 1, size: '1024x1024', quality: 'high' }),
-              })
-              if (response.ok) {
-                const data = await response.json()
-                const b64 = data.data?.[0]?.b64_json
-                if (b64) {
-                  const img = { url: `data:image/png;base64,${b64}`, styleId: 'gpt_art', styleName: 'GPT Portrait', model: 'gpt' }
-                  allImages.push(img)
-                  send({ type: 'image', image: img })
-                }
-              }
-            } catch (err) { console.error('GPT art error:', err) }
-          })
-
-          for (let i = 0; i < gptArtTasks.length; i += 2) {
-            await Promise.all(gptArtTasks.slice(i, i + 2).map(t => t()))
-            send({ type: 'progress', value: 55 + Math.round(((i + 2) / gptArtTasks.length) * 20), message: `GPT: ${allImages.filter(x => x.model === 'gpt').length} artistic portraits ready...` })
-          }
-
-          // ── Astria LoRA — exact likeness (if tune available) ──
-          if (process.env.ASTRIA_API_KEY && process.env.ASTRIA_TUNE_ID) {
-            send({ type: 'progress', value: 77, message: 'Generating exact likeness portraits with Astria...' })
-            const astriaPrompts = [
-              `a portrait of sks ${petType || 'dog'} in beautiful natural lighting, oil painting style, expressive eyes`,
-              `sks ${petType || 'dog'} in a painterly style, golden hour light, artistic portrait`,
-            ]
-            for (const aPrompt of astriaPrompts) {
+          for (let i = 0; i < gptPrompts.length; i += 2) {
+            await Promise.all(gptPrompts.slice(i, i + 2).map(async (prompt, idx) => {
               try {
-                const aRes = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts`, {
-                  method: 'POST',
-                  headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}`, 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ prompt: { text: aPrompt, num_images: 3, super_resolution: true, face_correct: true, w: 1024, h: 1024 } }),
-                })
-                if (aRes.ok) {
-                  const aData = await aRes.json()
-                  const promptId = aData.id
-                  let attempts = 0
-                  while (attempts < 40) {
-                    await new Promise(r => setTimeout(r, 5000))
-                    const poll = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts/${promptId}`, {
-                      headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}` },
-                    })
-                    const pollData = await poll.json()
-                    if (pollData.images?.length > 0) {
-                      for (const img of pollData.images) {
-                        const aImg = { url: img.url, styleId: 'astria_exact', styleName: 'Exact Likeness', model: 'astria' }
-                        allImages.push(aImg)
-                        send({ type: 'image', image: aImg })
-                      }
-                      break
-                    }
-                    attempts++
-                  }
-                }
-              } catch (err) { console.error('Astria error:', err) }
-            }
-          }
-
-        } else {
-          // ════════════════════════════════════════════════════
-          //  TIER 2: MEMORY PORTRAIT — THE HERO PRODUCT
-          //  Custom scenes built from questionnaire answers
-          //
-          //  • GPT Image 1.5 — 18 custom personal scenes
-          //    (cars, teams, locations, food, toys, accessories)
-          //  • FLUX 1.1 Pro Ultra — 12 artistic style variations
-          //    of the memory scenes
-          //  • Astria LoRA — 6 exact likeness within scenes
-          // ════════════════════════════════════════════════════
-
-          // ── GPT Image 1.5 — 6 scenes × 3 variations = 18 ──
-          const memoryScenes = MEMORY_SCENE_STYLES
-          const gptMemoryTasks = memoryScenes.flatMap(scene =>
-            Array.from({ length: 3 }, (_, v) => async () => {
-              try {
-                const prompt = buildMemoryPrompt(answers || {}, scene)
-                const response = await fetch('https://api.openai.com/v1/images/generations', {
+                const res = await fetch('https://api.openai.com/v1/images/generations', {
                   method: 'POST',
                   headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
                   body: JSON.stringify({ model: 'gpt-image-1', prompt, n: 1, size: '1024x1024', quality: 'high' }),
                 })
-                if (response.ok) {
-                  const data = await response.json()
-                  const b64 = data.data?.[0]?.b64_json
-                  if (b64) {
-                    const img = { url: `data:image/png;base64,${b64}`, styleId: scene.id, styleName: scene.name, model: 'gpt' }
-                    allImages.push(img)
-                    send({ type: 'image', image: img })
-                  }
-                }
-              } catch (err) { console.error('GPT memory scene error:', err) }
-            })
-          )
-
-          send({ type: 'progress', value: 8, message: `Generating ${gptMemoryTasks.length} custom memory scenes with GPT...` })
-          for (let i = 0; i < gptMemoryTasks.length; i += 3) {
-            await Promise.all(gptMemoryTasks.slice(i, i + 3).map(t => t()))
-            const pct = 8 + Math.round(((i + 3) / gptMemoryTasks.length) * 45)
-            send({ type: 'progress', value: Math.min(pct, 53), message: `GPT: ${allImages.filter(x => x.model === 'gpt').length} memory scenes ready...` })
+                if (res.ok) {
+                  const d = await res.json(); const b64 = d.data?.[0]?.b64_json
+                  if (b64) { const img = { url: `data:image/png;base64,${b64}`, styleId: `gpt_art_${i+idx}`, styleName: 'GPT Portrait', model: 'gpt' }; allImages.push(img); send({ type: 'image', image: img }) }
+                } else { const t = await res.text(); console.error('GPT error', res.status, t.slice(0,300)) }
+              } catch (e) { console.error('GPT art error:', e) }
+            }))
+            send({ type: 'progress', value: 55 + Math.round(((i + 2) / gptPrompts.length) * 20), message: `GPT: ${allImages.filter(x => x.model === 'gpt').length} portraits ready...` })
           }
 
-          // ── FLUX 1.1 Pro Ultra — artistic style variations of scenes ──
-          // Take the first GPT image URL if available, otherwise use original
-          const fluxSourceUrl = allImages.find(x => x.model === 'gpt' && !x.url.startsWith('data:'))?.url || imageUrl
-          const memFluxTasks = FLUX_ART_STYLES.flatMap(style =>
-            Array.from({ length: 3 }, (_, v) => async () => {
-              try {
-                const prompt = style.prompt.replace('{subject}', subject) + `. Scene inspired by the pet's personal memories and favorite things.`
-                const falResponse = await fetch('https://fal.run/fal-ai/flux-pro/v1.1-ultra/image-to-image', {
-                  method: 'POST',
-                  headers: { 'Authorization': `Key ${process.env.FAL_API_KEY}`, 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    image_url: imageUrl,
-                    prompt,
-                    negative_prompt: 'blurry, low quality, distorted, watermark, text, ugly, deformed',
-                    strength: 0.75,
-                    num_inference_steps: 50,
-                    guidance_scale: 7.5,
-                    seed: Math.floor(Math.random() * 999999) + v * 31337,
-                    image_size: 'square_hd',
-                    output_format: 'jpeg',
-                    num_images: 1,
-                  }),
-                })
-                if (falResponse.ok) {
-                  const falData = await falResponse.json()
-                  const imgUrl = falData.images?.[0]?.url
-                  if (imgUrl) {
-                    const img = { url: imgUrl, styleId: style.id, styleName: `${style.name} (Memory)`, model: 'fal' }
-                    allImages.push(img)
-                    send({ type: 'image', image: img })
-                  }
-                }
-              } catch (err) { console.error('FLUX memory error:', err) }
-            })
-          )
-
-          send({ type: 'progress', value: 55, message: 'Creating artistic style variations of your memory scenes...' })
-          for (let i = 0; i < memFluxTasks.length; i += 4) {
-            await Promise.all(memFluxTasks.slice(i, i + 4).map(t => t()))
-            send({ type: 'progress', value: 55 + Math.round(((i + 4) / memFluxTasks.length) * 22), message: `FLUX: ${allImages.filter(x => x.model === 'fal').length} artistic variations ready...` })
-          }
-
-          // ── Astria LoRA — exact likeness within scenes ──
+          // Astria LoRA — exact likeness (if configured)
           if (process.env.ASTRIA_API_KEY && process.env.ASTRIA_TUNE_ID) {
-            send({ type: 'progress', value: 79, message: 'Adding exact likeness portraits to your memory scenes...' })
-            const astriaMemPrompts = [
-              `a portrait of sks ${petType || 'dog'} in a beautiful personal scene with their favorite things, painterly style`,
-              `sks ${petType || 'dog'} ${answers?.favPlace ? `at ${answers.favPlace}` : 'in their favorite place'}, golden hour, oil painting`,
-            ]
-            for (const aPrompt of astriaMemPrompts) {
+            send({ type: 'progress', value: 77, message: 'Generating exact likeness with Astria...' })
+            for (const aPrompt of [`portrait of sks ${petType || 'dog'}, oil painting style, natural lighting`, `sks ${petType || 'dog'} golden hour, painterly portrait`]) {
               try {
                 const aRes = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts`, {
-                  method: 'POST',
-                  headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}`, 'Content-Type': 'application/json' },
+                  method: 'POST', headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}`, 'Content-Type': 'application/json' },
                   body: JSON.stringify({ prompt: { text: aPrompt, num_images: 3, super_resolution: true, face_correct: true, w: 1024, h: 1024 } }),
                 })
                 if (aRes.ok) {
-                  const aData = await aRes.json()
-                  const promptId = aData.id
-                  let attempts = 0
+                  const aData = await aRes.json(); const promptId = aData.id; let attempts = 0
                   while (attempts < 40) {
                     await new Promise(r => setTimeout(r, 5000))
-                    const poll = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts/${promptId}`, {
-                      headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}` },
-                    })
-                    const pollData = await poll.json()
-                    if (pollData.images?.length > 0) {
-                      for (const img of pollData.images) {
-                        const aImg = { url: img.url, styleId: 'astria_memory', styleName: 'Exact Likeness — Memory Scene', model: 'astria' }
-                        allImages.push(aImg)
-                        send({ type: 'image', image: aImg })
-                      }
-                      break
-                    }
+                    const poll = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts/${promptId}`, { headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}` } })
+                    const pd = await poll.json()
+                    if (pd.images?.length > 0) { for (const img of pd.images) { const aImg = { url: img.url, styleId: 'astria_exact', styleName: 'Exact Likeness', model: 'astria' }; allImages.push(aImg); send({ type: 'image', image: aImg }) }; break }
                     attempts++
                   }
                 }
-              } catch (err) { console.error('Astria memory error:', err) }
+              } catch (e) { console.error('Astria error:', e) }
+            }
+          }
+
+        } else {
+          // ── TIER 2: MEMORY PORTRAIT ─────────────────────────────
+          // GPT Image 1 — 6 scenes × 3 variations = 18 images
+          const memTasks = MEMORY_SCENE_STYLES.flatMap(scene =>
+            Array.from({ length: 3 }, () => async () => {
+              try {
+                const prompt = buildMemoryPrompt(answers || {}, scene.id)
+                const res = await fetch('https://api.openai.com/v1/images/generations', {
+                  method: 'POST',
+                  headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ model: 'gpt-image-1', prompt, n: 1, size: '1024x1024', quality: 'high' }),
+                })
+                if (res.ok) {
+                  const d = await res.json(); const b64 = d.data?.[0]?.b64_json
+                  if (b64) { const img = { url: `data:image/png;base64,${b64}`, styleId: scene.id, styleName: scene.name, model: 'gpt' }; allImages.push(img); send({ type: 'image', image: img }) }
+                } else { const t = await res.text(); console.error('GPT memory error', res.status, t.slice(0,300)) }
+              } catch (e) { console.error('GPT memory scene error:', e) }
+            })
+          )
+
+          send({ type: 'progress', value: 8, message: `Building ${MEMORY_SCENE_STYLES.length * 3} personal memory scenes...` })
+          for (let i = 0; i < memTasks.length; i += 3) {
+            await Promise.all(memTasks.slice(i, i + 3).map(t => t()))
+            send({ type: 'progress', value: 8 + Math.round(((i + 3) / memTasks.length) * 45), message: `${allImages.filter(x => x.model === 'gpt').length} memory scenes ready...` })
+          }
+
+          // FLUX artistic variations
+          const fluxMemTasks = FLUX_ART_STYLES.flatMap(style =>
+            Array.from({ length: 3 }, (_, v) => async () => {
+              try {
+                const falRes = await fetch('https://fal.run/fal-ai/flux-pro/v1.1-ultra/image-to-image', {
+                  method: 'POST',
+                  headers: { 'Authorization': `Key ${process.env.FAL_API_KEY}`, 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ image_url: accessibleImageUrl, prompt: style.prompt.replace('{subject}', subject) + ' Personal memory scene.', strength: 0.75, num_inference_steps: 50, guidance_scale: 7.5, seed: Math.floor(Math.random() * 999999) + v * 31337, image_size: 'square_hd', output_format: 'jpeg', num_images: 1 }),
+                })
+                if (falRes.ok) {
+                  const d = await falRes.json(); const imgUrl = d.images?.[0]?.url
+                  if (imgUrl) { const img = { url: imgUrl, styleId: style.id, styleName: `${style.name} (Memory)`, model: 'fal' }; allImages.push(img); send({ type: 'image', image: img }) }
+                } else { const t = await falRes.text(); console.error('FLUX memory error', falRes.status, t.slice(0,200)) }
+              } catch (e) { console.error('FLUX memory error:', e) }
+            })
+          )
+
+          send({ type: 'progress', value: 55, message: 'Adding artistic style variations...' })
+          for (let i = 0; i < fluxMemTasks.length; i += 4) {
+            await Promise.all(fluxMemTasks.slice(i, i + 4).map(t => t()))
+            send({ type: 'progress', value: 55 + Math.round(((i + 4) / fluxMemTasks.length) * 22), message: `${allImages.filter(x => x.model === 'fal').length} FLUX variations ready...` })
+          }
+
+          // Astria exact likeness in scenes
+          if (process.env.ASTRIA_API_KEY && process.env.ASTRIA_TUNE_ID) {
+            send({ type: 'progress', value: 79, message: 'Adding exact likeness portraits...' })
+            for (const aPrompt of [`sks ${petType || 'dog'} in a beautiful personal scene, painterly style`, `sks ${petType || 'dog'} ${answers?.favPlace ? `at ${answers.favPlace}` : 'in their favorite place'}, golden hour`]) {
+              try {
+                const aRes = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts`, {
+                  method: 'POST', headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}`, 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ prompt: { text: aPrompt, num_images: 3, super_resolution: true, face_correct: true, w: 1024, h: 1024 } }),
+                })
+                if (aRes.ok) {
+                  const aData = await aRes.json(); const promptId = aData.id; let attempts = 0
+                  while (attempts < 40) {
+                    await new Promise(r => setTimeout(r, 5000))
+                    const poll = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts/${promptId}`, { headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}` } })
+                    const pd = await poll.json()
+                    if (pd.images?.length > 0) { for (const img of pd.images) { const aImg = { url: img.url, styleId: 'astria_memory', styleName: 'Exact Likeness — Memory Scene', model: 'astria' }; allImages.push(aImg); send({ type: 'image', image: aImg }) }; break }
+                    attempts++
+                  }
+                }
+              } catch (e) { console.error('Astria memory error:', e) }
             }
           }
         }
 
         send({ type: 'progress', value: 100, message: 'All portraits ready!' })
-        send({ type: 'done', images: allImages, counts: {
-          gpt: allImages.filter(x => x.model === 'gpt').length,
-          fal: allImages.filter(x => x.model === 'fal').length,
-          astria: allImages.filter(x => x.model === 'astria').length,
-          total: allImages.length,
-        }})
+        send({ type: 'done', images: allImages, counts: { gpt: allImages.filter(x => x.model === 'gpt').length, fal: allImages.filter(x => x.model === 'fal').length, astria: allImages.filter(x => x.model === 'astria').length, total: allImages.length } })
         controller.close()
 
       } catch (err) {
