@@ -48,11 +48,23 @@ export default function CreatePage() {
     if (!uploadedFile || !primaryProduct) return
     setStep('generating'); setProgress(5); setProgressMsg('Uploading your photo...')
     try {
-      // Upload
-      const fd = new FormData(); fd.append('file', uploadedFile)
-      const upRes = await fetch('/api/upload', { method: 'POST', body: fd })
-      if (!upRes.ok) throw new Error('Upload failed')
-      const { url } = await upRes.json()
+      // Step 1: Get presigned URL (tiny request — no file data sent to Vercel)
+      const presignRes = await fetch('/api/upload-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: uploadedFile.name, contentType: uploadedFile.type }),
+      })
+      if (!presignRes.ok) throw new Error('Upload failed')
+      const { signedUrl, publicUrl: url } = await presignRes.json()
+
+      // Step 2: Upload DIRECTLY to R2 — bypasses Vercel entirely, no size limit
+      setProgressMsg('Uploading your photo...')
+      const uploadRes = await fetch(signedUrl, {
+        method: 'PUT',
+        body: uploadedFile,
+        headers: { 'Content-Type': uploadedFile.type },
+      })
+      if (!uploadRes.ok) throw new Error('Upload failed')
       setUploadedUrl(url); setProgress(20); setProgressMsg('Starting AI generation...')
 
       // Generate
