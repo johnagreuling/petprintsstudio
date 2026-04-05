@@ -133,7 +133,7 @@ export async function POST(req: NextRequest) {
                   headers: { 'Authorization': `Key ${process.env.FAL_API_KEY}`, 'Content-Type': 'application/json' },
                   body: JSON.stringify({
                     image_url: accessibleImageUrl,
-                    prompt: `Transform this exact pet photo into ${stylePrompt}. Preserve the pet's exact identity, face, fur color, markings, breed, and unique features. Keep the same pet, just change the artistic style.`,
+                    prompt: `${stylePrompt}. The subject is: ${petDescription}. This is a style transfer — preserve the pet's exact identity, face, fur color, markings, and breed perfectly. Same pet, different art style.`,
                     seed: Math.floor(Math.random() * 999999) + v * 13579,
                     image_size: 'square_hd',
                     output_format: 'jpeg',
@@ -162,10 +162,10 @@ export async function POST(req: NextRequest) {
 
           // GPT Image 1 — 4 artistic edits of the ACTUAL pet photo
           const gptArtStyles = [
-            { id: 'oil', name: 'Oil Painting (GPT)', prompt: `Transform this pet photo into a rich oil painting portrait. Impasto brushstrokes, warm golden light, dramatic chiaroscuro, museum-quality fine art. Keep the pet's exact appearance, breed, and features.` },
-            { id: 'impressionist', name: 'Impressionist ✨', prompt: `Transform this pet photo into an impressionist painting in the style of Monet. Dappled sunlight, soft focus, vibrant blended colors, plein air style. Keep the pet's exact appearance and features.` },
-            { id: 'artdeco', name: 'Art Deco ✨', prompt: `Transform this pet photo into a vintage art deco poster illustration. Bold graphic design, 1930s aesthetic, limited warm color palette, geometric elements. Keep the pet's exact appearance.` },
-            { id: 'childrens', name: "Children's Book ✨", prompt: `Transform this pet photo into a charming children's book illustration. Clean line art, flat colors, warm friendly expression, Pixar-quality warmth and charm. Keep the pet's exact appearance.` },
+            { id: 'oil', name: 'Oil Painting ✨', prompt: `Oil painting portrait of {desc}. Rich impasto brushstrokes, warm golden light, dramatic chiaroscuro, museum-quality fine art. Same pet, oil painting style.` },
+            { id: 'impressionist', name: 'Impressionist ✨', prompt: `Impressionist painting of {desc}. Monet style, dappled sunlight, soft focus, vibrant blended colors, plein air. Same pet, impressionist style.` },
+            { id: 'artdeco', name: 'Art Deco ✨', prompt: `Vintage art deco poster of {desc}. 1930s graphic design, bold geometric shapes, limited warm color palette. Same pet, art deco style.` },
+            { id: 'childrens', name: "Children's Book ✨", prompt: `Children's book illustration of {desc}. Pixar-quality, clean line art, flat colors, warm friendly expression. Same pet, illustrated style.` },
           ]
           send({ type: 'progress', value: 52, message: 'Creating artistic portraits from your photo with GPT...' })
 
@@ -187,6 +187,32 @@ export async function POST(req: NextRequest) {
             }
           } catch(e) { console.error('Failed to fetch pet image for GPT:', e) }
 
+          // Step: Use GPT Vision to describe the actual pet — inject into all prompts
+          // This ensures FLUX and GPT know EXACTLY what Mason looks like
+          let petDescription = `a ${petType || 'dog'} named ${petName || 'the pet'}`
+          try {
+            const visionRes = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                max_tokens: 120,
+                messages: [{
+                  role: 'user',
+                  content: [
+                    { type: 'image_url', image_url: { url: accessibleImageUrl, detail: 'low' } },
+                    { type: 'text', text: 'Describe this pet in one detailed sentence for an artist. Include: breed/type, fur color and texture, distinctive markings, any accessories visible (collar, harness, tags). Be specific and visual. Start with the breed.' }
+                  ]
+                }]
+              })
+            })
+            if (visionRes.ok) {
+              const vd = await visionRes.json()
+              petDescription = vd.choices?.[0]?.message?.content?.trim() || petDescription
+              console.log('Pet description:', petDescription)
+            }
+          } catch(e) { console.error('Vision description failed:', e) }
+
           for (let i = 0; i < gptArtStyles.length; i += 2) {
             await Promise.all(gptArtStyles.slice(i, i + 2).map(async (style, idx) => {
               try {
@@ -195,7 +221,7 @@ export async function POST(req: NextRequest) {
                   // Use /edits to transform the actual pet photo
                   const fd = new FormData()
                   fd.append('model', 'gpt-image-1.5')
-                  fd.append('prompt', style.prompt)
+                  fd.append('prompt', style.prompt.replace('{desc}', petDescription))
                   fd.append('n', '1')
                   fd.append('size', '1024x1024')
                   fd.append('quality', 'high')
@@ -212,7 +238,7 @@ export async function POST(req: NextRequest) {
                   const res = await fetch('https://api.openai.com/v1/images/generations', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model: 'gpt-image-1.5', prompt: style.prompt, n: 1, size: '1024x1024', quality: 'high' }),
+                    body: JSON.stringify({ model: 'gpt-image-1.5', prompt: style.prompt.replace('{desc}', petDescription), n: 1, size: '1024x1024', quality: 'high' }),
                   })
                   if (res.ok) { const d = await res.json(); b64 = d.data?.[0]?.b64_json }
                 }
