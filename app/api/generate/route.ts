@@ -1,6 +1,10 @@
 import { NextRequest } from 'next/server'
-import { S3Client, PutObjectCommand, CopyObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { v4 as uuidv4 } from 'uuid'
+
+export const maxDuration = 300
+export const dynamic = 'force-dynamic'
 
 const r2 = new S3Client({
   region: 'auto',
@@ -23,56 +27,136 @@ async function uploadB64ToR2(b64: string, ext = 'png'): Promise<string> {
   }))
   return `${process.env.R2_PUBLIC_URL?.replace(/\/$/, '')}/${key}`
 }
-const FLUX_ART_STYLES = [
-  { id: 'oil_painting',  name: 'Oil Painting',   prompt: 'rich oil painting portrait of {subject}, impasto brushstrokes, warm golden light, museum quality, old masters style, dramatic chiaroscuro lighting' },
-  { id: 'watercolor',    name: 'Watercolor',      prompt: 'watercolor painting of {subject}, loose fluid brushwork, soft edges, luminous pastel colors, white paper texture, impressionistic style' },
-  { id: 'pop_art',       name: 'Pop Art',         prompt: 'Andy Warhol pop art portrait of {subject}, bold flat colors, high contrast, halftone dots, vivid neon palette, graphic design aesthetic' },
-  { id: 'pencil_sketch', name: 'Pencil Sketch',   prompt: 'detailed pencil sketch of {subject}, fine graphite lines, cross-hatching shading, expressive eyes, artist sketchbook quality' },
+
+// ════════════════════════════════════════════════════════════════
+//  STYLE FAMILIES
+//
+//  Per OpenAI best practices:
+//  - Separate calls per style family (keeps style lane clean)
+//  - /images/edits with input_fidelity: "high" to lock identity
+//  - Structured prompts: medium → texture → mood → identity rule
+//  - Each prompt describes WHAT the style IS visually, not just a name
+//  - "Nissa" and "Lea" styles defined by their visual characteristics,
+//    not by name (the API doesn't know those labels)
+// ════════════════════════════════════════════════════════════════
+
+const STYLE_FAMILIES = [
+  {
+    id: 'nissa',
+    name: 'Fine Art — Painterly',
+    emoji: '🎨',
+    variations: 4,
+    buildPrompt: (desc: string) =>
+      `Fine art painterly portrait. Subject: ${desc}. ` +
+      `Medium: oil and acrylic on canvas. ` +
+      `Texture: visible hand-painted brushwork, imperfect surface, painterly blending of realism and soft abstraction. ` +
+      `Atmosphere: soft, ethereal, dreamlike. Muted expressive background with loose botanical or natural elements. ` +
+      `Mood: gentle, emotional, quiet dignity. ` +
+      `Palette: warm muted tones — ivory, sage, dusty rose, golden ochre. ` +
+      `Lighting: soft diffused natural light. ` +
+      `Identity rule: preserve exact coat color, markings, eye color, muzzle shape, ear shape, and all accessories. ` +
+      `Avoid: glossy digital rendering, vector art, anime, cartoon, photorealism.`,
+  },
+  {
+    id: 'lea',
+    name: 'Fine Art — Bold Contemporary',
+    emoji: '✨',
+    variations: 4,
+    buildPrompt: (desc: string) =>
+      `Bold contemporary fine art portrait. Subject: ${desc}. ` +
+      `Medium: thick oil paint on canvas, heavy impasto. ` +
+      `Style: vibrant contemporary surrealism, luxury still-life energy. ` +
+      `Texture: heavy textured brushstrokes, hyper-detailed gemstone-like accents. ` +
+      `Palette: jewel tones — deep sapphire, emerald, ruby, gold. Sharp contrast. ` +
+      `Backdrop: dramatic oversized florals, lush botanicals, or rich dark velvet. ` +
+      `Mood: bold, opulent, confident, gallery-wall statement. ` +
+      `Lighting: dramatic directional light, rich shadows, gem-like highlights. ` +
+      `Identity rule: preserve exact coat color, markings, eye color, muzzle shape, ear shape, and all accessories. ` +
+      `Avoid: watercolor, sketch, minimalism, flat design, illustration.`,
+  },
+  {
+    id: 'watercolor',
+    name: 'Watercolor',
+    emoji: '💧',
+    variations: 2,
+    buildPrompt: (desc: string) =>
+      `Watercolor painting portrait. Subject: ${desc}. ` +
+      `Medium: transparent watercolor on cold-press paper. ` +
+      `Texture: loose fluid brushwork, soft bleeding edges, luminous washes, visible paper texture in highlights. ` +
+      `Palette: soft pastels — warm ivory, blush, sky blue, pale gold. ` +
+      `Mood: delicate, luminous, peaceful. ` +
+      `Lighting: soft airy natural light. ` +
+      `Identity rule: preserve exact coat color, markings, eye color, muzzle, ear shape. ` +
+      `Avoid: digital art, oil paint, harsh outlines, heavy shadows.`,
+  },
+  {
+    id: 'pencil',
+    name: 'Pencil Sketch',
+    emoji: '✏️',
+    variations: 2,
+    buildPrompt: (desc: string) =>
+      `Fine pencil sketch portrait. Subject: ${desc}. ` +
+      `Medium: graphite pencil on white paper. ` +
+      `Texture: fine hatching and cross-hatching, varying line weight, individual fur strokes. ` +
+      `Background: clean white with minimal loose gestural strokes. ` +
+      `Mood: classical, elegant, intimate. ` +
+      `Lighting: soft even light with subtle tonal shading. ` +
+      `Identity rule: preserve exact coat, markings, eye shape, muzzle, ears, accessories. ` +
+      `Avoid: color, ink wash, digital, cartoon.`,
+  },
 ]
 
+// ── MEMORY SCENE STYLES (used for Memory Portrait tier) ──────────
 const MEMORY_SCENE_STYLES = [
-  { id: 'mem_adventure',   name: 'Adventure Scene',  emoji: '🚗' },
-  { id: 'mem_royal',       name: 'Royal Portrait',   emoji: '👑' },
-  { id: 'mem_sunset',      name: 'Golden Hour',      emoji: '🌅' },
-  { id: 'mem_holiday',     name: 'Holiday Scene',    emoji: '🎄' },
-  { id: 'mem_city',        name: 'City Portrait',    emoji: '🏙️' },
-  { id: 'mem_perfect_day', name: 'Perfect Day',      emoji: '✨' },
+  { id: 'mem_adventure',   name: 'Adventure Scene',   emoji: '🚗' },
+  { id: 'mem_royal',       name: 'Royal Portrait',    emoji: '👑' },
+  { id: 'mem_golden_hour', name: 'Golden Hour',       emoji: '🌅' },
+  { id: 'mem_holiday',     name: 'Holiday Scene',     emoji: '🎄' },
+  { id: 'mem_city',        name: 'City Portrait',     emoji: '🏙️' },
+  { id: 'mem_perfect_day', name: 'Perfect Day',       emoji: '✨' },
 ]
 
-function buildMemoryPrompt(answers: Record<string, string>, sceneId: string): string {
-  const name = answers.petName || 'the pet'
-  const breed = answers.petBreed || 'dog'
-  const location = answers.favOutdoorSpot || answers.favPlace || 'a beautiful outdoor setting'
-  const mood = answers.timeAndSeason || 'golden hour lighting'
-  const details: string[] = []
-  if (answers.favTeam)        details.push(`wearing ${answers.favTeam} gear`)
-  if (answers.favCar)         details.push(`near a ${answers.favCar}`)
-  if (answers.favToy)         details.push(`holding a ${answers.favToy}`)
-  if (answers.favFood)        details.push(`with ${answers.favFood} nearby`)
-  if (answers.petPersonality) details.push(`expression: ${answers.petPersonality}`)
-  const detailStr = details.length ? ` Personal touches: ${details.join(', ')}.` : ''
+function buildMemoryScenePrompt(answers: Record<string, string>, desc: string, sceneId: string): string {
+  const name  = answers.petName || 'the pet'
+  const place = answers.favPlace || answers.favOutdoorSpot || 'a beautiful outdoor setting'
+  const mood  = answers.timeAndSeason || 'golden hour'
+  const extras = [
+    answers.favCar   ? `posed with or in a ${answers.favCar}` : '',
+    answers.favTeam  ? `wearing a ${answers.favTeam} collar or bandana` : '',
+    answers.favToy   ? `holding a ${answers.favToy}` : '',
+    answers.favFood  ? `with ${answers.favFood} visible in the scene` : '',
+  ].filter(Boolean).join(', ')
 
-  const sceneMap: Record<string, string> = {
-    mem_adventure:   answers.favCar ? `${name} riding in a ${answers.favCar} at ${location}` : `${name} adventuring at ${location}`,
-    mem_royal:       `regal oil painting portrait of ${name} as royalty with ornate backdrop and gold accents`,
-    mem_sunset:      `${name} at ${location} during golden hour, warm light on their fur`,
-    mem_holiday:     `${name} in a cozy holiday scene with fireplace, Christmas tree, festive decorations`,
-    mem_city:        `${name} in a stylish urban scene at ${location || 'a vibrant city'}, evening lights`,
-    mem_perfect_day: answers.perfectDay ? `Scene: ${answers.perfectDay}. ${name} the ${breed}.` : `${name}'s perfect day at ${location}`,
+  const base =
+    `Fine art portrait painting. Subject: ${desc} named ${name}. ` +
+    `Identity rule: preserve exact coat color, markings, eye color, muzzle, ears, accessories. ` +
+    (extras ? `Personal details: ${extras}. ` : '') +
+    `Mood: ${mood}. `
+
+  switch (sceneId) {
+    case 'mem_adventure':
+      return base + `Scene: ${name} adventuring at ${place}. Cinematic landscape. Painterly oil style, warm light, gallery quality.`
+    case 'mem_royal':
+      return base + `Scene: ${name} as royalty — ornate gold frame, velvet drapes, regal pose. Old Masters oil technique, museum quality.`
+    case 'mem_golden_hour':
+      return base + `Scene: ${name} at ${place}, golden hour. Warm amber light, impressionist painterly style.`
+    case 'mem_holiday':
+      return base + `Scene: ${name} in a cozy holiday scene — fireplace, Christmas tree, warm candlelight. Fine art oil style.`
+    case 'mem_city':
+      return base + `Scene: ${name} in ${place || 'a vibrant city'} at dusk, city lights bokeh. Contemporary fine art.`
+    case 'mem_perfect_day':
+      return answers.perfectDay
+        ? base + `Scene: ${answers.perfectDay}. Painterly fine art, emotionally resonant.`
+        : base + `Scene: ${name}'s perfect day at ${place}. Painterly, joyful, gallery quality.`
+    default:
+      return base + `Painterly fine art portrait, gallery quality.`
   }
-
-  return `Oil painting portrait style. ${sceneMap[sceneId] || sceneMap.mem_adventure}.${detailStr}
-
-Artistic style: painterly oil painting, rich warm colors, cinematic lighting, gallery quality, deeply personal.
-Include the name "${name.toUpperCase()}" subtly on a collar tag or nameplate.
-Mood: ${mood}. Make it beautiful and uniquely theirs.`
 }
 
 export async function POST(req: NextRequest) {
-  const { imageUrl, styles, isMemory, answers, petType, petName } = await req.json()
+  const { imageUrl, isMemory, answers, petType, petName } = await req.json()
 
-  // Make the uploaded photo publicly accessible for FLUX by copying it to generated/ prefix
-  // The uploads/ path is private (403), but generated/ is publicly readable
+  // Generate presigned GET URL so the Vercel server can fetch the image
   const r2PublicBase = process.env.R2_PUBLIC_URL?.replace(/\/$/, '') || ''
   const imageKey = imageUrl.startsWith(r2PublicBase)
     ? imageUrl.slice(r2PublicBase.length + 1)
@@ -81,31 +165,10 @@ export async function POST(req: NextRequest) {
   let accessibleImageUrl = imageUrl
   if (imageKey) {
     try {
-      // Copy from uploads/ to generated/public/ so it's publicly accessible
-      const { GetObjectCommand, CopyObjectCommand } = await import('@aws-sdk/client-s3')
-      const publicKey = `generated/src/${uuidv4()}.jpg`
-      await r2.send(new CopyObjectCommand({
-        Bucket: process.env.R2_BUCKET_NAME!,
-        CopySource: `${process.env.R2_BUCKET_NAME}/${imageKey}`,
-        Key: publicKey,
-        ContentType: 'image/jpeg',
-      }))
-      accessibleImageUrl = `${r2PublicBase}/${publicKey}`
-      console.log('Copied upload to public path:', accessibleImageUrl.slice(0, 100))
-    } catch (e) {
-      console.error('Failed to copy to public path, using presigned URL:', e)
-      // Fallback to presigned URL
-      try {
-        const { GetObjectCommand } = await import('@aws-sdk/client-s3')
-        const { getSignedUrl } = await import('@aws-sdk/s3-request-presigner')
-        accessibleImageUrl = await getSignedUrl(
-          r2,
-          new GetObjectCommand({ Bucket: process.env.R2_BUCKET_NAME!, Key: imageKey }),
-          { expiresIn: 3600 }
-        )
-        console.log('Using presigned GET URL fallback')
-      } catch (e2) { console.error('Both approaches failed:', e2) }
-    }
+      accessibleImageUrl = await getSignedUrl(r2, new GetObjectCommand({
+        Bucket: process.env.R2_BUCKET_NAME!, Key: imageKey
+      }), { expiresIn: 3600 })
+    } catch (e) { console.error('Presign failed:', e) }
   }
 
   const encoder = new TextEncoder()
@@ -116,241 +179,211 @@ export async function POST(req: NextRequest) {
 
       try {
         const allImages: Array<{ url: string; styleId: string; styleName: string; model: string }> = []
-        const subject = `${petName || answers?.petName || 'the pet'} the ${petType || answers?.petBreed || 'dog'}`
+        send({ type: 'progress', value: 5, message: 'Analyzing your pet...' })
 
-        send({ type: 'progress', value: 5, message: 'Starting generation...' })
+        // ── Step 1: Fetch pet image as buffer ───────────────────
+        let petImageBuffer: Buffer | null = null
+        try {
+          const imgRes = await fetch(accessibleImageUrl, {
+            headers: { 'User-Agent': 'PetPrintsStudio/1.0' },
+            signal: AbortSignal.timeout(30000),
+          })
+          if (imgRes.ok) {
+            petImageBuffer = Buffer.from(await imgRes.arrayBuffer())
+            console.log('Pet image fetched, size:', petImageBuffer.length)
+          } else {
+            console.error('Pet image fetch failed:', imgRes.status)
+          }
+        } catch(e) { console.error('Fetch error:', e) }
+
+        // ── Step 2: GPT-4o-mini Vision — describe the actual pet ─
+        // The API doesn't know what Mason looks like unless we tell it.
+        // This description gets injected into every single prompt.
+        let petDescription = `${petType || 'dog'} named ${petName || 'the pet'}`
+        try {
+          const visionRes = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: 'gpt-4o-mini',
+              max_tokens: 150,
+              messages: [{
+                role: 'user',
+                content: [
+                  { type: 'image_url', image_url: { url: accessibleImageUrl, detail: 'low' } },
+                  { type: 'text', text: 'Describe this pet for a fine art painter. One precise sentence. Include: breed/mix, coat color and texture, distinctive markings, face shape, ear type, eye color, any visible accessories (collar, harness, tags). Be visual and specific. Start with the breed.' }
+                ]
+              }]
+            })
+          })
+          if (visionRes.ok) {
+            const vd = await visionRes.json()
+            const desc = vd.choices?.[0]?.message?.content?.trim()
+            if (desc && desc.length > 10) {
+              petDescription = desc
+              console.log('Vision description:', petDescription)
+            }
+          }
+        } catch(e) { console.error('Vision failed:', e) }
+
+        send({ type: 'progress', value: 12, message: 'Creating your portraits...' })
 
         if (!isMemory) {
-          // ── TIER 1: STYLE TRANSFER ──────────────────────────────
-          // FLUX 1.1 Pro Ultra — 4 styles × 3 = 12 images
-          const fluxTasks = FLUX_ART_STYLES.flatMap(style =>
-            Array.from({ length: 3 }, (_, v) => async () => {
-              try {
-                // FLUX Kontext Pro — preserves pet identity while applying art styles
-                const stylePrompt = style.prompt.replace('{subject}', subject)
-                const falRes = await fetch('https://fal.run/fal-ai/flux-pro/kontext', {
-                  method: 'POST',
-                  headers: { 'Authorization': `Key ${process.env.FAL_API_KEY}`, 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    image_url: accessibleImageUrl,
-                    prompt: `${stylePrompt}. The subject is: ${petDescription}. This is a style transfer — preserve the pet's exact identity, face, fur color, markings, and breed perfectly. Same pet, different art style.`,
-                    seed: Math.floor(Math.random() * 999999) + v * 13579,
-                    image_size: 'square_hd',
-                    output_format: 'jpeg',
-                    num_images: 1,
-                    guidance_scale: 3.5,
-                    safety_tolerance: '2',
-                  }),
-                })
-                if (falRes.ok) {
-                  const d = await falRes.json()
-                  const imgUrl = d.images?.[0]?.url
-                  if (imgUrl) { const img = { url: imgUrl, styleId: style.id, styleName: style.name, model: 'fal' }; allImages.push(img); send({ type: 'image', image: img }) }
-                  else console.error('FLUX no url:', JSON.stringify(d).slice(0, 200))
-                } else {
-                  const t = await falRes.text(); console.error('FLUX error', falRes.status, t.slice(0, 300))
-                }
-              } catch (e) { console.error('FLUX task error:', e) }
-            })
-          )
+          // ════════════════════════════════════════════════════
+          //  TIER 1: STYLE TRANSFER
+          //
+          //  Uses /images/edits with input_fidelity: "high"
+          //  Separate call per style family (keeps style lane clean)
+          //  Each variation gets its own independent call
+          // ════════════════════════════════════════════════════
+          const totalVariations = STYLE_FAMILIES.reduce((s, f) => s + f.variations, 0)
+          let completedCount = 0
 
-          send({ type: 'progress', value: 10, message: 'Creating FLUX artistic portraits...' })
-          for (let i = 0; i < fluxTasks.length; i += 4) {
-            await Promise.all(fluxTasks.slice(i, i + 4).map(t => t()))
-            send({ type: 'progress', value: 10 + Math.round(((i + 4) / fluxTasks.length) * 40), message: `FLUX: ${allImages.filter(x => x.model === 'fal').length} portraits ready...` })
-          }
+          for (const family of STYLE_FAMILIES) {
+            const prompt = family.buildPrompt(petDescription)
+            console.log(`[${family.name}] prompt preview:`, prompt.slice(0, 150))
 
-          // GPT Image 1 — 4 artistic edits of the ACTUAL pet photo
-          const gptArtStyles = [
-            { id: 'oil', name: 'Oil Painting ✨', prompt: `Oil painting portrait of {desc}. Rich impasto brushstrokes, warm golden light, dramatic chiaroscuro, museum-quality fine art. Same pet, oil painting style.` },
-            { id: 'impressionist', name: 'Impressionist ✨', prompt: `Impressionist painting of {desc}. Monet style, dappled sunlight, soft focus, vibrant blended colors, plein air. Same pet, impressionist style.` },
-            { id: 'artdeco', name: 'Art Deco ✨', prompt: `Vintage art deco poster of {desc}. 1930s graphic design, bold geometric shapes, limited warm color palette. Same pet, art deco style.` },
-            { id: 'childrens', name: "Children's Book ✨", prompt: `Children's book illustration of {desc}. Pixar-quality, clean line art, flat colors, warm friendly expression. Same pet, illustrated style.` },
-          ]
-          send({ type: 'progress', value: 52, message: 'Creating artistic portraits from your photo with GPT...' })
-
-          // Fetch the image as a buffer to send to GPT edits endpoint
-          let petImageBuffer: Buffer | null = null
-          try {
-            console.log('Fetching pet image from:', accessibleImageUrl.slice(0, 100))
-            const imgRes = await fetch(accessibleImageUrl, {
-              headers: { 'User-Agent': 'PetPrintsStudio/1.0' },
-              signal: AbortSignal.timeout(30000),
-            })
-            console.log('Pet image fetch status:', imgRes.status, imgRes.headers.get('content-type'))
-            if (imgRes.ok) {
-              petImageBuffer = Buffer.from(await imgRes.arrayBuffer())
-              console.log('Pet image fetched, size:', petImageBuffer.length)
-            } else {
-              const errText = await imgRes.text()
-              console.error('Pet image fetch failed:', imgRes.status, errText.slice(0, 200))
-            }
-          } catch(e) { console.error('Failed to fetch pet image for GPT:', e) }
-
-          // Step: Use GPT Vision to describe the actual pet — inject into all prompts
-          // This ensures FLUX and GPT know EXACTLY what Mason looks like
-          let petDescription = `a ${petType || 'dog'} named ${petName || 'the pet'}`
-          try {
-            const visionRes = await fetch('https://api.openai.com/v1/chat/completions', {
-              method: 'POST',
-              headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                model: 'gpt-4o-mini',
-                max_tokens: 120,
-                messages: [{
-                  role: 'user',
-                  content: [
-                    { type: 'image_url', image_url: { url: accessibleImageUrl, detail: 'low' } },
-                    { type: 'text', text: 'Describe this pet in one detailed sentence for an artist. Include: breed/type, fur color and texture, distinctive markings, any accessories visible (collar, harness, tags). Be specific and visual. Start with the breed.' }
-                  ]
-                }]
-              })
-            })
-            if (visionRes.ok) {
-              const vd = await visionRes.json()
-              petDescription = vd.choices?.[0]?.message?.content?.trim() || petDescription
-              console.log('Pet description:', petDescription)
-            }
-          } catch(e) { console.error('Vision description failed:', e) }
-
-          for (let i = 0; i < gptArtStyles.length; i += 2) {
-            await Promise.all(gptArtStyles.slice(i, i + 2).map(async (style, idx) => {
+            const familyTasks = Array.from({ length: family.variations }, (_, v) => async () => {
               try {
                 let b64: string | undefined
+
                 if (petImageBuffer) {
-                  // Use /edits to transform the actual pet photo
                   const fd = new FormData()
                   fd.append('model', 'gpt-image-1.5')
-                  fd.append('prompt', style.prompt.replace('{desc}', petDescription))
+                  fd.append('prompt', prompt)
                   fd.append('n', '1')
                   fd.append('size', '1024x1024')
                   fd.append('quality', 'high')
-                  fd.append('image', new Blob([petImageBuffer as unknown as BlobPart], {type: 'image/jpeg'}), 'pet.jpg')
+                  fd.append('input_fidelity', 'high')
+                  fd.append('image[]', new Blob([petImageBuffer as unknown as BlobPart], { type: 'image/jpeg' }), 'pet.jpg')
+
                   const res = await fetch('https://api.openai.com/v1/images/edits', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
                     body: fd,
                   })
-                  if (res.ok) { const d = await res.json(); b64 = d.data?.[0]?.b64_json }
-                  else { const t = await res.text(); console.error('GPT edit error', res.status, t.slice(0,300)) }
-                } else {
-                  // Fallback: text-to-image if we couldn't fetch the photo
-                  const res = await fetch('https://api.openai.com/v1/images/generations', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model: 'gpt-image-1.5', prompt: style.prompt.replace('{desc}', petDescription), n: 1, size: '1024x1024', quality: 'high' }),
-                  })
-                  if (res.ok) { const d = await res.json(); b64 = d.data?.[0]?.b64_json }
-                }
-                if (b64) { const imgUrl = await uploadB64ToR2(b64); const img = { url: imgUrl, styleId: `gpt_${style.id}`, styleName: style.name, model: 'gpt' }; allImages.push(img); send({ type: 'image', image: img }) }
-              } catch (e) { console.error('GPT art error:', e) }
-            }))
-            send({ type: 'progress', value: 55 + Math.round(((i + 2) / gptArtStyles.length) * 20), message: `GPT: ${allImages.filter(x => x.model === 'gpt').length} portraits ready...` })
-          }
-
-          // Astria LoRA — exact likeness (if configured)
-          if (process.env.ASTRIA_API_KEY && process.env.ASTRIA_TUNE_ID) {
-            send({ type: 'progress', value: 77, message: 'Generating exact likeness with Astria...' })
-            for (const aPrompt of [`portrait of sks ${petType || 'dog'}, oil painting style, natural lighting`, `sks ${petType || 'dog'} golden hour, painterly portrait`]) {
-              try {
-                const aRes = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts`, {
-                  method: 'POST', headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}`, 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ prompt: { text: aPrompt, num_images: 3, super_resolution: true, face_correct: true, w: 1024, h: 1024 } }),
-                })
-                if (aRes.ok) {
-                  const aData = await aRes.json(); const promptId = aData.id; let attempts = 0
-                  while (attempts < 40) {
-                    await new Promise(r => setTimeout(r, 5000))
-                    const poll = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts/${promptId}`, { headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}` } })
-                    const pd = await poll.json()
-                    if (pd.images?.length > 0) { for (const img of pd.images) { const aImg = { url: img.url, styleId: 'astria_exact', styleName: 'Exact Likeness', model: 'astria' }; allImages.push(aImg); send({ type: 'image', image: aImg }) }; break }
-                    attempts++
+                  if (res.ok) {
+                    const d = await res.json()
+                    b64 = d.data?.[0]?.b64_json
+                  } else {
+                    const t = await res.text()
+                    console.error(`Edit error [${family.name} v${v}]:`, res.status, t.slice(0, 300))
                   }
                 }
-              } catch (e) { console.error('Astria error:', e) }
-            }
+
+                if (b64) {
+                  const imgUrl = await uploadB64ToR2(b64)
+                  const img = { url: imgUrl, styleId: `${family.id}_${v}`, styleName: `${family.emoji} ${family.name}`, model: 'gpt' }
+                  allImages.push(img)
+                  send({ type: 'image', image: img })
+                }
+
+                completedCount++
+                const pct = 12 + Math.round((completedCount / totalVariations) * 78)
+                send({ type: 'progress', value: Math.min(pct, 90), message: `${allImages.length} of ${totalVariations} portraits ready...` })
+
+              } catch(e) { console.error(`Task error [${family.name} v${v}]:`, e) }
+            })
+
+            // All variations for this family run in parallel
+            await Promise.all(familyTasks.map(t => t()))
           }
 
         } else {
-          // ── TIER 2: MEMORY PORTRAIT ─────────────────────────────
-          // GPT Image 1 — 6 scenes × 3 variations = 18 images
-          const memTasks = MEMORY_SCENE_STYLES.flatMap(scene =>
-            Array.from({ length: 3 }, () => async () => {
-              try {
-                const prompt = buildMemoryPrompt(answers || {}, scene.id)
-                const res = await fetch('https://api.openai.com/v1/images/generations', {
-                  method: 'POST',
-                  headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ model: 'gpt-image-1.5', prompt, n: 1, size: '1024x1024', quality: 'high' }),
-                })
-                if (res.ok) {
-                  const d = await res.json(); const b64 = d.data?.[0]?.b64_json
-                  if (b64) { const imgUrl = await uploadB64ToR2(b64); const img = { url: imgUrl, styleId: scene.id, styleName: scene.name, model: 'gpt' }; allImages.push(img); send({ type: 'image', image: img }) }
-                } else { const t = await res.text(); console.error('GPT memory error', res.status, t.slice(0,300)) }
-              } catch (e) { console.error('GPT memory scene error:', e) }
-            })
-          )
-
-          send({ type: 'progress', value: 8, message: `Building ${MEMORY_SCENE_STYLES.length * 3} personal memory scenes...` })
-          for (let i = 0; i < memTasks.length; i += 3) {
-            await Promise.all(memTasks.slice(i, i + 3).map(t => t()))
-            send({ type: 'progress', value: 8 + Math.round(((i + 3) / memTasks.length) * 45), message: `${allImages.filter(x => x.model === 'gpt').length} memory scenes ready...` })
-          }
-
-          // FLUX artistic variations
-          const fluxMemTasks = FLUX_ART_STYLES.flatMap(style =>
+          // ════════════════════════════════════════════════════
+          //  TIER 2: MEMORY PORTRAIT
+          //  Custom scenes from questionnaire answers
+          //  Still uses /images/edits + pet image for identity
+          // ════════════════════════════════════════════════════
+          const sceneTasks = MEMORY_SCENE_STYLES.flatMap(scene =>
             Array.from({ length: 3 }, (_, v) => async () => {
               try {
-                console.log('FLUX image_url:', accessibleImageUrl.slice(0, 120))
-                const falRes = await fetch('https://fal.run/fal-ai/flux-pro/v1.1-ultra/redux', {
+                const prompt = buildMemoryScenePrompt(answers || {}, petDescription, scene.id)
+                const fd = new FormData()
+                fd.append('model', 'gpt-image-1.5')
+                fd.append('prompt', prompt)
+                fd.append('n', '1')
+                fd.append('size', '1024x1024')
+                fd.append('quality', 'high')
+                fd.append('input_fidelity', 'high')
+                if (petImageBuffer) {
+                  fd.append('image[]', new Blob([petImageBuffer as unknown as BlobPart], { type: 'image/jpeg' }), 'pet.jpg')
+                }
+                const res = await fetch('https://api.openai.com/v1/images/edits', {
                   method: 'POST',
-                  headers: { 'Authorization': `Key ${process.env.FAL_API_KEY}`, 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ image_url: accessibleImageUrl, prompt: style.prompt.replace('{subject}', subject) + ' Personal memory scene.', strength: 0.75, num_inference_steps: 50, guidance_scale: 7.5, seed: Math.floor(Math.random() * 999999) + v * 31337, image_size: 'square_hd', output_format: 'jpeg', num_images: 1 }),
+                  headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
+                  body: fd,
                 })
-                if (falRes.ok) {
-                  const d = await falRes.json(); const imgUrl = d.images?.[0]?.url
-                  if (imgUrl) { const img = { url: imgUrl, styleId: style.id, styleName: `${style.name} (Memory)`, model: 'fal' }; allImages.push(img); send({ type: 'image', image: img }) }
-                } else { const t = await falRes.text(); console.error('FLUX memory error', falRes.status, t.slice(0,200)) }
-              } catch (e) { console.error('FLUX memory error:', e) }
+                if (res.ok) {
+                  const d = await res.json()
+                  const b64 = d.data?.[0]?.b64_json
+                  if (b64) {
+                    const imgUrl = await uploadB64ToR2(b64)
+                    const img = { url: imgUrl, styleId: `${scene.id}_${v}`, styleName: `${scene.emoji} ${scene.name}`, model: 'gpt' }
+                    allImages.push(img)
+                    send({ type: 'image', image: img })
+                  }
+                } else {
+                  const t = await res.text()
+                  console.error(`Memory error [${scene.name}]:`, res.status, t.slice(0, 200))
+                }
+              } catch(e) { console.error('Memory task error:', e) }
             })
           )
 
-          send({ type: 'progress', value: 55, message: 'Adding artistic style variations...' })
-          for (let i = 0; i < fluxMemTasks.length; i += 4) {
-            await Promise.all(fluxMemTasks.slice(i, i + 4).map(t => t()))
-            send({ type: 'progress', value: 55 + Math.round(((i + 4) / fluxMemTasks.length) * 22), message: `${allImages.filter(x => x.model === 'fal').length} FLUX variations ready...` })
+          send({ type: 'progress', value: 15, message: 'Generating memory scenes...' })
+          for (let i = 0; i < sceneTasks.length; i += 3) {
+            await Promise.all(sceneTasks.slice(i, i + 3).map(t => t()))
+            send({ type: 'progress', value: 15 + Math.round(((i + 3) / sceneTasks.length) * 80), message: `${allImages.length} memory portraits ready...` })
           }
+        }
 
-          // Astria exact likeness in scenes
-          if (process.env.ASTRIA_API_KEY && process.env.ASTRIA_TUNE_ID) {
-            send({ type: 'progress', value: 79, message: 'Adding exact likeness portraits...' })
-            for (const aPrompt of [`sks ${petType || 'dog'} in a beautiful personal scene, painterly style`, `sks ${petType || 'dog'} ${answers?.favPlace ? `at ${answers.favPlace}` : 'in their favorite place'}, golden hour`]) {
-              try {
-                const aRes = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts`, {
-                  method: 'POST', headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}`, 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ prompt: { text: aPrompt, num_images: 3, super_resolution: true, face_correct: true, w: 1024, h: 1024 } }),
-                })
-                if (aRes.ok) {
-                  const aData = await aRes.json(); const promptId = aData.id; let attempts = 0
-                  while (attempts < 40) {
-                    await new Promise(r => setTimeout(r, 5000))
-                    const poll = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts/${promptId}`, { headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}` } })
-                    const pd = await poll.json()
-                    if (pd.images?.length > 0) { for (const img of pd.images) { const aImg = { url: img.url, styleId: 'astria_memory', styleName: 'Exact Likeness — Memory Scene', model: 'astria' }; allImages.push(aImg); send({ type: 'image', image: aImg }) }; break }
-                    attempts++
+        // ── Astria LoRA (when configured) ─────────────────────
+        if (process.env.ASTRIA_API_KEY && process.env.ASTRIA_TUNE_ID) {
+          send({ type: 'progress', value: 92, message: 'Generating exact likeness portraits...' })
+          for (const aPrompt of [
+            `portrait of sks ${petType || 'dog'}, fine art oil painting, ${petDescription}`,
+            `sks ${petType || 'dog'} golden hour, painterly portrait, ${petDescription}`,
+          ]) {
+            try {
+              const aRes = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: { text: aPrompt, num_images: 3, super_resolution: true, face_correct: true, w: 1024, h: 1024 } }),
+              })
+              if (aRes.ok) {
+                const aData = await aRes.json(); const promptId = aData.id; let attempts = 0
+                while (attempts < 40) {
+                  await new Promise(r => setTimeout(r, 5000))
+                  const poll = await fetch(`https://api.astria.ai/tunes/${process.env.ASTRIA_TUNE_ID}/prompts/${promptId}`, {
+                    headers: { 'Authorization': `Bearer ${process.env.ASTRIA_API_KEY}` }
+                  })
+                  const pd = await poll.json()
+                  if (pd.images?.length > 0) {
+                    for (const img of pd.images) {
+                      allImages.push({ url: img.url, styleId: 'astria_exact', styleName: '🎯 Exact Likeness', model: 'astria' })
+                      send({ type: 'image', image: allImages[allImages.length - 1] })
+                    }
+                    break
                   }
+                  attempts++
                 }
-              } catch (e) { console.error('Astria memory error:', e) }
-            }
+              }
+            } catch(e) { console.error('Astria error:', e) }
           }
         }
 
         send({ type: 'progress', value: 100, message: 'All portraits ready!' })
-        send({ type: 'done', images: allImages, counts: { gpt: allImages.filter(x => x.model === 'gpt').length, fal: allImages.filter(x => x.model === 'fal').length, astria: allImages.filter(x => x.model === 'astria').length, total: allImages.length } })
+        send({ type: 'done', images: allImages, counts: {
+          gpt: allImages.filter(x => x.model === 'gpt').length,
+          fal: allImages.filter(x => x.model === 'fal').length,
+          astria: allImages.filter(x => x.model === 'astria').length,
+          total: allImages.length,
+        }})
         controller.close()
 
       } catch (err) {
-        console.error('Generation pipeline error:', err)
+        console.error('Pipeline error:', err)
         send({ type: 'error', message: 'Generation failed. Please try again.' })
         controller.close()
       }
