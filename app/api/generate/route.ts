@@ -151,7 +151,12 @@ export async function POST(req: NextRequest) {
                     const img = { url: imgUrl, styleId: style.id, styleName: style.name, model: 'fal' }
                     allImages.push(img)
                     send({ type: 'image', image: img })
+                  } else {
+                    console.error('FLUX no image URL in response:', JSON.stringify(falData).slice(0,200))
                   }
+                } else {
+                  const errText = await falResponse.text()
+                  console.error('FLUX error', falResponse.status, errText.slice(0,300))
                 }
               } catch (err) { console.error('FLUX style error:', err) }
             })
