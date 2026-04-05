@@ -1,11 +1,61 @@
 import { NextRequest } from 'next/server'
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { v4 as uuidv4 } from 'uuid'
+
+const r2 = new S3Client({
+  region: 'auto',
+  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+  },
+})
+
+// Upload base64 image to R2 and return public URL
+// This avoids sending huge base64 strings through SSE stream
+async function uploadB64ToR2(b64: string, ext = 'png'): Promise<string> {
+  const key = `generated/${uuidv4()}.${ext}`
+  const buffer = Buffer.from(b64, 'base64')
+  await r2.send(new PutObjectCommand({
+    Bucket: process.env.R2_BUCKET_NAME!,
+    Key: key,
+    Body: buffer,
+    ContentType: `image/${ext}`,
+    CacheControl: 'public, max-age=86400',
+  }))
+  return `${process.env.R2_PUBLIC_URL?.replace(/\/$/, '')}/${key}`
+}
+
 
 // ═══════════════════════════════════════════════════════════════
 //  PET PRINTS STUDIO — Generation Pipeline
 //  TIER 1: Style Transfer — FLUX artistic styles + GPT art
 //  TIER 2: Memory Portrait — GPT custom scenes from questionnaire
+const r2 = new S3Client({
+  region: 'auto',
+  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+  },
+})
+
+// Upload base64 image to R2 and return public URL
+// This avoids sending huge base64 strings through SSE stream
+async function uploadB64ToR2(b64: string, ext = 'png'): Promise<string> {
+  const key = `generated/${uuidv4()}.${ext}`
+  const buffer = Buffer.from(b64, 'base64')
+  await r2.send(new PutObjectCommand({
+    Bucket: process.env.R2_BUCKET_NAME!,
+    Key: key,
+    Body: buffer,
+    ContentType: `image/${ext}`,
+    CacheControl: 'public, max-age=86400',
+  }))
+  return `${process.env.R2_PUBLIC_URL?.replace(/\/$/, '')}/${key}`
+}
+
+
 // ═══════════════════════════════════════════════════════════════
 
 const r2 = new S3Client({
@@ -157,7 +207,7 @@ export async function POST(req: NextRequest) {
                 })
                 if (res.ok) {
                   const d = await res.json(); const b64 = d.data?.[0]?.b64_json
-                  if (b64) { const img = { url: `data:image/png;base64,${b64}`, styleId: `gpt_art_${i+idx}`, styleName: 'GPT Portrait', model: 'gpt' }; allImages.push(img); send({ type: 'image', image: img }) }
+                  if (b64) { const imgUrl = await uploadB64ToR2(b64); const img = { url: imgUrl, styleId: `gpt_art_${i+idx}`, styleName: 'GPT Portrait', model: 'gpt' }; allImages.push(img); send({ type: 'image', image: img }) }
                 } else { const t = await res.text(); console.error('GPT error', res.status, t.slice(0,300)) }
               } catch (e) { console.error('GPT art error:', e) }
             }))
@@ -201,7 +251,7 @@ export async function POST(req: NextRequest) {
                 })
                 if (res.ok) {
                   const d = await res.json(); const b64 = d.data?.[0]?.b64_json
-                  if (b64) { const img = { url: `data:image/png;base64,${b64}`, styleId: scene.id, styleName: scene.name, model: 'gpt' }; allImages.push(img); send({ type: 'image', image: img }) }
+                  if (b64) { const imgUrl = await uploadB64ToR2(b64); const img = { url: imgUrl, styleId: scene.id, styleName: scene.name, model: 'gpt' }; allImages.push(img); send({ type: 'image', image: img }) }
                 } else { const t = await res.text(); console.error('GPT memory error', res.status, t.slice(0,300)) }
               } catch (e) { console.error('GPT memory scene error:', e) }
             })

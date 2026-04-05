@@ -85,12 +85,17 @@ export default function CreatePage() {
       const reader = genRes.body?.getReader()
       const decoder = new TextDecoder()
       const imgs: typeof generated = []
+      let buffer = ''
 
       while (reader) {
         const { done, value } = await reader.read()
         if (done) break
-        const lines = decoder.decode(value).split('\n').filter(Boolean)
-        for (const line of lines) {
+        buffer += decoder.decode(value, { stream: true })
+        // Split on double-newline (SSE event boundary) to handle large base64 payloads
+        const parts = buffer.split('\n\n')
+        buffer = parts.pop() || ''
+        for (const part of parts) {
+          const line = part.trim()
           if (!line.startsWith('data: ')) continue
           try {
             const d = JSON.parse(line.slice(6))
@@ -100,6 +105,13 @@ export default function CreatePage() {
             if (d.type === 'error') throw new Error(d.message)
           } catch {}
         }
+      }
+      // Flush remaining buffer
+      if (buffer.trim().startsWith('data: ')) {
+        try {
+          const d = JSON.parse(buffer.trim().slice(6))
+          if (d.type === 'done') { setGenerated(d.images); setProgress(100) }
+        } catch {}
       }
       setStep('gallery')
     } catch (e) {
