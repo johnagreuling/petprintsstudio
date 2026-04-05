@@ -26,10 +26,11 @@ export default function CreatePage() {
   const [wantBundle, setWantBundle] = useState(false)
   const [wantAllImages, setWantAllImages] = useState(false)
   const [wantSong, setWantSong] = useState(false)
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
   const handleFile = (file: File) => {
-    if (file.size > 15 * 1024 * 1024) { setError('Image must be under 15MB'); return }
+    if (file.size > 20 * 1024 * 1024) { setError('Image must be under 20MB'); return }
     setUploadedFile(file)
     setError('')
     const r = new FileReader()
@@ -97,6 +98,7 @@ export default function CreatePage() {
 
   const handleCheckout = async () => {
     if (!picked || !primaryProduct) return
+    setCheckoutLoading(true)
     try {
       const extras = PRODUCTS.filter(p => cartExtras.includes(p.id))
       const res = await fetch('/api/checkout', {
@@ -118,6 +120,7 @@ export default function CreatePage() {
       window.location.href = url
     } catch {
       setError('Checkout failed — please try again')
+      setCheckoutLoading(false)
     }
   }
 
@@ -203,7 +206,7 @@ export default function CreatePage() {
                 <div>
                   <div style={{fontSize:52,marginBottom:20}}>🐾</div>
                   <div style={{fontSize:18,marginBottom:8,fontWeight:500}}>Drop your photo here</div>
-                  <div style={{color:'var(--muted)',fontSize:13,marginBottom:20}}>or click to browse · JPG, PNG, WEBP · Max 15MB</div>
+                  <div style={{color:'var(--muted)',fontSize:13,marginBottom:20}}>or click to browse · JPG, PNG, WEBP · Max 20MB</div>
                   <div style={{display:'inline-block',border:'1px solid var(--gold)',color:'var(--gold)',padding:'10px 28px',fontSize:11,letterSpacing:'.15em',textTransform:'uppercase'}}>Browse Files</div>
                 </div>
               )}
@@ -616,7 +619,9 @@ export default function CreatePage() {
 
             {error&&<div style={{color:'#C4622D',fontSize:13,marginBottom:16,padding:'12px 16px',background:'rgba(196,98,45,.08)'}}>{error}</div>}
 
-            <button className="btn-gold" onClick={handleCheckout}>Proceed to Secure Checkout →</button>
+            <button className="btn-gold" onClick={handleCheckout} disabled={checkoutLoading}>
+              {checkoutLoading ? '⏳ Redirecting to Stripe...' : 'Proceed to Secure Checkout →'}
+            </button>
             <div style={{marginTop:16,display:'flex',gap:20,justifyContent:'center',flexWrap:'wrap'}}>
               {['🔒 Stripe secure checkout','📦 Ships in 5–7 days','✓ Satisfaction guarantee'].map(t=>(
                 <span key={t} style={{fontSize:11,color:'var(--muted)'}}>{t}</span>
