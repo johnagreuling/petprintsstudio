@@ -522,8 +522,23 @@ export async function POST(req: NextRequest) {
             },
           ])
 
-          // Run all tasks in parallel — styles are independent
-          await Promise.all(allTasks.map(t => t()))
+          // GPT has a 5 images/min rate limit — run in batches of 4 with delay
+          // FLUX has no such limit so both models run concurrently within each batch
+          const gptTasks = allTasks.filter((_, i) => i % 2 === 0)  // even index = GPT
+          const fluxTasks = allTasks.filter((_, i) => i % 2 === 1) // odd index = FLUX
+
+          // Run all FLUX in parallel (no rate limit)
+          const fluxPromise = Promise.all(fluxTasks.map(t => t()))
+
+          // Run GPT in batches of 4 with 13s gap to stay under 5/min limit
+          const gptPromise = (async () => {
+            for (let i = 0; i < gptTasks.length; i += 4) {
+              if (i > 0) await new Promise(r => setTimeout(r, 13000))
+              await Promise.all(gptTasks.slice(i, i + 4).map(t => t()))
+            }
+          })()
+
+          await Promise.all([fluxPromise, gptPromise])
 
         } else {
           // ════════════════════════════════════════════════════
