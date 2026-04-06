@@ -72,7 +72,7 @@ export default function Home() {
         </h1>
 
         <p className="fu fu3" style={{fontSize:18,lineHeight:1.9,color:'var(--muted)',maxWidth:560,marginBottom:52,fontWeight:300}}>
-          Upload a photo. Choose your canvas size. Our custom-tuned AI generates 24 stunning portrait options across 8 artistic styles — pick your favorites and we print and ship directly to your door.
+          Upload a photo. Choose your canvas size. Our custom-tuned AI generates 30 stunning portrait options across 10 artistic styles — pick your favorites and we print and ship directly to your door.
         </p>
 
         <div className="fu fu4" style={{display:'flex',gap:16,flexWrap:'wrap',justifyContent:'center',marginBottom:72}}>
@@ -96,7 +96,7 @@ export default function Home() {
 
         {/* Stats */}
         <div className="fu fu4" style={{display:'flex',gap:60,flexWrap:'wrap',justifyContent:'center'}}>
-          {[['24','Portraits Generated','Per Order'],['8','Artistic','Styles Available'],['15+','Print','Products'],['4.9★','Average','Customer Rating']].map(([n,l1,l2])=>(
+          {[['24','Portraits Generated','Per Order'],['10','Artistic','Styles Available'],['15+','Print','Products'],['4.9★','Average','Customer Rating']].map(([n,l1,l2])=>(
             <div key={l1} style={{textAlign:'center'}}>
               <div className="serif" style={{fontSize:40,color:'var(--gold)',lineHeight:1}}>{n}</div>
               <div style={{fontSize:9,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--muted)',marginTop:6,lineHeight:1.6}}>{l1}<br/>{l2}</div>
@@ -119,7 +119,7 @@ export default function Home() {
             {[
               {n:'01',icon:'📸',title:'Upload Your Photo',desc:'Any clear photo of your pet works best. Front-facing, good lighting — we handle the rest.'},
               {n:'02',icon:'🖼️',title:'Choose Your Canvas',desc:'Select the size and product you want. Canvas, fine art print, mug, blanket — you pick first, then we generate.'},
-              {n:'03',icon:'⚡',title:'Get 24 Portraits',desc:'Our custom-tuned AI generates 24 stunning variations across 8 artistic styles. Browse them all and pick your favorite — no commitment until you choose.'},
+              {n:'03',icon:'⚡',title:'Get 24 Portraits',desc:'Our custom-tuned AI generates 30 stunning variations across 10 artistic styles. Browse them all and pick your favorite — no commitment until you choose.'},
               {n:'04',icon:'📦',title:'We Print & Ship',desc:'We print your chosen portrait on premium materials and ship directly to your door in 5–7 days.'},
             ].map((s,i)=>(
               <div key={s.n} className="card" style={{padding:'40px 28px',position:'relative'}}>
@@ -143,9 +143,9 @@ export default function Home() {
                 </div>
               </div>
               <p style={{fontSize:14,lineHeight:1.9,color:'var(--muted)',marginBottom:20}}>
-                Upload your pet’s photo and our custom-tuned AI reimagines it across 8 stunning artistic styles — oil painting, watercolor, pop art, pencil sketch and more. 24 portraits ready in under 2 minutes.
+                Upload your pet’s photo and our custom-tuned AI reimagines it across 10 stunning artistic styles — oil painting, watercolor, pop art, pencil sketch and more. 30 portraits ready in under 2 minutes.
               </p>
-              <div style={{fontSize:11,color:'var(--gold)'}}>✓ 24 portraits generated  ·  ✓ 8 artistic styles  ·  ✓ Ready in under 2 minnbsp; ✓ 8 art styles</div>
+              <div style={{fontSize:11,color:'var(--gold)'}}>✓ 30 portraits generated  ·  ✓ 10 artistic styles  ·  ✓ Ready in under 2 minnbsp; ✓ 8 art styles</div>
             </div>
             <div className="card" style={{padding:'44px 40px',borderTop:'2px solid var(--gold)'}}>
               <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:20}}>
@@ -174,10 +174,10 @@ export default function Home() {
       <section id="styles" style={{padding:'120px 60px'}}>
         <div style={{maxWidth:1200,margin:'0 auto'}}>
           <div style={{textAlign:'center',marginBottom:64}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>8 Artistic Styles</div>
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>10 Artistic Styles</div>
             <h2 className="serif" style={{fontSize:'clamp(40px,5vw,72px)',fontWeight:400}}>Every Style. <em>One Pet.</em></h2>
             <p style={{color:'var(--muted)',fontSize:16,marginTop:14,maxWidth:480,margin:'14px auto 0',lineHeight:1.8}}>
-              From classical oil to modern pop art — our custom-tuned AI generates 3 variations per style, giving you 24 portraits to choose from. Gallery-worthy results, every time.
+              From classical oil to modern pop art — our custom-tuned AI generates 3 variations per style, giving you 30 portraits to choose from. Gallery-worthy results, every time.
             </p>
           </div>
 
