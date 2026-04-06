@@ -105,7 +105,7 @@ ${CONSTRAINTS_GPT}
 
     // FLUX: short imperative — 512 token limit, no structured sections
     fluxPrompt: (petDesc) =>
-      `A premium fine-art portrait of the exact same dog from the reference image, preserving the exact breed appearance, coat color, markings, eye color, muzzle shape, ear shape, fur texture, and expression. Painted as a soft ethereal oil and acrylic painting with dreamlike atmosphere, visible hand-applied brushwork, and painterly blending of realism with abstraction. Centered elegant gallery composition with the dog as the clear focal point. Background is softly abstracted botanicals, loose florals, and organic natural shapes in muted ivory, sage, and dusty rose tones. Rich layered brush texture with slight real-paint imperfections, soft edges in background and more definition in the eyes and muzzle. Soft diffused natural light, emotionally warm and poetic mood. Museum-quality fine-art portrait finish.`,
+      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to a soft ethereal oil painting, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as dreamlike painterly atmosphere, visible hand-applied brushwork, muted botanical background in ivory and sage, soft edges, warm diffused light, premium gallery portrait finish.`,
 
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, soft ethereal oil painting, dreamlike atmosphere, visible brushwork, botanical background, warm muted palette, fine art`,
@@ -135,7 +135,7 @@ ${CONSTRAINTS_GPT}
 - not minimalist`,
 
     fluxPrompt: (petDesc) =>
-      `A premium fine-art portrait of the exact same dog from the reference image, preserving the exact breed appearance, coat color, markings, eye color, muzzle shape, ear shape, fur texture, and expression. Painted in a bold contemporary surrealist style with luxurious gallery energy, rich jewel tones of deep sapphire, emerald, and gold, dramatic contrast, and visible thick impasto brushwork. Commanding centered composition with the dog as a confident focal point. Background is surreal and dramatic with oversized florals, lush botanicals, and rich dark velvet in jewel tones. Heavy textured oil paint surface with expressive directional strokes and gemstone-like luminous highlights. Dramatic directional lighting with deep rich shadows and brilliant highlights. Premium gallery-wall fine-art finish, bold, opulent, and collectible.`,
+      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to a bold contemporary fine-art oil painting, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as thick impasto oil paint, jewel-toned palette of sapphire and emerald, surreal oversized floral backdrop, dramatic contrast lighting, gemstone-like highlights, premium gallery-wall finish.`,
 
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, bold contemporary fine art oil painting, jewel tones, thick impasto, dark dramatic botanical background, gallery quality`,
@@ -164,7 +164,7 @@ ${CONSTRAINTS_GPT}
 - not modern`,
 
     fluxPrompt: (petDesc) =>
-      `A premium fine-art portrait of the exact same dog from the reference image, preserving the exact breed appearance, coat color, markings, eye color, muzzle shape, ear shape, fur texture, and expression. Painted in the classical Old Masters oil portrait tradition with Rembrandt-style dramatic chiaroscuro. Formal centered three-quarter portrait composition with the dog as the dignified focal point. Background is a rich deep tone of dark brown or forest green with a suggestion of draped fabric. Smooth glazed oil surface with luminous depth in the eyes, dense layered paint, and refined brushwork in the fur. Dramatic single-source lighting with deep shadow and luminous warm highlights. Museum-quality serious and timeless fine-art finish.`,
+      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to a classical Old Masters oil painting, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as Rembrandt chiaroscuro lighting, rich dark background, smooth glazed oil surface with luminous depth, dense layered paint, museum-quality dignified finish.`,
 
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, classical Old Masters oil portrait, Rembrandt chiaroscuro, dark rich background, museum quality, glazed oil paint`,
@@ -194,7 +194,7 @@ ${CONSTRAINTS_GPT}
 - not harsh outlines`,
 
     fluxPrompt: (petDesc) =>
-      `A premium fine-art portrait of the exact same dog from the reference image, preserving the exact breed appearance, coat color, markings, eye color, muzzle shape, ear shape, fur texture, and expression. Painted as a transparent watercolor on cold-press paper with loose fluid brushwork and luminous washes. Centered airy portrait composition with soft vignette edges and the dog as the clear focal point. Background is loose abstract washes in warm ivory, blush, and sky blue with minimal detail. Transparent layered wash surface with soft bleeding edges, visible paper texture in highlights, and wet-on-wet blooms in the background. Soft natural light from above, delicate and luminous mood. Fine-art watercolor portrait on archival paper.`,
+      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to transparent watercolor on cold-press paper, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as loose fluid washes, soft bleeding edges, visible paper texture, wet-on-wet background blooms in ivory and blush, soft natural light, delicate fine-art finish.`,
 
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, transparent watercolor painting, loose fluid washes, soft edges, visible paper texture, pastel palette`,
@@ -225,7 +225,7 @@ ${CONSTRAINTS_GPT}
 - not cartoon`,
 
     fluxPrompt: (petDesc) =>
-      `A premium fine-art portrait of the exact same dog from the reference image, preserving the exact breed appearance, coat color rendered in graphite tones, markings, eye shape, muzzle shape, ear shape, fur texture, and expression. Drawn as a fine charcoal and graphite portrait on textured archival paper using hatching and cross-hatching technique. Centered frontal portrait composition with strong tonal range from near-white to deep charcoal. Background is clean white with minimal gestural strokes to suggest space. Individual pencil and charcoal marks visible throughout, smooth tonal blending in shadow areas, crisp detail in the eyes and nose. Even soft lighting with subtle tonal shading. Elegant classical portrait drawing, intimate and technically masterful.`,
+      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to fine charcoal and graphite drawing on textured paper, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color rendered in graphite tones, markings, eyes, ears, and accessories. Render the style as hatching and cross-hatching technique, strong tonal range near-white to deep charcoal, crisp detail in eyes and nose, classical intimate drawing finish.`,
 
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, fine charcoal graphite drawing, hatching cross-hatching, strong tonal range, white paper background`,
@@ -254,7 +254,7 @@ ${CONSTRAINTS_GPT}
 - not photorealistic`,
 
     fluxPrompt: (petDesc) =>
-      `A premium fine-art portrait of the exact same dog from the reference image, preserving the exact breed appearance, coat color, markings, eye color, muzzle shape, ear shape, fur texture, and expression. Painted in the Impressionist tradition of Monet and Renoir with loose visible brushstrokes throughout. Three-quarter portrait composition with the dog bathed in dappled garden light. Background is loose impressionist foliage with blues, greens, purples, and gold catching the light. Short thick dabs of paint placed side-by-side with vibrant blended colors and an energetic painted surface. Warm dappled sunlight with light and movement in every stroke. Lively and luminous fine-art oil painting.`,
+      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to Impressionist oil painting in the style of Monet, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as loose short visible brushstrokes, dappled garden light, vibrant color dabs side-by-side, blues and greens in the background, warm luminous light, energetic painted surface.`,
 
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, impressionist oil painting Monet style, loose brushstrokes, dappled garden light, vibrant color`,
@@ -284,7 +284,7 @@ ${CONSTRAINTS_GPT}
 - not cartoon`,
 
     fluxPrompt: (petDesc) =>
-      `A premium fine-art portrait of the exact same dog from the reference image, preserving the exact breed appearance, coat color, markings, eye color, muzzle shape, ear shape, fur texture, and expression. Rendered as a soft chalk pastel portrait on warm toned paper. Intimate centered portrait composition with a gentle and romantic feeling. Background is the warm toned paper showing through with loose pastel suggestion of environment in soft neutral tones. Velvety matte chalky texture throughout with soft blended transitions, paper texture visible in lighter areas, and gentle pastel strokes suggesting fur. Soft even diffused light with a warm creamy palette. Gentle, intimate, and refined fine-art pastel portrait.`,
+      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to soft chalk pastel on warm toned paper, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as velvety matte chalky texture, soft blended transitions, warm toned paper showing through, creamy warm palette, paper grain visible, gentle intimate fine-art finish.`,
 
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, soft chalk pastel portrait, velvety matte surface, chalky texture, warm creamy palette, toned paper`,
@@ -314,7 +314,7 @@ ${CONSTRAINTS_GPT}
 - not pastel`,
 
     fluxPrompt: (petDesc) =>
-      `A premium fine-art portrait of the exact same dog from the reference image, preserving the exact breed appearance, coat color, markings, eye color, muzzle shape, ear shape, fur texture, and expression. Painted as a bold modern acrylic portrait with editorial gallery energy and high contrast. Strong commanding composition with the dog dominating the frame. Background is a bold graphic field of contrasting color or loose expressive marks. Confident loose acrylic strokes with some palette-knife marks, areas of thick paint alongside thinner washes, and a dynamic energetic surface. High contrast lighting with strong directional quality. Contemporary art-magazine aesthetic, visually striking and premium.`,
+      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to bold modern acrylic painting with editorial energy, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as confident loose acrylic strokes with palette-knife marks, high contrast, bold graphic background, thick and thin paint areas, contemporary art-magazine aesthetic, visually striking premium finish.`,
 
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, bold modern acrylic painting, high contrast, confident loose brushwork, editorial graphic energy`,
@@ -494,14 +494,12 @@ export async function POST(req: NextRequest) {
             // FLUX Kontext — short imperative prompt per BFL best practices
             async () => {
               try {
-                const falRes = await fetch('https://fal.run/fal-ai/flux-pro/kontext', {
+                const falRes = await fetch('https://fal.run/fal-ai/flux-2-pro', {
                   method: 'POST',
                   headers: { 'Authorization': `Key ${process.env.FAL_API_KEY}`, 'Content-Type': 'application/json' },
                   body: JSON.stringify({
                     image_url: accessibleImageUrl,
                     prompt: family.fluxPrompt(petDesc),
-                    guidance_scale: 3.0,   // BFL recommends 2.5-3.5
-                    num_inference_steps: 28,
                     image_size: 'square_hd',
                     output_format: 'jpeg',
                     num_images: 1,
@@ -582,7 +580,7 @@ export async function POST(req: NextRequest) {
                 try {
                   const sceneDesc = answers.favPlace || answers.favOutdoorSpot || 'a beautiful scene'
                   const fluxPrompt = `${family.fluxPrompt(petDesc)} Place the dog in a ${sceneNames[sceneId]?.replace(/[🚗👑🌅🎄🏙️✨]\s/,'')} setting at ${sceneDesc}.`
-                  const falRes = await fetch('https://fal.run/fal-ai/flux-pro/kontext', {
+                  const falRes = await fetch('https://fal.run/fal-ai/flux-2-pro', {
                     method: 'POST',
                     headers: { 'Authorization': `Key ${process.env.FAL_API_KEY}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ image_url: accessibleImageUrl, prompt: fluxPrompt, guidance_scale: 3.0, num_inference_steps: 28, image_size: 'square_hd', output_format: 'jpeg', num_images: 1 }),
