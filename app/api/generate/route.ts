@@ -319,6 +319,83 @@ ${CONSTRAINTS_GPT}
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, bold modern acrylic painting, high contrast, confident loose brushwork, editorial graphic energy`,
   },
+
+
+  {
+    id: 'vintage_pop_art',
+    name: 'Vintage Pop Art',
+    emoji: '🎭',
+    gptPrompt: (petDesc) => `Create a premium four-panel pop-art portrait grid of the exact animal shown in the input image.
+
+SUBJECT IDENTITY
+Preserve the exact animal from the input photo:
+- ${petDesc}
+- exact breed appearance and body proportions
+- exact face shape and facial proportions
+- exact muzzle shape, ear shape and ear set
+- exact eye color and expression
+- exact coat color, all markings, fur length and texture
+- preserve any visible accessories
+
+STYLE
+Classic 1960s-inspired pop-art screenprint with luxury gallery-poster feel. A 2×2 grid, same portrait in all four panels, each with a different bold saturated palette: Panel 1 hot pink and yellow, Panel 2 cyan and red, Panel 3 lime green and blue, Panel 4 orange and purple. Strong color blocking, crisp graphic edges, simplified tonal shapes, high contrast, flat graphic background.
+
+The pet must be highly recognizable in every panel. Eyes, nose, facial markings, and silhouette stay accurate and expressive. Final result should feel iconic, stylish, collectible, bright, and premium — like a high-end pop-art screenprint suitable for framing.
+
+CONSTRAINTS
+- no text or typography
+- no watermark
+- no extra animals
+- not photorealistic
+- not painterly or impressionistic`,
+
+    fluxPrompt: (petDesc) =>
+      `A four-panel 2x2 pop-art screenprint grid of the exact dog from the reference image. Keep the same dog in all four panels — same breed, face, markings, expression. Render in 1960s Warhol pop-art style: bold flat color blocking, crisp graphic edges, high contrast. Each panel a different saturated palette: hot pink/yellow, cyan/red, lime green/blue, orange/purple. Iconic, collectible, gallery-worthy.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, four-panel Warhol pop-art screenprint grid, bold flat colors, high contrast, 1960s graphic style, collectible`,
+  },
+
+  {
+    id: 'vintage_poster_v2',
+    name: 'Heritage Poster',
+    emoji: '🏛️',
+    gptPrompt: (petDesc) => `Create a premium vintage-style poster portrait of the exact animal shown in the input image.
+
+SUBJECT IDENTITY
+Preserve the exact animal from the input photo:
+- ${petDesc}
+- exact breed appearance and body proportions
+- exact face shape, muzzle, ear shape and ear set
+- exact eye color and expression
+- exact coat color, all markings, fur pattern and length
+- exact recognizable expression and personality
+- preserve any visible accessories
+
+STYLE
+Premium vintage-style poster with a timeless, collectible, frame-worthy feel. Looks like a high-end retro print or classic advertisement poster — elegant composition, strong focal hierarchy, nostalgic visual charm.
+
+Style direction: vintage poster design, retro illustrated portrait, aged print aesthetic, tasteful distressed paper texture, subtle faded ink character, no text included, balanced graphic composition, warm nostalgic palette, collectible wall-art feel.
+
+COLOR PALETTE
+Cream, tan, faded red, muted navy, forest green, dusty teal, golden ochre, warm brown, soft black. Stylish, timeless, slightly weathered but still clean and premium.
+
+COMPOSITION
+Pet is the clear focal point in a strong iconic pose. Background supports the poster look with simple vintage graphic shapes, soft ornamental framing, subtle sunburst or badge-like design elements, lightly textured retro backdrop. Elegant and uncluttered. Feels like a premium vintage travel poster, heritage advertisement, or classic collectible print.
+
+CONSTRAINTS
+- no text or typography
+- no watermark
+- no extra animals
+- not photorealistic or glossy
+- no modern neon colors`,
+
+    fluxPrompt: (petDesc) =>
+      `A premium vintage-style poster portrait of the exact dog from the reference image. Keep the same dog — same breed, coat, markings, expression. Render as a high-end retro print: aged paper texture, faded ink, warm nostalgic palette of cream, tan, muted red, dusty teal, golden ochre. Pet in strong iconic pose as clear focal point. Background has simple vintage graphic shapes, ornamental framing, subtle sunburst elements. Feels like a heritage advertisement or classic collectible travel poster. Elegant, timeless, frame-worthy.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, premium vintage poster style, retro illustrated, aged paper texture, warm nostalgic palette, heritage advertisement aesthetic`,
+  },
 ]
 
 // ── Memory Portrait scene builder — same style families as base ──
