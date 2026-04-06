@@ -26,9 +26,12 @@ export default function Home() {
         .divider{height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:0 60px}
         .card{background:var(--soft);border:1px solid var(--border);transition:border-color .3s}
         .card:hover{border-color:rgba(201,168,76,.3)}
-        .style-btn{background:var(--soft);border:1px solid var(--border);padding:28px 20px;cursor:pointer;transition:all .3s;text-align:left;position:relative;overflow:hidden}
+        .style-btn{background:var(--soft);border:1px solid var(--border);padding:0;cursor:pointer;transition:all .3s;text-align:left;position:relative;overflow:hidden}
         .style-btn.active,.style-btn:hover{border-color:var(--gold)}
-        .style-btn.active::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold)}
+        .style-btn.active::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gold);z-index:2}
+        .style-btn img{width:100%;aspect-ratio:1;object-fit:cover;display:block;transition:transform .4s ease}
+        .style-btn:hover img,.style-btn.active img{transform:scale(1.05)}
+        .style-btn-info{padding:16px 18px}
         nav a{text-decoration:none;color:var(--muted);font-size:11px;letter-spacing:.18em;text-transform:uppercase;transition:color .3s}
         nav a:hover{color:var(--cream)}
         @keyframes fadeUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
@@ -78,9 +81,16 @@ export default function Home() {
         </div>
 
         {/* Style tags */}
-        <div className="fu fu4" style={{marginBottom:64}}>
+        <div className="fu fu4" style={{marginBottom:64,display:'flex',flexWrap:'wrap',justifyContent:'center',gap:8}}>
           {ART_STYLES.map(s => (
-            <span key={s.id} className="tag">{s.emoji} {s.name}</span>
+            s.styleImage ? (
+              <div key={s.id} style={{display:'flex',alignItems:'center',gap:8,border:'1px solid rgba(201,168,76,.3)',padding:'6px 12px 6px 6px'}}>
+                <img src={s.styleImage} alt={s.name} style={{width:28,height:28,objectFit:'cover'}} />
+                <span style={{fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)'}}>{s.name}</span>
+              </div>
+            ) : (
+              <span key={s.id} className="tag">{s.emoji} {s.name}</span>
+            )
           ))}
         </div>
 
@@ -174,17 +184,28 @@ export default function Home() {
           <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:2}}>
             {ART_STYLES.map((s,i)=>(
               <button key={s.id} className={`style-btn${activeStyle===i?' active':''}`} onClick={()=>setActiveStyle(i)}>
-                <div style={{fontSize:32,marginBottom:16}}>{s.emoji}</div>
-                <div className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>{s.name}</div>
-                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>{s.description}</div>
+                {s.styleImage ? (
+                  <img src={s.styleImage} alt={s.name} />
+                ) : (
+                  <div style={{fontSize:32,padding:'28px 20px 8px'}}>{s.emoji}</div>
+                )}
+                <div className="style-btn-info">
+                  <div className="serif" style={{fontSize:18,marginBottom:4,fontWeight:400}}>{s.name}</div>
+                  <div style={{fontSize:11,color:'var(--muted)',lineHeight:1.6}}>{s.description}</div>
+                </div>
               </button>
             ))}
           </div>
 
           <div style={{background:'var(--soft)',border:'1px solid var(--border)',padding:'32px 40px',marginTop:2,display:'flex',alignItems:'center',gap:40,flexWrap:'wrap'}}>
+            {ART_STYLES[activeStyle].styleImage && (
+              <div style={{width:100,height:100,overflow:'hidden',flexShrink:0,border:'1px solid var(--border)'}}>
+                <img src={ART_STYLES[activeStyle].styleImage} alt={ART_STYLES[activeStyle].name} style={{width:'100%',height:'100%',objectFit:'cover'}} />
+              </div>
+            )}
             <div style={{flex:1,minWidth:280}}>
               <div style={{fontSize:10,letterSpacing:'.25em',textTransform:'uppercase',color:'var(--gold)',marginBottom:8}}>Currently Selected</div>
-              <div className="serif" style={{fontSize:28,fontWeight:400}}>{ART_STYLES[activeStyle].emoji} {ART_STYLES[activeStyle].name}</div>
+              <div className="serif" style={{fontSize:28,fontWeight:400}}>{ART_STYLES[activeStyle].name}</div>
               <div style={{fontSize:13,color:'var(--muted)',marginTop:8,lineHeight:1.7}}>{ART_STYLES[activeStyle].description}</div>
             </div>
             <div>
@@ -252,7 +273,7 @@ export default function Home() {
             <div style={{display:'flex',flexDirection:'column',gap:14,marginBottom:40}}>
               {[
                 {icon:'🏈', text:'Favorite team collar or jersey in the scene'},
-                {icon:'🚗', text:'Their beloved car — they\'re in the passenger seat, ears out the window'},
+                {icon:'🚗', text:'Their beloved car — they're in the passenger seat, ears out the window'},
                 {icon:'📍', text:'Hometown backdrop with recognizable landmarks'},
                 {icon:'🎾', text:'Favorite toy placed right in their paw'},
                 {icon:'🍕', text:'Their favorite food somewhere in the scene'},
