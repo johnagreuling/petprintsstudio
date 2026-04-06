@@ -96,7 +96,7 @@ export default function Home() {
 
         {/* Stats */}
         <div className="fu fu4" style={{display:'flex',gap:60,flexWrap:'wrap',justifyContent:'center'}}>
-          {[['24','Portraits Generated','Per Order'],['10','Artistic','Styles Available'],['15+','Print','Products'],['4.9★','Average','Customer Rating']].map(([n,l1,l2])=>(
+          {[['30','Portraits Generated','Per Order'],['10','Artistic','Styles Available'],['15+','Print','Products'],['4.9★','Average','Customer Rating']].map(([n,l1,l2])=>(
             <div key={l1} style={{textAlign:'center'}}>
               <div className="serif" style={{fontSize:40,color:'var(--gold)',lineHeight:1}}>{n}</div>
               <div style={{fontSize:9,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--muted)',marginTop:6,lineHeight:1.6}}>{l1}<br/>{l2}</div>
