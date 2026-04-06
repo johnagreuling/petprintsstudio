@@ -604,7 +604,7 @@ export default function CreatePage() {
               })
               return Object.entries(groups).map(([name, imgs]) => {
                 const style = ART_STYLES.find(s => s.id === imgs[0]?.styleId)
-                const emoji = style?.emoji || (imgs[0]?.model === 'gpt' ? '✨' : imgs[0]?.model === 'astria' ? '🎯' : '🎨')
+                const emoji = style?.emoji || '🎨'
                 return (
                   <div key={name} style={{marginBottom:48}}>
                     <div style={{fontSize:10,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16,display:'flex',alignItems:'center',gap:12}}>
@@ -615,9 +615,6 @@ export default function CreatePage() {
                       {imgs.map((img,i)=>(
                         <div key={i} style={{position:'relative',cursor:'pointer'}} onClick={()=>setPicked(img)}>
                           <img src={img.url} alt={`${name} ${i+1}`} className={`img-card${picked?.url===img.url?' picked':''}`}/>
-                          <div style={{position:'absolute',top:6,left:6,background:img.model==='gpt'?'rgba(212,175,55,.92)':'rgba(74,158,255,.92)',color:img.model==='gpt'?'#000':'#000',borderRadius:3,padding:'2px 6px',fontSize:9,fontWeight:700,letterSpacing:'.08em',textTransform:'uppercase'}}>
-                            {img.model==='gpt'?'GPT':'FLUX'}
-                          </div>
                           {picked?.url===img.url&&<div style={{position:'absolute',top:10,right:10,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:13}}>✓</div>}
                         </div>
                       ))}
@@ -685,7 +682,7 @@ export default function CreatePage() {
                     <div className="serif" style={{fontSize:20,fontWeight:400}}>All 36 Portrait Files</div>
                     <div style={{background:'rgba(201,168,76,.15)',color:'var(--gold)',fontSize:9,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase',padding:'3px 8px'}}>Best Value</div>
                   </div>
-                  <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>Every portrait from all 3 AI models — GPT, FLUX, and Astria — in full resolution. Print anywhere, share with family, use as wallpaper. Yours forever.</div>
+                  <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>Every portrait in full resolution — all styles, all variants. Print anywhere, share with family, use as wallpaper. Yours forever.</div>
                 </div>
                 <div style={{textAlign:'right',flexShrink:0}}>
                   <div className="serif" style={{fontSize:24,color:'var(--gold)'}}>$29.99</div>
