@@ -452,12 +452,15 @@ export async function POST(req: NextRequest) {
           //    - Pet photo as image_url
           // ════════════════════════════════════════════════════
 
-          const total = STYLE_FAMILIES.length * 2 // 1 GPT + 1 FLUX per style
+          // ── GPT Image 1.5 only — 8 styles × 3 variants = 24 portraits ──
+          // All use /images/edits + input_fidelity:high + pet photo
+          // Rate limit: 5 images/min — run 4 at a time with 13s gap between batches
+          const VARIANTS_PER_STYLE = 3
+          const total = STYLE_FAMILIES.length * VARIANTS_PER_STYLE // 24
           let done = 0
 
-          const allTasks = STYLE_FAMILIES.flatMap(family => [
-            // GPT Image 1.5 — structured long prompt
-            async () => {
+          const allTasks = STYLE_FAMILIES.flatMap(family =>
+            Array.from({ length: VARIANTS_PER_STYLE }, (_, v) => async () => {
               try {
                 if (!petImageBuffer) { console.error('No buffer for GPT'); done++; return }
                 const fd = new FormData()
@@ -479,66 +482,24 @@ export async function POST(req: NextRequest) {
                   const b64 = d.data?.[0]?.b64_json
                   if (b64) {
                     const url = await uploadB64ToR2(b64)
-                    const img = { url, styleId: `${family.id}_gpt`, styleName: `${family.emoji} ${family.name}`, model: 'gpt' }
+                    const img = { url, styleId: `${family.id}_${v}`, styleName: `${family.emoji} ${family.name}`, model: 'gpt' }
                     allImages.push(img); send({ type: 'image', image: img })
                   }
                 } else {
                   const t = await res.text()
-                  console.error(`GPT error [${family.name}]:`, res.status, t.slice(0, 300))
+                  console.error(`GPT error [${family.name} v${v}]:`, res.status, t.slice(0, 300))
                 }
-              } catch(e) { console.error(`GPT task error [${family.name}]:`, e) }
+              } catch(e) { console.error(`GPT task error [${family.name} v${v}]:`, e) }
               done++
-              send({ type: 'progress', value: Math.min(12 + Math.round((done/total)*78), 90), message: `${allImages.length} of ${total} portraits ready...` })
-            },
+              send({ type: 'progress', value: Math.min(12 + Math.round((done / total) * 78), 90), message: `${allImages.length} of ${total} portraits ready...` })
+            })
+          )
 
-            // FLUX Kontext — short imperative prompt per BFL best practices
-            async () => {
-              try {
-                const falRes = await fetch('https://fal.run/fal-ai/flux-2-pro', {
-                  method: 'POST',
-                  headers: { 'Authorization': `Key ${process.env.FAL_API_KEY}`, 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    image_url: accessibleImageUrl,
-                    prompt: family.fluxPrompt(petDesc),
-                    image_size: 'square_hd',
-                    output_format: 'jpeg',
-                    num_images: 1,
-                  }),
-                })
-                if (falRes.ok) {
-                  const d = await falRes.json()
-                  const url = d.images?.[0]?.url
-                  if (url) {
-                    const img = { url, styleId: `${family.id}_fal`, styleName: `${family.emoji} ${family.name}`, model: 'fal' }
-                    allImages.push(img); send({ type: 'image', image: img })
-                  } else console.error(`FLUX no url [${family.name}]:`, JSON.stringify(d).slice(0,200))
-                } else {
-                  const t = await falRes.text()
-                  console.error(`FLUX error [${family.name}]:`, falRes.status, t.slice(0, 200))
-                }
-              } catch(e) { console.error(`FLUX task error [${family.name}]:`, e) }
-              done++
-              send({ type: 'progress', value: Math.min(12 + Math.round((done/total)*78), 90), message: `${allImages.length} of ${total} portraits ready...` })
-            },
-          ])
-
-          // GPT has a 5 images/min rate limit — run in batches of 4 with delay
-          // FLUX has no such limit so both models run concurrently within each batch
-          const gptTasks = allTasks.filter((_, i) => i % 2 === 0)  // even index = GPT
-          const fluxTasks = allTasks.filter((_, i) => i % 2 === 1) // odd index = FLUX
-
-          // Run all FLUX in parallel (no rate limit)
-          const fluxPromise = Promise.all(fluxTasks.map(t => t()))
-
-          // Run GPT in batches of 4 with 13s gap to stay under 5/min limit
-          const gptPromise = (async () => {
-            for (let i = 0; i < gptTasks.length; i += 4) {
-              if (i > 0) await new Promise(r => setTimeout(r, 13000))
-              await Promise.all(gptTasks.slice(i, i + 4).map(t => t()))
-            }
-          })()
-
-          await Promise.all([fluxPromise, gptPromise])
+          // Run in batches of 4 — stays under OpenAI 5 images/min rate limit
+          for (let i = 0; i < allTasks.length; i += 4) {
+            if (i > 0) await new Promise(r => setTimeout(r, 13000))
+            await Promise.all(allTasks.slice(i, i + 4).map(t => t()))
+          }
 
         } else {
           // ════════════════════════════════════════════════════
@@ -590,26 +551,7 @@ export async function POST(req: NextRequest) {
                   } else console.error(`Memory GPT error [${sceneId}]:`, res.status, (await res.text()).slice(0,200))
                 } catch(e) { console.error('Memory GPT task error:', e) }
               },
-              // FLUX version
-              async () => {
-                try {
-                  const sceneDesc = answers.favPlace || answers.favOutdoorSpot || 'a beautiful scene'
-                  const fluxPrompt = `${family.fluxPrompt(petDesc)} Place the dog in a ${sceneNames[sceneId]?.replace(/[🚗👑🌅🎄🏙️✨]\s/,'')} setting at ${sceneDesc}.`
-                  const falRes = await fetch('https://fal.run/fal-ai/flux-2-pro', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Key ${process.env.FAL_API_KEY}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ image_url: accessibleImageUrl, prompt: fluxPrompt, guidance_scale: 3.0, num_inference_steps: 28, image_size: 'square_hd', output_format: 'jpeg', num_images: 1 }),
-                  })
-                  if (falRes.ok) {
-                    const d = await falRes.json()
-                    const url = d.images?.[0]?.url
-                    if (url) {
-                      allImages.push({ url, styleId: `${sceneId}_fal`, styleName: sceneNames[sceneId] || sceneId, model: 'fal' })
-                      send({ type: 'image', image: allImages[allImages.length-1] })
-                    }
-                  } else console.error(`Memory FLUX error [${sceneId}]:`, falRes.status, (await falRes.text()).slice(0,200))
-                } catch(e) { console.error('Memory FLUX task error:', e) }
-              },
+
             ]
           })
 
@@ -655,7 +597,6 @@ export async function POST(req: NextRequest) {
         send({ type: 'progress', value: 100, message: 'All portraits ready!' })
         send({ type: 'done', images: allImages, counts: {
           gpt: allImages.filter(x => x.model === 'gpt').length,
-          fal: allImages.filter(x => x.model === 'fal').length,
           astria: allImages.filter(x => x.model === 'astria').length,
           total: allImages.length,
         }})
