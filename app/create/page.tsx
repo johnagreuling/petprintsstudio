@@ -615,6 +615,9 @@ export default function CreatePage() {
                       {imgs.map((img,i)=>(
                         <div key={i} style={{position:'relative',cursor:'pointer'}} onClick={()=>setPicked(img)}>
                           <img src={img.url} alt={`${name} ${i+1}`} className={`img-card${picked?.url===img.url?' picked':''}`}/>
+                          <div style={{position:'absolute',top:6,left:6,background:img.model==='gpt'?'rgba(212,175,55,.92)':'rgba(74,158,255,.92)',color:img.model==='gpt'?'#000':'#000',borderRadius:3,padding:'2px 6px',fontSize:9,fontWeight:700,letterSpacing:'.08em',textTransform:'uppercase'}}>
+                            {img.model==='gpt'?'GPT':'FLUX'}
+                          </div>
                           {picked?.url===img.url&&<div style={{position:'absolute',top:10,right:10,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:13}}>✓</div>}
                         </div>
                       ))}
