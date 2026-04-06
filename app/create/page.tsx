@@ -16,8 +16,8 @@ export default function CreatePage() {
   const [isMemory, setIsMemory] = useState(false)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [selectedStyles, setSelectedStyles] = useState<string[]>(DEFAULT_STYLES)
-  const [generated, setGenerated] = useState<Array<{url:string;styleId:string;styleName:string}>>([])
-  const [picked, setPicked] = useState<{url:string;styleId:string;styleName:string} | null>(null)
+  const [generated, setGenerated] = useState<Array<{url:string;styleId:string;styleName:string;model:string}>>([])
+  const [picked, setPicked] = useState<{url:string;styleId:string;styleName:string;model:string} | null>(null)
   const [progress, setProgress] = useState(0)
   const [progressMsg, setProgressMsg] = useState('Preparing your portraits...')
   const [error, setError] = useState('')
@@ -84,7 +84,7 @@ export default function CreatePage() {
 
       const reader = genRes.body?.getReader()
       const decoder = new TextDecoder()
-      const imgs: typeof generated = []
+      const imgs: Array<{url:string;styleId:string;styleName:string;model:string}> = []
       let buffer = ''
 
       while (reader) {
