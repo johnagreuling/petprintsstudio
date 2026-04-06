@@ -273,7 +273,7 @@ export default function Home() {
             <div style={{display:'flex',flexDirection:'column',gap:14,marginBottom:40}}>
               {[
                 {icon:'🏈', text:'Favorite team collar or jersey in the scene'},
-                {icon:'🚗', text:'Their beloved car — they're in the passenger seat, ears out the window'},
+                {icon:'🚗', text:"Their beloved car — they're in the passenger seat, ears out the window"},
                 {icon:'📍', text:'Hometown backdrop with recognizable landmarks'},
                 {icon:'🎾', text:'Favorite toy placed right in their paw'},
                 {icon:'🍕', text:'Their favorite food somewhere in the scene'},
