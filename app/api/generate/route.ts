@@ -28,6 +28,12 @@ async function uploadB64ToR2(b64: string, ext = 'png', sessionFolder = 'generate
   return `${process.env.R2_PUBLIC_URL?.replace(/\/$/, '')}/${key}`
 }
 
+async function saveSessionMetadata(sessionFolder: string, meta: object) {
+  try {
+    await r2.send(new PutObjectCommand({ Bucket: process.env.R2_BUCKET_NAME!, Key: `${sessionFolder}/session.json`, Body: JSON.stringify(meta, null, 2), ContentType: 'application/json', CacheControl: 'no-cache' }))
+  } catch(e) { console.error('Session meta save failed:', e) }
+}
+
 // ════════════════════════════════════════════════════════════════
 //  8 SHARED STYLE FAMILIES
 //
@@ -509,9 +515,7 @@ export async function POST(req: NextRequest) {
         } catch(e) { console.error('Vision failed:', e) }
 
         const petSlug = (petName || petType || 'pet').toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 20)
-        const sessionFolder = `sessions/${sessionId || uuidv4()}_${petSlug}`
-        const sessionStart = new Date().toISOString()
-        const petSlug = (petName || petType || 'pet').toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 20)
+const petSlug = (petName || petType || 'pet').toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 20)
         const sessionFolder = `sessions/${sessionId || uuidv4()}_${petSlug}`
         const sessionStart = new Date().toISOString()
         send({ type: 'progress', value: 12, message: 'Starting portrait generation...' })
