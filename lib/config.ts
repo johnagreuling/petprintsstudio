@@ -86,7 +86,9 @@ export const QUESTIONNAIRE = [
   { id: 'favToy',         label: 'Favorite toy or object',                       type: 'text',         required: false, placeholder: 'e.g. yellow tennis ball, stuffed duck, old sock...' },
   { id: 'favRestaurant',  label: 'Favorite restaurant or local spot',            type: 'text',         required: false, placeholder: 'e.g. In-N-Out, our local dog park café...' },
   { id: 'perfectDay',     label: 'If your pet could live one perfect day, describe it in 1–2 sentences', type: 'textarea', required: false, placeholder: 'This is the soul of the portrait — the more detail the better...' },
-  { id: 'artStyle',       label: 'Preferred art style',                          type: 'style-picker', required: true },
+  { id: 'musicStyle',     label: '🎵 What music style fits their vibe?',          type: 'select',       required: false, options: ['Country / Americana', 'Emotional pop', 'Indie folk / acoustic', 'Hip hop', 'Jazz / blues', 'Rock / alternative', 'R&B / soul', 'Classical / orchestral'] },
+  { id: 'specialPeople',  label: '👥 People who matter most to them',              type: 'text',         required: false, placeholder: 'e.g. John (dad), Sarah (best friend)...' },
+    { id: 'artStyle',       label: 'Preferred art style',                          type: 'style-picker', required: true },
   { id: 'mood',           label: 'Mood and color palette',                       type: 'select',       required: false, options: ['Warm & golden', 'Dramatic & bold', 'Soft & dreamy', 'Vivid & bright', 'Dark & moody', 'Classic & timeless'] },
 ]
 
