@@ -322,7 +322,7 @@ export default function CreatePage() {
         .product-card:hover,.product-card.on{border-color:var(--gold)}
         .cat-tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:10px 0;cursor:pointer;transition:all .2s;margin-right:28px;font-family:'DM Sans',sans-serif}
         .cat-tab.on{color:var(--gold);border-color:var(--gold)}
-        .style-toggle{border:1px solid rgba(245,240,232,.08);background:transparent;padding:20px 16px;cursor:pointer;transition:all .2s;text-align:left;position:relative}
+        .style-toggle{border:1px solid rgba(245,240,232,.08);background:transparent;padding:0;cursor:pointer;transition:all .2s;text-align:left;position:relative;overflow:hidden}
         .style-toggle.on{border-color:var(--gold);background:rgba(201,168,76,.04)}
         .img-card{aspect-ratio:1;object-fit:cover;width:100%;cursor:pointer;transition:all .3s;border:2px solid transparent;display:block}
         .img-card:hover{transform:scale(1.02)}.img-card.picked{border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,168,76,.15)}
@@ -565,7 +565,7 @@ export default function CreatePage() {
                         {selectedStyles.includes(s.id)&&'✓'}
                       </div>
                       <div style={{width:'100%',aspectRatio:'2/3',overflow:'hidden',borderRadius:3,marginBottom:8}}>{s.styleImage?<img src={s.styleImage} alt={s.name} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>:<div style={{width:'100%',height:'100%',background:'#1a1a1a',display:'flex',alignItems:'center',justifyContent:'center',fontSize:24}}>{s.emoji}</div>}</div>
-                      <div className="serif" style={{fontSize:15,fontWeight:400}}>{s.name}</div>
+                      <div className="serif" style={{fontSize:12,fontWeight:400,padding:'6px 8px 8px',textAlign:'center'}}>{s.name}</div>
                     </button>
                   ))}
                 </div>
