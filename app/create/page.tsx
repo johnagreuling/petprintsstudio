@@ -2,6 +2,7 @@
 import { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import WatermarkedImage from '@/components/WatermarkedImage'
+import SizeCropPreview from '@/components/SizeCropPreview'
 import { PRODUCTS, PRODUCT_CATEGORIES, ART_STYLES, QUESTIONNAIRE, DIGITAL_BUNDLE_PRICE, MEMORY_UPGRADE_PRICE, DEFAULT_STYLES } from '@/lib/config'
 
 type Step = 'upload' | 'product' | 'pay' | 'questionnaire' | 'generating' | 'gallery' | 'upsell'
@@ -630,7 +631,7 @@ export default function CreatePage() {
             <div style={{position:'fixed',bottom:0,left:0,right:0,zIndex:100,background:'rgba(10,10,10,.96)',padding:'16px 24px',borderTop:'1px solid rgba(245,240,232,.08)',backdropFilter:'blur(12px)'}}>
               {picked&&(
                 <div style={{display:'flex',gap:16,alignItems:'center',marginBottom:16}}>
-                  <img src={picked.url} alt="Selected" style={{width:56,height:56,objectFit:'cover'}}/>
+                  {picked && primaryProduct ? <SizeCropPreview imageUrl={picked.url} sizeKey={primaryProduct.size?.replace(/['"]/g,'').replace(/ /,'')||'8x10'} displayWidth={56} /> : picked ? <img src={picked.url} alt="Selected" style={{width:56,height:56,objectFit:'cover'}}/> : null}
                   <div>
                     <div style={{fontSize:13,fontWeight:600}}>Selected: {picked.styleName}</div>
                     <div style={{fontSize:11,color:'var(--gold)'}}>✓ This will be printed on your {primaryProduct?.name}</div>
