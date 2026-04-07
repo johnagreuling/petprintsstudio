@@ -15,8 +15,8 @@ const r2 = new S3Client({
   },
 })
 
-async function uploadB64ToR2(b64: string, ext = 'png'): Promise<string> {
-  const key = `generated/${uuidv4()}.${ext}`
+async function uploadB64ToR2(b64: string, ext = 'png', sessionFolder = 'generated'): Promise<string> {
+  const key = `${sessionFolder}/${uuidv4()}.${ext}`
   const buffer = Buffer.from(b64, 'base64')
   await r2.send(new PutObjectCommand({
     Bucket: process.env.R2_BUCKET_NAME!,
@@ -439,7 +439,7 @@ ${CONSTRAINTS_GPT}`
 }
 
 export async function POST(req: NextRequest) {
-  const { imageUrl, isMemory, answers, petType, petName } = await req.json()
+  const { imageUrl, isMemory, answers, petType, petName, sessionId } = await req.json()
 
   const r2PublicBase = process.env.R2_PUBLIC_URL?.replace(/\/$/, '') || ''
   const imageKey = imageUrl.startsWith(r2PublicBase)
@@ -508,6 +508,9 @@ export async function POST(req: NextRequest) {
           }
         } catch(e) { console.error('Vision failed:', e) }
 
+        const petSlug = (petName || petType || 'pet').toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 20)
+        const sessionFolder = `sessions/${sessionId || uuidv4()}_${petSlug}`
+        const sessionStart = new Date().toISOString()
         send({ type: 'progress', value: 12, message: 'Starting portrait generation...' })
 
         if (!isMemory) {
@@ -558,7 +561,7 @@ export async function POST(req: NextRequest) {
                   const d = await res.json()
                   const b64 = d.data?.[0]?.b64_json
                   if (b64) {
-                    const url = await uploadB64ToR2(b64)
+                    const url = await uploadB64ToR2(b64, 'png', sessionFolder)
                     const img = { url, styleId: `${family.id}_${v}`, styleName: `${family.emoji} ${family.name}`, model: 'gpt' }
                     allImages.push(img); send({ type: 'image', image: img })
                   }
@@ -621,7 +624,7 @@ export async function POST(req: NextRequest) {
                     const d = await res.json()
                     const b64 = d.data?.[0]?.b64_json
                     if (b64) {
-                      const url = await uploadB64ToR2(b64)
+                      const url = await uploadB64ToR2(b64, 'png', sessionFolder)
                       allImages.push({ url, styleId: `${sceneId}_gpt`, styleName: sceneNames[sceneId] || sceneId, model: 'gpt' })
                       send({ type: 'image', image: allImages[allImages.length-1] })
                     }
