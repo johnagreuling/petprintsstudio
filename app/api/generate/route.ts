@@ -511,6 +511,9 @@ export async function POST(req: NextRequest) {
         const petSlug = (petName || petType || 'pet').toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 20)
         const sessionFolder = `sessions/${sessionId || uuidv4()}_${petSlug}`
         const sessionStart = new Date().toISOString()
+        const petSlug = (petName || petType || 'pet').toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 20)
+        const sessionFolder = `sessions/${sessionId || uuidv4()}_${petSlug}`
+        const sessionStart = new Date().toISOString()
         send({ type: 'progress', value: 12, message: 'Starting portrait generation...' })
 
         if (!isMemory) {
@@ -674,8 +677,9 @@ export async function POST(req: NextRequest) {
           }
         }
 
+        await saveSessionMetadata(sessionFolder, { sessionId: sessionId || sessionFolder, petName: petName || petType || 'Unknown', petType: petType || 'dog', petDescription: petDesc, isMemory, imageCount: allImages.length, createdAt: sessionStart, styles: [...new Set(allImages.map((i: any) => i.styleName))], images: allImages })
         send({ type: 'progress', value: 100, message: 'All portraits ready!' })
-        send({ type: 'done', images: allImages, counts: {
+        send({ type: 'done', images: allImages, sessionFolder, counts: {
           gpt: allImages.filter(x => x.model === 'gpt').length,
           astria: allImages.filter(x => x.model === 'astria').length,
           total: allImages.length,
