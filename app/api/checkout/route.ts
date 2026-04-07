@@ -13,7 +13,7 @@ function getStripe() {
 export async function POST(req: NextRequest) {
   try {
     const stripe = getStripe()
-    const { imageUrl, primaryProduct, primarySize, extras, wantBundle, wantAllImages, wantSong, styleName, petName, isMemory } = await req.json()
+    const { imageUrl, primaryProduct, primarySize, extras, wantBundle, wantAllImages, wantSong, styleName, petName, isMemory, sessionFolder } = await req.json()
 
     const petLabel = petName ? `${petName}'s` : 'Your Pet'
     const lineItems: any[] = []
@@ -144,6 +144,7 @@ export async function POST(req: NextRequest) {
         wantBundle: String(wantBundle),
         wantAllImages: String(wantAllImages),
         wantSong: String(wantSong),
+        sessionFolder: sessionFolder || '',
         extraProductIds: (extras || []).map((e: any) => e.id).join(','),
       },
     })
