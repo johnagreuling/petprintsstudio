@@ -96,7 +96,7 @@ export const ALL_IMAGES_PRICE     = 29.99
 export const PET_SONG_PRICE       = 19.00
 
 export const VARIATIONS_PER_STYLE = 3
-export const DEFAULT_STYLES = ['oil_painting', 'watercolor', 'pop_art', 'pencil_sketch']
+export const DEFAULT_STYLES = ['oil_painting', 'watercolor', 'pencil_sketch', 'pop_art', 'renaissance', 'impressionist', 'cartoon', 'vintage_poster', 'vintage_pop_art', 'vintage_poster_v2']
 
 export const ASTRIA_API = 'https://api.astria.ai'
 export const ASTRIA_BASE_MODEL_ID = 690204
