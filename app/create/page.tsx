@@ -1,6 +1,7 @@
 'use client'
 import { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
+import WatermarkedImage from '@/components/WatermarkedImage'
 import { PRODUCTS, PRODUCT_CATEGORIES, ART_STYLES, QUESTIONNAIRE, DIGITAL_BUNDLE_PRICE, MEMORY_UPGRADE_PRICE, DEFAULT_STYLES } from '@/lib/config'
 
 type Step = 'upload' | 'product' | 'pay' | 'questionnaire' | 'generating' | 'gallery' | 'upsell'
@@ -26,6 +27,7 @@ export default function CreatePage() {
   const [wantBundle, setWantBundle] = useState(false)
   const [wantAllImages, setWantAllImages] = useState(false)
   const [wantSong, setWantSong] = useState(false)
+  const [sessionFolder, setSessionFolder] = useState('')
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -101,7 +103,7 @@ export default function CreatePage() {
             const d = JSON.parse(line.slice(6))
             if (d.type === 'progress') { setProgress(d.value); setProgressMsg(d.message || 'Generating...') }
             if (d.type === 'image') { imgs.push(d.image); setGenerated([...imgs]) }
-            if (d.type === 'done') { setGenerated(d.images); setProgress(100); setProgressMsg('Done!') }
+            if (d.type === 'done') { setGenerated(d.images); setProgress(100); setProgressMsg('Done!'); if (d.sessionFolder) setSessionFolder(d.sessionFolder) }
             if (d.type === 'error') throw new Error(d.message)
           } catch {}
         }
@@ -137,6 +139,7 @@ export default function CreatePage() {
           styleName: picked.styleName,
           petName: answers.petName || '',
           isMemory,
+          sessionFolder,
         }),
       })
       if (!res.ok) throw new Error('Checkout failed')
@@ -577,7 +580,7 @@ export default function CreatePage() {
                 <div style={{fontSize:12,color:'var(--gold)',marginBottom:16}}>{generated.length} portrait{generated.length!==1?'s':''} ready...</div>
                 <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:4,maxWidth:480,margin:'0 auto'}}>
                   {generated.map((img,i)=>(
-                    <img key={i} src={img.url} alt={img.styleName} style={{width:'100%',aspectRatio:'1',objectFit:'cover',opacity:.6}}/>
+                    <WatermarkedImage src={img.url} alt={img.styleName} width={200} height={300} displayRatio="2/3" style={{opacity:.85}}/>
                   ))}
                 </div>
               </div>
@@ -614,7 +617,7 @@ export default function CreatePage() {
                     <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:4}}>
                       {imgs.map((img,i)=>(
                         <div key={i} style={{position:'relative',cursor:'pointer'}} onClick={()=>setPicked(img)}>
-                          <img src={img.url} alt={`${name} ${i+1}`} className={`img-card${picked?.url===img.url?' picked':''}`}/>
+                          <WatermarkedImage src={img.url} alt={`${name} ${i+1}`} width={400} height={600} displayRatio="2/3" className={`img-card${picked?.url===img.url?' picked':''}`}/>
                           {picked?.url===img.url&&<div style={{position:'absolute',top:10,right:10,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:13}}>✓</div>}
                         </div>
                       ))}
