@@ -68,9 +68,32 @@ export default function CreatePage() {
         headers: { 'Content-Type': uploadedFile.type },
       })
       if (!uploadRes.ok) throw new Error('Upload failed')
-      setUploadedUrl(url); setProgress(20); setProgressMsg('Starting AI generation...')
+      setUploadedUrl(url); setProgress(20); setProgressMsg('Crafting your pet\'s story...')
 
-      // Generate
+      // Generate creative brief first — drives image prompt + song
+      let brief: any = null
+      try {
+        const briefRes = await fetch('/api/creative-brief', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            petName: answers.petName || '',
+            petType: answers.petBreed || 'pet',
+            personality: answers.petPersonality || '',
+            favoritePlace: [answers.favPlace, answers.favOutdoorSpot].filter(Boolean).join(', '),
+            specialObjects: [answers.favToy, answers.favCar, answers.favFood].filter(Boolean).join(', '),
+            specialPeople: answers.specialPeople || '',
+            mood: answers.mood || '',
+            musicStyle: answers.musicStyle || '',
+            selectedStyleName: answers.artStyle || '',
+            additionalNotes: answers.perfectDay || ''
+          })
+        })
+        if (briefRes.ok) { brief = await briefRes.json(); setProgressMsg('Story ready — generating portraits...') }
+      } catch(e) { console.warn('Brief generation skipped:', e) }
+      setProgress(28)
+
+      // Generate portraits
       const genRes = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -81,6 +104,8 @@ export default function CreatePage() {
           answers,
           petName: answers.petName || '',
           petType: answers.petBreed || 'pet',
+          brief: brief || null,
+          imagePromptCore: brief?.image_prompt_core || null,
         }),
       })
       if (!genRes.ok) throw new Error('Generation failed')
