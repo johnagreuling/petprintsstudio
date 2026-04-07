@@ -12,8 +12,8 @@ const r2 = new S3Client({
   },
 })
 
-export async function GET(req: NextRequest, { params }: { params: { sessionId: string } }) {
-  const { sessionId } = params
+export async function GET(req: NextRequest, { params }: { params: Promise<{ sessionId: string }> }) {
+  const { sessionId } = await params
   try {
     const list = await r2.send(new ListObjectsV2Command({
       Bucket: process.env.R2_BUCKET_NAME!,
