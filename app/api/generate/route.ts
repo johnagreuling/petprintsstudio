@@ -681,6 +681,18 @@ export async function POST(req: NextRequest) {
         }
 
         await saveSessionMetadata(sessionFolder, { sessionId: sessionId || sessionFolder, petName: petName || petType || 'Unknown', petType: petType || 'dog', petDescription: petDesc, isMemory, imageCount: allImages.length, createdAt: sessionStart, styles: [...new Set(allImages.map((i: any) => i.styleName))], images: allImages, brief: brief || null, songTitle: brief?.song_title || null, sunoPrompt: brief?.suno_prompt_full || null })
+        // Send song notification email to admin if brief has suno prompt
+        if (brief?.suno_prompt_full && process.env.RESEND_API_KEY) {
+          sendSongNotificationEmail({
+            petName: petName || petType || 'Unknown',
+            songTitle: brief.song_title || 'Custom Song',
+            sunoPrompt: brief.suno_prompt_full,
+            portraitTitle: brief.portrait_title || '',
+            sessionFolder,
+            firstImageUrl: allImages[0]?.url || '',
+          }).catch((e: any) => console.error('Song notification email failed:', e))
+        }
+
         send({ type: 'progress', value: 100, message: 'All portraits ready!' })
         send({ type: 'done', images: allImages, sessionFolder, counts: {
           gpt: allImages.filter(x => x.model === 'gpt').length,
@@ -699,5 +711,19 @@ export async function POST(req: NextRequest) {
 
   return new Response(stream, {
     headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive' },
+  })
+}
+
+
+async function sendSongNotificationEmail({ petName, songTitle, sunoPrompt, portraitTitle, sessionFolder, firstImageUrl }: {
+  petName: string; songTitle: string; sunoPrompt: string; portraitTitle: string; sessionFolder: string; firstImageUrl: string
+}) {
+  const adminEmail = process.env.ADMIN_EMAIL || 'johnagreuling@icloud.com'
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.petprintsstudio.com'
+  const html = `<!DOCTYPE html><html><body style="background:#0A0A0A;color:#F5F0E8;font-family:Arial,sans-serif"><div style="max-width:600px;margin:0 auto;padding:40px 24px"><div style="background:#141414;border:1px solid rgba(201,168,76,.3);padding:32px;margin-bottom:20px"><div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#C9A84C;margin-bottom:12px">New Song Request — Action Required</div><h1 style="font-size:28px;font-weight:400;color:#F5F0E8;margin:0 0 8px">🎵 ${petName}</h1><p style="color:rgba(245,240,232,.5);font-size:14px;margin:0 0 24px">${portraitTitle}</p><div style="background:#0A0A0A;border:1px solid rgba(245,240,232,.08);padding:16px;margin-bottom:16px"><div style="font-size:10px;letter-spacing:.2em;color:#C9A84C;margin-bottom:8px;text-transform:uppercase">Song Title</div><div style="font-size:16px;font-weight:600">${songTitle}</div></div><div style="background:#0A0A0A;border:2px solid rgba(201,168,76,.4);padding:16px;margin-bottom:24px"><div style="font-size:10px;letter-spacing:.2em;color:#C9A84C;margin-bottom:8px;text-transform:uppercase">Suno Prompt — Copy this into suno.com/create</div><div style="font-size:14px;line-height:1.8;color:rgba(245,240,232,.9);white-space:pre-wrap">${sunoPrompt}</div></div><a href="${appUrl}/admin/songs" style="display:inline-block;background:#C9A84C;color:#0A0A0A;padding:14px 28px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none">→ Open Song Admin to paste MP3 URL</a></div><div style="font-size:11px;color:rgba(245,240,232,.2);text-align:center">Session: ${sessionFolder}</div></div></body></html>`
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ from: 'Pet Prints Studio <orders@petprintsstudio.com>', to: adminEmail, subject: `🎵 New Song Request — ${petName}: "${songTitle}"`, html })
   })
 }
