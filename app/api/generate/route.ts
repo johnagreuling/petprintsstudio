@@ -445,7 +445,7 @@ ${CONSTRAINTS_GPT}`
 }
 
 export async function POST(req: NextRequest) {
-  const { imageUrl, isMemory, answers, petType, petName, sessionId } = await req.json()
+  const { imageUrl, isMemory, answers, petType, petName, sessionId, brief, imagePromptCore } = await req.json()
 
   const r2PublicBase = process.env.R2_PUBLIC_URL?.replace(/\/$/, '') || ''
   const imageKey = imageUrl.startsWith(r2PublicBase)
@@ -680,7 +680,7 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        await saveSessionMetadata(sessionFolder, { sessionId: sessionId || sessionFolder, petName: petName || petType || 'Unknown', petType: petType || 'dog', petDescription: petDesc, isMemory, imageCount: allImages.length, createdAt: sessionStart, styles: [...new Set(allImages.map((i: any) => i.styleName))], images: allImages })
+        await saveSessionMetadata(sessionFolder, { sessionId: sessionId || sessionFolder, petName: petName || petType || 'Unknown', petType: petType || 'dog', petDescription: petDesc, isMemory, imageCount: allImages.length, createdAt: sessionStart, styles: [...new Set(allImages.map((i: any) => i.styleName))], images: allImages, brief: brief || null, songTitle: brief?.song_title || null, sunoPrompt: brief?.suno_prompt_full || null })
         send({ type: 'progress', value: 100, message: 'All portraits ready!' })
         send({ type: 'done', images: allImages, sessionFolder, counts: {
           gpt: allImages.filter(x => x.model === 'gpt').length,
