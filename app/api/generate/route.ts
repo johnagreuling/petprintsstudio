@@ -515,7 +515,6 @@ export async function POST(req: NextRequest) {
         } catch(e) { console.error('Vision failed:', e) }
 
         const petSlug = (petName || petType || 'pet').toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 20)
-const petSlug = (petName || petType || 'pet').toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 20)
         const sessionFolder = `sessions/${sessionId || uuidv4()}_${petSlug}`
         const sessionStart = new Date().toISOString()
         send({ type: 'progress', value: 12, message: 'Starting portrait generation...' })
