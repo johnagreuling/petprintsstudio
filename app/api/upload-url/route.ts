@@ -16,9 +16,11 @@ const r2 = new S3Client({
 
 export async function POST(req: NextRequest) {
   try {
-    const { filename, contentType } = await req.json()
+    const { filename, contentType, sessionId, petName } = await req.json()
     const ext = filename?.split('.').pop()?.toLowerCase() || 'jpg'
-    const key = `uploads/${uuidv4()}.${ext}`
+    const petSlug = (petName || 'pet').toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 20)
+    const folder = sessionId ? `sessions/${sessionId}_${petSlug}` : 'uploads'
+    const key = `${folder}/original.${ext}`
 
     const signedUrl = await getSignedUrl(
       r2,
