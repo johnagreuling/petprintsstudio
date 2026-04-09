@@ -34,6 +34,7 @@ export default function CreatePage() {
   const [wantAllImages, setWantAllImages] = useState(false)
   const [wantSong, setWantSong] = useState(false)
   const [sessionFolder, setSessionFolder] = useState('')
+  const [expandingStyle, setExpandingStyle] = useState<string|null>(null)
   const [savedSession, setSavedSession] = useState<{sessionFolder:string;images:any[];petName:string;createdAt:string}|null>(null)
 
   useEffect(() => {
@@ -337,6 +338,46 @@ export default function CreatePage() {
   }
 
   const stepNum = {upload:1,product:2,pay:3,questionnaire:3,generating:4,gallery:4,upsell:5}[step]
+
+
+  const handleExpandStyle = async (styleId: string, styleName: string) => {
+    if (!uploadedUrl || expandingStyle) return
+    setExpandingStyle(styleId)
+    try {
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          imageUrl: uploadedUrl,
+          targetStyleId: styleId,
+          variantCount: 2,
+          petName: answers.petName || '',
+          petType: answers.petBreed || 'pet',
+          sessionId: sessionFolder,
+          isMemory: false,
+        })
+      })
+      if (!res.ok) throw new Error('Failed')
+      const reader = res.body!.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+      while (true) {
+        const {done, value} = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, {stream:true})
+        const lines = buffer.split('\n\n')
+        buffer = lines.pop() || ''
+        for (const line of lines) {
+          if (!line.startsWith('data:')) continue
+          try {
+            const d = JSON.parse(line.slice(5))
+            if (d.type === 'image') setGenerated(prev => [...prev, d.image])
+          } catch(e) {}
+        }
+      }
+    } catch(e) { console.error('Expand style error:', e) }
+    finally { setExpandingStyle(null) }
+  }
 
   return (
     <div style={{background:'#0A0A0A',color:'#F5F0E8',minHeight:'100vh',fontFamily:"'DM Sans',sans-serif"}}>
@@ -736,8 +777,15 @@ export default function CreatePage() {
                         </div>
                       ))}
                     </div>
-                  </div>
-                )
+                    {/* Get more variations button */}
+                    <button
+                      onClick={()=>handleExpandStyle(imgs[0]?.styleId, name)}
+                      disabled={!!expandingStyle}
+                      style={{marginTop:12,background:'transparent',border:'1px solid rgba(201,168,76,.3)',color:'var(--gold)',padding:'8px 20px',fontSize:10,letterSpacing:'.18em',textTransform:'uppercase',cursor:expandingStyle?'default':'pointer',opacity:expandingStyle?0.5:1,display:'flex',alignItems:'center',gap:8}}
+                    >
+                      {expandingStyle===imgs[0]?.styleId ? '⟳ Generating...' : '+ Get 2 More Variations'}
+                    </button>
+                  </div>        )
               })
             })()}
 

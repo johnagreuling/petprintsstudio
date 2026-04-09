@@ -504,7 +504,7 @@ ${CONSTRAINTS_GPT}`
 }
 
 export async function POST(req: NextRequest) {
-  const { imageUrl, isMemory, answers, petType, petName, sessionId, brief, imagePromptCore } = await req.json()
+  const { imageUrl, isMemory, answers, petType, petName, sessionId, brief, imagePromptCore, targetStyleId, variantCount } = await req.json()
 
   const r2PublicBase = process.env.R2_PUBLIC_URL?.replace(/\/$/, '') || ''
   const imageKey = imageUrl.startsWith(r2PublicBase)
@@ -601,11 +601,14 @@ export async function POST(req: NextRequest) {
           // All use /images/edits + input_fidelity:high + pet photo
           // Rate limit: 5 images/min — run 4 at a time with 13s gap between batches
           const VARIANTS_PER_STYLE = 1
-          const total = STYLE_FAMILIES.length * VARIANTS_PER_STYLE // 12
+          const activeFamilies = targetStyleId
+            ? STYLE_FAMILIES.filter(f => f.id === targetStyleId)
+            : STYLE_FAMILIES
+          const variantsToRun = variantCount || VARIANTS_PER_STYLE
+          const total = activeFamilies.length * variantsToRun
           let done = 0
-
-          const allTasks = STYLE_FAMILIES.flatMap(family =>
-            Array.from({ length: VARIANTS_PER_STYLE }, (_, v) => async () => {
+          const allTasks = activeFamilies.flatMap(family =>
+            Array.from({ length: variantsToRun }, (_, v) => async () => {
               try {
                 if (!petImageBuffer) { console.error('No buffer for GPT'); done++; return }
                 const fd = new FormData()
