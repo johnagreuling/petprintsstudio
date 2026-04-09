@@ -600,8 +600,8 @@ export async function POST(req: NextRequest) {
           // ── GPT Image 1.5 only — 8 styles × 3 variants = 24 portraits ──
           // All use /images/edits + input_fidelity:high + pet photo
           // Rate limit: 5 images/min — run 4 at a time with 13s gap between batches
-          const VARIANTS_PER_STYLE = 3
-          const total = STYLE_FAMILIES.length * VARIANTS_PER_STYLE // 24
+          const VARIANTS_PER_STYLE = 1
+          const total = STYLE_FAMILIES.length * VARIANTS_PER_STYLE // 12
           let done = 0
 
           const allTasks = STYLE_FAMILIES.flatMap(family =>
