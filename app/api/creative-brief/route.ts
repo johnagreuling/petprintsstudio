@@ -6,7 +6,27 @@ export const maxDuration = 30
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { petName, petType, personality, favoritePlace, specialObjects, specialPeople, mood, musicStyle, selectedStyleName, additionalNotes } = body
+    const { petName, petType, personality, favoritePlace, specialObjects, specialPeople, mood, musicStyle, selectedStyleName, additionalNotes, customStyleRequest, generateStylePromptOnly } = body
+
+    // Mode: generate a custom style prompt from free-form description
+    if (generateStylePromptOnly && customStyleRequest) {
+      const r = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [
+            { role: 'system', content: 'You are an expert AI image prompt engineer for pet portrait art. Convert a customer style description into a precise, vivid image generation prompt in 2-3 sentences. Include: artistic technique, color palette, lighting, mood. End with "museum quality, highly detailed."' },
+            { role: 'user', content: `Convert this into an image generation prompt for a pet portrait: "${customStyleRequest}"` }
+          ],
+          max_tokens: 250,
+          temperature: 0.7,
+        })
+      })
+      const d = await r.json()
+      const custom_style_prompt = d.choices?.[0]?.message?.content?.trim() || ''
+      return NextResponse.json({ custom_style_prompt })
+    }
     if (!petName || !petType) return NextResponse.json({ error: 'petName and petType required' }, { status: 400 })
 
     const systemPrompt = `You are the creative director for a premium AI pet portrait studio.
