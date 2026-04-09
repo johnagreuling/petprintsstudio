@@ -1,5 +1,5 @@
 'use client'
-import { useState, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import WatermarkedImage from '@/components/WatermarkedImage'
 import SizeCropPreview from '@/components/SizeCropPreview'
@@ -34,6 +34,18 @@ export default function CreatePage() {
   const [wantAllImages, setWantAllImages] = useState(false)
   const [wantSong, setWantSong] = useState(false)
   const [sessionFolder, setSessionFolder] = useState('')
+  const [savedSession, setSavedSession] = useState<{sessionFolder:string;images:any[];petName:string;createdAt:string}|null>(null)
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('pps_last_session')
+      if (saved) {
+        const data = JSON.parse(saved)
+        const age = Date.now() - new Date(data.createdAt).getTime()
+        if (age < 24 * 60 * 60 * 1000 && data.images?.length > 0) setSavedSession(data)
+      }
+    } catch(e) {}
+  }, [])
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -148,7 +160,16 @@ export default function CreatePage() {
             const d = JSON.parse(line.slice(6))
             if (d.type === 'progress') { setProgress(d.value); setProgressMsg(d.message || 'Generating...') }
             if (d.type === 'image') { imgs.push(d.image); setGenerated([...imgs]) }
-            if (d.type === 'done') { setGenerated(d.images); setProgress(100); setProgressMsg('Done!'); if (d.sessionFolder) setSessionFolder(d.sessionFolder) }
+            if (d.type === 'done') {
+              setGenerated(d.images); setProgress(100); setProgressMsg('Done!');
+              if (d.sessionFolder) {
+                setSessionFolder(d.sessionFolder)
+                try {
+                  const sessionData = {sessionFolder: d.sessionFolder, images: d.images, petName: answers.petName||petName||'', createdAt: new Date().toISOString()}
+                  localStorage.setItem('pps_last_session', JSON.stringify(sessionData))
+                } catch(e) {}
+              }
+            }
             if (d.type === 'error') throw new Error(d.message)
           } catch {}
         }
@@ -376,6 +397,30 @@ export default function CreatePage() {
       </nav>
 
       <div style={{maxWidth:860,margin:'0 auto',padding:'56px 24px 80px'}}>
+
+        {/* ── RESUME SESSION BANNER ── */}
+        {step==='upload' && savedSession && (
+          <div style={{background:'linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.03))',border:'1px solid rgba(201,168,76,.5)',padding:'20px 28px',marginBottom:4,display:'flex',gap:20,alignItems:'center',flexWrap:'wrap'}}>
+            <div style={{fontSize:36}}>🎨</div>
+            <div style={{flex:1,minWidth:200}}>
+              <div style={{fontSize:9,letterSpacing:'.25em',textTransform:'uppercase',color:'var(--gold)',marginBottom:4}}>Previous Session Found</div>
+              <div className="serif" style={{fontSize:17,color:'var(--cream)',marginBottom:4}}>
+                {savedSession.petName ? `${savedSession.petName}’s portraits` : 'Your portraits'} &mdash; {savedSession.images.length} images ready
+              </div>
+              <div style={{fontSize:11,color:'var(--muted)'}}>Generated {new Date(savedSession.createdAt).toLocaleDateString()} at {new Date(savedSession.createdAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</div>
+            </div>
+            <div style={{display:'flex',gap:8}}>
+              <button className="btn-gold" style={{fontSize:11,padding:'11px 20px'}}
+                onClick={()=>{ setGenerated(savedSession.images); setSessionFolder(savedSession.sessionFolder); setStep('gallery') }}>
+                ← View My Portraits
+              </button>
+              <button className="btn-out" style={{fontSize:11,padding:'11px 20px'}}
+                onClick={()=>{ try{localStorage.removeItem('pps_last_session')}catch(e){} setSavedSession(null) }}>
+                Start Fresh
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* ── STEP 1: UPLOAD ── */}
         {step==='upload'&&(
