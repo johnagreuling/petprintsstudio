@@ -87,6 +87,65 @@ const STYLE_FAMILIES: Array<{
   astriaPrompt: (petType: string) => string
 }> = [
   {
+    id: 'neon_glow',
+    name: 'Neon Glow',
+    emoji: '🌟',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+STYLE
+Render this portrait in a Neon Glow style with a dark, cinematic background and vivid neon lighting accents. Preserve the subject's likeness and expression while reinterpreting the scene with bold glowing outlines, luminous highlights, and high contrast color. Use saturated neon tones such as electric blue, magenta, purple, teal, and gold against deep shadow. The lighting should feel dynamic and stylized, emphasizing contours and key elements of the scene. The final image should feel sleek, modern, high-energy, and visually striking, like premium cyber-inspired wall art with a nightlife aesthetic.
+
+COMPOSITION
+Strong centered portrait. Dark dramatic background. Subject glows with neon rim lighting. Eyes and facial features catch the brightest neon light.
+
+PAINT SURFACE
+Sleek modern digital-art quality. High contrast between dark background and luminous neon highlights. Sharp glowing edges.
+
+BACKGROUND
+Dark cinematic — near black with subtle depth. Neon color bleed and atmospheric haze.
+
+${CONSTRAINTS_GPT}
+- not pastel or muted
+- not daytime or natural light
+- not cartoon or anime`,
+
+    fluxPrompt: (petDesc) =>
+      `Render this portrait in Neon Glow style. Dark cinematic background, vivid neon lighting accents. Preserve the ${petDesc} likeness and expression. Bold glowing outlines, luminous highlights, high contrast. Electric blue, magenta, purple, teal, gold neon tones against deep shadow. Sleek modern high-energy premium cyber-inspired wall art. Keep identity unchanged.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType} in neon glow style, dark cinematic background, electric neon lighting, vibrant colors`,
+  },
+  {
+    id: 'storybook',
+    name: 'Storybook Nostalgia',
+    emoji: '📖',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+STYLE
+Render this portrait in a warm storybook nostalgia style, with soft painterly brushwork, gentle lighting, and a cozy, emotionally rich atmosphere. Preserve the subject's likeness, expression, and personality while placing them naturally within a story-driven environment. The scene should feel lived-in and meaningful, with subtle environmental details that support memory and narrative without overwhelming the subject. Use warm, inviting color tones, soft edges, and natural light. The overall composition should feel intimate, sentimental, and timeless, like a cherished illustrated memory brought to life.
+
+COMPOSITION
+Intimate centered portrait. Subject placed naturally in a cozy scene. Warm natural light or golden-hour glow. Environmental details that feel personal and lived-in.
+
+PAINT SURFACE
+Soft painterly brushwork. Warm textured canvas feel. Gentle impressionistic edges that soften into the background while keeping the face clear.
+
+BACKGROUND
+Cozy memory-filled scene — books, warm fabrics, soft botanicals, golden light through a window. Feels lived-in and meaningful.
+
+${CONSTRAINTS_GPT}
+- not dark or moody
+- not harsh lighting
+- not neon or cyberpunk
+- not photorealistic photography`,
+
+    fluxPrompt: (petDesc) =>
+      `Warm storybook nostalgia style portrait of ${petDesc}. Soft painterly brushwork, gentle lighting, cozy emotionally rich atmosphere. Preserve subject's likeness and personality. Warm inviting color tones, soft edges, natural light. Intimate sentimental timeless feel like a cherished illustrated memory. Keep identity unchanged.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType} in storybook illustration style, warm cozy atmosphere, soft painterly, golden light`,
+  },
+  {
     id: 'ethereal',
     name: 'Ethereal Painterly',
     emoji: '🎨',
@@ -401,65 +460,6 @@ CONSTRAINTS
 
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, premium vintage poster style, retro illustrated, aged paper texture, warm nostalgic palette, heritage advertisement aesthetic`,
-  },
-  {
-    id: 'neon_glow',
-    name: 'Neon Glow',
-    emoji: '🌟',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-STYLE
-Render this portrait in a Neon Glow style with a dark, cinematic background and vivid neon lighting accents. Preserve the subject's likeness and expression while reinterpreting the scene with bold glowing outlines, luminous highlights, and high contrast color. Use saturated neon tones such as electric blue, magenta, purple, teal, and gold against deep shadow. The lighting should feel dynamic and stylized, emphasizing contours and key elements of the scene. The final image should feel sleek, modern, high-energy, and visually striking, like premium cyber-inspired wall art with a nightlife aesthetic.
-
-COMPOSITION
-Strong centered portrait. Dark dramatic background. Subject glows with neon rim lighting. Eyes and facial features catch the brightest neon light.
-
-PAINT SURFACE
-Sleek modern digital-art quality. High contrast between dark background and luminous neon highlights. Sharp glowing edges.
-
-BACKGROUND
-Dark cinematic — near black with subtle depth. Neon color bleed and atmospheric haze.
-
-${CONSTRAINTS_GPT}
-- not pastel or muted
-- not daytime or natural light
-- not cartoon or anime`,
-
-    fluxPrompt: (petDesc) =>
-      `Render this portrait in Neon Glow style. Dark cinematic background, vivid neon lighting accents. Preserve the ${petDesc} likeness and expression. Bold glowing outlines, luminous highlights, high contrast. Electric blue, magenta, purple, teal, gold neon tones against deep shadow. Sleek modern high-energy premium cyber-inspired wall art. Keep identity unchanged.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType} in neon glow style, dark cinematic background, electric neon lighting, vibrant colors`,
-  },
-  {
-    id: 'storybook',
-    name: 'Storybook Nostalgia',
-    emoji: '📖',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-STYLE
-Render this portrait in a warm storybook nostalgia style, with soft painterly brushwork, gentle lighting, and a cozy, emotionally rich atmosphere. Preserve the subject's likeness, expression, and personality while placing them naturally within a story-driven environment. The scene should feel lived-in and meaningful, with subtle environmental details that support memory and narrative without overwhelming the subject. Use warm, inviting color tones, soft edges, and natural light. The overall composition should feel intimate, sentimental, and timeless, like a cherished illustrated memory brought to life.
-
-COMPOSITION
-Intimate centered portrait. Subject placed naturally in a cozy scene. Warm natural light or golden-hour glow. Environmental details that feel personal and lived-in.
-
-PAINT SURFACE
-Soft painterly brushwork. Warm textured canvas feel. Gentle impressionistic edges that soften into the background while keeping the face clear.
-
-BACKGROUND
-Cozy memory-filled scene — books, warm fabrics, soft botanicals, golden light through a window. Feels lived-in and meaningful.
-
-${CONSTRAINTS_GPT}
-- not dark or moody
-- not harsh lighting
-- not neon or cyberpunk
-- not photorealistic photography`,
-
-    fluxPrompt: (petDesc) =>
-      `Warm storybook nostalgia style portrait of ${petDesc}. Soft painterly brushwork, gentle lighting, cozy emotionally rich atmosphere. Preserve subject's likeness and personality. Warm inviting color tones, soft edges, natural light. Intimate sentimental timeless feel like a cherished illustrated memory. Keep identity unchanged.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType} in storybook illustration style, warm cozy atmosphere, soft painterly, golden light`,
   },
 ]
 
