@@ -18,6 +18,11 @@ export default function CreatePage() {
   const [isMemory, setIsMemory] = useState(false)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [selectedStyles, setSelectedStyles] = useState<string[]>(DEFAULT_STYLES)
+  const [showCustomStyle, setShowCustomStyle] = useState(false)
+  const [customStyleDesc, setCustomStyleDesc] = useState('')
+  const [customStylePrompt, setCustomStylePrompt] = useState('')
+  const [customStyleActive, setCustomStyleActive] = useState(false)
+  const [generatingCustomStyle, setGeneratingCustomStyle] = useState(false)
   const [generated, setGenerated] = useState<Array<{url:string;styleId:string;styleName:string;model:string}>>([])
   const [picked, setPicked] = useState<{url:string;styleId:string;styleName:string;model:string} | null>(null)
   const [progress, setProgress] = useState(0)
@@ -46,6 +51,19 @@ export default function CreatePage() {
     const f = e.dataTransfer.files[0]
     if (f?.type.startsWith('image/')) handleFile(f)
   }, [])
+
+  const handleGenerateCustomStyle = async () => {
+    if (!customStyleDesc.trim()) return
+    setGeneratingCustomStyle(true)
+    try {
+      const res = await fetch('/api/creative-brief', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ petName: answers.petName||'pet', petType: answers.petBreed||'pet', customStyleRequest: customStyleDesc, generateStylePromptOnly: true })
+      })
+      if (res.ok) { const data = await res.json(); setCustomStylePrompt(data.custom_style_prompt||'') }
+    } catch(e) { console.error('Custom style error:', e) }
+    finally { setGeneratingCustomStyle(false) }
+  }
 
   const handleGenerate = async () => {
     if (!uploadedFile || !primaryProduct) return
@@ -106,6 +124,7 @@ export default function CreatePage() {
           petType: answers.petBreed || 'pet',
           brief: brief || null,
           imagePromptCore: brief?.image_prompt_core || null,
+          customStyle: customStyleActive && customStylePrompt ? {id:'custom',name:'Custom Style',prompt:customStylePrompt,description:customStyleDesc} : null,
         }),
       })
       if (!genRes.ok) throw new Error('Generation failed')
@@ -569,6 +588,30 @@ export default function CreatePage() {
                     </button>
                   ))}
                 </div>
+
+                {/* 13TH CARD — CUSTOM STYLE — full width centered */}
+                <div style={{marginTop:4,background:'linear-gradient(135deg,rgba(201,168,76,.09),rgba(201,168,76,.02))',border:'2px solid rgba(201,168,76,.4)',padding:'28px 36px',display:'flex',gap:28,alignItems:'center',flexWrap:'wrap'}}>
+                  <div style={{fontSize:48,lineHeight:1,flexShrink:0}}>✨</div>
+                  <div style={{flex:1,minWidth:220}}>
+                    <div style={{fontSize:9,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:6}}>Infinite Customization · The 13th Option</div>
+                    <div className="serif" style={{fontSize:20,fontWeight:400,marginBottom:6,color:'var(--cream)'}}>Create Your Own Style</div>
+                    <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>Describe any style you can imagine — Japanese woodblock, dark gothic, Renaissance gold leaf — and we'll generate 3 portraits just for them.</div>
+                  </div>
+                  <button className="btn-gold" style={{flexShrink:0,fontSize:10,padding:'11px 22px',whiteSpace:'nowrap'}} onClick={()=>setShowCustomStyle(s=>!s)}>
+                    {showCustomStyle?'▲ Close':'✨ Design Your Style'}
+                  </button>
+                </div>
+                {showCustomStyle&&(
+                  <div style={{background:'#0D0D0D',border:'1px solid rgba(201,168,76,.25)',borderTop:'none',padding:'20px 28px'}}>
+                    <textarea className="textarea" rows={3} placeholder="e.g. 'Japanese ukiyo-e woodblock with bold outlines' or 'Dark gothic fantasy with candlelight'" value={customStyleDesc} onChange={e=>setCustomStyleDesc(e.target.value)} style={{marginBottom:10,width:'100%'}}/>
+                    {customStylePrompt&&(<div style={{background:'#0A0A0A',border:'1px solid rgba(201,168,76,.2)',padding:'10px 14px',marginBottom:10,fontSize:11,color:'rgba(245,240,232,.55)',lineHeight:1.8}}><div style={{fontSize:9,color:'var(--gold)',letterSpacing:'.15em',textTransform:'uppercase',marginBottom:4}}>Generated Style Prompt</div>{customStylePrompt}</div>)}
+                    <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+                      <button className="btn-out" style={{fontSize:11,padding:'9px 18px'}} disabled={!customStyleDesc.trim()||generatingCustomStyle} onClick={handleGenerateCustomStyle}>{generatingCustomStyle?'✨ Generating...':'✨ Generate Style Prompt'}</button>
+                      {customStylePrompt&&(<button style={{fontSize:11,padding:'9px 18px',background:customStyleActive?'var(--gold)':'transparent',color:customStyleActive?'var(--ink)':'var(--gold)',border:'1px solid rgba(201,168,76,.5)',cursor:'pointer'}} onClick={()=>setCustomStyleActive(s=>!s)}>{customStyleActive?'✓ Added — Click to Remove':'+ Add to My Order (3 extra portraits)'}</button>)}
+                    </div>
+                    {customStyleActive&&<div style={{fontSize:11,color:'var(--gold)',marginTop:8}}>✓ 3 additional portraits will be generated in your custom style</div>}
+                  </div>
+                )}
               </div>
             </div>
 
