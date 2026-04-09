@@ -64,19 +64,19 @@ export default function Home() {
         <div style={{position:'absolute',top:'70%',left:'20%',width:400,height:400,background:'radial-gradient(circle,rgba(196,98,45,.04) 0%,transparent 70%)',pointerEvents:'none'}} />
 
         <div className="fu fu1" style={{marginBottom:20,fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'var(--gold)',fontWeight:500}}>
-          Fine Art Pet Portraits · Printed & Shipped
+          The most meaningful gift for a pet lover
         </div>
 
         <h1 className="serif fu fu2" style={{fontSize:'clamp(52px,7vw,104px)',lineHeight:1,marginBottom:24,fontWeight:400,maxWidth:1000}}>
-          Your Pet.<br/><em style={{color:'var(--gold)'}}>Gallery Worthy.</em>
+          Turn Their Story Into<br/><em style={{color:'var(--gold)'}}>Something Unforgettable.</em>
         </h1>
 
         <p className="fu fu3" style={{fontSize:18,lineHeight:1.9,color:'var(--muted)',maxWidth:560,marginBottom:52,fontWeight:300}}>
-          We turn what your pet means to you — their personality, their moments, their love — into art you can hang on your wall, music you can feel, and a memory you can relive forever.
+          We turn the moments, personality, and love that make your pet who they are into a portrait, a song, and a keepsake that lasts forever. The most personal gift imaginable.
         </p>
 
         <div className="fu fu4" style={{display:'flex',gap:16,flexWrap:'wrap',justifyContent:'center',marginBottom:72}}>
-          <Link href="/create" className="btn-gold">🐾 Tell Us About Them</Link>
+          <Link href="/create" className="btn-gold">🐾 Start Their Story</Link>
           <a href="#how-it-works" className="btn-out">See How It Works</a>
         </div>
 
@@ -249,7 +249,7 @@ export default function Home() {
                 <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(180px,1fr))',gap:2}}>
                   {items.map(p=>(
                     <div key={p.id} className="card" style={{padding:'24px 20px',position:'relative'}}>
-                      {p.popular&&<div className="popular-badge">Most Popular</div>}
+                      {p.popular&&<div className="popular-badge">Most Loved</div>}
                       <div style={{fontSize:26,marginBottom:12}}>{p.emoji}</div>
                       <div className="serif" style={{fontSize:17,marginBottom:4,fontWeight:400}}>{p.name}</div>
                       <div style={{fontSize:11,color:'var(--muted)',marginBottom:4}}>{p.size}</div>
@@ -264,6 +264,52 @@ export default function Home() {
         </div>
       </section>
 
+
+      <div className="divider"/>
+
+      {/* OCCASIONS — gift framing */}
+      <section style={{padding:'100px 60px',background:'var(--soft)'}}>
+        <div style={{maxWidth:1200,margin:'0 auto'}}>
+          <div style={{textAlign:'center',marginBottom:64}}>
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>Made For Moments That Matter</div>
+            <h2 className="serif" style={{fontSize:'clamp(36px,5vw,64px)',fontWeight:400}}>The Most Personal Gift<br/><em>You Can Give.</em></h2>
+            <p style={{color:'var(--muted)',fontSize:16,marginTop:16,maxWidth:500,margin:'16px auto 0',lineHeight:1.8}}>
+              Every order starts with a story — not just a photo. That&rsquo;s what makes the result feel like something they&rsquo;ll keep forever.
+            </p>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:2,marginBottom:2}}>
+            {[
+              {emoji:'🎂',label:'Birthday Gift',title:'Celebrate who they are',desc:'A portrait and song built from everything that makes their pet them. The kind of gift that stops the room.'},
+              {emoji:'🕊️',label:'Memorial',title:'Honor their memory',desc:'For a pet who has passed — or one whose time is close. A living record of the love, preserved the way it deserves to be.'},
+              {emoji:'🎁',label:'Just Because',title:'Because love doesn't need a reason',desc:'New puppy, gotcha day, or simply: I love this dog. Sometimes the best gifts arrive for no reason at all.'},
+            ].map(c=>(
+              <div key={c.title} className="card" style={{padding:'44px 36px'}}>
+                <div style={{fontSize:40,marginBottom:12}}>{c.emoji}</div>
+                <div style={{fontSize:9,letterSpacing:'.25em',textTransform:'uppercase',color:'var(--gold)',marginBottom:8}}>{c.label}</div>
+                <h3 className="serif" style={{fontSize:22,marginBottom:12,fontWeight:400}}>{c.title}</h3>
+                <p style={{fontSize:13,lineHeight:1.9,color:'var(--muted)'}}>{c.desc}</p>
+              </div>
+            ))}
+          </div>
+          {/* Quality reassurance strip */}
+          <div style={{background:'linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02))',border:'1px solid rgba(201,168,76,.2)',padding:'28px 40px',display:'flex',gap:40,alignItems:'center',flexWrap:'wrap',justifyContent:'space-between'}}>
+            {[
+              {icon:'🎨',text:'Every portrait reviewed before production'},
+              {icon:'📦',text:'Premium print quality, guaranteed'},
+              {icon:'🎵',text:'Original song included with every order'},
+              {icon:'📱',text:'QR code ships with every portrait'},
+            ].map(({icon,text})=>(
+              <div key={text} style={{display:'flex',alignItems:'center',gap:12}}>
+                <span style={{fontSize:22}}>{icon}</span>
+                <span style={{fontSize:13,color:'var(--muted)'}}>{text}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{textAlign:'center',marginTop:48}}>
+            <Link href="/create" className="btn-gold">🐾 Start Their Story</Link>
+          </div>
+        </div>
+      </section>
       <div className="divider"/>
 
       {/* MEMORY PORTRAIT FEATURE */}
@@ -340,9 +386,9 @@ export default function Home() {
 
       {/* CTA BAND */}
       <section style={{background:'var(--gold)',padding:'80px 60px',textAlign:'center'}}>
-        <div style={{fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'rgba(10,10,10,.5)',marginBottom:16}}>For the ones who love them completely</div>
+        <div style={{fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'rgba(10,10,10,.5)',marginBottom:16}}>The most meaningful gift for a pet lover</div>
         <h2 className="serif" style={{fontSize:'clamp(32px,5vw,68px)',color:'var(--ink)',fontWeight:400,marginBottom:16}}>
-          Their Story Deserves<br/>to Be Remembered.
+          Give a Gift<br/>They&rsquo;ll Never Forget.
         </h2>
         <p style={{fontSize:17,color:'rgba(10,10,10,.6)',marginBottom:40,maxWidth:460,margin:'0 auto 40px',lineHeight:1.8}}>
           A portrait. A song. A living memory. Everything you need to hold onto how they made you feel — forever.
