@@ -550,12 +550,11 @@ export async function POST(req: NextRequest) {
               try {
                 if (!petImageBuffer) { console.error('No buffer for GPT'); done++; return }
                 const fd = new FormData()
-                fd.append('model', 'gpt-image-1.5')
+                fd.append('model', 'gpt-image-1')
                 fd.append('prompt', family.gptPrompt(petDesc))
                 fd.append('n', '1')
                 fd.append('size', '1024x1024')
                 fd.append('quality', 'medium')
-                fd.append('input_fidelity', 'high')
                 fd.append('image[]', new Blob([petImageBuffer as unknown as BlobPart], { type: 'image/jpeg' }), 'pet.jpg')
 
                 const res = await fetch('https://api.openai.com/v1/images/edits', {
@@ -614,7 +613,7 @@ export async function POST(req: NextRequest) {
                 try {
                   const prompt = buildMemoryPrompt(answers || {}, petDesc, sceneId, family)
                   const fd = new FormData()
-                  fd.append('model', 'gpt-image-1.5')
+                  fd.append('model', 'gpt-image-1')
                   fd.append('prompt', prompt)
                   fd.append('n', '1')
                   fd.append('size', '1024x1024')
