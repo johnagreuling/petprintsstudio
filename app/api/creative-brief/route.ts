@@ -27,7 +27,8 @@ export async function POST(req: NextRequest) {
       const custom_style_prompt = d.choices?.[0]?.message?.content?.trim() || ''
       return NextResponse.json({ custom_style_prompt })
     }
-    if (!petName || !petType) return NextResponse.json({ error: 'petName and petType required' }, { status: 400 })
+    if (!petType) return NextResponse.json({ error: 'petType required' }, { status: 400 })
+    const resolvedPetName = petName || 'My Pet'
 
     const systemPrompt = `You are the creative director for a premium AI pet portrait studio.
 Transform a customer's emotional answers about their pet into:
@@ -57,7 +58,7 @@ You MUST respond with valid JSON only matching this exact schema:
 }`
 
     const userPrompt = `Create a complete creative brief:
-PET NAME: ${petName}
+PET NAME: ${resolvedPetName}
 PET TYPE: ${petType}
 PERSONALITY: ${personality || 'Not specified'}
 FAVORITE PLACE: ${favoritePlace || 'Not specified'}
