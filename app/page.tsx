@@ -52,8 +52,8 @@ export default function Home() {
         <div style={{display:'flex',gap:36,alignItems:'center'}}>
           <a href="#how-it-works">How It Works</a>
           <a href="#styles">Styles</a>
-          <a href="#products">Products</a>
-          <Link href="/create" className="btn-gold" style={{padding:'12px 24px'}}>Create Yours</Link>
+          <a href="#the-experience">The Experience</a>
+          <Link href="/create" className="btn-gold" style={{padding:'12px 24px'}}>Begin Their Story</Link>
         </div>
       </nav>
 
@@ -72,11 +72,11 @@ export default function Home() {
         </h1>
 
         <p className="fu fu3" style={{fontSize:18,lineHeight:1.9,color:'var(--muted)',maxWidth:560,marginBottom:52,fontWeight:300}}>
-          Upload a photo. Choose your canvas size. Our custom-tuned AI generates 36 stunning portrait options across 12 artistic styles36 stunning portrait options across 12 artistic styles — pick your favorites and we print and ship directly to your door.
+          We turn what your pet means to you — their personality, their moments, their love — into art you can hang on your wall, music you can feel, and a memory you can relive forever.
         </p>
 
         <div className="fu fu4" style={{display:'flex',gap:16,flexWrap:'wrap',justifyContent:'center',marginBottom:72}}>
-          <Link href="/create" className="btn-gold">🐾 Start Your Portrait</Link>
+          <Link href="/create" className="btn-gold">🐾 Tell Us About Them</Link>
           <a href="#how-it-works" className="btn-out">See How It Works</a>
         </div>
 
@@ -96,7 +96,7 @@ export default function Home() {
 
         {/* Stats */}
         <div className="fu fu4" style={{display:'flex',gap:60,flexWrap:'wrap',justifyContent:'center'}}>
-          {[['36','Portraits Generated','Per Order'],['12','Artistic','Styles Available'],['15+','Print','Products'],['4.9★','Average','Customer Rating']].map(([n,l1,l2])=>(
+          {[['36','Portraits','Per Story'],['12+','Styles','& Custom'],['♪','Original Song','Included'],['4.9★','Average','Customer Rating']].map(([n,l1,l2])=>(
             <div key={l1} style={{textAlign:'center'}}>
               <div className="serif" style={{fontSize:40,color:'var(--gold)',lineHeight:1}}>{n}</div>
               <div style={{fontSize:9,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--muted)',marginTop:6,lineHeight:1.6}}>{l1}<br/>{l2}</div>
@@ -111,20 +111,20 @@ export default function Home() {
       <section id="how-it-works" style={{padding:'120px 60px'}}>
         <div style={{maxWidth:1200,margin:'0 auto'}}>
           <div style={{textAlign:'center',marginBottom:80}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>Simple Process</div>
-            <h2 className="serif" style={{fontSize:'clamp(40px,5vw,72px)',fontWeight:400}}>From Photo to <em>Fine Art</em></h2>
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>The Process</div>
+            <h2 className="serif" style={{fontSize:'clamp(40px,5vw,72px)',fontWeight:400}}>Tell Us Who They Are.<br/><em>We'll Bring Them to Life.</em></h2>
           </div>
 
           <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:2}}>
             {[
-              {n:'01',icon:'📸',title:'Upload Your Photo',desc:'Any clear photo of your pet works best. Front-facing, good lighting — we handle the rest.'},
-              {n:'02',icon:'🖼️',title:'Choose Your Canvas',desc:'Select the size and product you want. Canvas, fine art print, mug, blanket — you pick first, then we generate.'},
-              {n:'03',icon:'⚡',title:'Get 36 Portraits',desc:'Our custom-tuned AI generates 36 stunning variations across 12 artistic styles. Browse them all and pick your favorite — no commitment until you choose.'},
-              {n:'04',icon:'📦',title:'We Print & Ship',desc:'We print your chosen portrait on premium materials and ship directly to your door in 5–7 days.'},
+              {n:'01',emoji:'💬',title:'Tell us about them',desc:'Share their name, personality, quirks — the moments that made you love them. The more you tell us, the more personal every part of the experience becomes.'},
+              {n:'02',emoji:'🎨',title:'Choose how their story feels',desc:'Pick from 12 beautifully crafted art styles — or describe any style you can imagine. This isn't a filter. It's the emotional tone of their portrait.'},
+              {n:'03',emoji:'✨',title:'We bring their story to life',desc:'Your answers become art — 36 portraits created from your story. A song written from your memories. Everything comes together in a living digital experience.'},
+              {n:'04',emoji:'📦',title:'Hold onto them forever',desc:'Your portrait arrives printed on premium materials with a QR code connecting it to their song and story. A living memory, delivered to your door in 5–7 days.'},
             ].map((s,i)=>(
               <div key={s.n} className="card" style={{padding:'40px 28px',position:'relative'}}>
                 <div className="serif" style={{fontSize:64,color:'var(--gold)',opacity:.1,lineHeight:1,position:'absolute',top:20,right:20}}>{s.n}</div>
-                <div style={{fontSize:36,marginBottom:20}}>{s.icon}</div>
+                <div style={{fontSize:36,marginBottom:20}}>{s.emoji}</div>
                 <h3 className="serif" style={{fontSize:22,marginBottom:12,fontWeight:400}}>{s.title}</h3>
                 <p style={{fontSize:13,lineHeight:1.9,color:'var(--muted)'}}>{s.desc}</p>
                 {i<3&&<div style={{position:'absolute',right:-12,top:'50%',transform:'translateY(-50%)',color:'var(--gold)',fontSize:20,zIndex:1,opacity:.4}}>›</div>}
@@ -174,10 +174,10 @@ export default function Home() {
       <section id="styles" style={{padding:'120px 60px'}}>
         <div style={{maxWidth:1200,margin:'0 auto'}}>
           <div style={{textAlign:'center',marginBottom:64}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>10 Artistic Styles</div>
-            <h2 className="serif" style={{fontSize:'clamp(40px,5vw,72px)',fontWeight:400}}>Every Style. <em>One Pet.</em></h2>
-            <p style={{color:'var(--muted)',fontSize:16,marginTop:14,maxWidth:480,margin:'14px auto 0',lineHeight:1.8}}>
-              From classical oil to modern pop art — our custom-tuned AI generates 3 variations per style, giving you 36 portraits to choose from. Gallery-worthy results, every time.
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>Choose How Their Story Feels</div>
+            <h2 className="serif" style={{fontSize:'clamp(40px,5vw,72px)',fontWeight:400}}>12 Preset Styles.<br/><em>Infinite Possibilities.</em></h2>
+            <p style={{color:'var(--muted)',fontSize:16,marginTop:16,maxWidth:520,margin:'16px auto 0',lineHeight:1.8}}>
+              From classical oil painting to electric neon glow — 3 portraits per style gives you 36 interpretations to choose from. Or describe any style you can imagine and we'll create it.
             </p>
           </div>
 
@@ -197,6 +197,19 @@ export default function Home() {
             ))}
           </div>
 
+          {/* 13th card — Custom Style — full width */}
+          <div style={{marginTop:2,background:'linear-gradient(135deg,rgba(201,168,76,.09),rgba(201,168,76,.02))',border:'2px solid rgba(201,168,76,.35)',padding:'44px 56px',display:'grid',gridTemplateColumns:'auto 1fr auto',gap:40,alignItems:'center'}}>
+            <div style={{fontSize:64,lineHeight:1}}>✨</div>
+            <div>
+              <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:10}}>The 13th Option · Infinite Customization</div>
+              <h3 className="serif" style={{fontSize:34,fontWeight:400,marginBottom:12}}>Create Your Own Style</h3>
+              <p style={{fontSize:15,lineHeight:1.8,color:'var(--muted)',maxWidth:600}}>
+                Have a vision that doesn&rsquo;t fit a preset? Describe any style you can imagine — Japanese woodblock, dark gothic fantasy, Renaissance gold leaf — and we&rsquo;ll generate 3 portraits in that style specifically for your pet.
+              </p>
+            </div>
+            <Link href="/create" className="btn-gold" style={{flexShrink:0,whiteSpace:'nowrap',fontSize:11}}>✨ Design Your Style</Link>
+          </div>
+
           <div style={{background:'var(--soft)',border:'1px solid var(--border)',padding:'32px 40px',marginTop:2,display:'flex',alignItems:'center',gap:40,flexWrap:'wrap'}}>
             {ART_STYLES[activeStyle].styleImage && (
               <div style={{width:100,height:100,overflow:'hidden',flexShrink:0,border:'1px solid var(--border)'}}>
@@ -208,15 +221,7 @@ export default function Home() {
               <div className="serif" style={{fontSize:28,fontWeight:400}}>{ART_STYLES[activeStyle].name}</div>
               <div style={{fontSize:13,color:'var(--muted)',marginTop:8,lineHeight:1.7}}>{ART_STYLES[activeStyle].description}</div>
             </div>
-            <div>
-              <div style={{fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--muted)',marginBottom:10}}>Powered by</div>
-              <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
-                {['fal.ai FLUX 1.1 Pro','Stable Diffusion XL','Astria LoRA Fine-Tuning'].map(m=>(
-                  <span key={m} style={{border:'1px solid var(--border)',padding:'6px 14px',fontSize:11,color:'var(--muted)',letterSpacing:'.08em'}}>{m}</span>
-                ))}
-              </div>
-            </div>
-            <Link href="/create" className="btn-gold" style={{flexShrink:0}}>Generate In This Style</Link>
+            <Link href="/create" className="btn-gold" style={{flexShrink:0}}>Choose This Style</Link>
           </div>
         </div>
       </section>
@@ -228,9 +233,9 @@ export default function Home() {
         <div style={{maxWidth:1200,margin:'0 auto'}}>
           <div style={{textAlign:'center',marginBottom:64}}>
             <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>15+ Products</div>
-            <h2 className="serif" style={{fontSize:'clamp(40px,5vw,72px)',fontWeight:400}}>Put Your Pet <em>Everywhere</em></h2>
-            <p style={{color:'var(--muted)',fontSize:16,marginTop:14,maxWidth:520,margin:'14px auto 0',lineHeight:1.8}}>
-              Your portrait, on anything. Every product is printed on demand and shipped directly to your door.
+            <h2 className="serif" style={{fontSize:'clamp(40px,5vw,72px)',fontWeight:400}}>More Than a Portrait.<br/><em>A Way to Carry Them.</em></h2>
+            <p style={{color:'var(--muted)',fontSize:16,marginTop:16,maxWidth:520,margin:'16px auto 0',lineHeight:1.8}}>
+              Every product is an extension of the memory. Choose what feels right for how you want to keep them close.
             </p>
           </div>
 
@@ -266,9 +271,9 @@ export default function Home() {
         <div style={{maxWidth:1100,margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 1fr',gap:80,alignItems:'center'}}>
           <div>
             <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>The Premium Experience</div>
-            <h2 className="serif" style={{fontSize:'clamp(36px,4vw,60px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>Memory Portraits.<br/><em>Packed with Easter Eggs.</em></h2>
+            <h2 className="serif" style={{fontSize:'clamp(36px,4vw,60px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>For People Who<br/><em>Love Them Completely.</em></h2>
             <p style={{fontSize:16,lineHeight:1.9,color:'var(--muted)',marginBottom:32}}>
-              We ask you 15 targeted questions about your pet&rsquo;s life — their favorite sports team, the car they love riding in, their hometown, their go-to toy — and build it all into the scene. The result is a portrait that makes you say &ldquo;oh my god, that&rsquo;s exactly them.&rdquo;
+              We build a fully custom scene packed with everything that makes your pet who they are — their favorite team, their hometown, their toy, their car. A portrait that makes you say &ldquo;that&rsquo;s exactly them.&rdquo; Then we write them a song. Then we give it all a QR code you can scan from the wall.
             </p>
             <div style={{display:'flex',flexDirection:'column',gap:14,marginBottom:40}}>
               {[
@@ -311,8 +316,8 @@ export default function Home() {
       <section style={{padding:'100px 60px'}}>
         <div style={{maxWidth:1200,margin:'0 auto'}}>
           <div style={{textAlign:'center',marginBottom:56}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>Happy Pet Parents</div>
-            <h2 className="serif" style={{fontSize:'clamp(36px,5vw,64px)',fontWeight:400}}>They <em>Loved</em> It</h2>
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>From People Who Felt It</div>
+            <h2 className="serif" style={{fontSize:'clamp(36px,5vw,64px)',fontWeight:400}}>The Moment It<br/><em>Becomes Real.</em></h2>
           </div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:2}}>
             {[
@@ -335,14 +340,15 @@ export default function Home() {
 
       {/* CTA BAND */}
       <section style={{background:'var(--gold)',padding:'80px 60px',textAlign:'center'}}>
-        <h2 className="serif" style={{fontSize:'clamp(32px,5vw,64px)',color:'var(--ink)',fontWeight:400,marginBottom:16}}>
-          Ready to Make Your Pet Famous?
+        <div style={{fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'rgba(10,10,10,.5)',marginBottom:16}}>For the ones who love them completely</div>
+        <h2 className="serif" style={{fontSize:'clamp(32px,5vw,68px)',color:'var(--ink)',fontWeight:400,marginBottom:16}}>
+          Their Story Deserves<br/>to Be Remembered.
         </h2>
         <p style={{fontSize:17,color:'rgba(10,10,10,.6)',marginBottom:40,maxWidth:460,margin:'0 auto 40px',lineHeight:1.8}}>
-          Start with a canvas. Our AI does the rest. Ships in 5–7 days.
+          A portrait. A song. A living memory. Everything you need to hold onto how they made you feel — forever.
         </p>
-        <Link href="/create" style={{background:'var(--ink)',color:'var(--gold)',padding:'20px 52px',fontSize:12,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',textDecoration:'none',display:'inline-block',transition:'all .3s'}}>
-          🐾 Create Your Portrait Now
+        <Link href="/create" style={{background:'var(--ink)',color:'var(--gold)',padding:'20px 52px',fontSize:12,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',textDecoration:'none',display:'inline-block'}}>
+          🐾 Begin Their Story
         </Link>
       </section>
 
@@ -352,7 +358,7 @@ export default function Home() {
           <span>🐾</span>
           <span className="serif" style={{fontSize:18}}>Pet Prints Studio</span>
         </div>
-        <div style={{fontSize:11,color:'var(--muted)'}}>© 2025 Pet Prints Studio · AI-Generated Pet Portraits</div>
+        <div style={{fontSize:11,color:'var(--muted)'}}>© 2025 Pet Prints Studio · A Living Memory, Printed & Shipped</div>
         <div style={{display:'flex',gap:24}}>
           {['Privacy','Terms','Contact'].map(l=>(
             <a key={l} href="#" style={{fontSize:10,letterSpacing:'.15em',textTransform:'uppercase',color:'var(--muted)',textDecoration:'none'}}>{l}</a>
