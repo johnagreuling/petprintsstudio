@@ -232,19 +232,22 @@ export default function Home() {
       <section id="products" style={{padding:'120px 60px'}}>
         <div style={{maxWidth:1200,margin:'0 auto'}}>
           <div style={{textAlign:'center',marginBottom:64}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>15+ Products</div>
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>30+ Products</div>
             <h2 className="serif" style={{fontSize:'clamp(40px,5vw,72px)',fontWeight:400}}>More Than a Portrait.<br/><em>A Way to Carry Them.</em></h2>
             <p style={{color:'var(--muted)',fontSize:16,marginTop:16,maxWidth:520,margin:'16px auto 0',lineHeight:1.8}}>
               Every product is an extension of the memory. Choose what feels right for how you want to keep them close.
             </p>
           </div>
 
-          {['Canvas','Prints','Home','Apparel','Accessories'].map(cat=>{
+          {['Canvas','Prints','Home','Apparel','Accessories','Pets','Matching'].map(cat=>{
             const items = PRODUCTS.filter(p=>p.category===cat)
             return (
               <div key={cat} style={{marginBottom:48}}>
-                <div style={{fontSize:9,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16,display:'flex',alignItems:'center',gap:16}}>
-                  <span>{cat}</span><span style={{flex:1,height:1,background:'var(--border)'}}/>
+                <div style={{marginBottom:8}}>
+                  <div style={{fontSize:9,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:4,display:'flex',alignItems:'center',gap:16}}>
+                    <span>{cat}</span><span style={{flex:1,height:1,background:'var(--border)'}}/>
+                  </div>
+                  {({Canvas:'Hang it on the wall',Prints:'Frame it beautifully',Home:'Keep them close, wherever you go',Apparel:'Take them with you every day',Accessories:'Hold them in your hands',Pets:'For your pet — worn with love',Matching:'The whole family. Same portrait.'}[cat])&&<div style={{fontSize:12,color:'var(--muted)',fontStyle:'italic',marginBottom:8}}>{({Canvas:'Hang it on the wall',Prints:'Frame it beautifully',Home:'Keep them close, wherever you go',Apparel:'Take them with you every day',Accessories:'Hold them in your hands',Pets:'For your pet — worn with love',Matching:'The whole family. Same portrait.'}[cat])}</div>}
                 </div>
                 <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(180px,1fr))',gap:2}}>
                   {items.map(p=>(
