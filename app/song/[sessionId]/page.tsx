@@ -180,7 +180,7 @@ export default function SongPage() {
         <div style={{maxWidth:960,margin:'0 auto',textAlign:'center'}}>
           <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'#C9A84C',marginBottom:12}}>Want one for your pet?</div>
           <h2 style={{fontFamily:"'Cormorant Garamond',serif",fontSize:'clamp(28px,4vw,48px)',fontWeight:400,marginBottom:16}}>Your Pet. <em style={{color:'#C9A84C'}}>Gallery Worthy.</em></h2>
-          <p style={{color:'rgba(245,240,232,.5)',fontSize:15,lineHeight:1.8,maxWidth:500,margin:'0 auto 40px'}}>Upload a photo. Get 30 stunning AI portrait options across 10 artistic styles. Choose your favorite — we print and ship it to your door.</p>
+          <p style={{color:'rgba(245,240,232,.5)',fontSize:15,lineHeight:1.8,maxWidth:500,margin:'0 auto 40px'}}>Upload a photo. Get 36 stunning36 stunning AI portrait options across 12 artistic styles. Choose your favorite — we print and ship it to your door.</p>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:12,marginBottom:40}}>
             {[{icon:'🖼️',title:'Fine Art Canvas',desc:'Gallery-wrapped, ready to hang',price:'From $79'},{icon:'📄',title:'Fine Art Print',desc:'Archival matte, museum quality',price:'From $39'},{icon:'🎵',title:'Custom Pet Song',desc:'AI-composed just for your pet',price:'$19'},{icon:'📱',title:'Digital Bundle',desc:'30 full-res portraits, no watermark',price:'$29'}].map(p=>(
               <div key={p.title} className="product-card" style={{background:'#141414',border:'1px solid rgba(245,240,232,.06)',padding:'24px',textAlign:'center'}}>
