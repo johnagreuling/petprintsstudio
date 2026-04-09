@@ -26,6 +26,26 @@ export const PRODUCTS = [
   { id: 'tote',       name: 'Canvas Tote',  size: 'One size',   category: 'Accessories', price: 24, printifyBlueprintId: 553,  printifyProviderId: 34, printifyVariantId: 70603,  popular: false, emoji: '👜', description: 'Heavy-duty cotton canvas' },
   { id: 'phone_case', name: 'Phone Case',   size: 'All models', category: 'Accessories', price: 29, printifyBlueprintId: 269,  printifyProviderId: 1,  printifyVariantId: 103562, popular: false, emoji: '📱', description: 'Tough case, iPhone & Samsung' },
   { id: 'hat',        name: 'Dad Hat',      size: 'One size',   category: 'Accessories', price: 29, printifyBlueprintId: 5383, printifyProviderId: 41, printifyVariantId: 244947, popular: false, emoji: '🧢', description: 'Classic adjustable cap' },
+
+  // ── PET WEARABLES ─────────────────────────────────────────────────────────
+  { id: 'pet_bandana',      name: 'Pet Bandana',        size: 'S/M/L',      category: 'Pets',     price: 29, printifyBlueprintId: 562,  printifyProviderId: 99, printifyVariantId: 0, popular: true,  emoji: '🐶', description: 'Their portrait around their neck' },
+  { id: 'pet_bandana_col',  name: 'Pet Bandana Collar', size: 'S/M/L/XL',   category: 'Pets',     price: 34, printifyBlueprintId: 563,  printifyProviderId: 99, printifyVariantId: 0, popular: false, emoji: '🐕', description: 'Portrait bandana with adjustable collar' },
+  { id: 'pet_tank',         name: 'Pet Tank Top',       size: 'M/L/XL',     category: 'Pets',     price: 39, printifyBlueprintId: 399,  printifyProviderId: 99, printifyVariantId: 0, popular: false, emoji: '👕', description: 'Wearable portrait for your dog' },
+
+  // ── PET HOME ──────────────────────────────────────────────────────────────
+  { id: 'pet_bed_sm',       name: 'Pet Bed',            size: 'Small',      category: 'Pets',     price: 59, printifyBlueprintId: 1104, printifyProviderId: 99, printifyVariantId: 0, popular: false, emoji: '🛏️', description: 'Their portrait, their space' },
+  { id: 'pet_bed_lg',       name: 'Pet Bed',            size: 'Large',      category: 'Pets',     price: 79, printifyBlueprintId: 1104, printifyProviderId: 99, printifyVariantId: 0, popular: false, emoji: '🛏️', description: 'Their portrait, their space' },
+  { id: 'pet_bowl',         name: 'Pet Bowl',           size: '12oz',       category: 'Pets',     price: 34, printifyBlueprintId: 1149, printifyProviderId: 99, printifyVariantId: 0, popular: false, emoji: '🥣', description: 'Their portrait at every meal' },
+  { id: 'pet_tag',          name: 'Pet ID Tag',         size: 'One size',   category: 'Pets',     price: 19, printifyBlueprintId: 561,  printifyProviderId: 99, printifyVariantId: 0, popular: false, emoji: '🏷', description: 'Their portrait on their collar' },
+  { id: 'pet_collar',       name: 'Dog Collar',         size: 'S/M/L/XL',   category: 'Pets',     price: 29, printifyBlueprintId: 1097, printifyProviderId: 99, printifyVariantId: 0, popular: false, emoji: '🦺', description: 'Custom printed collar' },
+  { id: 'pet_mat',          name: 'Pet Feeding Mat',    size: '12"x18"',    category: 'Pets',     price: 24, printifyBlueprintId: 1091, printifyProviderId: 99, printifyVariantId: 0, popular: false, emoji: '🍽', description: 'Portrait at the dinner table' },
+
+  // ── MATCHING FAMILY ───────────────────────────────────────────────────────
+  { id: 'match_hoodie',     name: 'Matching Hoodie',    size: 'XS-3XL',     category: 'Matching', price: 55, printifyBlueprintId: 421,  printifyProviderId: 29, printifyVariantId: 0, popular: true,  emoji: '🫲', description: 'Same portrait. You and your pet.' },
+  { id: 'match_tee',        name: 'Matching Tee',       size: 'XS-3XL',     category: 'Matching', price: 35, printifyBlueprintId: 12,   printifyProviderId: 29, printifyVariantId: 0, popular: false, emoji: '👪', description: 'The whole family. Same portrait.' },
+  { id: 'match_sweatshirt', name: 'Matching Crewneck',  size: 'XS-3XL',     category: 'Matching', price: 45, printifyBlueprintId: 429,  printifyProviderId: 29, printifyVariantId: 0, popular: false, emoji: '🧥', description: 'Cozy portrait crewneck for you' },
+  { id: 'match_tote',       name: 'Portrait Tote Bag',  size: '15"x15"',    category: 'Matching', price: 25, printifyBlueprintId: 208,  printifyProviderId: 26, printifyVariantId: 0, popular: false, emoji: '👜', description: 'Carry them everywhere you go' },
+  { id: 'match_pillow',     name: 'Portrait Pillow',    size: '18"x18"',    category: 'Matching', price: 35, printifyBlueprintId: 2,    printifyProviderId: 26, printifyVariantId: 0, popular: false, emoji: '🛋', description: 'Their face on your couch' },
 ]
 
 export const PHONE_CASE_VARIANTS: Record<string, number> = {
