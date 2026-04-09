@@ -118,7 +118,7 @@ export default function Home() {
           <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:2}}>
             {[
               {n:'01',emoji:'💬',title:'Tell us about them',desc:'Share their name, personality, quirks — the moments that made you love them. The more you tell us, the more personal every part of the experience becomes.'},
-              {n:'02',emoji:'🎨',title:'Choose how their story feels',desc:'Pick from 12 beautifully crafted art styles — or describe any style you can imagine. This isn't a filter. It's the emotional tone of their portrait.'},
+              {n:'02',emoji:'🎨',title:'Choose how their story feels',desc:'Pick from 12 beautifully crafted art styles — or describe any style you can imagine. This isn’t a filter. It’s the emotional tone of their portrait.'},
               {n:'03',emoji:'✨',title:'We bring their story to life',desc:'Your answers become art — 36 portraits created from your story. A song written from your memories. Everything comes together in a living digital experience.'},
               {n:'04',emoji:'📦',title:'Hold onto them forever',desc:'Your portrait arrives printed on premium materials with a QR code connecting it to their song and story. A living memory, delivered to your door in 5–7 days.'},
             ].map((s,i)=>(
@@ -281,7 +281,7 @@ export default function Home() {
             {[
               {emoji:'🎂',label:'Birthday Gift',title:'Celebrate who they are',desc:'A portrait and song built from everything that makes their pet them. The kind of gift that stops the room.'},
               {emoji:'🕊️',label:'Memorial',title:'Honor their memory',desc:'For a pet who has passed — or one whose time is close. A living record of the love, preserved the way it deserves to be.'},
-              {emoji:'🎁',label:'Just Because',title:'Because love doesn't need a reason',desc:'New puppy, gotcha day, or simply: I love this dog. Sometimes the best gifts arrive for no reason at all.'},
+              {emoji:'🎁',label:'Just Because',title:'Because love doesn’t need a reason',desc:'New puppy, gotcha day, or simply: I love this dog. Sometimes the best gifts arrive for no reason at all.'},
             ].map(c=>(
               <div key={c.title} className="card" style={{padding:'44px 36px'}}>
                 <div style={{fontSize:40,marginBottom:12}}>{c.emoji}</div>
