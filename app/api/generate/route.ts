@@ -363,34 +363,20 @@ ${CONSTRAINTS_GPT}
 
   {
     id: 'vintage_pop_art',
-    name: 'Gallery Pop',
-    emoji: '🎭',
-    gptPrompt: (petDesc) => `Create a premium four-panel pop-art portrait grid of the exact animal shown in the input image.
+    name: 'Vintage Poster',
+    emoji: '🗺️',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
 
-SUBJECT IDENTITY
-Preserve the exact animal from the input photo:
-- ${petDesc}
-- exact breed appearance and body proportions
-- exact face shape and facial proportions
-- exact muzzle shape, ear shape and ear set
-- exact eye color and expression
-- exact coat color, all markings, fur length and texture
-- preserve any visible accessories
+Render this image as a premium vintage poster illustration with bold graphic composition, simplified painterly shapes, strong silhouette, and timeless retro print energy. The result should feel like a beautifully designed mid-century travel or advertising poster, not a cartoon, not a photograph, and not a modern digital illustration. Preserve the pet's recognizable likeness, posture, and personality while stylizing the scene into elegant flattened forms, controlled shading, and nostalgic color harmony. Use a curated retro palette, confident line structure, subtle print texture, and balanced composition with strong visual readability from a distance. Background elements should feel iconic and design-forward rather than overly detailed, helping tell the story in a clear, memorable way. Avoid photorealism, glossy rendering, plastic AI textures, muddy color, childish cartoon styling, messy collage effects, and generic poster templates. The final image should feel collectible, stylish, nostalgic, and premium, like a classic illustrated poster worthy of framing.
 
-STYLE
-Classic 1960s-inspired pop-art screenprint with luxury gallery-poster feel. A 2×2 grid, same portrait in all four panels, each with a different bold saturated palette: Panel 1 hot pink and yellow, Panel 2 cyan and red, Panel 3 lime green and blue, Panel 4 orange and purple. Strong color blocking, crisp graphic edges, simplified tonal shapes, high contrast, flat graphic background.
-
-The pet must be highly recognizable in every panel. Eyes, nose, facial markings, and silhouette stay accurate and expressive. Final result should feel iconic, stylish, collectible, bright, and premium — like a high-end pop-art screenprint suitable for framing.
-
-CONSTRAINTS
-- no text or typography
-- no watermark
-- no extra animals
+${CONSTRAINTS_GPT}
 - not photorealistic
-- not painterly or impressionistic`,
+- not Warhol multi-panel grid
+- not childish or cartoon
+- not generic digital AI poster`,
 
     fluxPrompt: (petDesc) =>
-      `A four-panel 2x2 pop-art screenprint grid of the exact dog from the reference image. Keep the same dog in all four panels — same breed, face, markings, expression. Render in 1960s Warhol pop-art style: bold flat color blocking, crisp graphic edges, high contrast. Each panel a different saturated palette: hot pink/yellow, cyan/red, lime green/blue, orange/purple. Iconic, collectible, gallery-worthy.`,
+      `Premium vintage poster illustration of ${petDesc}. Mid-century travel or advertising poster style. Bold graphic composition, simplified painterly shapes, strong silhouette. Elegant flattened forms, controlled shading, nostalgic retro color harmony. Curated retro palette, confident line structure, subtle print texture. Collectible, stylish, nostalgic, premium. Not photorealistic, not cartoon, not Warhol grid.`,
 
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, four-panel Warhol pop-art screenprint grid, bold flat colors, high contrast, 1960s graphic style, collectible`,
