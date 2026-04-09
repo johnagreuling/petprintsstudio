@@ -404,7 +404,7 @@ export default function CreatePage() {
               <button className="btn-gold" disabled={!uploadedFile} onClick={()=>setStep('product')}>Choose Your Canvas Size →</button>
             </div>
             <div style={{marginTop:16,display:'flex',gap:20,justifyContent:'center',flexWrap:'wrap'}}>
-              {['✓ No account needed','✓ 12 AI portraits generated','✓ Free to preview','✓ Prints shipped in 5–7 days'].map(t=>(
+              {['✓ No account needed','✓ 30 AI portraits generated','✓ Free to preview','✓ Prints shipped in 5–7 days'].map(t=>(
                 <span key={t} style={{fontSize:11,color:'var(--muted)'}}>{t}</span>
               ))}
             </div>
@@ -426,7 +426,7 @@ export default function CreatePage() {
                 <img src={preview} alt="Your pet" style={{width:72,height:72,objectFit:'cover',borderRadius:2}}/>
                 <div>
                   <div style={{fontSize:13,fontWeight:600}}>Your pet{answers.petName?` — ${answers.petName}`:''}</div>
-                  <div style={{fontSize:11,color:'var(--muted)',marginTop:4}}>12 AI portraits will be generated from this photo</div>
+                  <div style={{fontSize:11,color:'var(--muted)',marginTop:4}}>30 AI portraits will be generated from this photo</div>
                 </div>
               </div>
             )}
