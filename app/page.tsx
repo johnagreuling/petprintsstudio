@@ -51,7 +51,7 @@ export default function Home() {
         </Link>
         <div style={{display:'flex',gap:36,alignItems:'center'}}>
           <a href="#how-it-works">How It Works</a>
-          <a href="#styles">Styles</a>
+          <Link href="/styles" style={{color:'var(--muted)',textDecoration:'none',fontSize:12,letterSpacing:'.12em',textTransform:'uppercase'}}>Styles</Link>
           <a href="#the-experience">The Experience</a>
           <Link href="/create" className="btn-gold" style={{padding:'12px 24px'}}>Begin Their Story</Link>
         </div>
