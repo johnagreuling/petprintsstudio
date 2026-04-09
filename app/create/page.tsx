@@ -628,7 +628,7 @@ export default function CreatePage() {
                       <div style={{position:'absolute',top:8,right:8,width:16,height:16,border:`1px solid ${selectedStyles.includes(s.id)?'var(--gold)':'rgba(245,240,232,.2)'}`,borderRadius:'50%',background:selectedStyles.includes(s.id)?'var(--gold)':'none',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,color:'var(--ink)',fontWeight:700}}>
                         {selectedStyles.includes(s.id)&&'✓'}
                       </div>
-                      <div style={{width:'100%',aspectRatio:'2/3',overflow:'hidden',borderRadius:3,marginBottom:8}}>{s.styleImage?<img src={s.styleImage} alt={s.name} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>:<div style={{width:'100%',height:'100%',background:'#1a1a1a',display:'flex',alignItems:'center',justifyContent:'center',fontSize:24}}>{s.emoji}</div>}</div>
+                      <div style={{width:'100%',aspectRatio:'2/3',overflow:'hidden',borderRadius:3,marginBottom:8}}>{s.styleImage?<img src={s.styleImage} alt={s.name} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>:<div style={{width:'100%',height:'100%',background:(s as any).styleBg||'#1a1a1a',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:8}}><div style={{fontSize:28}}>{s.emoji}</div><div style={{fontSize:9,letterSpacing:'.2em',textTransform:'uppercase',color:(s as any).styleAccent||'rgba(255,255,255,.4)',textAlign:'center',padding:'0 8px'}}>{s.name}</div></div>}</div>
                       <div className="serif" style={{fontSize:12,fontWeight:400,padding:'6px 8px 8px',textAlign:'center'}}>{s.name}</div>
                     </button>
                   ))}

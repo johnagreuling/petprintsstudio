@@ -72,9 +72,10 @@ export default function Home() {
         </h1>
 
         <p className="fu fu3" style={{fontSize:18,lineHeight:1.9,color:'var(--muted)',maxWidth:560,marginBottom:52,fontWeight:300}}>
-          We turn the moments, personality, and love that make your pet who they are into a portrait, a song, and a keepsake that lasts forever. The most personal gift imaginable.
+          A custom portrait that captures who they are. An original song written just for them. A QR code that plays it every time you look at the wall.
         </p>
 
+        <p className="fu fu3" style={{fontSize:13,color:'rgba(201,168,76,.8)',letterSpacing:'.04em',lineHeight:2,marginBottom:16}}>Portrait + Song + QR Code &nbsp;&middot;&nbsp; Delivered in 24 hours &nbsp;&middot;&nbsp; Starting at $49</p>
         <div className="fu fu4" style={{display:'flex',gap:16,flexWrap:'wrap',justifyContent:'center',marginBottom:72}}>
           <Link href="/create" className="btn-gold">🐾 Start Their Story</Link>
           <a href="#how-it-works" className="btn-out">See How It Works</a>
@@ -83,23 +84,22 @@ export default function Home() {
         {/* Style tags */}
         <div className="fu fu4" style={{marginBottom:64,display:'flex',flexWrap:'wrap',justifyContent:'center',gap:8}}>
           {ART_STYLES.map(s => (
-            s.styleImage ? (
-              <div key={s.id} style={{display:'flex',alignItems:'center',gap:8,border:'1px solid rgba(201,168,76,.3)',padding:'6px 12px 6px 6px'}}>
-                <img src={s.styleImage} alt={s.name} style={{width:28,height:28,objectFit:'cover'}} />
-                <span style={{fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)'}}>{s.name}</span>
-              </div>
-            ) : (
-              <span key={s.id} className="tag">{s.emoji} {s.name}</span>
-            )
+            <div key={s.id} style={{display:'flex',alignItems:'center',gap:8,border:'1px solid rgba(201,168,76,.3)',padding:'6px 12px 6px 6px'}}>
+              {s.styleImage
+                ? <img src={s.styleImage} alt={s.name} style={{width:28,height:28,objectFit:'cover',borderRadius:2}} />
+                : <div style={{width:28,height:28,borderRadius:2,background:(s as any).styleBg||'#1a1a1a',display:'flex',alignItems:'center',justifyContent:'center',fontSize:14}}>{s.emoji}</div>
+              }
+              <span style={{fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)'}}>{s.name}</span>
+            </div>
           ))}
         </div>
 
         {/* Stats */}
         <div className="fu fu4" style={{display:'flex',gap:60,flexWrap:'wrap',justifyContent:'center'}}>
-          {[['36','Portraits','Per Story'],['12+','Styles','& Custom'],['♪','Original Song','Included'],['4.9★','Average','Customer Rating']].map(([n,l1,l2])=>(
+          {[['36','Portraits Per Story'],['1,000+','Pet Stories Told'],['♪','Beautiful Original Music'],['4.9★','Customer Average']].map(([n,l1])=>(
             <div key={l1} style={{textAlign:'center'}}>
-              <div className="serif" style={{fontSize:40,color:'var(--gold)',lineHeight:1}}>{n}</div>
-              <div style={{fontSize:9,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--muted)',marginTop:6,lineHeight:1.6}}>{l1}<br/>{l2}</div>
+              <div className="serif" style={{fontSize:36,color:'var(--gold)',lineHeight:1,marginBottom:4}}>{n}</div>
+              <div style={{fontSize:9,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--muted)',marginTop:6,lineHeight:1.6}}>{l1}</div>
             </div>
           ))}
         </div>
@@ -120,7 +120,7 @@ export default function Home() {
               {n:'01',emoji:'💬',title:'Tell us about them',desc:'Share their name, personality, quirks — the moments that made you love them. The more you tell us, the more personal every part of the experience becomes.'},
               {n:'02',emoji:'🎨',title:'Choose how their story feels',desc:'Pick from 12 beautifully crafted art styles — or describe any style you can imagine. This isn’t a filter. It’s the emotional tone of their portrait.'},
               {n:'03',emoji:'✨',title:'We bring their story to life',desc:'Your answers become art — 36 portraits created from your story. A song written from your memories. Everything comes together in a living digital experience.'},
-              {n:'04',emoji:'📦',title:'Hold onto them forever',desc:'Your portrait arrives printed on premium materials with a QR code connecting it to their song and story. A living memory, delivered to your door in 5–7 days.'},
+              {n:'04',emoji:'📦',title:'Celebrate them forever',desc:'Your portrait arrives printed on premium materials. Scan the QR code to hear their song anytime. Delivered to your door in 5–7 days.'},
             ].map((s,i)=>(
               <div key={s.n} className="card" style={{padding:'40px 28px',position:'relative'}}>
                 <div className="serif" style={{fontSize:64,color:'var(--gold)',opacity:.1,lineHeight:1,position:'absolute',top:20,right:20}}>{s.n}</div>
@@ -152,7 +152,7 @@ export default function Home() {
                 <span style={{fontSize:28}}>✨</span>
                 <div>
                   <div style={{fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)',marginBottom:4}}>Path Two — +$20</div>
-                  <h3 className="serif" style={{fontSize:26,fontWeight:400}}>Memory Portrait</h3>
+                  <h3 className="serif" style={{fontSize:26,fontWeight:400}}>Signature Custom Portrait</h3>
                 </div>
               </div>
               <p style={{fontSize:14,lineHeight:1.9,color:'var(--muted)',marginBottom:20}}>
@@ -170,159 +170,14 @@ export default function Home() {
 
       <div className="divider"/>
 
-      {/* STYLES */}
-      <section id="styles" style={{padding:'120px 60px'}}>
-        <div style={{maxWidth:1200,margin:'0 auto'}}>
-          <div style={{textAlign:'center',marginBottom:64}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>Choose How Their Story Feels</div>
-            <h2 className="serif" style={{fontSize:'clamp(40px,5vw,72px)',fontWeight:400}}>12 Preset Styles.<br/><em>Infinite Possibilities.</em></h2>
-            <p style={{color:'var(--muted)',fontSize:16,marginTop:16,maxWidth:520,margin:'16px auto 0',lineHeight:1.8}}>
-              From classical oil painting to electric neon glow — 3 portraits per style gives you 36 interpretations to choose from. Or describe any style you can imagine and we'll create it.
-            </p>
-          </div>
-
-          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:2}}>
-            {ART_STYLES.map((s,i)=>(
-              <button key={s.id} className={`style-btn${activeStyle===i?' active':''}`} onClick={()=>setActiveStyle(i)}>
-                {s.styleImage ? (
-                  <img src={s.styleImage} alt={s.name} />
-                ) : (
-                  <div style={{fontSize:32,padding:'28px 20px 8px'}}>{s.emoji}</div>
-                )}
-                <div className="style-btn-info">
-                  <div className="serif" style={{fontSize:18,marginBottom:4,fontWeight:400}}>{s.name}</div>
-                  <div style={{fontSize:11,color:'var(--muted)',lineHeight:1.6}}>{s.description}</div>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {/* 13th card — Custom Style — full width */}
-          <div style={{marginTop:2,background:'linear-gradient(135deg,rgba(201,168,76,.09),rgba(201,168,76,.02))',border:'2px solid rgba(201,168,76,.35)',padding:'44px 56px',display:'grid',gridTemplateColumns:'auto 1fr auto',gap:40,alignItems:'center'}}>
-            <div style={{fontSize:64,lineHeight:1}}>✨</div>
-            <div>
-              <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:10}}>The 13th Option · Infinite Customization</div>
-              <h3 className="serif" style={{fontSize:34,fontWeight:400,marginBottom:12}}>Create Your Own Style</h3>
-              <p style={{fontSize:15,lineHeight:1.8,color:'var(--muted)',maxWidth:600}}>
-                Have a vision that doesn&rsquo;t fit a preset? Describe any style you can imagine — Japanese woodblock, dark gothic fantasy, Renaissance gold leaf — and we&rsquo;ll generate 3 portraits in that style specifically for your pet.
-              </p>
-            </div>
-            <Link href="/create" className="btn-gold" style={{flexShrink:0,whiteSpace:'nowrap',fontSize:11}}>✨ Design Your Style</Link>
-          </div>
-
-          <div style={{background:'var(--soft)',border:'1px solid var(--border)',padding:'32px 40px',marginTop:2,display:'flex',alignItems:'center',gap:40,flexWrap:'wrap'}}>
-            {ART_STYLES[activeStyle].styleImage && (
-              <div style={{width:100,height:100,overflow:'hidden',flexShrink:0,border:'1px solid var(--border)'}}>
-                <img src={ART_STYLES[activeStyle].styleImage} alt={ART_STYLES[activeStyle].name} style={{width:'100%',height:'100%',objectFit:'cover'}} />
-              </div>
-            )}
-            <div style={{flex:1,minWidth:280}}>
-              <div style={{fontSize:10,letterSpacing:'.25em',textTransform:'uppercase',color:'var(--gold)',marginBottom:8}}>Currently Selected</div>
-              <div className="serif" style={{fontSize:28,fontWeight:400}}>{ART_STYLES[activeStyle].name}</div>
-              <div style={{fontSize:13,color:'var(--muted)',marginTop:8,lineHeight:1.7}}>{ART_STYLES[activeStyle].description}</div>
-            </div>
-            <Link href="/create" className="btn-gold" style={{flexShrink:0}}>Choose This Style</Link>
-          </div>
-        </div>
-      </section>
-
-      <div className="divider"/>
-
-      {/* PRODUCTS */}
-      <section id="products" style={{padding:'120px 60px'}}>
-        <div style={{maxWidth:1200,margin:'0 auto'}}>
-          <div style={{textAlign:'center',marginBottom:64}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>30+ Products</div>
-            <h2 className="serif" style={{fontSize:'clamp(40px,5vw,72px)',fontWeight:400}}>More Than a Portrait.<br/><em>A Way to Carry Them.</em></h2>
-            <p style={{color:'var(--muted)',fontSize:16,marginTop:16,maxWidth:520,margin:'16px auto 0',lineHeight:1.8}}>
-              Every product is an extension of the memory. Choose what feels right for how you want to keep them close.
-            </p>
-          </div>
-
-          {['Canvas','Prints','Home','Apparel','Accessories','Pets','Matching'].map(cat=>{
-            const items = PRODUCTS.filter(p=>p.category===cat)
-            return (
-              <div key={cat} style={{marginBottom:48}}>
-                <div style={{marginBottom:8}}>
-                  <div style={{fontSize:9,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:4,display:'flex',alignItems:'center',gap:16}}>
-                    <span>{cat}</span><span style={{flex:1,height:1,background:'var(--border)'}}/>
-                  </div>
-                  {({Canvas:'Hang it on the wall',Prints:'Frame it beautifully',Home:'Keep them close, wherever you go',Apparel:'Take them with you every day',Accessories:'Hold them in your hands',Pets:'For your pet — worn with love',Matching:'The whole family. Same portrait.'}[cat])&&<div style={{fontSize:12,color:'var(--muted)',fontStyle:'italic',marginBottom:8}}>{({Canvas:'Hang it on the wall',Prints:'Frame it beautifully',Home:'Keep them close, wherever you go',Apparel:'Take them with you every day',Accessories:'Hold them in your hands',Pets:'For your pet — worn with love',Matching:'The whole family. Same portrait.'}[cat])}</div>}
-                </div>
-                <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(180px,1fr))',gap:2}}>
-                  {items.map(p=>(
-                    <div key={p.id} className="card" style={{padding:'24px 20px',position:'relative'}}>
-                      {p.popular&&<div className="popular-badge">Most Loved</div>}
-                      <div style={{fontSize:26,marginBottom:12}}>{p.emoji}</div>
-                      <div className="serif" style={{fontSize:17,marginBottom:4,fontWeight:400}}>{p.name}</div>
-                      <div style={{fontSize:11,color:'var(--muted)',marginBottom:4}}>{p.size}</div>
-                      <div style={{fontSize:11,color:'var(--muted)',marginBottom:14,opacity:.6}}>{p.description}</div>
-                      <div className="serif" style={{fontSize:22,color:'var(--gold)'}}>${p.price}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </section>
-
-
-      <div className="divider"/>
-
-      {/* OCCASIONS — gift framing */}
-      <section style={{padding:'100px 60px',background:'var(--soft)'}}>
-        <div style={{maxWidth:1200,margin:'0 auto'}}>
-          <div style={{textAlign:'center',marginBottom:64}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>Made For Moments That Matter</div>
-            <h2 className="serif" style={{fontSize:'clamp(36px,5vw,64px)',fontWeight:400}}>The Most Personal Gift<br/><em>You Can Give.</em></h2>
-            <p style={{color:'var(--muted)',fontSize:16,marginTop:16,maxWidth:500,margin:'16px auto 0',lineHeight:1.8}}>
-              Every order starts with a story — not just a photo. That&rsquo;s what makes the result feel like something they&rsquo;ll keep forever.
-            </p>
-          </div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:2,marginBottom:2}}>
-            {[
-              {emoji:'🎂',label:'Birthday Gift',title:'Celebrate who they are',desc:'A portrait and song built from everything that makes their pet them. The kind of gift that stops the room.'},
-              {emoji:'🕊️',label:'Memorial',title:'Honor their memory',desc:'For a pet who has passed — or one whose time is close. A living record of the love, preserved the way it deserves to be.'},
-              {emoji:'🎁',label:'Just Because',title:'Because love doesn’t need a reason',desc:'New puppy, gotcha day, or simply: I love this dog. Sometimes the best gifts arrive for no reason at all.'},
-            ].map(c=>(
-              <div key={c.title} className="card" style={{padding:'44px 36px'}}>
-                <div style={{fontSize:40,marginBottom:12}}>{c.emoji}</div>
-                <div style={{fontSize:9,letterSpacing:'.25em',textTransform:'uppercase',color:'var(--gold)',marginBottom:8}}>{c.label}</div>
-                <h3 className="serif" style={{fontSize:22,marginBottom:12,fontWeight:400}}>{c.title}</h3>
-                <p style={{fontSize:13,lineHeight:1.9,color:'var(--muted)'}}>{c.desc}</p>
-              </div>
-            ))}
-          </div>
-          {/* Quality reassurance strip */}
-          <div style={{background:'linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02))',border:'1px solid rgba(201,168,76,.2)',padding:'28px 40px',display:'flex',gap:40,alignItems:'center',flexWrap:'wrap',justifyContent:'space-between'}}>
-            {[
-              {icon:'🎨',text:'Every portrait reviewed before production'},
-              {icon:'📦',text:'Premium print quality, guaranteed'},
-              {icon:'🎵',text:'Original song included with every order'},
-              {icon:'📱',text:'QR code ships with every portrait'},
-            ].map(({icon,text})=>(
-              <div key={text} style={{display:'flex',alignItems:'center',gap:12}}>
-                <span style={{fontSize:22}}>{icon}</span>
-                <span style={{fontSize:13,color:'var(--muted)'}}>{text}</span>
-              </div>
-            ))}
-          </div>
-          <div style={{textAlign:'center',marginTop:48}}>
-            <Link href="/create" className="btn-gold">🐾 Start Their Story</Link>
-          </div>
-        </div>
-      </section>
-      <div className="divider"/>
-
       {/* MEMORY PORTRAIT FEATURE */}
       <section style={{padding:'120px 60px',background:'var(--soft)'}}>
         <div style={{maxWidth:1100,margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 1fr',gap:80,alignItems:'center'}}>
           <div>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>The Premium Experience</div>
-            <h2 className="serif" style={{fontSize:'clamp(36px,4vw,60px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>For People Who<br/><em>Love Them Completely.</em></h2>
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>Signature Custom Portrait &mdash; Starting at $49</div>
+            <h2 className="serif" style={{fontSize:'clamp(36px,4vw,60px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>The Portrait That<br/><em>Actually Looks Like Them.</em></h2>
             <p style={{fontSize:16,lineHeight:1.9,color:'var(--muted)',marginBottom:32}}>
-              We build a fully custom scene packed with everything that makes your pet who they are — their favorite team, their hometown, their toy, their car. A portrait that makes you say &ldquo;that&rsquo;s exactly them.&rdquo; Then we write them a song. Then we give it all a QR code you can scan from the wall.
+              We build a scene around everything that makes them who they are — their favorite toy, their couch spot, the places they love. A portrait that makes you say &ldquo;that&rsquo;s exactly them.&rdquo; We write an original song just for them. Then we give it all a QR code so you can hear it anytime.
             </p>
             <div style={{display:'flex',flexDirection:'column',gap:14,marginBottom:40}}>
               {[
@@ -339,7 +194,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <Link href="/create" className="btn-gold">Try Memory Portrait — +$20</Link>
+            <Link href="/create" className="btn-gold">🐾 Start Their Story &mdash; $49</Link>
           </div>
 
           <div style={{display:'flex',flexDirection:'column',gap:2}}>
@@ -359,6 +214,38 @@ export default function Home() {
         </div>
       </section>
 
+
+      <div className="divider"/>
+
+      {/* EXPLORE */}
+      <section style={{padding:'80px 60px',background:'var(--soft)'}}>
+        <div style={{maxWidth:1200,margin:'0 auto'}}>
+          <div style={{textAlign:'center',marginBottom:48}}>
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:10}}>Also Available</div>
+            <h2 className="serif" style={{fontSize:'clamp(28px,4vw,48px)',fontWeight:400,marginBottom:12}}>More Ways to Keep Them Close</h2>
+            <p style={{color:'var(--muted)',fontSize:15,maxWidth:500,margin:'0 auto',lineHeight:1.8}}>
+              Once you have the portrait, put it everywhere. 12 artistic styles, 30+ products — all printed on demand.
+            </p>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:2,marginBottom:40}}>
+            {[
+              {emoji:'🎨',title:'12 Art Styles',desc:'We automatically generate multiple interpretations — oil painting, watercolor, neon glow, storybook and more. You pick your favorite.'},
+              {emoji:'🖼️',title:'Prints & Canvas',desc:'Gallery-quality wall art from 8×10 to 24×36, ready to hang'},
+              {emoji:'🐶',title:'Pet Wearables',desc:'Bandanas, tank tops, beds — their portrait on them'},
+              {emoji:'🫂',title:'Matching Family',desc:'Same portrait on a hoodie for you and your pet'},
+            ].map(p=>(
+              <div key={p.title} className="card" style={{padding:'28px 24px',textAlign:'center'}}>
+                <div style={{fontSize:32,marginBottom:12}}>{p.emoji}</div>
+                <div className="serif" style={{fontSize:18,marginBottom:6,fontWeight:400}}>{p.title}</div>
+                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>{p.desc}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{textAlign:'center'}}>
+            <Link href="/create" className="btn-gold">🐾 Start Their Story</Link>
+          </div>
+        </div>
+      </section>
       <div className="divider"/>
 
       {/* TESTIMONIALS */}
@@ -394,7 +281,7 @@ export default function Home() {
           Give a Gift<br/>They&rsquo;ll Never Forget.
         </h2>
         <p style={{fontSize:17,color:'rgba(10,10,10,.6)',marginBottom:40,maxWidth:460,margin:'0 auto 40px',lineHeight:1.8}}>
-          A portrait. A song. A living memory. Everything you need to hold onto how they made you feel — forever.
+          A portrait. A song. A QR code. Everything you need to celebrate who they are — now and forever.
         </p>
         <Link href="/create" style={{background:'var(--ink)',color:'var(--gold)',padding:'20px 52px',fontSize:12,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',textDecoration:'none',display:'inline-block'}}>
           🐾 Begin Their Story
