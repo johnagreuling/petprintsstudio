@@ -165,7 +165,7 @@ export default function CreatePage() {
               if (d.sessionFolder) {
                 setSessionFolder(d.sessionFolder)
                 try {
-                  const sessionData = {sessionFolder: d.sessionFolder, images: d.images, petName: answers.petName||petName||'', createdAt: new Date().toISOString()}
+                  const sessionData = {sessionFolder: d.sessionFolder, images: d.images, petName: answers.petName||'', createdAt: new Date().toISOString()}
                   localStorage.setItem('pps_last_session', JSON.stringify(sessionData))
                 } catch(e) {}
               }
