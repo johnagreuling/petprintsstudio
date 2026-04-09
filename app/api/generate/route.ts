@@ -152,21 +152,9 @@ ${CONSTRAINTS_GPT}
     // GPT: full structured prompt — handles long form well
     gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
 
-STYLE
-Soft, ethereal, dreamlike oil and acrylic painting. Painterly texture blending realism with abstraction. Visible hand-applied brushwork. Emotionally warm and poetic. Organic natural symbolism. Handmade oil-paint feel. Not glossy, not digital illustration, not cartoon.
+Render this image in an ethereal painterly style with soft, expressive brushwork, atmospheric depth, and an emotionally rich fine-art composition. The result should feel like a real hand-painted artwork created by a skilled contemporary painter, not a photograph, not a digital illustration, and not a polished AI render. Preserve the pet's recognizable likeness, soulful eyes, and emotional presence, while interpreting the scene with softness, memory, and artistic intuition rather than literal realism. Use layered painterly texture, broken edges, subtle asymmetry, soft blending, and visible brushstrokes that allow parts of the subject and background to gently dissolve into one another. The palette should feel harmonious, muted but expressive, with nuanced color shifts and a dreamlike atmosphere. Backgrounds should remain suggestive and atmospheric, supporting the story and mood without becoming overly detailed or visually busy. Avoid photorealism, glossy digital smoothness, hard outlines, cartoon styling, over-rendered fur detail, plastic textures, sharp vector edges, or generic decorative illustration. The finished image should feel intimate, emotional, poetic, and timeless, like a treasured painting built from memory, feeling, and presence.
 
-COMPOSITION
-Centered portrait. Soft elegant gallery composition. Dog is clear focal point with subtle atmospheric depth.
-
-PAINT SURFACE
-Rich layered brush texture. Slight real-paint imperfections. Soft edges in background, more definition on eyes and muzzle. Premium fine-art finish.
-
-BACKGROUND
-Atmospheric, understated. Softly abstracted florals and organic natural shapes. Muted tones — ivory, sage, dusty rose, golden ochre.
-
-${CONSTRAINTS_GPT}
-- not smooth airbrushed rendering
-- not harsh graphic design`,
+${CONSTRAINTS_GPT}`,
 
     // FLUX: short imperative — 512 token limit, no structured sections
     fluxPrompt: (petDesc) =>
@@ -178,26 +166,13 @@ ${CONSTRAINTS_GPT}
 
   {
     id: 'bold_contemporary',
-    name: 'Bold Contemporary',
+    name: 'Contemporary Bold',
     emoji: '✨',
     gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
 
-STYLE
-Bold contemporary fine-art oil painting. Thick impasto brushstrokes. Vibrant contemporary surrealism with luxury still-life energy. Jewel-toned palette — deep sapphire, emerald, ruby, rich gold. Sharp contrast. Hyper-detailed gemstone-like accents on accessories. Premium gallery-wall statement. Visible painted texture. Not vector art, not illustration.
+Render this image in a bold modern surreal style with striking color, dramatic contrast, and a polished contemporary fine-art composition. The result should feel like a high-end gallery painting — luxurious, vibrant, and visually arresting — not a cartoon, not a photograph, and not a generic digital illustration. Preserve the pet's recognizable likeness, expressive presence, and key personality traits, while elevating the image through intensified color, surreal visual drama, and refined artistic stylization. Use rich jewel tones, luminous highlights, crisp focal areas, and a sophisticated balance of realism and fantasy. The composition should feel intentional, high-impact, and elegant, with bold visual clarity and premium decorative appeal. Backgrounds may include stylized natural or symbolic elements, but should remain integrated, artful, and compositionally controlled rather than cluttered or literal. Avoid childish pop styling, muddy colors, low-end poster aesthetics, messy collage effects, plastic textures, generic AI smoothness, or cheap novelty energy. The final image should feel powerful, glamorous, modern, and collectible, like luxury statement art created for a beautiful interior.
 
-COMPOSITION
-Commanding centered portrait. Dog exudes confidence. Bold dramatic framing.
-
-PAINT SURFACE
-Thick impasto texture. Visible directional strokes. Rich highlights catching light like gemstones. Deep dramatic shadows.
-
-BACKGROUND
-Dramatic oversized florals, lush botanicals, or rich dark velvet. Jewel tones throughout.
-
-${CONSTRAINTS_GPT}
-- not watercolor
-- not sketch
-- not minimalist`,
+${CONSTRAINTS_GPT}`,
 
     fluxPrompt: (petDesc) =>
       `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to a bold contemporary fine-art oil painting, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as thick impasto oil paint, jewel-toned palette of sapphire and emerald, surreal oversized floral backdrop, dramatic contrast lighting, gemstone-like highlights, premium gallery-wall finish.`,
@@ -208,7 +183,7 @@ ${CONSTRAINTS_GPT}
 
   {
     id: 'classical_oil',
-    name: 'Classical Oil Portrait',
+    name: 'Oil Painting',
     emoji: '🖼️',
     gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
 
@@ -388,7 +363,7 @@ ${CONSTRAINTS_GPT}
 
   {
     id: 'vintage_pop_art',
-    name: 'Vintage Pop Art',
+    name: 'Gallery Pop',
     emoji: '🎭',
     gptPrompt: (petDesc) => `Create a premium four-panel pop-art portrait grid of the exact animal shown in the input image.
 
