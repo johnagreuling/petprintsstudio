@@ -34,9 +34,9 @@ export default function Home() {
         .style-btn-info{padding:16px 18px}
         nav a{text-decoration:none;color:var(--muted);font-size:11px;letter-spacing:.18em;text-transform:uppercase;transition:color .3s}
         nav a:hover{color:var(--cream)}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
-        .fu{animation:fadeUp .8s ease forwards;opacity:0}
-        .fu1{animation-delay:.05s}.fu2{animation-delay:.15s}.fu3{animation-delay:.25s}.fu4{animation-delay:.4s}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+        .fu{animation:fadeUp .8s ease forwards}
+        .fu1{animation-delay:.05s}.fu2{animation-delay:.1s}.fu3{animation-delay:.18s}.fu4{animation-delay:.28s}
         @keyframes shimmer{0%,100%{opacity:.3}50%{opacity:.7}}
         .shimmer{animation:shimmer 3s ease infinite}
         .tag{display:inline-block;border:1px solid rgba(201,168,76,.3);color:var(--gold);font-size:10px;letter-spacing:.25em;text-transform:uppercase;padding:6px 14px;margin:4px}
