@@ -361,21 +361,25 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Lifestyle images side by side */}
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:48}}>
-            <div className="card" style={{padding:0,overflow:'hidden'}}>
+          {/* The Experience - lifestyle bookends around story */}
+          <div style={{display:'grid',gridTemplateColumns:'1fr 2fr 1fr',gap:24,marginBottom:48,alignItems:'center'}}>
+            <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
               <img src="/blanket-lifestyle.png" alt="Pet blanket lifestyle" style={{width:'100%',display:'block'}}/>
-              <div style={{padding:'20px 24px'}}>
-                <div className="serif" style={{fontSize:18,marginBottom:6}}>A Soft Blanket With Their Face</div>
-                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.6}}>Ultra-soft sherpa fleece, 50×60". Wrap yourself in the memory.</div>
-              </div>
             </div>
-            <div className="card" style={{padding:0,overflow:'hidden'}}>
+            <div style={{textAlign:'center',padding:'20px 16px'}}>
+              <h3 className="serif" style={{fontSize:28,marginBottom:20,fontWeight:400,color:'var(--cream)'}}>The Complete Experience</h3>
+              <p style={{fontSize:15,color:'var(--muted)',lineHeight:2,marginBottom:20}}>
+                Imagine putting on your headphones and hearing their song for the first time — their name in the lyrics, their story in every verse. Looking up at the portrait on the wall and seeing <em>them</em>, not just any dog, but YOUR dog in their world.
+              </p>
+              <p style={{fontSize:15,color:'var(--muted)',lineHeight:2,marginBottom:20}}>
+                Wrapping yourself in a soft sherpa blanket with their face. Wearing a hoodie that keeps them close. Scanning the QR code and watching guests light up as the music plays.
+              </p>
+              <p style={{fontSize:16,color:'var(--cream)',lineHeight:1.9,fontWeight:500}}>
+                One-of-a-kind, curated just for them. A magical package that tells their story — and lets everyone experience it.
+              </p>
+            </div>
+            <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
               <img src="/lifestyle-friends.png" alt="Friends admiring portrait" style={{width:'100%',display:'block'}}/>
-              <div style={{padding:'20px 24px'}}>
-                <div className="serif" style={{fontSize:18,marginBottom:6}}>A Centerpiece They&rsquo;ll Talk About</div>
-                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.6}}>Gallery-quality canvas that commands the room.</div>
-              </div>
             </div>
           </div>
 
