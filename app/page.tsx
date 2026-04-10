@@ -300,32 +300,80 @@ export default function Home() {
 
       <div className="divider"/>
 
-      {/* EXPLORE */}
-      <section style={{padding:'80px 60px',background:'var(--soft)'}}>
-        <div style={{maxWidth:1200,margin:'0 auto'}}>
-          <div style={{textAlign:'center',marginBottom:48}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:10}}>What You Get</div>
-            <h2 className="serif" style={{fontSize:'clamp(28px,4vw,48px)',fontWeight:400,marginBottom:12}}>More Than a Portrait</h2>
-            <p style={{color:'var(--muted)',fontSize:15,maxWidth:500,margin:'0 auto',lineHeight:1.8}}>
-              Your Signature Portrait comes with everything — 16 style options, premium print, original song, and a QR code that plays it from the wall.
-            </p>
+      {/* THEIR STORY BROUGHT TO LIFE */}
+      <section style={{padding:'100px 60px',background:'var(--soft)'}}>
+        <div style={{maxWidth:1000,margin:'0 auto'}}>
+          <div style={{textAlign:'center',marginBottom:56}}>
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>The Experience</div>
+            <h2 className="serif" style={{fontSize:'clamp(36px,5vw,56px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>Their Story,<br/><em>Brought to Life.</em></h2>
+            <div style={{color:'var(--muted)',fontSize:16,maxWidth:700,margin:'0 auto',lineHeight:2}}>
+              <p style={{marginBottom:24}}>
+                We&rsquo;ve built something different. 16 hand-tuned artistic styles. A limitless AI generation engine. The latest models, obsessively trained and prompted by a team that won&rsquo;t stop until it&rsquo;s gallery-worthy.
+              </p>
+              <p style={{marginBottom:24}}>
+                The result? Pet portraits that actually look like <em>them</em> — not a generic dog in a costume, but YOUR dog, in THEIR world. Their favorite spot. Their tennis ball. The way they tilt their head.
+              </p>
+              <p style={{color:'var(--cream)',fontWeight:500}}>
+                Then we write them a song. Original music, billboard-quality production, lyrics pulled straight from the story you tell us.
+              </p>
+            </div>
           </div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:2,marginBottom:40}}>
+
+          {/* Visual product cards */}
+          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:48}}>
             {[
-              {emoji:'🎨',title:'16 Artistic Styles',desc:'From Oil Painting to Neon Glow — we generate your portrait across 16 styles with infinite theme customization. You pick the one that feels most like them.',link:'/styles',linkText:'See all styles →'},
-              {image:'/gallery-quality.png',title:'Premium Prints',desc:'Gallery-quality canvas and archival prints from 8×10 to 24×36. Ready to hang, built to last.'},
-              {emoji:'♪',title:'Original Song',desc:'A custom song written just for your pet — their name, their personality, their story. Yours forever.'},
-              {emoji:'📱',title:'QR Code',desc:'Scan from the wall to hear their song anytime. Every visitor, every time — the portrait comes alive.'},
+              {image:'/gallery-quality.png',title:'Gallery Prints',desc:'Canvas & archival prints from 8×10 to 24×36. Built to last generations.'},
+              {image:'https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/14213989-5ed0-4d83-95ad-665855f994d4_pet/db78566f-64f5-4d0a-985c-03aa8f3e8b88.png',title:'The Portrait',desc:'Their personality, their world, their story — made visible.'},
+              {svg:'waveform',title:'Original Song',desc:'Custom music written from their story. Their name in the lyrics.'},
+              {svg:'qr',title:'QR Code',desc:'Scan from the wall. Hear their song. The portrait comes alive.'},
             ].map(p=>(
-              <div key={p.title} className="card" style={{padding:'28px 24px',textAlign:'center'}}>
-                {(p as any).image ? <img src={(p as any).image} alt={p.title} style={{width:64,height:64,objectFit:'cover',borderRadius:8,marginBottom:12}}/> : <div style={{fontSize:32,marginBottom:12}}>{p.emoji}</div>}
-                <div className="serif" style={{fontSize:18,marginBottom:6,fontWeight:400}}>{p.title}</div>
-                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>{p.desc}</div>
-                {(p as any).link && <div style={{marginTop:10}}><Link href={(p as any).link} style={{fontSize:10,color:'var(--gold)',letterSpacing:'.15em',textTransform:'uppercase',textDecoration:'none',borderBottom:'1px solid rgba(201,168,76,.3)'}}>{(p as any).linkText}</Link></div>}
+              <div key={p.title} className="card" style={{padding:0,overflow:'hidden',textAlign:'center'}}>
+                {(p as any).image ? (
+                  <div style={{width:'100%',aspectRatio:'1',overflow:'hidden'}}>
+                    <img src={(p as any).image} alt={p.title} style={{width:'100%',height:'100%',objectFit:'cover'}}/>
+                  </div>
+                ) : (p as any).svg === 'waveform' ? (
+                  <div style={{width:'100%',aspectRatio:'1',background:'linear-gradient(135deg,#1a1a1a 0%,#0d0d0d 100%)',display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
+                    <svg viewBox="0 0 100 60" style={{width:'80%',height:'auto'}}>
+                      {[12,28,8,42,18,55,25,48,15,38,22,45,10,32,20].map((h,i)=>(
+                        <rect key={i} x={4+i*6.2} y={30-h/2} width={4} height={h} fill="var(--gold)" rx={2} opacity={0.6+Math.random()*0.4}/>
+                      ))}
+                    </svg>
+                  </div>
+                ) : (p as any).svg === 'qr' ? (
+                  <div style={{width:'100%',aspectRatio:'1',background:'linear-gradient(135deg,#1a1a1a 0%,#0d0d0d 100%)',display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
+                    <div style={{width:'70%',aspectRatio:'1',background:'white',borderRadius:8,display:'grid',gridTemplateColumns:'repeat(7,1fr)',gridTemplateRows:'repeat(7,1fr)',gap:2,padding:8}}>
+                      {[1,1,1,0,1,1,1,1,0,1,0,1,0,1,1,1,1,0,0,1,1,0,0,0,1,1,0,0,1,1,1,0,1,1,1,1,0,1,0,1,0,1,1,1,1,0,1,1,1].map((fill,i)=>(
+                        <div key={i} style={{background:fill?'var(--ink)':'white',borderRadius:1}}/>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+                <div style={{padding:'20px 16px'}}>
+                  <div className="serif" style={{fontSize:16,marginBottom:4,fontWeight:400}}>{p.title}</div>
+                  <div style={{fontSize:11,color:'var(--muted)',lineHeight:1.6}}>{p.desc}</div>
+                </div>
               </div>
             ))}
           </div>
-          <div style={{textAlign:'center'}}>
+
+          {/* Soft blanket callout */}
+          <div className="card" style={{padding:'32px 40px',display:'flex',alignItems:'center',gap:32,marginBottom:48}}>
+            <div style={{fontSize:48}}>🛋️</div>
+            <div style={{flex:1}}>
+              <div className="serif" style={{fontSize:20,marginBottom:6}}>Plus: A Soft Blanket With Their Face</div>
+              <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>Ultra-soft sherpa fleece, 50×60". Wrap yourself in the memory. Because some gifts you don&rsquo;t just see — you feel.</div>
+            </div>
+            <div style={{fontSize:13,color:'var(--gold)',fontWeight:600}}>$69</div>
+          </div>
+
+          {/* Closing statement */}
+          <div style={{textAlign:'center',marginBottom:40}}>
+            <p style={{fontSize:15,color:'var(--muted)',lineHeight:2,maxWidth:600,margin:'0 auto 24px'}}>
+              This is for people who don&rsquo;t just have pets — they love them like family.<br/>
+              For people who understand the bond, and want something worthy of it.
+            </p>
+            <p className="serif" style={{fontSize:28,color:'var(--gold)',marginBottom:32}}>This is love, delivered.</p>
             <Link href="/create" className="btn-gold">🐾 Start Their Story</Link>
           </div>
         </div>
