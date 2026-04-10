@@ -413,6 +413,7 @@ export default function Home() {
             <div style={{display:'flex',flexWrap:'wrap',gap:12,justifyContent:'center'}}>
               {[
                 {name:'Sasha',song:'/songs/sasha-on-the-sandbar.mp3',desc:'On the Sandbar'},
+                {name:'Haze',song:'/songs/haze-on-the-harbor.mp3',desc:'On the Harbor'},
               ].map(({name,song,desc})=>(
                 <button key={name} onClick={()=>{const a=document.getElementById('song-player') as HTMLAudioElement;if(a){a.src=song;a.play()}}} style={{background:'var(--gold)',color:'var(--ink)',padding:'12px 24px',fontSize:11,fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',border:'none',borderRadius:6,cursor:'pointer',display:'flex',alignItems:'center',gap:8}}>
                   <span style={{fontSize:16}}>▶</span> {name} — {desc}
