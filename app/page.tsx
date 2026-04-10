@@ -193,28 +193,8 @@ export default function Home() {
               <div style={{background:'var(--ink)',padding:'12px 0',textAlign:'center',borderBottom:'1px solid var(--border)'}}>
                 <div style={{fontSize:42,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>5</div>
               </div>
-              <div style={{aspectRatio:'1',overflow:'hidden',background:'linear-gradient(135deg,#0a0a12 0%,#12101a 50%,#0d0a14 100%)',position:'relative'}}>
-                {/* Ambient glow orbs */}
-                <div style={{position:'absolute',top:'20%',left:'30%',width:120,height:120,background:'radial-gradient(circle,rgba(201,168,76,.25) 0%,transparent 70%)',filter:'blur(20px)'}} />
-                <div style={{position:'absolute',top:'50%',right:'25%',width:80,height:80,background:'radial-gradient(circle,rgba(168,85,247,.2) 0%,transparent 70%)',filter:'blur(15px)'}} />
-                <div style={{position:'absolute',bottom:'30%',left:'20%',width:100,height:100,background:'radial-gradient(circle,rgba(201,168,76,.15) 0%,transparent 70%)',filter:'blur(25px)'}} />
-                {/* Floating elements */}
-                <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',fontSize:14,color:'rgba(201,168,76,.6)'}}>
-                  <span style={{position:'absolute',top:'18%',left:'22%',fontSize:20,opacity:.7}}>♪</span>
-                  <span style={{position:'absolute',top:'25%',right:'28%',fontSize:16,opacity:.5}}>♫</span>
-                  <span style={{position:'absolute',top:'40%',left:'15%',fontSize:12,opacity:.4}}>✦</span>
-                  <span style={{position:'absolute',bottom:'35%',right:'18%',fontSize:18,opacity:.6}}>♪</span>
-                  <span style={{position:'absolute',bottom:'25%',left:'30%',fontSize:14,opacity:.5}}>✧</span>
-                  <span style={{position:'absolute',top:'55%',right:'35%',fontSize:10,opacity:.4}}>✦</span>
-                  <span style={{position:'absolute',bottom:'45%',right:'40%',fontSize:22,opacity:.7}}>♫</span>
-                  <span style={{position:'absolute',top:'65%',left:'40%',fontSize:8,opacity:.3}}>✧</span>
-                </div>
-                {/* Center icon */}
-                <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center'}}>
-                  <div style={{width:70,height:70,borderRadius:'50%',background:'linear-gradient(135deg,rgba(201,168,76,.15) 0%,rgba(201,168,76,.05) 100%)',border:'1px solid rgba(201,168,76,.2)',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 0 60px rgba(201,168,76,.2)'}}>
-                    <span style={{fontSize:28,color:'var(--gold)',opacity:.9}}>♪</span>
-                  </div>
-                </div>
+              <div style={{aspectRatio:'1',overflow:'hidden',background:'#0a1628',position:'relative'}}>
+                <img src="/magic-happens.svg" alt="The magic happens" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
               </div>
               <div style={{padding:'20px 20px 28px'}}>
                 <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>The Magic Happens</h3>
@@ -232,8 +212,8 @@ export default function Home() {
                 <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.5) 0%,transparent 40%)'}} />
               </div>
               <div style={{padding:'20px 20px 28px'}}>
-                <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>A Keepsake Arrives</h3>
-                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>Museum-quality print with a QR code linking to your pet&rsquo;s gallery — every portrait and song, all in one place. You have to see it to believe it.</p>
+                <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>Delivered to Your Door</h3>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>Songs &amp; digital downloads in 24 hours. Prints &amp; keepsakes ship in 2–7 business days. The joy they deliver — infinite.</p>
               </div>
             </div>
 
@@ -244,22 +224,22 @@ export default function Home() {
             <div style={{position:'relative',overflow:'hidden',minHeight:360}}>
               <img
                 src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=900&q=80&fit=crop&crop=faces"
-                alt="Gift moment"
+                alt="Overwhelmed with joy"
                 style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center top',display:'block'}}
                 onError={(e)=>{(e.target as HTMLImageElement).style.opacity='0'}}
               />
               <div style={{position:'absolute',inset:0,background:'linear-gradient(135deg, rgba(10,10,10,.05) 0%, rgba(10,10,10,.4) 100%)'}} />
             </div>
             <div style={{padding:'48px 52px',display:'flex',flexDirection:'column',justifyContent:'center',background:'#111'}}>
-              <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>The Moment</div>
+              <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>The Best Part</div>
               <h3 className="serif" style={{fontSize:'clamp(26px,3.5vw,46px)',fontWeight:400,marginBottom:20,lineHeight:1.1}}>
-                They&rsquo;ll Know<br/><em>You Really Get It.</em>
+                They Open It.<br/><em>They&rsquo;re Overwhelmed.</em>
               </h3>
               <p style={{fontSize:14,color:'var(--muted)',lineHeight:1.9,marginBottom:24}}>
-                A portrait that looks exactly like their pet. A song written just for them. The kind of gift that makes them stop and say &ldquo;how did you do this?&rdquo;
+                There is no better gift. A custom portrait of the one they love most — in an art style picked just for them — with a song written just for their pet. This is the one they cry over. In a good way.
               </p>
               <p style={{fontSize:13,color:'rgba(201,168,76,.55)',fontStyle:'italic',lineHeight:1.7,borderLeft:'2px solid rgba(201,168,76,.25)',paddingLeft:16}}>
-                &ldquo;My mom shows everyone who walks in the door.&rdquo;
+                &ldquo;I gave this to my mom for her birthday. She hasn&rsquo;t stopped talking about it. She shows everyone who walks in the door.&rdquo;
               </p>
             </div>
           </div>
