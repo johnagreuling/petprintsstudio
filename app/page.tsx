@@ -375,7 +375,6 @@ export default function Home() {
               <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>Holidays, birthdays, memorials — we craft the scene to match the moment. Tell us the occasion, we&rsquo;ll make it unforgettable.</div>
             </div>
           </div>
-          </div>
 
           {/* Soft blanket callout */}
           <div className="card" style={{padding:0,display:'flex',alignItems:'stretch',gap:0,marginBottom:48,overflow:'hidden'}}>
