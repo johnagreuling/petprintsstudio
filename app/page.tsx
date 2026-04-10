@@ -41,21 +41,47 @@ export default function Home() {
         .shimmer{animation:shimmer 3s ease infinite}
         .tag{display:inline-block;border:1px solid rgba(201,168,76,.3);color:var(--gold);font-size:10px;letter-spacing:.25em;text-transform:uppercase;padding:6px 14px;margin:4px}
         .popular-badge{position:absolute;top:10px;right:10px;background:var(--gold);color:var(--ink);font-size:8px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:3px 8px}
+        
+        /* Mobile Responsive */
+        @media(max-width:768px){
+          .divider{margin:0 20px}
+          .btn-gold{padding:14px 28px;font-size:11px}
+          .btn-out{padding:12px 24px;font-size:10px}
+          .mobile-hide{display:none!important}
+          .mobile-stack{flex-direction:column!important}
+          .mobile-full{width:100%!important}
+          .mobile-center{text-align:center!important}
+          .section-padding{padding:60px 20px!important}
+          .responsive-grid-2col{display:flex!important;flex-direction:column!important}
+          .responsive-grid-3col{display:grid!important;grid-template-columns:1fr!important}
+          .responsive-grid-4col{display:grid!important;grid-template-columns:1fr 1fr!important}
+          .bookend-grid{display:flex!important;flex-direction:column!important;gap:20px!important}
+          .bookend-grid>*{width:100%!important}
+          .steps-grid{grid-template-columns:1fr 1fr!important}
+          .product-grid{grid-template-columns:1fr 1fr!important}
+        }
+        .section-padding{padding:120px 60px;background:var(--soft)}
+        .responsive-grid-2col{display:grid;grid-template-columns:1.5fr 1fr}
+        .responsive-grid-3col{display:grid;grid-template-columns:1fr 2fr 1fr}
+        .responsive-grid-4col{display:grid;grid-template-columns:repeat(4,1fr)}
+        .bookend-grid{display:grid;grid-template-columns:1fr 2fr 1fr}
+        .steps-grid{grid-template-columns:repeat(6,1fr)}
+        .product-grid{grid-template-columns:repeat(4,1fr)}
       `}</style>
 
       {/* NAV */}
-      <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:100,padding:'20px 48px',display:'flex',alignItems:'center',justifyContent:'space-between',background:'rgba(10,10,10,.95)',backdropFilter:'blur(16px)',borderBottom:'1px solid var(--border)'}}>
-        <Link href="/" style={{display:'flex',alignItems:'center',gap:12,textDecoration:'none'}}>
-          <span style={{fontSize:22}}>🐾</span>
-          <span className="serif" style={{fontSize:22,letterSpacing:'.06em',color:'var(--cream)'}}>Pet Prints Studio</span>
+      <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:100,padding:'16px 20px',display:'flex',alignItems:'center',justifyContent:'space-between',background:'rgba(10,10,10,.95)',backdropFilter:'blur(16px)',borderBottom:'1px solid var(--border)'}}>
+        <Link href="/" style={{display:'flex',alignItems:'center',gap:8,textDecoration:'none'}}>
+          <span style={{fontSize:20}}>🐾</span>
+          <span className="serif" style={{fontSize:18,letterSpacing:'.06em',color:'var(--cream)'}}>Pet Prints Studio</span>
         </Link>
-        <div style={{display:'flex',gap:36,alignItems:'center'}}>
+        <div className="mobile-hide" style={{display:'flex',gap:36,alignItems:'center'}}>
           <a href="#how-it-works">How It Works</a>
           <a href="#the-experience">The Portrait</a>
           <Link href="/styles" style={{color:'var(--muted)',textDecoration:'none',fontSize:12,letterSpacing:'.12em',textTransform:'uppercase'}}>Styles</Link>
           <a href="#the-story">Experience</a>
-          <Link href="/create" className="btn-gold" style={{padding:'12px 24px'}}>Begin Their Story</Link>
         </div>
+        <Link href="/create" className="btn-gold" style={{padding:'10px 20px',fontSize:10}}>Begin Their Story</Link>
       </nav>
 
       {/* HERO */}
@@ -103,14 +129,14 @@ export default function Home() {
       <div className="divider"/>
 
       {/* HOW IT WORKS */}
-      <section id="how-it-works" style={{padding:'120px 60px',background:'#0d0d0d'}}>
+      <section id="how-it-works" className="section-padding" style={{background:'#0d0d0d'}}>
         <div style={{maxWidth:1400,margin:'0 auto'}}>
-          <div style={{textAlign:'center',marginBottom:80}}>
+          <div style={{textAlign:'center',marginBottom:60}}>
             <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>The Process</div>
-            <h2 className="serif" style={{fontSize:'clamp(40px,5vw,72px)',fontWeight:400}}>Tell Us Who They Are.<br/><em>We&rsquo;ll Bring Them to Life.</em></h2>
+            <h2 className="serif" style={{fontSize:'clamp(32px,5vw,72px)',fontWeight:400}}>Tell Us Who They Are.<br/><em>We&rsquo;ll Bring Them to Life.</em></h2>
           </div>
 
-          <div style={{display:'grid',gridTemplateColumns:'repeat(6,1fr)',gap:2}}>
+          <div className="steps-grid" style={{display:'grid',gap:2}}>
 
             {/* STEP 1 — Upload photo */}
             <div className="card" style={{padding:0,overflow:'hidden',position:'relative'}}>
@@ -255,12 +281,12 @@ export default function Home() {
       </section>
 
       {/* MEMORY PORTRAIT FEATURE */}
-      <section id="the-experience" style={{padding:'120px 60px',background:'var(--soft)'}}>
-        <div style={{maxWidth:1100,margin:'0 auto',display:'grid',gridTemplateColumns:'1.5fr 1fr',gap:60,alignItems:'center'}}>
+      <section id="the-experience" className="section-padding">
+        <div className="responsive-grid-2col" style={{maxWidth:1100,margin:'0 auto',gap:40,alignItems:'center'}}>
           <div>
             <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>Signature Portrait &mdash; Starting at $49</div>
-            <h2 className="serif" style={{fontSize:'clamp(36px,4vw,60px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>Their Story Is<br/><em>Worth Remembering.</em></h2>
-            <p style={{fontSize:16,lineHeight:1.9,color:'var(--muted)',marginBottom:32}}>
+            <h2 className="serif" style={{fontSize:'clamp(32px,4vw,60px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>Their Story Is<br/><em>Worth Remembering.</em></h2>
+            <p style={{fontSize:15,lineHeight:1.9,color:'var(--muted)',marginBottom:32}}>
               A pet is so much more than a picture. It&rsquo;s the morning walks. The rides with the windows down. The spot on the couch that&rsquo;s always theirs. The little moments that somehow become the big ones. We turn all of that into a portrait — and a song — that captures who they really are.
             </p>
             <div style={{display:'flex',flexDirection:'column',gap:14,marginBottom:40}}>
@@ -319,12 +345,12 @@ export default function Home() {
       <div className="divider"/>
 
       {/* THEIR STORY BROUGHT TO LIFE */}
-      <section id="the-story" style={{padding:'100px 60px',background:'var(--soft)'}}>
+      <section id="the-story" className="section-padding">
         <div style={{maxWidth:1000,margin:'0 auto'}}>
-          <div style={{textAlign:'center',marginBottom:56}}>
+          <div style={{textAlign:'center',marginBottom:40}}>
             <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>The Experience</div>
-            <h2 className="serif" style={{fontSize:'clamp(36px,5vw,56px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>Their Story,<br/><em>Brought to Life.</em></h2>
-            <div style={{color:'var(--muted)',fontSize:16,maxWidth:700,margin:'0 auto',lineHeight:2}}>
+            <h2 className="serif" style={{fontSize:'clamp(32px,5vw,56px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>Their Story,<br/><em>Brought to Life.</em></h2>
+            <div style={{color:'var(--muted)',fontSize:15,maxWidth:700,margin:'0 auto',lineHeight:1.9}}>
               <p style={{marginBottom:24}}>
                 We&rsquo;ve built something different. 16 hand-tuned artistic styles. A limitless AI generation engine. The latest models, obsessively trained and prompted by a team that won&rsquo;t stop until it&rsquo;s gallery-worthy.
               </p>
@@ -338,7 +364,7 @@ export default function Home() {
           </div>
 
           {/* Visual product cards */}
-          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:48}}>
+          <div className="product-grid" style={{gap:16,marginBottom:48}}>
             {[
               {image:'/portrait-lifestyle.png',title:'The Portrait',desc:'Their story — made visible.'},
               {image:'/gallery-quality.png',title:'Gallery Prints',desc:'Canvas & archival prints.'},
@@ -368,13 +394,13 @@ export default function Home() {
           </div>
 
           {/* Any Occasion - bookends */}
-          <div style={{display:'grid',gridTemplateColumns:'1fr 2fr 1fr',gap:24,marginBottom:24,alignItems:'center'}}>
+          <div className="bookend-grid" style={{gap:24,marginBottom:24,alignItems:'center'}}>
             <div>
               <img src="/portrait-christmas.png" alt="Christmas pet portrait" style={{width:'100%',height:'auto',display:'block',borderRadius:8,border:'1px solid var(--border)'}}/>
             </div>
-            <div style={{textAlign:'center',padding:'40px 16px'}}>
-              <h3 className="serif" style={{fontSize:28,marginBottom:16,fontWeight:400,color:'var(--cream)'}}>Perfect for Every Occasion</h3>
-              <p style={{fontSize:15,color:'var(--muted)',lineHeight:2}}>
+            <div style={{textAlign:'center',padding:'20px 16px'}}>
+              <h3 className="serif" style={{fontSize:'clamp(22px,4vw,28px)',marginBottom:16,fontWeight:400,color:'var(--cream)'}}>Perfect for Every Occasion</h3>
+              <p style={{fontSize:14,color:'var(--muted)',lineHeight:1.9}}>
                 Holidays, birthdays, memorials, gotcha days — we craft the scene to match the moment. Tell us the occasion, and we&rsquo;ll make it unforgettable.
               </p>
             </div>
@@ -384,16 +410,16 @@ export default function Home() {
           </div>
 
           {/* The Experience - lifestyle bookends around story */}
-          <div style={{display:'grid',gridTemplateColumns:'1fr 2fr 1fr',gap:24,marginBottom:48,alignItems:'center'}}>
+          <div className="bookend-grid" style={{gap:24,marginBottom:48,alignItems:'center'}}>
             <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
               <img src="/blanket-lifestyle.png" alt="Pet blanket lifestyle" style={{width:'100%',display:'block'}}/>
             </div>
             <div style={{textAlign:'center',padding:'20px 16px'}}>
-              <h3 className="serif" style={{fontSize:28,marginBottom:20,fontWeight:400,color:'var(--cream)'}}>The Complete Experience</h3>
-              <p style={{fontSize:15,color:'var(--muted)',lineHeight:2,marginBottom:20}}>
+              <h3 className="serif" style={{fontSize:'clamp(22px,4vw,28px)',marginBottom:20,fontWeight:400,color:'var(--cream)'}}>The Complete Experience</h3>
+              <p style={{fontSize:14,color:'var(--muted)',lineHeight:1.9,marginBottom:20}}>
                 Imagine putting on your headphones and hearing their song for the first time — their name in the lyrics, their story in every verse. Looking up at the portrait on the wall and seeing <em>them</em>, not just any dog, but YOUR dog in their world.
               </p>
-              <p style={{fontSize:15,color:'var(--muted)',lineHeight:2,marginBottom:20}}>
+              <p style={{fontSize:14,color:'var(--muted)',lineHeight:1.9,marginBottom:20}}>
                 Wrapping yourself in a soft sherpa blanket with their face. Wearing a hoodie that keeps them close. Scanning the QR code and watching guests light up as the music plays.
               </p>
               <p style={{fontSize:16,color:'var(--cream)',lineHeight:1.9,fontWeight:500}}>
