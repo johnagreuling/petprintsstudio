@@ -382,6 +382,27 @@ ${CONSTRAINTS_GPT}`,
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, premium vintage poster style, retro illustrated, aged paper texture, warm nostalgic palette, heritage advertisement aesthetic`,
   },
+
+  {
+    id: 'retro_pop',
+    name: 'Retro Pop',
+    emoji: '🟥',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Render this image as a premium four-panel pop art grid portrait, with the pet repeated across four equal square quadrants in a perfectly balanced 2x2 composition. The pet must be centered clearly within each square, with consistent framing, strong visual symmetry, and clean alignment across the full image. Each quadrant should feature the same pet portrait but with a different bold, high-contrast pop-art color palette, creating a striking and iconic repeated-image effect. Preserve the pet's recognizable likeness, expression, and personality while simplifying the portrait into strong graphic shapes, crisp edges, and clean color separation. The composition should feel polished, intentional, and gallery-worthy, not messy, not off-center, and not like a low-end collage. Backgrounds should remain simple, flat, and color-blocked so the pet remains the focal point in every panel. Avoid photorealism, muddy tones, clutter, random positioning, distortion between quadrants, cheap novelty aesthetics, and generic AI smoothness. The final image should feel bold, collectible, stylish, and instantly recognizable as premium pop-grid wall art.
+
+${CONSTRAINTS_GPT}
+- four panels, 2x2 grid, perfectly symmetrical
+- same pet in all four quadrants
+- different bold color palette per panel
+- no text or typography`,
+
+    fluxPrompt: (petDesc) =>
+      `Four-panel 2x2 pop art grid of ${petDesc}. Same pet centered in all four quadrants, perfectly symmetrical. Each panel a different bold high-contrast palette: hot pink/yellow, cyan/red, lime/blue, orange/purple. Crisp graphic edges, flat color-blocked backgrounds, clean separation between panels. Premium gallery pop art, Warhol-inspired, collectible.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, four-panel Warhol pop art grid, 2x2 composition, bold flat colors, high contrast, different palette each panel, collectible gallery wall art`,
+  },
 ]
 
 // ── Memory Portrait scene builder — same style families as base ──
