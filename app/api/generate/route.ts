@@ -353,12 +353,13 @@ ${CONSTRAINTS_GPT}
     emoji: '⚡',
     gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
 
-Render this image as a bold, premium gallery pop art portrait with clean graphic composition, striking color contrast, and refined contemporary style. The result should feel like high-end pop-inspired wall art displayed in a modern gallery, not a cartoon, not a meme, and not a cheap novelty print. Preserve the pet's recognizable likeness, expression, and personality while simplifying the subject into strong shapes, crisp edges, and confident color blocking. Use a vibrant but curated palette with high contrast tones and smooth color transitions. The composition must be a single, centered portrait with one subject. Do not use multiple panels, repeated images, grids, or quadrant layouts. The background should be minimal, clean, and design-forward, supporting the subject without clutter. Avoid photorealism, muddy color, collage effects, childish styling, plastic textures, or generic AI smoothness. The final image should feel iconic, stylish, modern, and premium, like a gallery-quality pop art portrait.
+Render this image as a premium single-image gallery pop portrait with bold graphic styling, striking color contrast, and a polished contemporary art feel. The result should feel like high-end pop-inspired wall art for a modern gallery, not a cartoon, not a meme, and not a cheap novelty print. Preserve the pet's recognizable likeness, expression, and personality while simplifying the subject into strong shapes, crisp edges, smooth color blocking, and clean visual structure. Use a vibrant but curated color palette with bold contrast, confident composition, and stylish modern-art energy. The portrait must be a single centered composition with one subject only. Do not use multiple panels, repeated images, quadrant layouts, grids, split frames, duplicated portraits, or Warhol-style repetition. The background should be simple, clean, and design-forward, supporting the pet without clutter and without creating a poster-grid look. Avoid photorealism, muddy color, childish illustration, collage effects, plastic AI textures, generic digital smoothness, and low-end pop-art novelty aesthetics. The final image should feel iconic, stylish, modern, and premium, like a collectible single-image pop portrait worthy of framing.
 
 ${CONSTRAINTS_GPT}
 - single centered portrait only
 - no multiple panels or grids
 - no Warhol quadrant layout
+- no repeated images
 - not photorealistic`,
 
     fluxPrompt: (petDesc) =>
