@@ -346,11 +346,16 @@ export default function CreatePage() {
 
 
   const handleExpandStyle = async (styleId: string, styleName: string) => {
-    if (!uploadedUrl || expandingStyle) return
+    console.log('handleExpandStyle called:', { styleId, styleName, uploadedUrl, expandingStyle, sessionFolder })
+    if (!uploadedUrl || expandingStyle) {
+      console.log('Early return - uploadedUrl:', uploadedUrl, 'expandingStyle:', expandingStyle)
+      return
+    }
     setExpandingStyle(styleId)
     setExpandProgress(0)
     // Strip variant suffix (e.g., "ethereal_0" -> "ethereal") for API call
     const baseStyleId = styleId.replace(/_\d+$/, '')
+    console.log('Calling API with baseStyleId:', baseStyleId)
     // Animate progress bar while waiting
     const ticker = setInterval(() => {
       setExpandProgress(p => p < 85 ? p + Math.random() * 8 : p)
@@ -369,6 +374,7 @@ export default function CreatePage() {
           isMemory: false,
         })
       })
+      console.log('API response status:', res.status)
       if (!res.ok) throw new Error('Failed')
       const reader = res.body!.getReader()
       const decoder = new TextDecoder()
@@ -383,12 +389,13 @@ export default function CreatePage() {
           if (!line.startsWith('data:')) continue
           try {
             const d = JSON.parse(line.slice(5))
+            console.log('Received SSE data:', d.type, d)
             if (d.type === 'image') {
               // Ensure the new image has the correct styleId so it groups properly
               setGenerated(prev => [...prev, {...d.image, styleId, styleName}])
               setExpandProgress(p => Math.min(p + 30, 95))
             }
-          } catch(e) {}
+          } catch(e) { console.error('Parse error:', e) }
         }
       }
       setExpandProgress(100)
@@ -837,7 +844,7 @@ export default function CreatePage() {
                 </div>
               )}
               <div style={{display:'grid',gridTemplateColumns:'1fr 2fr',gap:8}}>
-                <button className="btn-out" style={{padding:'14px'}} onClick={()=>setStep('product')}>← Regenerate</button>
+                <button className="btn-out" style={{padding:'14px'}} onClick={()=>{ setGenerated([]); setPicked(null); setStep('product') }}>← Regenerate</button>
                 <button className="btn-gold" disabled={!picked} onClick={()=>setStep('upsell')}>Continue to Checkout →</button>
               </div>
             </div>
