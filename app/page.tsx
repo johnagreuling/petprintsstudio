@@ -358,13 +358,15 @@ export default function Home() {
           </div>
 
           {/* Soft blanket callout */}
-          <div className="card" style={{padding:'32px 40px',display:'flex',alignItems:'center',gap:32,marginBottom:48}}>
-            <div style={{fontSize:48}}>🛋️</div>
-            <div style={{flex:1}}>
-              <div className="serif" style={{fontSize:20,marginBottom:6}}>Plus: A Soft Blanket With Their Face</div>
-              <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>Ultra-soft sherpa fleece, 50×60". Wrap yourself in the memory. Because some gifts you don&rsquo;t just see — you feel.</div>
+          <div className="card" style={{padding:0,display:'flex',alignItems:'stretch',gap:0,marginBottom:48,overflow:'hidden'}}>
+            <div style={{width:200,minHeight:160,overflow:'hidden',flexShrink:0}}>
+              <img src="/blanket-lifestyle.png" alt="Pet blanket lifestyle" style={{width:'100%',height:'100%',objectFit:'cover'}}/>
             </div>
-            <div style={{fontSize:13,color:'var(--gold)',fontWeight:600}}>$69</div>
+            <div style={{flex:1,padding:'28px 32px',display:'flex',flexDirection:'column',justifyContent:'center'}}>
+              <div className="serif" style={{fontSize:22,marginBottom:8}}>A Soft Blanket With Their Face</div>
+              <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7,marginBottom:12}}>Ultra-soft sherpa fleece, 50×60". Wrap yourself in the memory. Because some gifts you don&rsquo;t just see — you feel.</div>
+              <div style={{fontSize:14,color:'var(--gold)',fontWeight:600}}>$69</div>
+            </div>
           </div>
 
           {/* Closing statement */}
