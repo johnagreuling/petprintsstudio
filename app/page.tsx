@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { useState } from 'react'
-import { ART_STYLES, PRODUCTS } from '@/lib/config'
+import { PRODUCTS } from '@/lib/config'
 
 export default function Home() {
   const [activeStyle, setActiveStyle] = useState(0)
@@ -81,17 +81,11 @@ export default function Home() {
           <a href="#how-it-works" className="btn-out">See How It Works</a>
         </div>
 
-        {/* Style tags */}
-        <div className="fu fu4" style={{marginBottom:64,display:'flex',flexWrap:'wrap',justifyContent:'center',gap:8}}>
-          {ART_STYLES.map(s => (
-            <div key={s.id} style={{display:'flex',alignItems:'center',gap:8,border:'1px solid rgba(201,168,76,.3)',padding:'6px 12px 6px 6px'}}>
-              {s.styleImage
-                ? <img src={s.styleImage} alt={s.name} style={{width:28,height:28,objectFit:'cover',borderRadius:2}} />
-                : <div style={{width:28,height:28,borderRadius:2,background:(s as any).styleBg||'#1a1a1a',display:'flex',alignItems:'center',justifyContent:'center',fontSize:14}}>{s.emoji}</div>
-              }
-              <span style={{fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)'}}>{s.name}</span>
-            </div>
-          ))}
+        {/* Style hint */}
+        <div className="fu fu4" style={{marginBottom:64,textAlign:'center'}}>
+          <p style={{fontSize:12,color:'rgba(201,168,76,.6)',letterSpacing:'.08em'}}>
+            Available in 16 artistic styles &nbsp;&middot;&nbsp; <Link href="/styles" style={{color:'var(--gold)',textDecoration:'none',borderBottom:'1px solid rgba(201,168,76,.4)'}}>See all styles →</Link>
+          </p>
         </div>
 
         {/* Stats */}
@@ -221,23 +215,24 @@ export default function Home() {
       <section style={{padding:'80px 60px',background:'var(--soft)'}}>
         <div style={{maxWidth:1200,margin:'0 auto'}}>
           <div style={{textAlign:'center',marginBottom:48}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:10}}>Also Available</div>
-            <h2 className="serif" style={{fontSize:'clamp(28px,4vw,48px)',fontWeight:400,marginBottom:12}}>More Ways to Keep Them Close</h2>
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:10}}>What You Get</div>
+            <h2 className="serif" style={{fontSize:'clamp(28px,4vw,48px)',fontWeight:400,marginBottom:12}}>More Than a Portrait</h2>
             <p style={{color:'var(--muted)',fontSize:15,maxWidth:500,margin:'0 auto',lineHeight:1.8}}>
-              Once you have the portrait, put it everywhere. 12 artistic styles, 30+ products — all printed on demand.
+              Your Signature Portrait comes with everything — 16 style options, premium print, original song, and a QR code that plays it from the wall.
             </p>
           </div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:2,marginBottom:40}}>
             {[
-              {emoji:'🎨',title:'12 Art Styles',desc:'We automatically generate multiple interpretations — oil painting, watercolor, neon glow, storybook and more. You pick your favorite.'},
-              {emoji:'🖼️',title:'Prints & Canvas',desc:'Gallery-quality wall art from 8×10 to 24×36, ready to hang'},
-              {emoji:'🐶',title:'Pet Wearables',desc:'Bandanas, tank tops, beds — their portrait on them'},
-              {emoji:'🫂',title:'Matching Family',desc:'Same portrait on a hoodie for you and your pet'},
+              {emoji:'🎨',title:'16 Artistic Styles',desc:'From Oil Painting to Neon Glow — we generate your portrait across 16 styles with infinite theme customization. You pick the one that feels most like them.',link:'/styles',linkText:'See all styles →'},
+              {emoji:'🖼️',title:'Premium Prints',desc:'Gallery-quality canvas and archival prints from 8×10 to 24×36. Ready to hang, built to last.'},
+              {emoji:'♪',title:'Original Song',desc:'A custom song written just for your pet — their name, their personality, their story. Yours forever.'},
+              {emoji:'📱',title:'QR Code',desc:'Scan from the wall to hear their song anytime. Every visitor, every time — the portrait comes alive.'},
             ].map(p=>(
               <div key={p.title} className="card" style={{padding:'28px 24px',textAlign:'center'}}>
                 <div style={{fontSize:32,marginBottom:12}}>{p.emoji}</div>
                 <div className="serif" style={{fontSize:18,marginBottom:6,fontWeight:400}}>{p.title}</div>
                 <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>{p.desc}</div>
+                {(p as any).link && <div style={{marginTop:10}}><Link href={(p as any).link} style={{fontSize:10,color:'var(--gold)',letterSpacing:'.15em',textTransform:'uppercase',textDecoration:'none',borderBottom:'1px solid rgba(201,168,76,.3)'}}>{(p as any).linkText}</Link></div>}
               </div>
             ))}
           </div>
