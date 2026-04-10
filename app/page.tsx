@@ -323,28 +323,30 @@ export default function Home() {
           </div>
 
           {/* Visual product cards */}
-          <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:24,marginBottom:48}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:48}}>
             {[
-              {image:'/portrait-lifestyle.png',title:'The Portrait',desc:'Their personality, their world, their story — made visible.'},
-              {image:'/gallery-quality.png',title:'Gallery Prints',desc:'Canvas & archival prints from 8×10 to 24×36. Built to last generations.'},
-              {image:'/song-lifestyle.png',title:'Original Song',desc:'Custom music written from their story. Their name in the lyrics.'},
-              {svg:'qr',title:'QR Code',desc:'Scan from the wall. Hear their song. The portrait comes alive.'},
+              {image:'/portrait-lifestyle.png',title:'The Portrait',desc:'Their story — made visible.'},
+              {image:'/gallery-quality.png',title:'Gallery Prints',desc:'Canvas & archival prints.'},
+              {image:'/song-lifestyle.png',title:'Original Song',desc:'Their name in the lyrics.'},
+              {svg:'qr',title:'QR Code',desc:'Scan. Listen. Experience.'},
             ].map(p=>(
               <div key={p.title} className="card" style={{padding:0,overflow:'hidden',textAlign:'center'}}>
                 {(p as any).image ? (
-                  <img src={(p as any).image} alt={p.title} style={{width:'100%',display:'block'}}/>
+                  <div style={{maxHeight:200,overflow:'hidden'}}>
+                    <img src={(p as any).image} alt={p.title} style={{width:'100%',display:'block'}}/>
+                  </div>
                 ) : (p as any).svg === 'qr' ? (
-                  <div style={{aspectRatio:'16/9',background:'linear-gradient(135deg,#1a1a1a 0%,#0d0d0d 100%)',display:'flex',alignItems:'center',justifyContent:'center'}}>
-                    <div style={{width:120,height:120,background:'white',borderRadius:12,display:'grid',gridTemplateColumns:'repeat(7,1fr)',gridTemplateRows:'repeat(7,1fr)',gap:3,padding:10}}>
+                  <div style={{height:200,background:'linear-gradient(135deg,#1a1a1a 0%,#0d0d0d 100%)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                    <div style={{width:80,height:80,background:'white',borderRadius:8,display:'grid',gridTemplateColumns:'repeat(7,1fr)',gridTemplateRows:'repeat(7,1fr)',gap:2,padding:6}}>
                       {[1,1,1,0,1,1,1,1,0,1,0,1,0,1,1,1,1,0,0,1,1,0,0,0,1,1,0,0,1,1,1,0,1,1,1,1,0,1,0,1,0,1,1,1,1,0,1,1,1].map((fill,i)=>(
                         <div key={i} style={{background:fill?'var(--ink)':'white',borderRadius:1}}/>
                       ))}
                     </div>
                   </div>
                 ) : null}
-                <div style={{padding:'24px 20px'}}>
-                  <div className="serif" style={{fontSize:20,marginBottom:6,fontWeight:400}}>{p.title}</div>
-                  <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>{p.desc}</div>
+                <div style={{padding:'16px 12px'}}>
+                  <div className="serif" style={{fontSize:15,marginBottom:4,fontWeight:400}}>{p.title}</div>
+                  <div style={{fontSize:11,color:'var(--muted)',lineHeight:1.5}}>{p.desc}</div>
                 </div>
               </div>
             ))}
