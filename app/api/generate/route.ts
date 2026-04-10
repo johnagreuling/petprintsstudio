@@ -300,69 +300,34 @@ ${CONSTRAINTS_GPT}
       `portrait of sks ${petType}, impressionist oil painting Monet style, loose brushstrokes, dappled garden light, vibrant color`,
   },
 
+
   {
     id: 'pastel',
-    name: 'Soft Pastel Portrait',
+    name: 'Soft Pastel',
     emoji: '🕊️',
     gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
 
 STYLE
-Soft chalk pastel portrait on toned paper. Velvety matte surface. Soft blended transitions. Chalky texture on fur. Gentle and romantic feeling. Warm and creamy color palette.
+Soft, dreamy pastel portrait with a fine-art illustration quality. Think of a beautifully rendered pastel drawing on toned paper — delicate blended color, soft gradients, gentle light, and an intimate, emotional warmth. The texture should feel like real pastel chalk or colored pencil on quality art paper.
 
-COMPOSITION
-Soft centered portrait. Intimate and gentle framing.
+Color palette: soft lavenders, powder blues, warm creams, dusty roses, sage greens, warm greys. Never harsh, never neon — always gentle and luminous.
 
-PAINT SURFACE
-Chalky pastel texture throughout. Soft blended strokes. Paper texture visible in lighter areas. Matte non-glossy finish.
-
-BACKGROUND
-Soft toned paper — warm beige or grey showing through. Loose pastel suggestion of environment.
+The pet should feel precious and tender in this rendering. Romantic, timeless, gallery-worthy.
 
 ${CONSTRAINTS_GPT}
-- not oil paint
-- not digital
-- not cartoon`,
+- not photorealistic
+- not cartoon
+- not oil painting
+- not watercolor (pastel texture, not washes)`,
 
     fluxPrompt: (petDesc) =>
-      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to soft chalk pastel on warm toned paper, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as velvety matte chalky texture, soft blended transitions, warm toned paper showing through, creamy warm palette, paper grain visible, gentle intimate fine-art finish.`,
+      `Soft pastel portrait of ${petDesc}. Delicate blended pastel chalk on toned paper. Dreamy, warm, gentle light. Soft lavenders, powder blues, warm creams. Fine-art illustration quality. Intimate and emotional. Not photorealistic, not cartoon.`,
 
     astriaPrompt: (petType) =>
-      `portrait of sks ${petType}, soft chalk pastel portrait, velvety matte surface, chalky texture, warm creamy palette, toned paper`,
+      `portrait of sks ${petType}, soft pastel drawing, delicate blended colors, dreamy fine art illustration, toned paper texture, warm and gentle`,
   },
-
   {
-    id: 'editorial_acrylic',
-    name: 'Modern Editorial Acrylic',
-    emoji: '🎭',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-STYLE
-Bold modern acrylic painting with editorial energy. High contrast. Confident loose brushwork. Contemporary art-magazine aesthetic. Expressive marks. Strong graphic composition. Neither fully abstract nor photorealistic — confidently painterly.
-
-COMPOSITION
-Bold centered portrait with strong graphic composition. Dog commands the frame.
-
-PAINT SURFACE
-Confident loose acrylic strokes. Some palette-knife marks. Areas of thick paint alongside thinner washes. Dynamic and energetic surface.
-
-BACKGROUND
-Bold graphic background — flat color field, geometric suggestion, or loose expressive marks in contrasting color.
-
-${CONSTRAINTS_GPT}
-- not illustrative
-- not watercolor
-- not pastel`,
-
-    fluxPrompt: (petDesc) =>
-      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to bold modern acrylic painting with editorial energy, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as confident loose acrylic strokes with palette-knife marks, high contrast, bold graphic background, thick and thin paint areas, contemporary art-magazine aesthetic, visually striking premium finish.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType}, bold modern acrylic painting, high contrast, confident loose brushwork, editorial graphic energy`,
-  },
-
-
-  {
-    id: 'vintage_pop_art',
+    id: 'vintage_poster',
     name: 'Vintage Poster',
     emoji: '🗺️',
     gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
@@ -379,42 +344,55 @@ ${CONSTRAINTS_GPT}
       `Premium vintage poster illustration of ${petDesc}. Mid-century travel or advertising poster style. Bold graphic composition, simplified painterly shapes, strong silhouette. Elegant flattened forms, controlled shading, nostalgic retro color harmony. Curated retro palette, confident line structure, subtle print texture. Collectible, stylish, nostalgic, premium. Not photorealistic, not cartoon, not Warhol grid.`,
 
     astriaPrompt: (petType) =>
-      `portrait of sks ${petType}, four-panel Warhol pop-art screenprint grid, bold flat colors, high contrast, 1960s graphic style, collectible`,
+      `portrait of sks ${petType}, mid-century vintage travel poster illustration, bold graphic, flat colors, retro print aesthetic, collectible`,
   },
 
+  {
+    id: 'vintage_pop_art',
+    name: 'Vintage Pop Art',
+    emoji: '⚡',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+STYLE
+Classic 1960s Warhol-inspired pop-art screenprint with luxury gallery-poster feel. A 2×2 grid, same portrait in all four panels, each with a different bold saturated palette: Panel 1 hot pink and yellow, Panel 2 cyan and red, Panel 3 lime green and blue, Panel 4 orange and purple. Strong color blocking, crisp graphic edges, simplified tonal shapes, high contrast, flat graphic background.
+
+The pet must be highly recognizable in every panel. Eyes, nose, facial markings, and silhouette stay accurate and expressive. Final result should feel iconic, stylish, collectible, bright, and premium.
+
+${CONSTRAINTS_GPT}
+- no text or typography
+- not photorealistic
+- not painterly or impressionistic
+- four panels, 2x2 grid`,
+
+    fluxPrompt: (petDesc) =>
+      `A four-panel 2x2 pop-art screenprint of the exact dog from the reference image. Same dog in all four panels — same breed, face, markings, expression. 1960s Warhol pop-art style: bold flat color blocking, crisp graphic edges, high contrast. Each panel a different saturated palette: hot pink/yellow, cyan/red, lime green/blue, orange/purple. Iconic, collectible, gallery-worthy.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, four-panel Warhol pop-art screenprint grid, bold flat colors, high contrast, 1960s graphic style, collectible`,
+  },
   {
     id: 'vintage_poster_v2',
     name: 'Heritage Poster',
     emoji: '🏛️',
-    gptPrompt: (petDesc) => `Create a premium vintage-style poster portrait of the exact animal shown in the input image.
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Create a premium heritage poster portrait of the exact animal shown in the input image.
 
 SUBJECT IDENTITY
-Preserve the exact animal from the input photo:
-- ${petDesc}
-- exact breed appearance and body proportions
-- exact face shape, muzzle, ear shape and ear set
-- exact eye color and expression
-- exact coat color, all markings, fur pattern and length
-- exact recognizable expression and personality
-- preserve any visible accessories
+Preserve the exact animal from the input photo with perfect likeness — exact breed, coat, markings, expression, and accessories.
 
 STYLE
-Premium vintage-style poster with a timeless, collectible, frame-worthy feel. Looks like a high-end retro print or classic advertisement poster — elegant composition, strong focal hierarchy, nostalgic visual charm.
+Premium collectible heritage poster with timeless frame-worthy appeal. Warm, rich, and dignified. Feels like a treasured antique print or classic naturalist illustration elevated to fine art poster status.
 
-Style direction: vintage poster design, retro illustrated portrait, aged print aesthetic, tasteful distressed paper texture, subtle faded ink character, no text included, balanced graphic composition, warm nostalgic palette, collectible wall-art feel.
+Style direction: heritage illustration aesthetic, aged parchment and warm earth tones, subtle distressed texture, ornamental border framing, badge or crest design elements, rich warm palette, hand-crafted premium feel, collectible wall art.
 
 COLOR PALETTE
-Cream, tan, faded red, muted navy, forest green, dusty teal, golden ochre, warm brown, soft black. Stylish, timeless, slightly weathered but still clean and premium.
+Warm cream, rich tan, burnt sienna, forest green, deep navy, gold, aged ivory, warm brown, muted terracotta. Rich, dignified, and timelessly elegant.
 
 COMPOSITION
-Pet is the clear focal point in a strong iconic pose. Background supports the poster look with simple vintage graphic shapes, soft ornamental framing, subtle sunburst or badge-like design elements, lightly textured retro backdrop. Elegant and uncluttered. Feels like a premium vintage travel poster, heritage advertisement, or classic collectible print.
+Pet centered as the noble focal point. Background has ornamental heritage design elements — subtle crest shapes, elegant borders, warm textured backdrop. Feels distinguished, classic, and collectible.
 
-CONSTRAINTS
-- no text or typography
-- no watermark
-- no extra animals
-- not photorealistic or glossy
-- no modern neon colors`,
+${CONSTRAINTS_GPT}`,
 
     fluxPrompt: (petDesc) =>
       `A premium vintage-style poster portrait of the exact dog from the reference image. Keep the same dog — same breed, coat, markings, expression. Render as a high-end retro print: aged paper texture, faded ink, warm nostalgic palette of cream, tan, muted red, dusty teal, golden ochre. Pet in strong iconic pose as clear focal point. Background has simple vintage graphic shapes, ornamental framing, subtle sunburst elements. Feels like a heritage advertisement or classic collectible travel poster. Elegant, timeless, frame-worthy.`,
