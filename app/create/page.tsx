@@ -349,6 +349,8 @@ export default function CreatePage() {
     if (!uploadedUrl || expandingStyle) return
     setExpandingStyle(styleId)
     setExpandProgress(0)
+    // Strip variant suffix (e.g., "ethereal_0" -> "ethereal") for API call
+    const baseStyleId = styleId.replace(/_\d+$/, '')
     // Animate progress bar while waiting
     const ticker = setInterval(() => {
       setExpandProgress(p => p < 85 ? p + Math.random() * 8 : p)
@@ -359,7 +361,7 @@ export default function CreatePage() {
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
           imageUrl: uploadedUrl,
-          targetStyleId: styleId,
+          targetStyleId: baseStyleId,
           variantCount: 2,
           petName: answers.petName || '',
           petType: answers.petBreed || 'pet',
