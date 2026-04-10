@@ -369,8 +369,8 @@ export default function Home() {
 
           {/* Any Occasion - bookends */}
           <div style={{display:'grid',gridTemplateColumns:'1fr 2fr 1fr',gap:24,marginBottom:24}}>
-            <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)',alignSelf:'center'}}>
-              <img src="/portrait-christmas.png" alt="Christmas pet portrait" style={{width:'100%',height:'auto',display:'block'}}/>
+            <div style={{borderRadius:8,border:'1px solid var(--border)',alignSelf:'center'}}>
+              <img src="/portrait-christmas.png" alt="Christmas pet portrait" style={{width:'100%',height:'auto',display:'block',borderRadius:8}}/>
             </div>
             <div style={{textAlign:'center',padding:'40px 16px',alignSelf:'center'}}>
               <h3 className="serif" style={{fontSize:28,marginBottom:16,fontWeight:400,color:'var(--cream)'}}>Perfect for Every Occasion</h3>
@@ -378,8 +378,8 @@ export default function Home() {
                 Holidays, birthdays, memorials, gotcha days — we craft the scene to match the moment. Tell us the occasion, and we&rsquo;ll make it unforgettable.
               </p>
             </div>
-            <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)',alignSelf:'center'}}>
-              <img src="/portrait-birthday.png" alt="Birthday pet portrait" style={{width:'100%',height:'auto',display:'block'}}/>
+            <div style={{borderRadius:8,border:'1px solid var(--border)',alignSelf:'center'}}>
+              <img src="/portrait-birthday.png" alt="Birthday pet portrait" style={{width:'100%',height:'auto',display:'block',borderRadius:8}}/>
             </div>
           </div>
 
