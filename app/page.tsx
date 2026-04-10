@@ -329,29 +329,21 @@ export default function Home() {
             ].map(p=>(
               <div key={p.title} className="card" style={{padding:0,overflow:'hidden',textAlign:'center'}}>
                 {(p as any).image ? (
-                  <div style={{width:'100%',aspectRatio:'1',overflow:'hidden'}}>
-                    <img src={(p as any).image} alt={p.title} style={{width:'100%',height:'100%',objectFit:'cover'}}/>
-                  </div>
-                ) : (p as any).svg === 'waveform' ? (
-                  <div style={{width:'100%',aspectRatio:'1',background:'linear-gradient(135deg,#1a1a1a 0%,#0d0d0d 100%)',display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
-                    <svg viewBox="0 0 100 60" style={{width:'80%',height:'auto'}}>
-                      {[12,28,8,42,18,55,25,48,15,38,22,45,10,32,20].map((h,i)=>(
-                        <rect key={i} x={4+i*6.2} y={30-h/2} width={4} height={h} fill="var(--gold)" rx={2} opacity={0.6+Math.random()*0.4}/>
-                      ))}
-                    </svg>
+                  <div style={{width:'100%',aspectRatio:'4/3',overflow:'hidden'}}>
+                    <img src={(p as any).image} alt={p.title} style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center top'}}/>
                   </div>
                 ) : (p as any).svg === 'qr' ? (
-                  <div style={{width:'100%',aspectRatio:'1',background:'linear-gradient(135deg,#1a1a1a 0%,#0d0d0d 100%)',display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
-                    <div style={{width:'70%',aspectRatio:'1',background:'white',borderRadius:8,display:'grid',gridTemplateColumns:'repeat(7,1fr)',gridTemplateRows:'repeat(7,1fr)',gap:2,padding:8}}>
+                  <div style={{width:'100%',aspectRatio:'4/3',background:'linear-gradient(135deg,#1a1a1a 0%,#0d0d0d 100%)',display:'flex',alignItems:'center',justifyContent:'center',padding:24}}>
+                    <div style={{width:'55%',aspectRatio:'1',background:'white',borderRadius:8,display:'grid',gridTemplateColumns:'repeat(7,1fr)',gridTemplateRows:'repeat(7,1fr)',gap:2,padding:8}}>
                       {[1,1,1,0,1,1,1,1,0,1,0,1,0,1,1,1,1,0,0,1,1,0,0,0,1,1,0,0,1,1,1,0,1,1,1,1,0,1,0,1,0,1,1,1,1,0,1,1,1].map((fill,i)=>(
                         <div key={i} style={{background:fill?'var(--ink)':'white',borderRadius:1}}/>
                       ))}
                     </div>
                   </div>
                 ) : null}
-                <div style={{padding:'20px 16px'}}>
-                  <div className="serif" style={{fontSize:16,marginBottom:4,fontWeight:400}}>{p.title}</div>
-                  <div style={{fontSize:11,color:'var(--muted)',lineHeight:1.6}}>{p.desc}</div>
+                <div style={{padding:'24px 18px'}}>
+                  <div className="serif" style={{fontSize:18,marginBottom:6,fontWeight:400}}>{p.title}</div>
+                  <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>{p.desc}</div>
                 </div>
               </div>
             ))}
