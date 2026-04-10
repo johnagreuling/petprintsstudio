@@ -405,13 +405,13 @@ ${CONSTRAINTS_GPT}`,
     emoji: '🟥',
     gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
 
-Render this image as a premium four-panel pop art grid portrait, with the pet repeated across four equal square quadrants in a perfectly balanced 2x2 composition. The pet must be centered clearly within each square, with consistent framing, strong visual symmetry, and clean alignment across the full image. Each quadrant should feature the same pet portrait but with a different bold, high-contrast pop-art color palette, creating a striking and iconic repeated-image effect. Preserve the pet's recognizable likeness, expression, and personality while simplifying the portrait into strong graphic shapes, crisp edges, and clean color separation. The composition should feel polished, intentional, and gallery-worthy, not messy, not off-center, and not like a low-end collage. Backgrounds should remain simple, flat, and color-blocked so the pet remains the focal point in every panel. Avoid photorealism, muddy tones, clutter, random positioning, distortion between quadrants, cheap novelty aesthetics, and generic AI smoothness. The final image should feel bold, collectible, stylish, and instantly recognizable as premium pop-grid wall art.
+Render this image as a premium retro pop art grid portrait with the pet repeated across four equal square panels in a perfectly aligned 2x2 composition. The overall layout must be symmetrical, evenly spaced, and clean, with four matching square quadrants arranged in a balanced grid. The pet must be centered clearly within each individual square, with the same crop, scale, head position, and framing in every panel. Each quadrant should contain the same portrait composition, repeated consistently, with only the color palette changing from panel to panel. Use bold retro pop color blocking, crisp edges, strong graphic simplification, and smooth high-contrast tones to create an iconic repeated-image effect. Preserve the pet's recognizable likeness, expression, and personality while simplifying the portrait into clean shapes and polished pop-art styling. Backgrounds should remain flat, simple, and color-blocked so the pet stays the focal point in every quadrant. Do not use irregular spacing, misaligned panels, varied subject position, different crops, overlapping elements, poster collage layouts, or off-center framing. Avoid photorealism, muddy colors, noisy texture, painterly brushwork, childish styling, and cheap novelty aesthetics. The final image should feel bold, iconic, collectible, and professionally designed, like premium four-panel retro pop wall art worthy of framing.
 
 ${CONSTRAINTS_GPT}
-- four panels, 2x2 grid, perfectly symmetrical
-- same pet in all four quadrants
-- different bold color palette per panel
-- no text or typography`,
+- four panels, perfectly aligned 2x2 grid
+- same pet, same crop in every panel
+- only color palette changes per panel
+- no irregular spacing or misaligned panels`,
 
     fluxPrompt: (petDesc) =>
       `Four-panel 2x2 pop art grid of ${petDesc}. Same pet centered in all four quadrants, perfectly symmetrical. Each panel a different bold high-contrast palette: hot pink/yellow, cyan/red, lime/blue, orange/purple. Crisp graphic edges, flat color-blocked backgrounds, clean separation between panels. Premium gallery pop art, Warhol-inspired, collectible.`,
