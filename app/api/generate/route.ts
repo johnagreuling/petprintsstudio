@@ -87,303 +87,6 @@ const STYLE_FAMILIES: Array<{
   astriaPrompt: (petType: string) => string
 }> = [
   {
-    id: 'vintage_poster_v2',
-    name: 'Heritage Poster',
-    emoji: '🏛️',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-Render this image as a premium heritage poster with timeless Americana character, refined vintage print styling, and a dignified, classic composition. The result should feel like a traditional commemorative or heirloom print—elegant, restrained, and display-worthy—not a cartoon, not a photograph, and not a modern graphic design. Preserve the pet's recognizable likeness, natural posture, and calm, noble expression while interpreting the portrait with balanced linework, subtle painterly shading, and clean, structured composition. Use a restrained, heritage-inspired color palette with warm neutrals, deep earth tones, muted reds, soft blues, and weathered greens, with a gentle aged-paper feel. The scene should feel iconic and grounded, with a sense of tradition, memory, and legacy. Background elements should remain simple, supportive, and design-forward, enhancing the subject without clutter or distraction. Avoid loud pop-art color, photorealism, glossy rendering, plastic AI textures, cartoon styling, busy layouts, or cheap novelty aesthetics. The final image should feel timeless, collectible, and premium, like a preserved legacy print worthy of framing.
-
-${CONSTRAINTS_GPT}`,
-
-    fluxPrompt: (petDesc) =>
-      `A premium vintage-style poster portrait of the exact dog from the reference image. Keep the same dog — same breed, coat, markings, expression. Render as a high-end retro print: aged paper texture, faded ink, warm nostalgic palette of cream, tan, muted red, dusty teal, golden ochre. Pet in strong iconic pose as clear focal point. Background has simple vintage graphic shapes, ornamental framing, subtle sunburst elements. Feels like a heritage advertisement or classic collectible travel poster. Elegant, timeless, frame-worthy.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType}, premium vintage poster style, retro illustrated, aged paper texture, warm nostalgic palette, heritage advertisement aesthetic`,
-  },
-  {
-    id: 'neon_glow',
-    name: 'Neon Glow',
-    emoji: '🌟',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-STYLE
-Render this portrait in a Neon Glow style with a dark, cinematic background and vivid neon lighting accents. Preserve the subject's likeness and expression while reinterpreting the scene with bold glowing outlines, luminous highlights, and high contrast color. Use saturated neon tones such as electric blue, magenta, purple, teal, and gold against deep shadow. The lighting should feel dynamic and stylized, emphasizing contours and key elements of the scene. The final image should feel sleek, modern, high-energy, and visually striking, like premium cyber-inspired wall art with a nightlife aesthetic.
-
-COMPOSITION
-Strong centered portrait. Dark dramatic background. Subject glows with neon rim lighting. Eyes and facial features catch the brightest neon light.
-
-PAINT SURFACE
-Sleek modern digital-art quality. High contrast between dark background and luminous neon highlights. Sharp glowing edges.
-
-BACKGROUND
-Dark cinematic — near black with subtle depth. Neon color bleed and atmospheric haze.
-
-${CONSTRAINTS_GPT}
-- not pastel or muted
-- not daytime or natural light
-- not cartoon or anime`,
-
-    fluxPrompt: (petDesc) =>
-      `Render this portrait in Neon Glow style. Dark cinematic background, vivid neon lighting accents. Preserve the ${petDesc} likeness and expression. Bold glowing outlines, luminous highlights, high contrast. Electric blue, magenta, purple, teal, gold neon tones against deep shadow. Sleek modern high-energy premium cyber-inspired wall art. Keep identity unchanged.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType} in neon glow style, dark cinematic background, electric neon lighting, vibrant colors`,
-  },
-  {
-    id: 'storybook',
-    name: 'Storybook Nostalgia',
-    emoji: '📖',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-STYLE
-Render this portrait in a warm storybook nostalgia style, with soft painterly brushwork, gentle lighting, and a cozy, emotionally rich atmosphere. Preserve the subject's likeness, expression, and personality while placing them naturally within a story-driven environment. The scene should feel lived-in and meaningful, with subtle environmental details that support memory and narrative without overwhelming the subject. Use warm, inviting color tones, soft edges, and natural light. The overall composition should feel intimate, sentimental, and timeless, like a cherished illustrated memory brought to life.
-
-COMPOSITION
-Intimate centered portrait. Subject placed naturally in a cozy scene. Warm natural light or golden-hour glow. Environmental details that feel personal and lived-in.
-
-PAINT SURFACE
-Soft painterly brushwork. Warm textured canvas feel. Gentle impressionistic edges that soften into the background while keeping the face clear.
-
-BACKGROUND
-Cozy memory-filled scene — books, warm fabrics, soft botanicals, golden light through a window. Feels lived-in and meaningful.
-
-${CONSTRAINTS_GPT}
-- not dark or moody
-- not harsh lighting
-- not neon or cyberpunk
-- not photorealistic photography`,
-
-    fluxPrompt: (petDesc) =>
-      `Warm storybook nostalgia style portrait of ${petDesc}. Soft painterly brushwork, gentle lighting, cozy emotionally rich atmosphere. Preserve subject's likeness and personality. Warm inviting color tones, soft edges, natural light. Intimate sentimental timeless feel like a cherished illustrated memory. Keep identity unchanged.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType} in storybook illustration style, warm cozy atmosphere, soft painterly, golden light`,
-  },
-  {
-    id: 'ethereal',
-    name: 'Ethereal Painterly',
-    emoji: '🎨',
-    // GPT: full structured prompt — handles long form well
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-Render this image in an ethereal painterly style with soft, expressive brushwork, atmospheric depth, and an emotionally rich fine-art composition. The result should feel like a real hand-painted artwork created by a skilled contemporary painter, not a photograph, not a digital illustration, and not a polished AI render. Preserve the pet's recognizable likeness, soulful eyes, and emotional presence, while interpreting the scene with softness, memory, and artistic intuition rather than literal realism. Use layered painterly texture, broken edges, subtle asymmetry, soft blending, and visible brushstrokes that allow parts of the subject and background to gently dissolve into one another. The palette should feel harmonious, muted but expressive, with nuanced color shifts and a dreamlike atmosphere. Backgrounds should remain suggestive and atmospheric, supporting the story and mood without becoming overly detailed or visually busy. Avoid photorealism, glossy digital smoothness, hard outlines, cartoon styling, over-rendered fur detail, plastic textures, sharp vector edges, or generic decorative illustration. The finished image should feel intimate, emotional, poetic, and timeless, like a treasured painting built from memory, feeling, and presence.
-
-${CONSTRAINTS_GPT}`,
-
-    // FLUX: short imperative — 512 token limit, no structured sections
-    fluxPrompt: (petDesc) =>
-      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to a soft ethereal oil painting, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as dreamlike painterly atmosphere, visible hand-applied brushwork, muted botanical background in ivory and sage, soft edges, warm diffused light, premium gallery portrait finish.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType}, soft ethereal oil painting, dreamlike atmosphere, visible brushwork, botanical background, warm muted palette, fine art`,
-  },
-
-  {
-    id: 'bold_contemporary',
-    name: 'Contemporary Bold',
-    emoji: '✨',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-Render this image in a bold modern surreal style with striking color, dramatic contrast, and a polished contemporary fine-art composition. The result should feel like a high-end gallery painting — luxurious, vibrant, and visually arresting — not a cartoon, not a photograph, and not a generic digital illustration. Preserve the pet's recognizable likeness, expressive presence, and key personality traits, while elevating the image through intensified color, surreal visual drama, and refined artistic stylization. Use rich jewel tones, luminous highlights, crisp focal areas, and a sophisticated balance of realism and fantasy. The composition should feel intentional, high-impact, and elegant, with bold visual clarity and premium decorative appeal. Backgrounds may include stylized natural or symbolic elements, but should remain integrated, artful, and compositionally controlled rather than cluttered or literal. Avoid childish pop styling, muddy colors, low-end poster aesthetics, messy collage effects, plastic textures, generic AI smoothness, or cheap novelty energy. The final image should feel powerful, glamorous, modern, and collectible, like luxury statement art created for a beautiful interior.
-
-${CONSTRAINTS_GPT}`,
-
-    fluxPrompt: (petDesc) =>
-      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to a bold contemporary fine-art oil painting, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as thick impasto oil paint, jewel-toned palette of sapphire and emerald, surreal oversized floral backdrop, dramatic contrast lighting, gemstone-like highlights, premium gallery-wall finish.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType}, bold contemporary fine art oil painting, jewel tones, thick impasto, dark dramatic botanical background, gallery quality`,
-  },
-
-  {
-    id: 'classical_oil',
-    name: 'Oil Painting',
-    emoji: '🖼️',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-Render this image as a premium hand-painted oil portrait on canvas with rich painterly depth, visible brushwork, and refined fine-art composition. The result should feel like a real commissioned painting created by a skilled traditional artist, not a photograph, not a digital illustration, and not an AI-styled render. Preserve the pet's accurate likeness, soulful eyes, natural anatomy, and emotional presence while interpreting the scene with warmth, atmosphere, and timeless artistic restraint. Use layered oil paint, soft blending in some passages, and thicker impasto texture in highlights and key edges, with subtle tonal transitions and elegant shadow structure. Lighting should feel natural, cinematic, and painterly, with rich color variation and depth. The background should remain soft, atmospheric, and supportive, suggesting place and mood without becoming overly detailed or visually busy. Avoid hyperrealism, glossy digital polish, plastic textures, hard vector edges, cartoon styling, oversharpening, artificial symmetry, and generic AI smoothness. The final image should feel emotional, tactile, premium, and unmistakably like a true oil painting worthy of framing.
-
-COMPOSITION
-Traditional formal portrait composition. Three-quarter view or frontal. Rich dark background framing the subject.
-
-PAINT SURFACE
-Smooth glazed surface over impasto underlayer. Visible brushwork only in fur and fabric. Luminous skin-like depth in eyes.
-
-BACKGROUND
-Dark rich background — deep brown, burgundy, or forest green. Possibly a suggestion of draped fabric or architectural detail.
-
-${CONSTRAINTS_GPT}
-- not impressionist
-- not modern`,
-
-    fluxPrompt: (petDesc) =>
-      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to a classical Old Masters oil painting, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as Rembrandt chiaroscuro lighting, rich dark background, smooth glazed oil surface with luminous depth, dense layered paint, museum-quality dignified finish.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType}, classical Old Masters oil portrait, Rembrandt chiaroscuro, dark rich background, museum quality, glazed oil paint`,
-  },
-
-  {
-    id: 'watercolor',
-    name: 'Watercolor Fine Art',
-    emoji: '💧',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-STYLE
-Transparent watercolor on cold-press paper. Loose fluid brushwork. Soft bleeding edges. Luminous transparent washes layered for depth. Visible paper texture in highlights. Soft halo around fur edges. Delicate and airy.
-
-COMPOSITION
-Centered portrait with airy open composition. Light flows from above. Soft vignette edges.
-
-PAINT SURFACE
-Transparent layered washes, not opaque. Wet-on-wet soft blooms in background. More defined brushwork only on eyes and muzzle.
-
-BACKGROUND
-Very loose abstract washes. Warm ivory, blush, sky blue. Minimal — lets the dog breathe.
-
-${CONSTRAINTS_GPT}
-- not oil paint
-- not digital
-- not harsh outlines`,
-
-    fluxPrompt: (petDesc) =>
-      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to transparent watercolor on cold-press paper, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as loose fluid washes, soft bleeding edges, visible paper texture, wet-on-wet background blooms in ivory and blush, soft natural light, delicate fine-art finish.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType}, transparent watercolor painting, loose fluid washes, soft edges, visible paper texture, pastel palette`,
-  },
-
-  {
-    id: 'charcoal',
-    name: 'Charcoal & Graphite',
-    emoji: '✏️',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-STYLE
-Fine charcoal and graphite drawing on textured paper. Individual drawn marks throughout. Hatching and cross-hatching for shadow. Varying line weight. Classical portrait tradition. Elegant, intimate, and technically masterful.
-
-COMPOSITION
-Centered portrait. Strong tonal range from near-white to deep charcoal. Eyes and muzzle sharply rendered.
-
-PAINT SURFACE
-Visible individual marks. Smooth tonal blends in shadow areas. Crisp detail on eyes, nose, whiskers.
-
-BACKGROUND
-Clean white or very light gestural strokes suggesting space. Focus entirely on the dog.
-
-${CONSTRAINTS_GPT}
-- no color
-- not ink wash
-- not digital
-- not cartoon`,
-
-    fluxPrompt: (petDesc) =>
-      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to fine charcoal and graphite drawing on textured paper, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color rendered in graphite tones, markings, eyes, ears, and accessories. Render the style as hatching and cross-hatching technique, strong tonal range near-white to deep charcoal, crisp detail in eyes and nose, classical intimate drawing finish.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType}, fine charcoal graphite drawing, hatching cross-hatching, strong tonal range, white paper background`,
-  },
-
-  {
-    id: 'impressionist',
-    name: 'Impressionist',
-    emoji: '🌸',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-STYLE
-Impressionist oil painting in the tradition of Monet and Renoir. Dappled sunlight effect. Loose visible brushstrokes throughout — no smooth passages. Vibrant blended colors. Plein air feeling. Light and movement in every stroke.
-
-COMPOSITION
-Three-quarter or frontal portrait. Garden or outdoor light setting. Subject bathed in dappled warm light.
-
-PAINT SURFACE
-Short thick dabs of paint throughout. Colors placed side-by-side rather than blended. Vibrant and energetic surface.
-
-BACKGROUND
-Garden setting with loose impressionist foliage — blues, greens, purples, and gold. Light broken across leaves.
-
-${CONSTRAINTS_GPT}
-- not pointillist
-- not photorealistic`,
-
-    fluxPrompt: (petDesc) =>
-      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to Impressionist oil painting in the style of Monet, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as loose short visible brushstrokes, dappled garden light, vibrant color dabs side-by-side, blues and greens in the background, warm luminous light, energetic painted surface.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType}, impressionist oil painting Monet style, loose brushstrokes, dappled garden light, vibrant color`,
-  },
-
-
-  {
-    id: 'pastel',
-    name: 'Soft Pastel',
-    emoji: '🕊️',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-STYLE
-Soft, dreamy pastel portrait with a fine-art illustration quality. Think of a beautifully rendered pastel drawing on toned paper — delicate blended color, soft gradients, gentle light, and an intimate, emotional warmth. The texture should feel like real pastel chalk or colored pencil on quality art paper.
-
-Color palette: soft lavenders, powder blues, warm creams, dusty roses, sage greens, warm greys. Never harsh, never neon — always gentle and luminous.
-
-The pet should feel precious and tender in this rendering. Romantic, timeless, gallery-worthy.
-
-${CONSTRAINTS_GPT}
-- not photorealistic
-- not cartoon
-- not oil painting
-- not watercolor (pastel texture, not washes)`,
-
-    fluxPrompt: (petDesc) =>
-      `Soft pastel portrait of ${petDesc}. Delicate blended pastel chalk on toned paper. Dreamy, warm, gentle light. Soft lavenders, powder blues, warm creams. Fine-art illustration quality. Intimate and emotional. Not photorealistic, not cartoon.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType}, soft pastel drawing, delicate blended colors, dreamy fine art illustration, toned paper texture, warm and gentle`,
-  },
-  {
-    id: 'vintage_poster',
-    name: 'Vintage Poster',
-    emoji: '🗺️',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-Render this image as a premium vintage poster illustration with bold graphic composition, simplified painterly forms, and timeless retro print energy. The result should feel like a beautifully designed mid-century travel or advertising poster—stylish, nostalgic, and highly displayable—not a cartoon, not a photograph, and not a modern digital illustration. Preserve the pet's recognizable likeness, posture, and personality while stylizing the scene into clean shapes, strong silhouettes, and controlled shading. Use a curated retro color palette with harmonious tones, subtle texture, and confident visual balance. The composition should feel intentional and readable from a distance, with iconic, design-forward background elements that suggest place and story without unnecessary detail. Avoid photorealism, glossy rendering, plastic AI textures, muddy color, cluttered layouts, childish illustration, or generic poster templates. The final image should feel collectible, nostalgic, stylish, and premium, like a classic illustrated poster worthy of framing.
-
-${CONSTRAINTS_GPT}
-- not photorealistic
-- not Warhol multi-panel grid
-- not childish or cartoon
-- not generic digital AI poster`,
-
-    fluxPrompt: (petDesc) =>
-      `Premium vintage poster illustration of ${petDesc}. Mid-century travel or advertising poster style. Bold graphic composition, simplified painterly shapes, strong silhouette. Elegant flattened forms, controlled shading, nostalgic retro color harmony. Curated retro palette, confident line structure, subtle print texture. Collectible, stylish, nostalgic, premium. Not photorealistic, not cartoon, not Warhol grid.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType}, mid-century vintage travel poster illustration, bold graphic, flat colors, retro print aesthetic, collectible`,
-  },
-
-  {
-    id: 'vintage_pop_art',
-    name: 'Gallery Pop',
-    emoji: '⚡',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-Render this image as a bold, premium gallery pop art portrait with clean graphic composition, striking color contrast, and refined contemporary style. The result should feel like high-end pop-inspired wall art displayed in a modern gallery, not a cartoon, not a meme, and not a cheap novelty print. Preserve the pet's recognizable likeness, expression, and personality while simplifying the subject into strong shapes, crisp edges, and confident color blocking. Use a vibrant but curated palette with high contrast tones, smooth color transitions, and visually impactful clarity. The composition should feel intentional, balanced, and design-forward, with a minimal but supportive background that enhances the subject without clutter. Avoid photorealism, muddy color, overly childish styling, plastic textures, generic AI smoothness, busy collage effects, or low-end poster aesthetics. The final image should feel iconic, stylish, energetic, and premium, like a collectible pop-inspired statement piece for a modern interior.
-
-${CONSTRAINTS_GPT}
-- no text or typography
-- not photorealistic
-- not painterly or impressionistic
-- four panels, 2x2 grid`,
-
-    fluxPrompt: (petDesc) =>
-      `A four-panel 2x2 pop-art screenprint of the exact dog from the reference image. Same dog in all four panels — same breed, face, markings, expression. 1960s Warhol pop-art style: bold flat color blocking, crisp graphic edges, high contrast. Each panel a different saturated palette: hot pink/yellow, cyan/red, lime green/blue, orange/purple. Iconic, collectible, gallery-worthy.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType}, four-panel Warhol pop-art screenprint grid, bold flat colors, high contrast, 1960s graphic style, collectible`,
-  },
-
-  {
     id: 'retro_pop',
     name: 'Retro Pop',
     emoji: '🟥',
@@ -793,4 +496,301 @@ async function sendSongNotificationEmail({ petName, songTitle, sunoPrompt, portr
     headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ from: 'Pet Prints Studio <orders@petprintsstudio.com>', to: adminEmail, subject: `🎵 New Song Request — ${petName}: "${songTitle}"`, html })
   })
+  {
+    id: 'vintage_poster_v2',
+    name: 'Heritage Poster',
+    emoji: '🏛️',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Render this image as a premium heritage poster with timeless Americana character, refined vintage print styling, and a dignified, classic composition. The result should feel like a traditional commemorative or heirloom print—elegant, restrained, and display-worthy—not a cartoon, not a photograph, and not a modern graphic design. Preserve the pet's recognizable likeness, natural posture, and calm, noble expression while interpreting the portrait with balanced linework, subtle painterly shading, and clean, structured composition. Use a restrained, heritage-inspired color palette with warm neutrals, deep earth tones, muted reds, soft blues, and weathered greens, with a gentle aged-paper feel. The scene should feel iconic and grounded, with a sense of tradition, memory, and legacy. Background elements should remain simple, supportive, and design-forward, enhancing the subject without clutter or distraction. Avoid loud pop-art color, photorealism, glossy rendering, plastic AI textures, cartoon styling, busy layouts, or cheap novelty aesthetics. The final image should feel timeless, collectible, and premium, like a preserved legacy print worthy of framing.
+
+${CONSTRAINTS_GPT}`,
+
+    fluxPrompt: (petDesc) =>
+      `A premium vintage-style poster portrait of the exact dog from the reference image. Keep the same dog — same breed, coat, markings, expression. Render as a high-end retro print: aged paper texture, faded ink, warm nostalgic palette of cream, tan, muted red, dusty teal, golden ochre. Pet in strong iconic pose as clear focal point. Background has simple vintage graphic shapes, ornamental framing, subtle sunburst elements. Feels like a heritage advertisement or classic collectible travel poster. Elegant, timeless, frame-worthy.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, premium vintage poster style, retro illustrated, aged paper texture, warm nostalgic palette, heritage advertisement aesthetic`,
+  },
+  {
+    id: 'neon_glow',
+    name: 'Neon Glow',
+    emoji: '🌟',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+STYLE
+Render this portrait in a Neon Glow style with a dark, cinematic background and vivid neon lighting accents. Preserve the subject's likeness and expression while reinterpreting the scene with bold glowing outlines, luminous highlights, and high contrast color. Use saturated neon tones such as electric blue, magenta, purple, teal, and gold against deep shadow. The lighting should feel dynamic and stylized, emphasizing contours and key elements of the scene. The final image should feel sleek, modern, high-energy, and visually striking, like premium cyber-inspired wall art with a nightlife aesthetic.
+
+COMPOSITION
+Strong centered portrait. Dark dramatic background. Subject glows with neon rim lighting. Eyes and facial features catch the brightest neon light.
+
+PAINT SURFACE
+Sleek modern digital-art quality. High contrast between dark background and luminous neon highlights. Sharp glowing edges.
+
+BACKGROUND
+Dark cinematic — near black with subtle depth. Neon color bleed and atmospheric haze.
+
+${CONSTRAINTS_GPT}
+- not pastel or muted
+- not daytime or natural light
+- not cartoon or anime`,
+
+    fluxPrompt: (petDesc) =>
+      `Render this portrait in Neon Glow style. Dark cinematic background, vivid neon lighting accents. Preserve the ${petDesc} likeness and expression. Bold glowing outlines, luminous highlights, high contrast. Electric blue, magenta, purple, teal, gold neon tones against deep shadow. Sleek modern high-energy premium cyber-inspired wall art. Keep identity unchanged.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType} in neon glow style, dark cinematic background, electric neon lighting, vibrant colors`,
+  },
+  {
+    id: 'storybook',
+    name: 'Storybook Nostalgia',
+    emoji: '📖',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+STYLE
+Render this portrait in a warm storybook nostalgia style, with soft painterly brushwork, gentle lighting, and a cozy, emotionally rich atmosphere. Preserve the subject's likeness, expression, and personality while placing them naturally within a story-driven environment. The scene should feel lived-in and meaningful, with subtle environmental details that support memory and narrative without overwhelming the subject. Use warm, inviting color tones, soft edges, and natural light. The overall composition should feel intimate, sentimental, and timeless, like a cherished illustrated memory brought to life.
+
+COMPOSITION
+Intimate centered portrait. Subject placed naturally in a cozy scene. Warm natural light or golden-hour glow. Environmental details that feel personal and lived-in.
+
+PAINT SURFACE
+Soft painterly brushwork. Warm textured canvas feel. Gentle impressionistic edges that soften into the background while keeping the face clear.
+
+BACKGROUND
+Cozy memory-filled scene — books, warm fabrics, soft botanicals, golden light through a window. Feels lived-in and meaningful.
+
+${CONSTRAINTS_GPT}
+- not dark or moody
+- not harsh lighting
+- not neon or cyberpunk
+- not photorealistic photography`,
+
+    fluxPrompt: (petDesc) =>
+      `Warm storybook nostalgia style portrait of ${petDesc}. Soft painterly brushwork, gentle lighting, cozy emotionally rich atmosphere. Preserve subject's likeness and personality. Warm inviting color tones, soft edges, natural light. Intimate sentimental timeless feel like a cherished illustrated memory. Keep identity unchanged.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType} in storybook illustration style, warm cozy atmosphere, soft painterly, golden light`,
+  },
+  {
+    id: 'ethereal',
+    name: 'Ethereal Painterly',
+    emoji: '🎨',
+    // GPT: full structured prompt — handles long form well
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Render this image in an ethereal painterly style with soft, expressive brushwork, atmospheric depth, and an emotionally rich fine-art composition. The result should feel like a real hand-painted artwork created by a skilled contemporary painter, not a photograph, not a digital illustration, and not a polished AI render. Preserve the pet's recognizable likeness, soulful eyes, and emotional presence, while interpreting the scene with softness, memory, and artistic intuition rather than literal realism. Use layered painterly texture, broken edges, subtle asymmetry, soft blending, and visible brushstrokes that allow parts of the subject and background to gently dissolve into one another. The palette should feel harmonious, muted but expressive, with nuanced color shifts and a dreamlike atmosphere. Backgrounds should remain suggestive and atmospheric, supporting the story and mood without becoming overly detailed or visually busy. Avoid photorealism, glossy digital smoothness, hard outlines, cartoon styling, over-rendered fur detail, plastic textures, sharp vector edges, or generic decorative illustration. The finished image should feel intimate, emotional, poetic, and timeless, like a treasured painting built from memory, feeling, and presence.
+
+${CONSTRAINTS_GPT}`,
+
+    // FLUX: short imperative — 512 token limit, no structured sections
+    fluxPrompt: (petDesc) =>
+      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to a soft ethereal oil painting, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as dreamlike painterly atmosphere, visible hand-applied brushwork, muted botanical background in ivory and sage, soft edges, warm diffused light, premium gallery portrait finish.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, soft ethereal oil painting, dreamlike atmosphere, visible brushwork, botanical background, warm muted palette, fine art`,
+  },
+
+  {
+    id: 'bold_contemporary',
+    name: 'Contemporary Bold',
+    emoji: '✨',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Render this image in a bold modern surreal style with striking color, dramatic contrast, and a polished contemporary fine-art composition. The result should feel like a high-end gallery painting — luxurious, vibrant, and visually arresting — not a cartoon, not a photograph, and not a generic digital illustration. Preserve the pet's recognizable likeness, expressive presence, and key personality traits, while elevating the image through intensified color, surreal visual drama, and refined artistic stylization. Use rich jewel tones, luminous highlights, crisp focal areas, and a sophisticated balance of realism and fantasy. The composition should feel intentional, high-impact, and elegant, with bold visual clarity and premium decorative appeal. Backgrounds may include stylized natural or symbolic elements, but should remain integrated, artful, and compositionally controlled rather than cluttered or literal. Avoid childish pop styling, muddy colors, low-end poster aesthetics, messy collage effects, plastic textures, generic AI smoothness, or cheap novelty energy. The final image should feel powerful, glamorous, modern, and collectible, like luxury statement art created for a beautiful interior.
+
+${CONSTRAINTS_GPT}`,
+
+    fluxPrompt: (petDesc) =>
+      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to a bold contemporary fine-art oil painting, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as thick impasto oil paint, jewel-toned palette of sapphire and emerald, surreal oversized floral backdrop, dramatic contrast lighting, gemstone-like highlights, premium gallery-wall finish.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, bold contemporary fine art oil painting, jewel tones, thick impasto, dark dramatic botanical background, gallery quality`,
+  },
+
+  {
+    id: 'classical_oil',
+    name: 'Oil Painting',
+    emoji: '🖼️',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Render this image as a premium hand-painted oil portrait on canvas with rich painterly depth, visible brushwork, and refined fine-art composition. The result should feel like a real commissioned painting created by a skilled traditional artist, not a photograph, not a digital illustration, and not an AI-styled render. Preserve the pet's accurate likeness, soulful eyes, natural anatomy, and emotional presence while interpreting the scene with warmth, atmosphere, and timeless artistic restraint. Use layered oil paint, soft blending in some passages, and thicker impasto texture in highlights and key edges, with subtle tonal transitions and elegant shadow structure. Lighting should feel natural, cinematic, and painterly, with rich color variation and depth. The background should remain soft, atmospheric, and supportive, suggesting place and mood without becoming overly detailed or visually busy. Avoid hyperrealism, glossy digital polish, plastic textures, hard vector edges, cartoon styling, oversharpening, artificial symmetry, and generic AI smoothness. The final image should feel emotional, tactile, premium, and unmistakably like a true oil painting worthy of framing.
+
+COMPOSITION
+Traditional formal portrait composition. Three-quarter view or frontal. Rich dark background framing the subject.
+
+PAINT SURFACE
+Smooth glazed surface over impasto underlayer. Visible brushwork only in fur and fabric. Luminous skin-like depth in eyes.
+
+BACKGROUND
+Dark rich background — deep brown, burgundy, or forest green. Possibly a suggestion of draped fabric or architectural detail.
+
+${CONSTRAINTS_GPT}
+- not impressionist
+- not modern`,
+
+    fluxPrompt: (petDesc) =>
+      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to a classical Old Masters oil painting, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as Rembrandt chiaroscuro lighting, rich dark background, smooth glazed oil surface with luminous depth, dense layered paint, museum-quality dignified finish.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, classical Old Masters oil portrait, Rembrandt chiaroscuro, dark rich background, museum quality, glazed oil paint`,
+  },
+
+  {
+    id: 'watercolor',
+    name: 'Watercolor Fine Art',
+    emoji: '💧',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+STYLE
+Transparent watercolor on cold-press paper. Loose fluid brushwork. Soft bleeding edges. Luminous transparent washes layered for depth. Visible paper texture in highlights. Soft halo around fur edges. Delicate and airy.
+
+COMPOSITION
+Centered portrait with airy open composition. Light flows from above. Soft vignette edges.
+
+PAINT SURFACE
+Transparent layered washes, not opaque. Wet-on-wet soft blooms in background. More defined brushwork only on eyes and muzzle.
+
+BACKGROUND
+Very loose abstract washes. Warm ivory, blush, sky blue. Minimal — lets the dog breathe.
+
+${CONSTRAINTS_GPT}
+- not oil paint
+- not digital
+- not harsh outlines`,
+
+    fluxPrompt: (petDesc) =>
+      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to transparent watercolor on cold-press paper, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as loose fluid washes, soft bleeding edges, visible paper texture, wet-on-wet background blooms in ivory and blush, soft natural light, delicate fine-art finish.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, transparent watercolor painting, loose fluid washes, soft edges, visible paper texture, pastel palette`,
+  },
+
+  {
+    id: 'charcoal',
+    name: 'Charcoal & Graphite',
+    emoji: '✏️',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+STYLE
+Fine charcoal and graphite drawing on textured paper. Individual drawn marks throughout. Hatching and cross-hatching for shadow. Varying line weight. Classical portrait tradition. Elegant, intimate, and technically masterful.
+
+COMPOSITION
+Centered portrait. Strong tonal range from near-white to deep charcoal. Eyes and muzzle sharply rendered.
+
+PAINT SURFACE
+Visible individual marks. Smooth tonal blends in shadow areas. Crisp detail on eyes, nose, whiskers.
+
+BACKGROUND
+Clean white or very light gestural strokes suggesting space. Focus entirely on the dog.
+
+${CONSTRAINTS_GPT}
+- no color
+- not ink wash
+- not digital
+- not cartoon`,
+
+    fluxPrompt: (petDesc) =>
+      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to fine charcoal and graphite drawing on textured paper, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color rendered in graphite tones, markings, eyes, ears, and accessories. Render the style as hatching and cross-hatching technique, strong tonal range near-white to deep charcoal, crisp detail in eyes and nose, classical intimate drawing finish.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, fine charcoal graphite drawing, hatching cross-hatching, strong tonal range, white paper background`,
+  },
+
+  {
+    id: 'impressionist',
+    name: 'Impressionist',
+    emoji: '🌸',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+STYLE
+Impressionist oil painting in the tradition of Monet and Renoir. Dappled sunlight effect. Loose visible brushstrokes throughout — no smooth passages. Vibrant blended colors. Plein air feeling. Light and movement in every stroke.
+
+COMPOSITION
+Three-quarter or frontal portrait. Garden or outdoor light setting. Subject bathed in dappled warm light.
+
+PAINT SURFACE
+Short thick dabs of paint throughout. Colors placed side-by-side rather than blended. Vibrant and energetic surface.
+
+BACKGROUND
+Garden setting with loose impressionist foliage — blues, greens, purples, and gold. Light broken across leaves.
+
+${CONSTRAINTS_GPT}
+- not pointillist
+- not photorealistic`,
+
+    fluxPrompt: (petDesc) =>
+      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to Impressionist oil painting in the style of Monet, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color, markings, eyes, ears, and accessories. Render the style as loose short visible brushstrokes, dappled garden light, vibrant color dabs side-by-side, blues and greens in the background, warm luminous light, energetic painted surface.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, impressionist oil painting Monet style, loose brushstrokes, dappled garden light, vibrant color`,
+  },
+
+
+  {
+    id: 'pastel',
+    name: 'Soft Pastel',
+    emoji: '🕊️',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+STYLE
+Soft, dreamy pastel portrait with a fine-art illustration quality. Think of a beautifully rendered pastel drawing on toned paper — delicate blended color, soft gradients, gentle light, and an intimate, emotional warmth. The texture should feel like real pastel chalk or colored pencil on quality art paper.
+
+Color palette: soft lavenders, powder blues, warm creams, dusty roses, sage greens, warm greys. Never harsh, never neon — always gentle and luminous.
+
+The pet should feel precious and tender in this rendering. Romantic, timeless, gallery-worthy.
+
+${CONSTRAINTS_GPT}
+- not photorealistic
+- not cartoon
+- not oil painting
+- not watercolor (pastel texture, not washes)`,
+
+    fluxPrompt: (petDesc) =>
+      `Soft pastel portrait of ${petDesc}. Delicate blended pastel chalk on toned paper. Dreamy, warm, gentle light. Soft lavenders, powder blues, warm creams. Fine-art illustration quality. Intimate and emotional. Not photorealistic, not cartoon.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, soft pastel drawing, delicate blended colors, dreamy fine art illustration, toned paper texture, warm and gentle`,
+  },
+  {
+    id: 'vintage_poster',
+    name: 'Vintage Poster',
+    emoji: '🗺️',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Render this image as a premium vintage poster illustration with bold graphic composition, simplified painterly forms, and timeless retro print energy. The result should feel like a beautifully designed mid-century travel or advertising poster—stylish, nostalgic, and highly displayable—not a cartoon, not a photograph, and not a modern digital illustration. Preserve the pet's recognizable likeness, posture, and personality while stylizing the scene into clean shapes, strong silhouettes, and controlled shading. Use a curated retro color palette with harmonious tones, subtle texture, and confident visual balance. The composition should feel intentional and readable from a distance, with iconic, design-forward background elements that suggest place and story without unnecessary detail. Avoid photorealism, glossy rendering, plastic AI textures, muddy color, cluttered layouts, childish illustration, or generic poster templates. The final image should feel collectible, nostalgic, stylish, and premium, like a classic illustrated poster worthy of framing.
+
+${CONSTRAINTS_GPT}
+- not photorealistic
+- not Warhol multi-panel grid
+- not childish or cartoon
+- not generic digital AI poster`,
+
+    fluxPrompt: (petDesc) =>
+      `Premium vintage poster illustration of ${petDesc}. Mid-century travel or advertising poster style. Bold graphic composition, simplified painterly shapes, strong silhouette. Elegant flattened forms, controlled shading, nostalgic retro color harmony. Curated retro palette, confident line structure, subtle print texture. Collectible, stylish, nostalgic, premium. Not photorealistic, not cartoon, not Warhol grid.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, mid-century vintage travel poster illustration, bold graphic, flat colors, retro print aesthetic, collectible`,
+  },
+
+  {
+    id: 'vintage_pop_art',
+    name: 'Gallery Pop',
+    emoji: '⚡',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Render this image as a bold, premium gallery pop art portrait with clean graphic composition, striking color contrast, and refined contemporary style. The result should feel like high-end pop-inspired wall art displayed in a modern gallery, not a cartoon, not a meme, and not a cheap novelty print. Preserve the pet's recognizable likeness, expression, and personality while simplifying the subject into strong shapes, crisp edges, and confident color blocking. Use a vibrant but curated palette with high contrast tones, smooth color transitions, and visually impactful clarity. The composition should feel intentional, balanced, and design-forward, with a minimal but supportive background that enhances the subject without clutter. Avoid photorealism, muddy color, overly childish styling, plastic textures, generic AI smoothness, busy collage effects, or low-end poster aesthetics. The final image should feel iconic, stylish, energetic, and premium, like a collectible pop-inspired statement piece for a modern interior.
+
+${CONSTRAINTS_GPT}
+- no text or typography
+- not photorealistic
+- not painterly or impressionistic
+- four panels, 2x2 grid`,
+
+    fluxPrompt: (petDesc) =>
+      `A four-panel 2x2 pop-art screenprint of the exact dog from the reference image. Same dog in all four panels — same breed, face, markings, expression. 1960s Warhol pop-art style: bold flat color blocking, crisp graphic edges, high contrast. Each panel a different saturated palette: hot pink/yellow, cyan/red, lime green/blue, orange/purple. Iconic, collectible, gallery-worthy.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, four-panel Warhol pop-art screenprint grid, bold flat colors, high contrast, 1960s graphic style, collectible`,
+  },
+
 }
