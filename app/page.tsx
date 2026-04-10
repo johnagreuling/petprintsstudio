@@ -102,7 +102,7 @@ export default function Home() {
       <div className="divider"/>
 
       {/* HOW IT WORKS */}
-      <section id="how-it-works" style={{padding:'120px 60px'}}>
+      <section id="how-it-works" style={{padding:'120px 60px',background:'#0d0d0d'}}>
         <div style={{maxWidth:1200,margin:'0 auto'}}>
           <div style={{textAlign:'center',marginBottom:80}}>
             <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>The Process</div>
@@ -111,58 +111,43 @@ export default function Home() {
 
           <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:2}}>
             {[
-              {n:'01',emoji:'💬',title:'Tell us about them',desc:'Share their name, personality, quirks — the moments that made you love them. The more you tell us, the more personal every part of the experience becomes.'},
-              {n:'02',emoji:'🎨',title:'Choose how their story feels',desc:'Pick from 12 beautifully crafted art styles — or describe any style you can imagine. This isn’t a filter. It’s the emotional tone of their portrait.'},
-              {n:'03',emoji:'✨',title:'We bring their story to life',desc:'Your answers become art — 36 portraits created from your story. A song written from your memories. Everything comes together in a living digital experience.'},
-              {n:'04',emoji:'📦',title:'Celebrate them forever',desc:'Your portrait arrives printed on premium materials. Scan the QR code to hear their song anytime. Delivered to your door in 5–7 days.'},
+              {n:'1',icon:'📸',title:'Upload Their Photo',desc:'A clear, well-lit photo is all we need. Front-facing works best. We handle everything from there.'},
+              {n:'2',icon:'🎨',title:'Choose a Style',desc:'Pick from 16 artistic styles — from Oil Painting to Neon Glow. Or describe any style you can imagine.'},
+              {n:'3',icon:'⚡',title:'We Generate Your Portrait',desc:'Our AI creates a custom portrait using your pet\'s exact likeness. 16 styles generated — you pick your favorite.'},
+              {n:'4',icon:'📦',title:'Printed & Shipped',desc:'Your portrait arrives on premium canvas or fine art print. Scan the QR code to hear their song. Delivered in 5–7 days.'},
             ].map((s,i)=>(
-              <div key={s.n} className="card" style={{padding:'40px 28px',position:'relative'}}>
-                <div className="serif" style={{fontSize:64,color:'var(--gold)',opacity:.1,lineHeight:1,position:'absolute',top:20,right:20}}>{s.n}</div>
-                <div style={{fontSize:36,marginBottom:20}}>{s.emoji}</div>
+              <div key={s.n} className="card" style={{padding:'40px 28px',position:'relative',overflow:'hidden'}}>
+                {/* Big visible step number */}
+                <div style={{
+                  width:56, height:56, borderRadius:'50%',
+                  background:'var(--gold)', color:'var(--ink)',
+                  display:'flex', alignItems:'center', justifyContent:'center',
+                  fontSize:22, fontWeight:700, marginBottom:24,
+                  fontFamily:"'DM Sans',sans-serif",
+                  flexShrink:0
+                }}>{s.n}</div>
+                <div style={{fontSize:40,marginBottom:16}}>{s.icon}</div>
                 <h3 className="serif" style={{fontSize:22,marginBottom:12,fontWeight:400}}>{s.title}</h3>
-                <p style={{fontSize:13,lineHeight:1.9,color:'var(--muted)'}}>{s.desc}</p>
-                {i<3&&<div style={{position:'absolute',right:-12,top:'50%',transform:'translateY(-50%)',color:'var(--gold)',fontSize:20,zIndex:1,opacity:.4}}>›</div>}
+                <p style={{fontSize:13,color:'var(--muted)',lineHeight:1.8}}>{s.desc}</p>
               </div>
             ))}
           </div>
 
-          {/* Two paths */}
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:2,marginTop:2}}>
-            <div className="card" style={{padding:'44px 40px',borderTop:'2px solid rgba(201,168,76,.2)'}}>
-              <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:20}}>
-                <span style={{fontSize:28}}>🎨</span>
-                <div>
-                  <div style={{fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)',marginBottom:4}}>Path One</div>
-                  <h3 className="serif" style={{fontSize:26,fontWeight:400}}>Style Transfer</h3>
-                </div>
-              </div>
-              <p style={{fontSize:14,lineHeight:1.9,color:'var(--muted)',marginBottom:20}}>
-                Upload your pet’s photo and our custom-tuned AI reimagines it across 12 stunning artistic styles — oil painting, watercolor, neon glow, stained glass and more. 36 portraits36 portraits ready in under 2 minutes.
-              </p>
-              <div style={{fontSize:11,color:'var(--gold)'}}>✓ 30 portraits generated  ·  ✓ 10 artistic styles  ·  ✓ Ready in under 2 minnbsp; ✓ 8 art styles</div>
-            </div>
-            <div className="card" style={{padding:'44px 40px',borderTop:'2px solid var(--gold)'}}>
-              <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:20}}>
-                <span style={{fontSize:28}}>✨</span>
-                <div>
-                  <div style={{fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)',marginBottom:4}}>Path Two — +$20</div>
-                  <h3 className="serif" style={{fontSize:26,fontWeight:400}}>Signature Custom Portrait</h3>
-                </div>
-              </div>
-              <p style={{fontSize:14,lineHeight:1.9,color:'var(--muted)',marginBottom:20}}>
-                We build a fully custom scene packed with personal easter eggs from your pet&rsquo;s life — favorite team collar, hometown backdrop, their car, their toy — a portrait that tells their whole story.
-              </p>
-              <div style={{fontSize:11,color:'var(--gold)'}}>✓ Human-reviewed prompt &nbsp;·&nbsp; ✓ Personal easter eggs &nbsp;·&nbsp; ✓ Truly one-of-a-kind</div>
-            </div>
-          </div>
-
-          <div style={{textAlign:'center',marginTop:56}}>
-            <Link href="/create" className="btn-gold">Start Creating Now</Link>
+          {/* Big obvious CTA */}
+          <div style={{textAlign:'center',marginTop:64}}>
+            <Link href="/create" style={{
+              background:'var(--gold)', color:'var(--ink)',
+              padding:'22px 64px', fontSize:15, fontWeight:700,
+              letterSpacing:'.1em', textTransform:'uppercase',
+              textDecoration:'none', display:'inline-block',
+              boxShadow:'0 8px 40px rgba(201,168,76,.35)'
+            }}>
+              🐾 &nbsp;Start Their Story Now
+            </Link>
+            <p style={{marginTop:16,fontSize:12,color:'var(--muted)'}}>Free to preview · No account needed · Prints shipped in 5–7 days</p>
           </div>
         </div>
       </section>
-
-      <div className="divider"/>
 
       {/* MEMORY PORTRAIT FEATURE */}
       <section style={{padding:'120px 60px',background:'var(--soft)'}}>
