@@ -194,12 +194,12 @@ export default function Home() {
                 <div style={{fontSize:42,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>5</div>
               </div>
               <div style={{aspectRatio:'1',overflow:'hidden',background:'#1a1412',position:'relative'}}>
-                <img src="https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/14213989-5ed0-4d83-95ad-665855f994d4_pet/69508879-38da-4363-8550-bfa2b0de317a.png" alt="Printed and shipped" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
+                <img src="https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/14213989-5ed0-4d83-95ad-665855f994d4_pet/db78566f-8c8e-46f5-8c6d-1267f07029b4.png" alt="Printed and shipped" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
                 <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.5) 0%,transparent 40%)'}} />
               </div>
               <div style={{padding:'20px 20px 28px'}}>
-                <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>Printed &amp; Shipped</h3>
-                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>Premium canvas or fine art print delivered to your door. Scan the QR code to hear their song.</p>
+                <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>Delivered to Your Door</h3>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>Songs &amp; digital downloads in 24 hours. Prints &amp; keepsakes ship in 2–7 business days. The joy they deliver — infinite.</p>
               </div>
             </div>
 
@@ -210,22 +210,22 @@ export default function Home() {
             <div style={{position:'relative',overflow:'hidden',minHeight:360}}>
               <img
                 src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=900&q=80&fit=crop&crop=faces"
-                alt="Overwhelmed with joy"
+                alt="Gift moment"
                 style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center top',display:'block'}}
                 onError={(e)=>{(e.target as HTMLImageElement).style.opacity='0'}}
               />
               <div style={{position:'absolute',inset:0,background:'linear-gradient(135deg, rgba(10,10,10,.05) 0%, rgba(10,10,10,.4) 100%)'}} />
             </div>
             <div style={{padding:'48px 52px',display:'flex',flexDirection:'column',justifyContent:'center',background:'#111'}}>
-              <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>The Best Part</div>
+              <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>The Moment</div>
               <h3 className="serif" style={{fontSize:'clamp(26px,3.5vw,46px)',fontWeight:400,marginBottom:20,lineHeight:1.1}}>
-                They Open It.<br/><em>They&rsquo;re Overwhelmed.</em>
+                They&rsquo;ll Know<br/><em>You Really Get It.</em>
               </h3>
               <p style={{fontSize:14,color:'var(--muted)',lineHeight:1.9,marginBottom:24}}>
-                There is no better gift. A custom portrait of the one they love most — in an art style picked just for them — with a song written just for their pet. This is the one they cry over. In a good way.
+                A portrait that looks exactly like their pet. A song written just for them. The kind of gift that makes them stop and say &ldquo;how did you do this?&rdquo;
               </p>
               <p style={{fontSize:13,color:'rgba(201,168,76,.55)',fontStyle:'italic',lineHeight:1.7,borderLeft:'2px solid rgba(201,168,76,.25)',paddingLeft:16}}>
-                &ldquo;I gave this to my mom for her birthday. She hasn&rsquo;t stopped talking about it. She shows everyone who walks in the door.&rdquo;
+                &ldquo;My mom shows everyone who walks in the door.&rdquo;
               </p>
             </div>
           </div>
@@ -234,7 +234,7 @@ export default function Home() {
             <Link href="/create" style={{background:'var(--gold)',color:'var(--ink)',padding:'22px 64px',fontSize:15,fontWeight:700,letterSpacing:'.1em',textTransform:'uppercase',textDecoration:'none',display:'inline-block',boxShadow:'0 8px 40px rgba(201,168,76,.35)'}}>
               🐾 &nbsp;Start Their Story Now
             </Link>
-            <p style={{marginTop:16,fontSize:12,color:'var(--muted)'}}>Free to preview &nbsp;&middot;&nbsp; No account needed &nbsp;&middot;&nbsp; Prints shipped in 5&ndash;7 days</p>
+            <p style={{marginTop:16,fontSize:12,color:'var(--muted)'}}>Songs &amp; downloads in 24 hours &nbsp;&middot;&nbsp; Prints ship in 2–7 days &nbsp;&middot;&nbsp; Free preview</p>
           </div>
         </div>
       </section>
