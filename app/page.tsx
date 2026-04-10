@@ -280,34 +280,23 @@ export default function Home() {
             <Link href="/create" className="btn-gold">🐾 Start Their Story &mdash; $49</Link>
           </div>
 
-          <div style={{display:'flex',flexDirection:'column',gap:2}}>
-            <div style={{background:'var(--mid)',border:'1px solid var(--border)',padding:'28px 28px 24px',position:'relative'}}>
-              <div style={{fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Example Prompt Built From Answers</div>
-              <p style={{fontSize:13,lineHeight:1.9,color:'var(--muted)',fontFamily:'monospace',background:'rgba(201,168,76,.03)',padding:'16px',border:'1px solid var(--border)',borderRadius:2}}>
-                &ldquo;A golden retriever named Rocky with one floppy ear, wearing a Denver Broncos bandana, leaning out the window of a red 1967 Ford Mustang convertible, driving through downtown Boulder Colorado on a golden fall afternoon, a tennis ball in his paw, In-N-Out sign visible in background, warm dramatic oil painting style&rdquo;
-              </p>
-            </div>
-            <div style={{background:'var(--mid)',border:'1px solid var(--border)',padding:'24px 28px'}}>
-              <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.8}}>
-                <div style={{color:'var(--cream)',fontWeight:500,marginBottom:8}}>Human-reviewed before generation</div>
-                Our team reviews every Memory Portrait prompt before the AI runs — ensuring the scene makes sense, catches any conflicts, and is set up for the best possible result. That&rsquo;s the +$20 difference.
+          {/* Portrait examples - full images */}
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
+            <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
+              <img src="/portrait-sasha.png" alt="Sasha - Signature Portrait" style={{width:'100%',display:'block'}}/>
+              <div style={{background:'var(--mid)',padding:'16px 20px',borderTop:'1px solid var(--border)'}}>
+                <div style={{fontSize:13,color:'var(--gold)',fontWeight:500,marginBottom:4}}>Sasha&rsquo;s Signature Portrait</div>
+                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.5}}>Her BMW, sunset drive, name on the plate.</div>
               </div>
             </div>
-            <div style={{marginTop:16,display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
-              <div style={{borderRadius:4,overflow:'hidden',border:'1px solid var(--border)'}}>
-                <img src="/portrait-sasha.png" alt="Sasha - Signature Portrait Example" style={{width:'100%',height:180,objectFit:'cover',display:'block'}}/>
-                <div style={{background:'var(--mid)',padding:'12px 16px',borderTop:'1px solid var(--border)'}}>
-                  <div style={{fontSize:11,color:'var(--gold)',fontWeight:500,marginBottom:3}}>Sasha&rsquo;s Signature Portrait</div>
-                  <div style={{fontSize:10,color:'var(--muted)',lineHeight:1.5}}>BMW, sunset drive, name on the plate.</div>
-                </div>
+            <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
+              <img src="/portrait-maggie-mollie.png" alt="Maggie & Mollie - Signature Portrait" style={{width:'100%',display:'block'}}/>
+              <div style={{background:'var(--mid)',padding:'16px 20px',borderTop:'1px solid var(--border)'}}>
+                <div style={{fontSize:13,color:'var(--gold)',fontWeight:500,marginBottom:4}}>Maggie &amp; Mollie&rsquo;s Portrait</div>
+                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.5}}>Sunset over the Gulf at the family beach house.</div>
               </div>
-              <div style={{borderRadius:4,overflow:'hidden',border:'1px solid var(--border)'}}>
-                <img src="/portrait-maggie-mollie.png" alt="Maggie & Mollie - Signature Portrait" style={{width:'100%',height:180,objectFit:'cover',display:'block'}}/>
-                <div style={{background:'var(--mid)',padding:'12px 16px',borderTop:'1px solid var(--border)'}}>
-                  <div style={{fontSize:11,color:'var(--gold)',fontWeight:500,marginBottom:3}}>Maggie &amp; Mollie&rsquo;s Signature Portrait</div>
-                  <div style={{fontSize:10,color:'var(--muted)',lineHeight:1.5}}>Sunset over the Gulf at the family beach house.</div>
-                </div>
-              </div>
+            </div>
+          </div>
             </div>
           </div>
         </div>
