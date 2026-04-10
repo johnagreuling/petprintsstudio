@@ -372,21 +372,7 @@ ${CONSTRAINTS_GPT}
     emoji: '🏛️',
     gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
 
-Create a premium heritage poster portrait of the exact animal shown in the input image.
-
-SUBJECT IDENTITY
-Preserve the exact animal from the input photo with perfect likeness — exact breed, coat, markings, expression, and accessories.
-
-STYLE
-Premium collectible heritage poster with timeless frame-worthy appeal. Warm, rich, and dignified. Feels like a treasured antique print or classic naturalist illustration elevated to fine art poster status.
-
-Style direction: heritage illustration aesthetic, aged parchment and warm earth tones, subtle distressed texture, ornamental border framing, badge or crest design elements, rich warm palette, hand-crafted premium feel, collectible wall art.
-
-COLOR PALETTE
-Warm cream, rich tan, burnt sienna, forest green, deep navy, gold, aged ivory, warm brown, muted terracotta. Rich, dignified, and timelessly elegant.
-
-COMPOSITION
-Pet centered as the noble focal point. Background has ornamental heritage design elements — subtle crest shapes, elegant borders, warm textured backdrop. Feels distinguished, classic, and collectible.
+Render this image as a premium heritage poster with timeless Americana character, refined vintage print styling, and a dignified, classic composition. The result should feel like a traditional commemorative or heirloom print—elegant, restrained, and display-worthy—not a cartoon, not a photograph, and not a modern graphic design. Preserve the pet's recognizable likeness, natural posture, and calm, noble expression while interpreting the portrait with balanced linework, subtle painterly shading, and clean, structured composition. Use a restrained, heritage-inspired color palette with warm neutrals, deep earth tones, muted reds, soft blues, and weathered greens, with a gentle aged-paper feel. The scene should feel iconic and grounded, with a sense of tradition, memory, and legacy. Background elements should remain simple, supportive, and design-forward, enhancing the subject without clutter or distraction. Avoid loud pop-art color, photorealism, glossy rendering, plastic AI textures, cartoon styling, busy layouts, or cheap novelty aesthetics. The final image should feel timeless, collectible, and premium, like a preserved legacy print worthy of framing.
 
 ${CONSTRAINTS_GPT}`,
 
