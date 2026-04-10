@@ -198,7 +198,7 @@ export default function Home() {
               </div>
               <div style={{padding:'20px 20px 28px'}}>
                 <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>The Magic Happens</h3>
-                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>Our team writes original songs about your pet. Pick your genre or let us surprise you — 5 custom tracks delivered in 24 hours.</p>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>Our team creates 5 original songs about your pet — their name, their personality, their story told through music. Delivered in 24 hours.</p>
               </div>
             </div>
 
