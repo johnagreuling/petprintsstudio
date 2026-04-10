@@ -44,7 +44,11 @@ export default function CreatePage() {
       if (saved) {
         const data = JSON.parse(saved)
         const age = Date.now() - new Date(data.createdAt).getTime()
-        if (age < 24 * 60 * 60 * 1000 && data.images?.length > 0) setSavedSession(data)
+        if (age < 24 * 60 * 60 * 1000 && data.images?.length > 0) {
+          setSavedSession(data)
+          if (data.uploadedUrl) setUploadedUrl(data.uploadedUrl)
+          if (data.sessionFolder) setSessionFolder(data.sessionFolder)
+        }
       }
     } catch(e) {}
   }, [])
@@ -167,7 +171,7 @@ export default function CreatePage() {
               if (d.sessionFolder) {
                 setSessionFolder(d.sessionFolder)
                 try {
-                  const sessionData = {sessionFolder: d.sessionFolder, images: d.images, petName: answers.petName||'', createdAt: new Date().toISOString()}
+                  const sessionData = {sessionFolder: d.sessionFolder, images: d.images, petName: answers.petName||'', createdAt: new Date().toISOString(), uploadedUrl}
                   localStorage.setItem('pps_last_session', JSON.stringify(sessionData))
                 } catch(e) {}
               }
