@@ -197,6 +197,32 @@ export default function Home() {
 
           </div>
 
+          {/* STEP 5 — Joy */}
+          <div className="card" style={{padding:0,overflow:'hidden',position:'relative',display:'grid',gridTemplateColumns:'1fr 1fr',marginTop:2}}>
+            <div style={{position:'relative',overflow:'hidden',minHeight:360}}>
+              <img
+                src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=900&q=80&fit=crop&crop=faces"
+                alt="Overwhelmed with joy"
+                style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center top',display:'block'}}
+                onError={(e)=>{(e.target as HTMLImageElement).style.opacity='0'}}
+              />
+              <div style={{position:'absolute',inset:0,background:'linear-gradient(135deg, rgba(10,10,10,.05) 0%, rgba(10,10,10,.4) 100%)'}} />
+              <div style={{position:'absolute',top:28,left:28,fontSize:72,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif",opacity:.95}}>5</div>
+            </div>
+            <div style={{padding:'48px 52px',display:'flex',flexDirection:'column',justifyContent:'center',background:'#111'}}>
+              <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>The Best Part</div>
+              <h3 className="serif" style={{fontSize:'clamp(26px,3.5vw,46px)',fontWeight:400,marginBottom:20,lineHeight:1.1}}>
+                They Open It.<br/><em>They&rsquo;re Overwhelmed.</em>
+              </h3>
+              <p style={{fontSize:14,color:'var(--muted)',lineHeight:1.9,marginBottom:24}}>
+                There is no better gift. A custom portrait of the one they love most — in an art style picked just for them — with a song written just for their pet. This is the one they cry over. In a good way.
+              </p>
+              <p style={{fontSize:13,color:'rgba(201,168,76,.55)',fontStyle:'italic',lineHeight:1.7,borderLeft:'2px solid rgba(201,168,76,.25)',paddingLeft:16}}>
+                &ldquo;I gave this to my mom for her birthday. She hasn&rsquo;t stopped talking about it. She shows everyone who walks in the door.&rdquo;
+              </p>
+            </div>
+          </div>
+
           <div style={{textAlign:'center',marginTop:64}}>
             <Link href="/create" style={{background:'var(--gold)',color:'var(--ink)',padding:'22px 64px',fontSize:15,fontWeight:700,letterSpacing:'.1em',textTransform:'uppercase',textDecoration:'none',display:'inline-block',boxShadow:'0 8px 40px rgba(201,168,76,.35)'}}>
               🐾 &nbsp;Start Their Story Now
@@ -207,7 +233,7 @@ export default function Home() {
       </section>
 
       {/* MEMORY PORTRAIT FEATURE */}
-      <section style={{padding:'120px 60px',background:'var(--soft)'}}>
+      <section id="the-experience" style={{padding:'120px 60px',background:'var(--soft)'}}>
         <div style={{maxWidth:1100,margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 1fr',gap:80,alignItems:'center'}}>
           <div>
             <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>Signature Custom Portrait &mdash; Starting at $49</div>
