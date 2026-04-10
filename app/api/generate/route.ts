@@ -424,6 +424,27 @@ ${CONSTRAINTS_GPT}
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, fairytale storybook illustration, soft painterly brushwork, warm golden light, magical cozy atmosphere, soulful expressive eyes, floating sparkles, whimsical interior, premium children's book style`,
   },
+
+  {
+    id: 'comic_animation',
+    name: 'Premium Comic',
+    emoji: '💥',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Render this image as a premium animated comic book portrait with bold, clean inked linework, expressive stylization, and polished cel shading. The result should feel like a high-end illustrated panel from a modern comic book, with confident contour lines, simplified forms, and strong visual clarity. Preserve the pet's accurate likeness, including facial structure, fur pattern, and expression, while subtly stylizing the features to feel more animated and character-driven. The eyes should be slightly larger and more expressive, with a lively, emotional quality. Fur should be simplified into clean, stylized curls and directional shapes rather than hyper-detailed texture. Use smooth cel shading with clear light and shadow separation, avoiding overly soft blending. Lighting should be cinematic and directional, with warm highlights and defined shadows that enhance depth and form. Ensure clean, consistent ink outlines with controlled line weight variation for a polished and professional comic look. The background should be softly simplified and illustrated, supporting the subject without clutter, like a well-composed comic panel. Avoid photorealism, painterly brush textures, excessive detail, noisy linework, heavy halftone effects, plastic AI textures, or cheap cartoon aesthetics. The final image should feel vivid, animated, collectible, and premium, like real comic book art worthy of framing.
+
+${CONSTRAINTS_GPT}
+- not photorealistic
+- no painterly brush textures
+- no heavy halftone effects
+- no cheap cartoon aesthetics`,
+
+    fluxPrompt: (petDesc) =>
+      `Premium comic book portrait of ${petDesc}. Bold clean inked linework, polished cel shading, expressive stylization. Slightly larger emotional eyes. Clean directional fur shapes. Cinematic directional lighting, warm highlights, defined shadows. Consistent ink outlines with line weight variation. Simple illustrated background like a comic panel. Vivid, animated, collectible, premium. Not photorealistic, not cheap cartoon.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, premium comic book illustration, bold clean linework, cel shading, expressive animated style, cinematic lighting, professional comic art, collectible`,
+  },
 ]
 
 // ── Memory Portrait scene builder — same style families as base ──
