@@ -92,11 +92,14 @@ const STYLE_FAMILIES: Array<{
     emoji: '🟥',
     gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
 
-Render this image as a premium retro pop art grid portrait with the pet repeated across four equal square panels in a perfectly aligned 2x2 composition. The layout must be symmetrical, evenly spaced, and clean, with four matching square quadrants arranged in a balanced grid. The pet must be centered clearly within each square, using identical crop, scale, head position, and framing in every panel. Each quadrant must contain the exact same portrait composition, with only the color palette changing between panels.
-Use bold, fully saturated, high-contrast pop art color palettes in each quadrant. Colors must be vivid, bright, and striking — not muted, not pastel, not desaturated, and not neutral. Each panel should use a distinctly different, vibrant color combination to create a strong, iconic visual contrast.
-Preserve the pet's recognizable likeness, expression, and personality while simplifying the portrait into clean shapes, crisp edges, and smooth color blocking. Backgrounds should remain flat and minimal so the pet remains the focal point in every panel.
-Do not use misaligned panels, uneven spacing, varied subject position, different crops, overlapping elements, collage layouts, or off-center framing. Avoid photorealism, muddy tones, washed-out colors, painterly textures, noise, or cheap novelty styling.
-Ensure all four panels are perfectly aligned and evenly spaced, with identical centered composition in each quadrant and bold, vivid color variation between panels.
+Create a strict 2x2 grid layout consisting of four equal square panels. This grid structure is mandatory and must be clearly visible. Each panel must contain the same centered portrait of the pet, repeated identically with matching crop, scale, head position, and framing.
+Reconstruct the pet into a clean, centered head-and-shoulders portrait before applying the grid. The subject must be fully visible, properly framed, and positioned in the center of each square.
+Render the image as premium retro pop art with bold, fully saturated, high-contrast color palettes. Each of the four panels must use a distinctly different vivid color combination. Colors must be bright, striking, and intense — not muted, not pastel, not desaturated.
+Use crisp edges, strong graphic simplification, and smooth color blocking. Backgrounds should be flat and minimal to maintain clarity in each panel.
+Do not preserve the original image composition if it interferes with the grid layout. Ignore background clutter and rebuild the composition to fit the centered portrait format required for the grid.
+Do not create a single image, do not create partial layouts, and do not omit the grid. The final output must be a clear, evenly spaced four-panel pop art grid with identical subject placement in each quadrant.
+Avoid photorealism, muddy colors, painterly effects, uneven spacing, off-center subjects, collage layouts, or distorted repetition.
+Ensure all four panels are perfectly aligned, evenly spaced, and visually balanced, with identical centered composition in each quadrant.
 
 ${CONSTRAINTS_GPT}
 - four panels, perfectly aligned 2x2 grid
