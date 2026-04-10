@@ -109,7 +109,7 @@ export default function Home() {
             <h2 className="serif" style={{fontSize:'clamp(40px,5vw,72px)',fontWeight:400}}>Tell Us Who They Are.<br/><em>We&rsquo;ll Bring Them to Life.</em></h2>
           </div>
 
-          <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:2}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(6,1fr)',gap:2}}>
 
             {/* STEP 1 — Upload photo */}
             <div className="card" style={{padding:0,overflow:'hidden',position:'relative'}}>
@@ -188,18 +188,33 @@ export default function Home() {
               </div>
             </div>
 
-            {/* STEP 5 — Printed & shipped */}
+            {/* STEP 5 — The Magic Happens */}
             <div className="card" style={{padding:0,overflow:'hidden',position:'relative'}}>
               <div style={{background:'var(--ink)',padding:'12px 0',textAlign:'center',borderBottom:'1px solid var(--border)'}}>
                 <div style={{fontSize:42,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>5</div>
               </div>
+              <div style={{aspectRatio:'1',overflow:'hidden',background:'linear-gradient(135deg,#1a0a2e 0%,#2d1b4e 40%,#1a1a3a 100%)',position:'relative',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                <div style={{fontSize:80,filter:'drop-shadow(0 0 30px rgba(201,168,76,.4))'}}>🪄</div>
+                <div style={{position:'absolute',inset:0,background:'radial-gradient(circle at 50% 50%,rgba(201,168,76,.15) 0%,transparent 60%)'}} />
+              </div>
+              <div style={{padding:'20px 20px 28px'}}>
+                <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>The Magic Happens</h3>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>Our team writes original songs about your pet. Pick your genre or let us surprise you — 5 custom tracks delivered in 24 hours.</p>
+              </div>
+            </div>
+
+            {/* STEP 6 — Delivered */}
+            <div className="card" style={{padding:0,overflow:'hidden',position:'relative'}}>
+              <div style={{background:'var(--ink)',padding:'12px 0',textAlign:'center',borderBottom:'1px solid var(--border)'}}>
+                <div style={{fontSize:42,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>6</div>
+              </div>
               <div style={{aspectRatio:'1',overflow:'hidden',background:'#1a1412',position:'relative'}}>
-                <img src="https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/14213989-5ed0-4d83-95ad-665855f994d4_pet/db78566f-8c8e-46f5-8c6d-1267f07029b4.png" alt="Printed and shipped" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
+                <img src="https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/14213989-5ed0-4d83-95ad-665855f994d4_pet/db78566f-8c8e-46f5-8c6d-1267f07029b4.png" alt="Delivered to your door" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
                 <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.5) 0%,transparent 40%)'}} />
               </div>
               <div style={{padding:'20px 20px 28px'}}>
-                <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>Delivered to Your Door</h3>
-                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>Songs &amp; digital downloads in 24 hours. Prints &amp; keepsakes ship in 2–7 business days. The joy they deliver — infinite.</p>
+                <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>A Keepsake Arrives</h3>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>Museum-quality print with a QR code linking to your pet&rsquo;s gallery — every portrait and song, all in one place. You have to see it to believe it.</p>
               </div>
             </div>
 
