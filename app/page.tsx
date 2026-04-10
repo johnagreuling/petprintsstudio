@@ -330,7 +330,7 @@ export default function Home() {
           <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:48}}>
             {[
               {image:'/gallery-quality.png',title:'Gallery Prints',desc:'Canvas & archival prints from 8×10 to 24×36. Built to last generations.'},
-              {image:'/portrait-jack.png',title:'The Portrait',desc:'Their personality, their world, their story — made visible.'},
+              {image:'/portrait-lifestyle.png',title:'The Portrait',desc:'Their personality, their world, their story — made visible.'},
               {image:'/song-lifestyle.png',title:'Original Song',desc:'Custom music written from their story. Their name in the lyrics.'},
               {svg:'qr',title:'QR Code',desc:'Scan from the wall. Hear their song. The portrait comes alive.'},
             ].map(p=>(
