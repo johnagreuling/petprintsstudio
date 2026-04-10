@@ -172,7 +172,7 @@ export default function Home() {
             {/* STEP 4 — Portrait generated */}
             <div className="card" style={{padding:0,overflow:'hidden',position:'relative'}}>
               <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#1a1412',position:'relative'}}>
-                <img src="/process-portrait.jpg" alt="Your portrait" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
+                <img src="https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/14213989-5ed0-4d83-95ad-665855f994d4_pet/a5fcc975-46e3-477a-8de2-60ece3f6b0db.png" alt="Your portrait" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
                 <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.8) 0%,rgba(10,10,10,.1) 60%,transparent 100%)'}} />
                 <div style={{position:'absolute',top:16,left:18,fontSize:60,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>4</div>
               </div>
@@ -185,7 +185,7 @@ export default function Home() {
             {/* STEP 5 — Printed & shipped */}
             <div className="card" style={{padding:0,overflow:'hidden',position:'relative'}}>
               <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#1a1412',position:'relative'}}>
-                <img src="/process-print.jpg" alt="Printed and shipped" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
+                <img src="https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/14213989-5ed0-4d83-95ad-665855f994d4_pet/69508879-38da-4363-8550-bfa2b0de317a.png" alt="Printed and shipped" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
                 <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.8) 0%,rgba(10,10,10,.1) 60%,transparent 100%)'}} />
                 <div style={{position:'absolute',top:16,left:18,fontSize:60,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>5</div>
               </div>
