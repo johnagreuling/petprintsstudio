@@ -87,6 +87,22 @@ const STYLE_FAMILIES: Array<{
   astriaPrompt: (petType: string) => string
 }> = [
   {
+    id: 'vintage_poster_v2',
+    name: 'Heritage Poster',
+    emoji: '🏛️',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Render this image as a premium heritage poster with timeless Americana character, refined vintage print styling, and a dignified, classic composition. The result should feel like a traditional commemorative or heirloom print—elegant, restrained, and display-worthy—not a cartoon, not a photograph, and not a modern graphic design. Preserve the pet's recognizable likeness, natural posture, and calm, noble expression while interpreting the portrait with balanced linework, subtle painterly shading, and clean, structured composition. Use a restrained, heritage-inspired color palette with warm neutrals, deep earth tones, muted reds, soft blues, and weathered greens, with a gentle aged-paper feel. The scene should feel iconic and grounded, with a sense of tradition, memory, and legacy. Background elements should remain simple, supportive, and design-forward, enhancing the subject without clutter or distraction. Avoid loud pop-art color, photorealism, glossy rendering, plastic AI textures, cartoon styling, busy layouts, or cheap novelty aesthetics. The final image should feel timeless, collectible, and premium, like a preserved legacy print worthy of framing.
+
+${CONSTRAINTS_GPT}`,
+
+    fluxPrompt: (petDesc) =>
+      `A premium vintage-style poster portrait of the exact dog from the reference image. Keep the same dog — same breed, coat, markings, expression. Render as a high-end retro print: aged paper texture, faded ink, warm nostalgic palette of cream, tan, muted red, dusty teal, golden ochre. Pet in strong iconic pose as clear focal point. Background has simple vintage graphic shapes, ornamental framing, subtle sunburst elements. Feels like a heritage advertisement or classic collectible travel poster. Elegant, timeless, frame-worthy.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, premium vintage poster style, retro illustrated, aged paper texture, warm nostalgic palette, heritage advertisement aesthetic`,
+  },
+  {
     id: 'neon_glow',
     name: 'Neon Glow',
     emoji: '🌟',
@@ -366,22 +382,6 @@ ${CONSTRAINTS_GPT}
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, four-panel Warhol pop-art screenprint grid, bold flat colors, high contrast, 1960s graphic style, collectible`,
   },
-  {
-    id: 'vintage_poster_v2',
-    name: 'Heritage Poster',
-    emoji: '🏛️',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
-
-Render this image as a premium heritage poster with timeless Americana character, refined vintage print styling, and a dignified, classic composition. The result should feel like a traditional commemorative or heirloom print—elegant, restrained, and display-worthy—not a cartoon, not a photograph, and not a modern graphic design. Preserve the pet's recognizable likeness, natural posture, and calm, noble expression while interpreting the portrait with balanced linework, subtle painterly shading, and clean, structured composition. Use a restrained, heritage-inspired color palette with warm neutrals, deep earth tones, muted reds, soft blues, and weathered greens, with a gentle aged-paper feel. The scene should feel iconic and grounded, with a sense of tradition, memory, and legacy. Background elements should remain simple, supportive, and design-forward, enhancing the subject without clutter or distraction. Avoid loud pop-art color, photorealism, glossy rendering, plastic AI textures, cartoon styling, busy layouts, or cheap novelty aesthetics. The final image should feel timeless, collectible, and premium, like a preserved legacy print worthy of framing.
-
-${CONSTRAINTS_GPT}`,
-
-    fluxPrompt: (petDesc) =>
-      `A premium vintage-style poster portrait of the exact dog from the reference image. Keep the same dog — same breed, coat, markings, expression. Render as a high-end retro print: aged paper texture, faded ink, warm nostalgic palette of cream, tan, muted red, dusty teal, golden ochre. Pet in strong iconic pose as clear focal point. Background has simple vintage graphic shapes, ornamental framing, subtle sunburst elements. Feels like a heritage advertisement or classic collectible travel poster. Elegant, timeless, frame-worthy.`,
-
-    astriaPrompt: (petType) =>
-      `portrait of sks ${petType}, premium vintage poster style, retro illustrated, aged paper texture, warm nostalgic palette, heritage advertisement aesthetic`,
-  },
 
   {
     id: 'retro_pop',
@@ -586,7 +586,7 @@ export async function POST(req: NextRequest) {
 
           // Run in batches of 4 — stays under OpenAI 5 images/min rate limit
           for (let i = 0; i < allTasks.length; i += 4) {
-            if (i > 0) await new Promise(r => setTimeout(r, 13000))
+            if (i > 0) await new Promise(r => setTimeout(r, 8000))
             await Promise.all(allTasks.slice(i, i + 4).map(t => t()))
           }
 

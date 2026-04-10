@@ -7,7 +7,7 @@
       "memory": 1024
     },
     "app/api/generate/route.ts": {
-      "maxDuration": 300
+      "maxDuration": 600
     }
   }
 }
