@@ -363,15 +363,21 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Soft blanket callout */}
-          <div className="card" style={{padding:0,display:'flex',alignItems:'stretch',gap:0,marginBottom:48,overflow:'hidden'}}>
-            <div style={{width:200,minHeight:160,overflow:'hidden',flexShrink:0}}>
-              <img src="/blanket-lifestyle.png" alt="Pet blanket lifestyle" style={{width:'100%',height:'100%',objectFit:'cover'}}/>
+          {/* Lifestyle images side by side */}
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:48}}>
+            <div className="card" style={{padding:0,overflow:'hidden'}}>
+              <img src="/blanket-lifestyle.png" alt="Pet blanket lifestyle" style={{width:'100%',height:280,objectFit:'cover'}}/>
+              <div style={{padding:'20px 24px'}}>
+                <div className="serif" style={{fontSize:18,marginBottom:6}}>A Soft Blanket With Their Face</div>
+                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.6}}>Ultra-soft sherpa fleece, 50×60". Wrap yourself in the memory.</div>
+              </div>
             </div>
-            <div style={{flex:1,padding:'28px 32px',display:'flex',flexDirection:'column',justifyContent:'center'}}>
-              <div className="serif" style={{fontSize:22,marginBottom:8}}>A Soft Blanket With Their Face</div>
-              <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7,marginBottom:12}}>Ultra-soft sherpa fleece, 50×60". Wrap yourself in the memory. Because some gifts you don&rsquo;t just see — you feel.</div>
-              <div style={{fontSize:14,color:'var(--gold)',fontWeight:600}}>$69</div>
+            <div className="card" style={{padding:0,overflow:'hidden'}}>
+              <img src="/lifestyle-friends.png" alt="Friends admiring portrait" style={{width:'100%',height:280,objectFit:'cover',objectPosition:'center top'}}/>
+              <div style={{padding:'20px 24px'}}>
+                <div className="serif" style={{fontSize:18,marginBottom:6}}>A Centerpiece They&rsquo;ll Talk About</div>
+                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.6}}>Gallery-quality canvas that commands the room.</div>
+              </div>
             </div>
           </div>
 
