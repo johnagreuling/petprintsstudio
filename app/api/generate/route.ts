@@ -187,8 +187,7 @@ ${CONSTRAINTS_GPT}`,
     emoji: '🖼️',
     gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
 
-STYLE
-Classical Old Masters oil portrait tradition. Rich warm tones. Dramatic chiaroscuro — deep shadows with luminous highlights. Museum-quality fine art. Rembrandt-style lighting. Dense layered paint. Serious and timeless.
+Render this image as a premium hand-painted oil portrait on canvas with rich painterly depth, visible brushwork, and refined fine-art composition. The result should feel like a real commissioned painting created by a skilled traditional artist, not a photograph, not a digital illustration, and not an AI-styled render. Preserve the pet's accurate likeness, soulful eyes, natural anatomy, and emotional presence while interpreting the scene with warmth, atmosphere, and timeless artistic restraint. Use layered oil paint, soft blending in some passages, and thicker impasto texture in highlights and key edges, with subtle tonal transitions and elegant shadow structure. Lighting should feel natural, cinematic, and painterly, with rich color variation and depth. The background should remain soft, atmospheric, and supportive, suggesting place and mood without becoming overly detailed or visually busy. Avoid hyperrealism, glossy digital polish, plastic textures, hard vector edges, cartoon styling, oversharpening, artificial symmetry, and generic AI smoothness. The final image should feel emotional, tactile, premium, and unmistakably like a true oil painting worthy of framing.
 
 COMPOSITION
 Traditional formal portrait composition. Three-quarter view or frontal. Rich dark background framing the subject.
@@ -349,14 +348,11 @@ ${CONSTRAINTS_GPT}
 
   {
     id: 'vintage_pop_art',
-    name: 'Vintage Pop Art',
+    name: 'Gallery Pop',
     emoji: '⚡',
     gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
 
-STYLE
-Classic 1960s Warhol-inspired pop-art screenprint with luxury gallery-poster feel. A 2×2 grid, same portrait in all four panels, each with a different bold saturated palette: Panel 1 hot pink and yellow, Panel 2 cyan and red, Panel 3 lime green and blue, Panel 4 orange and purple. Strong color blocking, crisp graphic edges, simplified tonal shapes, high contrast, flat graphic background.
-
-The pet must be highly recognizable in every panel. Eyes, nose, facial markings, and silhouette stay accurate and expressive. Final result should feel iconic, stylish, collectible, bright, and premium.
+Render this image as a bold, premium gallery pop art portrait with clean graphic composition, striking color contrast, and refined contemporary style. The result should feel like high-end pop-inspired wall art displayed in a modern gallery, not a cartoon, not a meme, and not a cheap novelty print. Preserve the pet's recognizable likeness, expression, and personality while simplifying the subject into strong shapes, crisp edges, and confident color blocking. Use a vibrant but curated palette with high contrast tones, smooth color transitions, and visually impactful clarity. The composition should feel intentional, balanced, and design-forward, with a minimal but supportive background that enhances the subject without clutter. Avoid photorealism, muddy color, overly childish styling, plastic textures, generic AI smoothness, busy collage effects, or low-end poster aesthetics. The final image should feel iconic, stylish, energetic, and premium, like a collectible pop-inspired statement piece for a modern interior.
 
 ${CONSTRAINTS_GPT}
 - no text or typography
