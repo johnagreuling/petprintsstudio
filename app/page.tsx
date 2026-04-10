@@ -313,12 +313,12 @@ export default function Home() {
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:2,marginBottom:40}}>
             {[
               {emoji:'🎨',title:'16 Artistic Styles',desc:'From Oil Painting to Neon Glow — we generate your portrait across 16 styles with infinite theme customization. You pick the one that feels most like them.',link:'/styles',linkText:'See all styles →'},
-              {emoji:'🖼️',title:'Premium Prints',desc:'Gallery-quality canvas and archival prints from 8×10 to 24×36. Ready to hang, built to last.'},
+              {image:'/gallery-quality.png',title:'Premium Prints',desc:'Gallery-quality canvas and archival prints from 8×10 to 24×36. Ready to hang, built to last.'},
               {emoji:'♪',title:'Original Song',desc:'A custom song written just for your pet — their name, their personality, their story. Yours forever.'},
               {emoji:'📱',title:'QR Code',desc:'Scan from the wall to hear their song anytime. Every visitor, every time — the portrait comes alive.'},
             ].map(p=>(
               <div key={p.title} className="card" style={{padding:'28px 24px',textAlign:'center'}}>
-                <div style={{fontSize:32,marginBottom:12}}>{p.emoji}</div>
+                {(p as any).image ? <img src={(p as any).image} alt={p.title} style={{width:64,height:64,objectFit:'cover',borderRadius:8,marginBottom:12}}/> : <div style={{fontSize:32,marginBottom:12}}>{p.emoji}</div>}
                 <div className="serif" style={{fontSize:18,marginBottom:6,fontWeight:400}}>{p.title}</div>
                 <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>{p.desc}</div>
                 {(p as any).link && <div style={{marginTop:10}}><Link href={(p as any).link} style={{fontSize:10,color:'var(--gold)',letterSpacing:'.15em',textTransform:'uppercase',textDecoration:'none',borderBottom:'1px solid rgba(201,168,76,.3)'}}>{(p as any).linkText}</Link></div>}
