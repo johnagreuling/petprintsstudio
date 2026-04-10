@@ -287,24 +287,28 @@ export default function Home() {
               <img src="/portrait-sasha.png" alt="Sasha - Signature Portrait" style={{width:'100%',display:'block'}}/>
               <div style={{background:'var(--mid)',padding:'10px 12px',borderTop:'1px solid var(--border)'}}>
                 <div style={{fontSize:11,color:'var(--gold)',fontWeight:500}}>Sasha</div>
+                <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>Sunset cruise in her BMW, name on the plate.</div>
               </div>
             </div>
             <div style={{borderRadius:6,overflow:'hidden',border:'1px solid var(--border)'}}>
               <img src="/portrait-maggie-mollie.png" alt="Maggie & Mollie - Signature Portrait" style={{width:'100%',display:'block'}}/>
               <div style={{background:'var(--mid)',padding:'10px 12px',borderTop:'1px solid var(--border)'}}>
                 <div style={{fontSize:11,color:'var(--gold)',fontWeight:500}}>Maggie &amp; Mollie</div>
+                <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>Golden hour at the family beach house on the Gulf.</div>
               </div>
             </div>
             <div style={{borderRadius:6,overflow:'hidden',border:'1px solid var(--border)'}}>
-              <img src="/portrait-tank.png" alt="Tank - Signature Portrait" style={{width:'100%',display:'block'}}/>
+              <img src="/portrait-jack.png" alt="Jack - Signature Portrait" style={{width:'100%',display:'block'}}/>
               <div style={{background:'var(--mid)',padding:'10px 12px',borderTop:'1px solid var(--border)'}}>
-                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500}}>Tank</div>
+                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500}}>Jack</div>
+                <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>Top down in the Porsche, cruising through Colorado.</div>
               </div>
             </div>
             <div style={{borderRadius:6,overflow:'hidden',border:'1px solid var(--border)'}}>
               <img src="/portrait-lily.png" alt="Lily - Signature Portrait" style={{width:'100%',display:'block'}}/>
               <div style={{background:'var(--mid)',padding:'10px 12px',borderTop:'1px solid var(--border)'}}>
                 <div style={{fontSize:11,color:'var(--gold)',fontWeight:500}}>Lily</div>
+                <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>Red wagon adventures with her favorite little girl.</div>
               </div>
             </div>
           </div>
