@@ -193,9 +193,28 @@ export default function Home() {
               <div style={{background:'var(--ink)',padding:'12px 0',textAlign:'center',borderBottom:'1px solid var(--border)'}}>
                 <div style={{fontSize:42,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>5</div>
               </div>
-              <div style={{aspectRatio:'1',overflow:'hidden',background:'linear-gradient(135deg,#1a0a2e 0%,#2d1b4e 40%,#1a1a3a 100%)',position:'relative',display:'flex',alignItems:'center',justifyContent:'center'}}>
-                <div style={{fontSize:80,filter:'drop-shadow(0 0 30px rgba(201,168,76,.4))'}}>🪄</div>
-                <div style={{position:'absolute',inset:0,background:'radial-gradient(circle at 50% 50%,rgba(201,168,76,.15) 0%,transparent 60%)'}} />
+              <div style={{aspectRatio:'1',overflow:'hidden',background:'linear-gradient(135deg,#0a0a12 0%,#12101a 50%,#0d0a14 100%)',position:'relative'}}>
+                {/* Ambient glow orbs */}
+                <div style={{position:'absolute',top:'20%',left:'30%',width:120,height:120,background:'radial-gradient(circle,rgba(201,168,76,.25) 0%,transparent 70%)',filter:'blur(20px)'}} />
+                <div style={{position:'absolute',top:'50%',right:'25%',width:80,height:80,background:'radial-gradient(circle,rgba(168,85,247,.2) 0%,transparent 70%)',filter:'blur(15px)'}} />
+                <div style={{position:'absolute',bottom:'30%',left:'20%',width:100,height:100,background:'radial-gradient(circle,rgba(201,168,76,.15) 0%,transparent 70%)',filter:'blur(25px)'}} />
+                {/* Floating elements */}
+                <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',fontSize:14,color:'rgba(201,168,76,.6)'}}>
+                  <span style={{position:'absolute',top:'18%',left:'22%',fontSize:20,opacity:.7}}>♪</span>
+                  <span style={{position:'absolute',top:'25%',right:'28%',fontSize:16,opacity:.5}}>♫</span>
+                  <span style={{position:'absolute',top:'40%',left:'15%',fontSize:12,opacity:.4}}>✦</span>
+                  <span style={{position:'absolute',bottom:'35%',right:'18%',fontSize:18,opacity:.6}}>♪</span>
+                  <span style={{position:'absolute',bottom:'25%',left:'30%',fontSize:14,opacity:.5}}>✧</span>
+                  <span style={{position:'absolute',top:'55%',right:'35%',fontSize:10,opacity:.4}}>✦</span>
+                  <span style={{position:'absolute',bottom:'45%',right:'40%',fontSize:22,opacity:.7}}>♫</span>
+                  <span style={{position:'absolute',top:'65%',left:'40%',fontSize:8,opacity:.3}}>✧</span>
+                </div>
+                {/* Center icon */}
+                <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center'}}>
+                  <div style={{width:70,height:70,borderRadius:'50%',background:'linear-gradient(135deg,rgba(201,168,76,.15) 0%,rgba(201,168,76,.05) 100%)',border:'1px solid rgba(201,168,76,.2)',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 0 60px rgba(201,168,76,.2)'}}>
+                    <span style={{fontSize:28,color:'var(--gold)',opacity:.9}}>♪</span>
+                  </div>
+                </div>
               </div>
               <div style={{padding:'20px 20px 28px'}}>
                 <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>The Magic Happens</h3>
