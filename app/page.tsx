@@ -256,7 +256,7 @@ export default function Home() {
 
       {/* MEMORY PORTRAIT FEATURE */}
       <section id="the-experience" style={{padding:'120px 60px',background:'var(--soft)'}}>
-        <div style={{maxWidth:1100,margin:'0 auto',display:'grid',gridTemplateColumns:'1.2fr 1fr',gap:60,alignItems:'center'}}>
+        <div style={{maxWidth:1100,margin:'0 auto',display:'grid',gridTemplateColumns:'1.5fr 1fr',gap:60,alignItems:'center'}}>
           <div>
             <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>Signature Portrait &mdash; Starting at $49</div>
             <h2 className="serif" style={{fontSize:'clamp(36px,4vw,60px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>Their Story Is<br/><em>Worth Remembering.</em></h2>
@@ -282,33 +282,29 @@ export default function Home() {
           </div>
 
           {/* Portrait examples - full images */}
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
-            <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+            <div style={{borderRadius:6,overflow:'hidden',border:'1px solid var(--border)'}}>
               <img src="/portrait-sasha.png" alt="Sasha - Signature Portrait" style={{width:'100%',display:'block'}}/>
-              <div style={{background:'var(--mid)',padding:'16px 20px',borderTop:'1px solid var(--border)'}}>
-                <div style={{fontSize:14,color:'var(--gold)',fontWeight:500,marginBottom:4}}>Sasha</div>
-                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.5}}>BMW, sunset drive, name on the plate.</div>
+              <div style={{background:'var(--mid)',padding:'10px 12px',borderTop:'1px solid var(--border)'}}>
+                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500}}>Sasha</div>
               </div>
             </div>
-            <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
+            <div style={{borderRadius:6,overflow:'hidden',border:'1px solid var(--border)'}}>
               <img src="/portrait-maggie-mollie.png" alt="Maggie & Mollie - Signature Portrait" style={{width:'100%',display:'block'}}/>
-              <div style={{background:'var(--mid)',padding:'16px 20px',borderTop:'1px solid var(--border)'}}>
-                <div style={{fontSize:14,color:'var(--gold)',fontWeight:500,marginBottom:4}}>Maggie &amp; Mollie</div>
-                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.5}}>Sunset at the family beach house.</div>
+              <div style={{background:'var(--mid)',padding:'10px 12px',borderTop:'1px solid var(--border)'}}>
+                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500}}>Maggie &amp; Mollie</div>
               </div>
             </div>
-            <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
+            <div style={{borderRadius:6,overflow:'hidden',border:'1px solid var(--border)'}}>
               <img src="/portrait-tank.png" alt="Tank - Signature Portrait" style={{width:'100%',display:'block'}}/>
-              <div style={{background:'var(--mid)',padding:'16px 20px',borderTop:'1px solid var(--border)'}}>
-                <div style={{fontSize:14,color:'var(--gold)',fontWeight:500,marginBottom:4}}>Tank</div>
-                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.5}}>Snowmobile in Aspen, living his best life.</div>
+              <div style={{background:'var(--mid)',padding:'10px 12px',borderTop:'1px solid var(--border)'}}>
+                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500}}>Tank</div>
               </div>
             </div>
-            <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
+            <div style={{borderRadius:6,overflow:'hidden',border:'1px solid var(--border)'}}>
               <img src="/portrait-lily.png" alt="Lily - Signature Portrait" style={{width:'100%',display:'block'}}/>
-              <div style={{background:'var(--mid)',padding:'16px 20px',borderTop:'1px solid var(--border)'}}>
-                <div style={{fontSize:14,color:'var(--gold)',fontWeight:500,marginBottom:4}}>Lily</div>
-                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.5}}>Red wagon rides with her favorite girl.</div>
+              <div style={{background:'var(--mid)',padding:'10px 12px',borderTop:'1px solid var(--border)'}}>
+                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500}}>Lily</div>
               </div>
             </div>
           </div>
