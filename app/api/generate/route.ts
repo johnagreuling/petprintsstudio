@@ -349,7 +349,7 @@ ${CONSTRAINTS_GPT}
 
   {
     id: 'vintage_pop_art',
-    name: 'Vintage Pop Art',
+    name: 'Gallery Pop',
     emoji: '⚡',
     gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
 
@@ -399,6 +399,89 @@ ${CONSTRAINTS_GPT}`,
 
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, premium vintage poster style, retro illustrated, aged paper texture, warm nostalgic palette, heritage advertisement aesthetic`,
+  },
+
+  {
+    id: 'retro_pop',
+    name: 'Retro Pop',
+    emoji: '🟥',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Render this image as a premium four-panel pop art grid portrait, with the pet repeated across four equal square quadrants in a perfectly balanced 2x2 composition. The pet must be centered clearly within each square, with consistent framing, strong visual symmetry, and clean alignment across the full image. Each quadrant should feature the same pet portrait but with a different bold, high-contrast pop-art color palette, creating a striking and iconic repeated-image effect. Preserve the pet's recognizable likeness, expression, and personality while simplifying the portrait into strong graphic shapes, crisp edges, and clean color separation. The composition should feel polished, intentional, and gallery-worthy, not messy, not off-center, and not like a low-end collage. Backgrounds should remain simple, flat, and color-blocked so the pet remains the focal point in every panel. Avoid photorealism, muddy tones, clutter, random positioning, distortion between quadrants, cheap novelty aesthetics, and generic AI smoothness. The final image should feel bold, collectible, stylish, and instantly recognizable as premium pop-grid wall art.
+
+${CONSTRAINTS_GPT}
+- four panels, 2x2 grid, perfectly symmetrical
+- same pet in all four quadrants
+- different bold color palette per panel
+- no text or typography`,
+
+    fluxPrompt: (petDesc) =>
+      `Four-panel 2x2 pop art grid of ${petDesc}. Same pet centered in all four quadrants, perfectly symmetrical. Each panel a different bold high-contrast palette: hot pink/yellow, cyan/red, lime/blue, orange/purple. Crisp graphic edges, flat color-blocked backgrounds, clean separation between panels. Premium gallery pop art, Warhol-inspired, collectible.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, four-panel Warhol pop art grid, 2x2 composition, bold flat colors, high contrast, different palette each panel, collectible gallery wall art`,
+  },
+
+  {
+    id: 'fairytale',
+    name: 'Fairytale',
+    emoji: '✨',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Render this image in a premium storybook portrait style with soft illustrated brushwork, warm golden light, and a cozy magical atmosphere. The result should feel like a beautifully painted children's book illustration, not a photograph, not a cartoon, and not a polished digital render. Preserve the pet's accurate likeness, especially the face shape, nose, curls, and gentle head tilt, while giving the eyes a slightly larger, more expressive, soulful storybook quality. Use soft edges, subtle painterly texture, warm highlights, gentle glow, floating dust-like sparkles, and an inviting interior scene with simple whimsical background elements such as a softly lit window, curtains, flowers, books, or a cozy home setting. Keep the pet centered and emotionally engaging as the clear focal point. Fur should feel soft and painterly, not overly detailed or hyperreal. Avoid photorealism, hard outlines, comic-book styling, plastic AI textures, oversharpening, cluttered backgrounds, or cheap novelty illustration. The final image should feel heartwarming, nostalgic, magical, and premium, like a treasured storybook portrait worthy of framing.
+
+${CONSTRAINTS_GPT}
+- not photorealistic
+- no hard outlines
+- no comic-book styling
+- no cluttered backgrounds`,
+
+    fluxPrompt: (petDesc) =>
+      `Premium fairytale storybook portrait of ${petDesc}. Soft illustrated brushwork, warm golden light, cozy magical atmosphere. Slightly larger soulful expressive eyes. Floating sparkles, gentle glow, whimsical interior background — window, curtains, flowers, books. Soft painterly fur. Heartwarming, nostalgic, magical, premium.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, fairytale storybook illustration, soft painterly brushwork, warm golden light, magical cozy atmosphere, soulful expressive eyes, floating sparkles, whimsical interior, premium`,
+  },
+
+  {
+    id: 'comic_animation',
+    name: 'Premium Comic',
+    emoji: '💥',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Render this image as a premium animated comic book portrait with bold, clean inked linework, expressive stylization, and polished cel shading. The result should feel like a high-end illustrated panel from a modern comic book, with confident contour lines, simplified forms, and strong visual clarity. Preserve the pet's accurate likeness, including facial structure, fur pattern, and expression, while subtly stylizing the features to feel more animated and character-driven. The eyes should be slightly larger and more expressive, with a lively, emotional quality. Fur should be simplified into clean, stylized curls and directional shapes rather than hyper-detailed texture. Use smooth cel shading with clear light and shadow separation, avoiding overly soft blending. Lighting should be cinematic and directional, with warm highlights and defined shadows that enhance depth and form. Ensure clean, consistent ink outlines with controlled line weight variation for a polished and professional comic look. The background should be softly simplified and illustrated, supporting the subject without clutter, like a well-composed comic panel. Avoid photorealism, painterly brush textures, excessive detail, noisy linework, heavy halftone effects, plastic AI textures, or cheap cartoon aesthetics. The final image should feel vivid, animated, collectible, and premium, like real comic book art worthy of framing.
+
+${CONSTRAINTS_GPT}
+- not photorealistic
+- no painterly brush textures
+- no heavy halftone effects`,
+
+    fluxPrompt: (petDesc) =>
+      `Premium comic book portrait of ${petDesc}. Bold clean inked linework, polished cel shading, expressive stylization. Slightly larger emotional eyes. Clean directional fur shapes. Cinematic directional lighting, warm highlights, defined shadows. Consistent ink outlines. Simple illustrated background. Vivid, animated, collectible, premium.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, premium comic book illustration, bold clean linework, cel shading, expressive animated style, cinematic lighting, professional comic art, collectible`,
+  },
+
+  {
+    id: 'fine_art_sketch',
+    name: 'Fine Art Sketch',
+    emoji: '🖊️',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Render this image as a premium fine art sketch portrait with the look of a hand-drawn charcoal and graphite artwork on textured paper. The result should feel like a real commissioned drawing created by a skilled portrait artist, not a photograph, not a painting, and not a generic digital filter. Preserve the pet's accurate likeness, facial structure, fur pattern, expression, and emotional presence while translating the portrait into elegant linework, soft shading, and refined tonal depth. Use delicate pencil and charcoal marks, subtle crosshatching, blended graphite shadows, and strong focal detail around the eyes, nose, and expression. The background should remain minimal, soft, and unobtrusive, with only gentle tonal suggestion or paper texture so the pet remains the clear emotional focus. Keep the composition timeless, balanced, and dignified. Avoid glossy digital polish, hard vector lines, cartoon styling, excessive detail everywhere, muddy smudging, fake photo-to-sketch effects, noisy textures, or cheap novelty aesthetics. The final image should feel intimate, sophisticated, timeless, and deeply emotional, like a museum-quality pet portrait sketch worthy of framing.
+
+${CONSTRAINTS_GPT}
+- not a photograph
+- not a painting
+- no hard vector lines
+- no fake photo-to-sketch effects`,
+
+    fluxPrompt: (petDesc) =>
+      `Premium fine art sketch portrait of ${petDesc}. Hand-drawn charcoal and graphite on textured paper. Elegant linework, soft shading, refined tonal depth. Delicate pencil marks, subtle crosshatching, blended graphite shadows. Strong focal detail on eyes, nose, expression. Minimal soft background, paper texture. Intimate, sophisticated, timeless, museum-quality.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, premium fine art sketch, charcoal and graphite on textured paper, elegant linework, soft crosshatching, blended shadows, museum-quality portrait drawing, timeless and sophisticated`,
   },
 ]
 
