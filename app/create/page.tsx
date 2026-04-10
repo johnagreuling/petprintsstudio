@@ -35,6 +35,7 @@ export default function CreatePage() {
   const [wantSong, setWantSong] = useState(false)
   const [sessionFolder, setSessionFolder] = useState('')
   const [expandingStyle, setExpandingStyle] = useState<string|null>(null)
+  const [expandProgress, setExpandProgress] = useState(0)
   const [savedSession, setSavedSession] = useState<{sessionFolder:string;images:any[];petName:string;createdAt:string}|null>(null)
 
   useEffect(() => {
@@ -343,6 +344,11 @@ export default function CreatePage() {
   const handleExpandStyle = async (styleId: string, styleName: string) => {
     if (!uploadedUrl || expandingStyle) return
     setExpandingStyle(styleId)
+    setExpandProgress(0)
+    // Animate progress bar while waiting
+    const ticker = setInterval(() => {
+      setExpandProgress(p => p < 85 ? p + Math.random() * 8 : p)
+    }, 800)
     try {
       const res = await fetch('/api/generate', {
         method: 'POST',
@@ -371,12 +377,20 @@ export default function CreatePage() {
           if (!line.startsWith('data:')) continue
           try {
             const d = JSON.parse(line.slice(5))
-            if (d.type === 'image') setGenerated(prev => [...prev, d.image])
+            if (d.type === 'image') {
+              // Ensure the new image has the correct styleId so it groups properly
+              setGenerated(prev => [...prev, {...d.image, styleId, styleName}])
+              setExpandProgress(p => Math.min(p + 30, 95))
+            }
           } catch(e) {}
         }
       }
+      setExpandProgress(100)
     } catch(e) { console.error('Expand style error:', e) }
-    finally { setExpandingStyle(null) }
+    finally {
+      clearInterval(ticker)
+      setTimeout(() => { setExpandingStyle(null); setExpandProgress(0) }, 600)
+    }
   }
 
   return (
@@ -777,14 +791,31 @@ export default function CreatePage() {
                         </div>
                       ))}
                     </div>
-                    {/* Get more variations button */}
-                    <button
-                      onClick={()=>handleExpandStyle(imgs[0]?.styleId, name)}
-                      disabled={!!expandingStyle}
-                      style={{marginTop:12,background:'transparent',border:'1px solid rgba(201,168,76,.3)',color:'var(--gold)',padding:'8px 20px',fontSize:10,letterSpacing:'.18em',textTransform:'uppercase',cursor:expandingStyle?'default':'pointer',opacity:expandingStyle?0.5:1,display:'flex',alignItems:'center',gap:8}}
-                    >
-                      {expandingStyle===imgs[0]?.styleId ? '⟳ Generating...' : '+ Get 2 More Variations'}
-                    </button>
+                    {/* Get more variations button + progress */}
+                    {expandingStyle === imgs[0]?.styleId ? (
+                      <div style={{marginTop:12}}>
+                        <div style={{fontSize:10,letterSpacing:'.18em',textTransform:'uppercase',color:'var(--gold)',marginBottom:8}}>
+                          ⟳ Generating 2 more variations...
+                        </div>
+                        <div style={{height:3,background:'rgba(245,240,232,.08)',borderRadius:2,overflow:'hidden'}}>
+                          <div style={{
+                            height:'100%',
+                            width:`${expandProgress}%`,
+                            background:'var(--gold)',
+                            borderRadius:2,
+                            transition:'width 0.4s ease'
+                          }}/>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={()=>handleExpandStyle(imgs[0]?.styleId, name)}
+                        disabled={!!expandingStyle}
+                        style={{marginTop:12,background:'transparent',border:'1px solid rgba(201,168,76,.3)',color:'var(--gold)',padding:'8px 20px',fontSize:10,letterSpacing:'.18em',textTransform:'uppercase',cursor:expandingStyle?'default':'pointer',opacity:expandingStyle?0.4:1,display:'flex',alignItems:'center',gap:8}}
+                      >
+                        + Get 2 More Variations
+                      </button>
+                    )}
                   </div>        )
               })
             })()}
