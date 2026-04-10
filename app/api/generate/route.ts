@@ -92,14 +92,18 @@ const STYLE_FAMILIES: Array<{
     emoji: '🟥',
     gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
 
-Render this image as a premium retro pop art grid portrait with the pet repeated across four equal square panels in a perfectly aligned 2x2 composition. The overall layout must be symmetrical, evenly spaced, and clean, with four matching square quadrants arranged in a balanced grid. The pet must be centered clearly within each individual square, with the same crop, scale, head position, and framing in every panel. Each quadrant should contain the same portrait composition, repeated consistently, with only the color palette changing from panel to panel. Use bold retro pop color blocking, crisp edges, strong graphic simplification, and smooth high-contrast tones to create an iconic repeated-image effect. The four panels must use dramatically different, fully saturated, vivid color palettes — for example: hot pink and yellow, electric cyan and red, lime green and purple, bright orange and cobalt blue. Colors must be bold, vivid, and fully saturated — not muted, not pastel, not desaturated, not neutral. Preserve the pet's recognizable likeness, expression, and personality while simplifying the portrait into clean shapes and polished pop-art styling. Backgrounds should remain flat, simple, and color-blocked so the pet stays the focal point in every quadrant. Do not use irregular spacing, misaligned panels, varied subject position, different crops, overlapping elements, poster collage layouts, or off-center framing. Avoid photorealism, muddy colors, muted tones, washed-out palettes, noisy texture, painterly brushwork, childish styling, and cheap novelty aesthetics. The final image should feel bold, iconic, collectible, and professionally designed, like premium four-panel retro pop wall art worthy of framing.
+Render this image as a premium retro pop art grid portrait with the pet repeated across four equal square panels in a perfectly aligned 2x2 composition. The layout must be symmetrical, evenly spaced, and clean, with four matching square quadrants arranged in a balanced grid. The pet must be centered clearly within each square, using identical crop, scale, head position, and framing in every panel. Each quadrant must contain the exact same portrait composition, with only the color palette changing between panels.
+Use bold, fully saturated, high-contrast pop art color palettes in each quadrant. Colors must be vivid, bright, and striking — not muted, not pastel, not desaturated, and not neutral. Each panel should use a distinctly different, vibrant color combination to create a strong, iconic visual contrast.
+Preserve the pet's recognizable likeness, expression, and personality while simplifying the portrait into clean shapes, crisp edges, and smooth color blocking. Backgrounds should remain flat and minimal so the pet remains the focal point in every panel.
+Do not use misaligned panels, uneven spacing, varied subject position, different crops, overlapping elements, collage layouts, or off-center framing. Avoid photorealism, muddy tones, washed-out colors, painterly textures, noise, or cheap novelty styling.
+Ensure all four panels are perfectly aligned and evenly spaced, with identical centered composition in each quadrant and bold, vivid color variation between panels.
 
 ${CONSTRAINTS_GPT}
 - four panels, perfectly aligned 2x2 grid
-- same pet, same crop in every panel
-- only color palette changes per panel — bold vivid saturated colors
-- no muted, pastel, or desaturated tones
-- no irregular spacing or misaligned panels`,
+- same pet, same crop, same framing in every panel
+- only color palette changes per panel — bold vivid fully saturated colors
+- no muted, pastel, desaturated, or neutral tones
+- no misaligned panels, uneven spacing, or off-center framing`,
 
     fluxPrompt: (petDesc) =>
       `Four-panel 2x2 pop art grid of ${petDesc}. Same pet centered in all four quadrants, perfectly symmetrical. Each panel a different bold high-contrast palette: hot pink/yellow, cyan/red, lime/blue, orange/purple. Crisp graphic edges, flat color-blocked backgrounds, clean separation between panels. Premium gallery pop art, Warhol-inspired, collectible.`,
