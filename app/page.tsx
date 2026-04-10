@@ -282,26 +282,33 @@ export default function Home() {
           </div>
 
           {/* Portrait examples - full images */}
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:16}}>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:12}}>
             <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
               <img src="/portrait-sasha.png" alt="Sasha - Signature Portrait" style={{width:'100%',display:'block'}}/>
-              <div style={{background:'var(--mid)',padding:'14px 16px',borderTop:'1px solid var(--border)'}}>
-                <div style={{fontSize:12,color:'var(--gold)',fontWeight:500,marginBottom:3}}>Sasha</div>
-                <div style={{fontSize:11,color:'var(--muted)',lineHeight:1.4}}>BMW, sunset drive, name on the plate.</div>
+              <div style={{background:'var(--mid)',padding:'12px 14px',borderTop:'1px solid var(--border)'}}>
+                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500,marginBottom:2}}>Sasha</div>
+                <div style={{fontSize:10,color:'var(--muted)',lineHeight:1.4}}>BMW, sunset drive, name on the plate.</div>
               </div>
             </div>
             <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
               <img src="/portrait-maggie-mollie.png" alt="Maggie & Mollie - Signature Portrait" style={{width:'100%',display:'block'}}/>
-              <div style={{background:'var(--mid)',padding:'14px 16px',borderTop:'1px solid var(--border)'}}>
-                <div style={{fontSize:12,color:'var(--gold)',fontWeight:500,marginBottom:3}}>Maggie &amp; Mollie</div>
-                <div style={{fontSize:11,color:'var(--muted)',lineHeight:1.4}}>Sunset over the Gulf at the beach house.</div>
+              <div style={{background:'var(--mid)',padding:'12px 14px',borderTop:'1px solid var(--border)'}}>
+                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500,marginBottom:2}}>Maggie &amp; Mollie</div>
+                <div style={{fontSize:10,color:'var(--muted)',lineHeight:1.4}}>Sunset at the family beach house.</div>
               </div>
             </div>
             <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
               <img src="/portrait-tank.png" alt="Tank - Signature Portrait" style={{width:'100%',display:'block'}}/>
-              <div style={{background:'var(--mid)',padding:'14px 16px',borderTop:'1px solid var(--border)'}}>
-                <div style={{fontSize:12,color:'var(--gold)',fontWeight:500,marginBottom:3}}>Tank</div>
-                <div style={{fontSize:11,color:'var(--muted)',lineHeight:1.4}}>Snowmobile in Aspen, living his best life.</div>
+              <div style={{background:'var(--mid)',padding:'12px 14px',borderTop:'1px solid var(--border)'}}>
+                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500,marginBottom:2}}>Tank</div>
+                <div style={{fontSize:10,color:'var(--muted)',lineHeight:1.4}}>Snowmobile in Aspen.</div>
+              </div>
+            </div>
+            <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
+              <img src="/portrait-lily.png" alt="Lily - Signature Portrait" style={{width:'100%',display:'block'}}/>
+              <div style={{background:'var(--mid)',padding:'12px 14px',borderTop:'1px solid var(--border)'}}>
+                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500,marginBottom:2}}>Lily</div>
+                <div style={{fontSize:10,color:'var(--muted)',lineHeight:1.4}}>Red wagon rides with her girl.</div>
               </div>
             </div>
           </div>
