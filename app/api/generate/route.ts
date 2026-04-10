@@ -403,6 +403,27 @@ ${CONSTRAINTS_GPT}
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, four-panel Warhol pop art grid, 2x2 composition, bold flat colors, high contrast, different palette each panel, collectible gallery wall art`,
   },
+
+  {
+    id: 'fairytale',
+    name: 'Fairytale',
+    emoji: '✨',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Render this image in a premium storybook portrait style with soft illustrated brushwork, warm golden light, and a cozy magical atmosphere. The result should feel like a beautifully painted children's book illustration, not a photograph, not a cartoon, and not a polished digital render. Preserve the pet's accurate likeness, especially the face shape, nose, curls, and gentle head tilt, while giving the eyes a slightly larger, more expressive, soulful storybook quality. Use soft edges, subtle painterly texture, warm highlights, gentle glow, floating dust-like sparkles, and an inviting interior scene with simple whimsical background elements such as a softly lit window, curtains, flowers, books, or a cozy home setting. Keep the pet centered and emotionally engaging as the clear focal point. Fur should feel soft and painterly, not overly detailed or hyperreal. Avoid photorealism, hard outlines, comic-book styling, plastic AI textures, oversharpening, cluttered backgrounds, or cheap novelty illustration. The final image should feel heartwarming, nostalgic, magical, and premium, like a treasured storybook portrait worthy of framing.
+
+${CONSTRAINTS_GPT}
+- not photorealistic
+- no hard outlines
+- no comic-book styling
+- no cluttered backgrounds`,
+
+    fluxPrompt: (petDesc) =>
+      `Premium fairytale storybook portrait of ${petDesc}. Soft illustrated brushwork, warm golden light, cozy magical atmosphere. Slightly larger soulful expressive eyes. Floating sparkles, gentle glow, whimsical interior background — window, curtains, flowers, books. Soft painterly fur. Heartwarming, nostalgic, magical, premium. Not photorealistic, not cartoon.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, fairytale storybook illustration, soft painterly brushwork, warm golden light, magical cozy atmosphere, soulful expressive eyes, floating sparkles, whimsical interior, premium children's book style`,
+  },
 ]
 
 // ── Memory Portrait scene builder — same style families as base ──
