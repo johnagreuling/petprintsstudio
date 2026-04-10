@@ -332,11 +332,9 @@ export default function Home() {
             ].map(p=>(
               <div key={p.title} className="card" style={{padding:0,overflow:'hidden',textAlign:'center'}}>
                 {(p as any).image ? (
-                  <div style={{width:'100%',height:140,overflow:'hidden',background:'#111'}}>
-                    <img src={(p as any).image} alt={p.title} style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center top'}}/>
-                  </div>
+                  <img src={(p as any).image} alt={p.title} style={{width:'100%',display:'block'}}/>
                 ) : (p as any).svg === 'qr' ? (
-                  <div style={{width:'100%',height:140,background:'linear-gradient(135deg,#1a1a1a 0%,#0d0d0d 100%)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                  <div style={{aspectRatio:'1',background:'linear-gradient(135deg,#1a1a1a 0%,#0d0d0d 100%)',display:'flex',alignItems:'center',justifyContent:'center'}}>
                     <div style={{width:80,height:80,background:'white',borderRadius:8,display:'grid',gridTemplateColumns:'repeat(7,1fr)',gridTemplateRows:'repeat(7,1fr)',gap:2,padding:6}}>
                       {[1,1,1,0,1,1,1,1,0,1,0,1,0,1,1,1,1,0,0,1,1,0,0,0,1,1,0,0,1,1,1,0,1,1,1,1,0,1,0,1,0,1,1,1,1,0,1,1,1].map((fill,i)=>(
                         <div key={i} style={{background:fill?'var(--ink)':'white',borderRadius:1}}/>
@@ -354,8 +352,8 @@ export default function Home() {
 
           {/* Holiday example */}
           <div className="card" style={{padding:0,display:'flex',alignItems:'stretch',gap:0,marginBottom:24,overflow:'hidden'}}>
-            <div style={{width:160,minHeight:120,overflow:'hidden',flexShrink:0}}>
-              <img src="/portrait-christmas.png" alt="Holiday pet portrait" style={{width:'100%',height:'100%',objectFit:'cover'}}/>
+            <div style={{width:200,overflow:'hidden',flexShrink:0}}>
+              <img src="/portrait-christmas.png" alt="Holiday pet portrait" style={{width:'100%',display:'block'}}/>
             </div>
             <div style={{flex:1,padding:'24px 28px',display:'flex',flexDirection:'column',justifyContent:'center'}}>
               <div className="serif" style={{fontSize:20,marginBottom:6}}>Perfect for Every Occasion</div>
@@ -366,14 +364,14 @@ export default function Home() {
           {/* Lifestyle images side by side */}
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:48}}>
             <div className="card" style={{padding:0,overflow:'hidden'}}>
-              <img src="/blanket-lifestyle.png" alt="Pet blanket lifestyle" style={{width:'100%',height:280,objectFit:'cover'}}/>
+              <img src="/blanket-lifestyle.png" alt="Pet blanket lifestyle" style={{width:'100%',display:'block'}}/>
               <div style={{padding:'20px 24px'}}>
                 <div className="serif" style={{fontSize:18,marginBottom:6}}>A Soft Blanket With Their Face</div>
                 <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.6}}>Ultra-soft sherpa fleece, 50×60". Wrap yourself in the memory.</div>
               </div>
             </div>
             <div className="card" style={{padding:0,overflow:'hidden'}}>
-              <img src="/lifestyle-friends.png" alt="Friends admiring portrait" style={{width:'100%',height:280,objectFit:'cover',objectPosition:'center top'}}/>
+              <img src="/lifestyle-friends.png" alt="Friends admiring portrait" style={{width:'100%',display:'block'}}/>
               <div style={{padding:'20px 24px'}}>
                 <div className="serif" style={{fontSize:18,marginBottom:6}}>A Centerpiece They&rsquo;ll Talk About</div>
                 <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.6}}>Gallery-quality canvas that commands the room.</div>
