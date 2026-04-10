@@ -445,6 +445,28 @@ ${CONSTRAINTS_GPT}
     astriaPrompt: (petType) =>
       `portrait of sks ${petType}, premium comic book illustration, bold clean linework, cel shading, expressive animated style, cinematic lighting, professional comic art, collectible`,
   },
+
+  {
+    id: 'fine_art_sketch',
+    name: 'Fine Art Sketch',
+    emoji: '🖊️',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+Render this image as a premium fine art sketch portrait with the look of a hand-drawn charcoal and graphite artwork on textured paper. The result should feel like a real commissioned drawing created by a skilled portrait artist, not a photograph, not a painting, and not a generic digital filter. Preserve the pet's accurate likeness, facial structure, fur pattern, expression, and emotional presence while translating the portrait into elegant linework, soft shading, and refined tonal depth. Use delicate pencil and charcoal marks, subtle crosshatching, blended graphite shadows, and strong focal detail around the eyes, nose, and expression. The background should remain minimal, soft, and unobtrusive, with only gentle tonal suggestion or paper texture so the pet remains the clear emotional focus. Keep the composition timeless, balanced, and dignified. Avoid glossy digital polish, hard vector lines, cartoon styling, excessive detail everywhere, muddy smudging, fake photo-to-sketch effects, noisy textures, or cheap novelty aesthetics. The final image should feel intimate, sophisticated, timeless, and deeply emotional, like a museum-quality pet portrait sketch worthy of framing.
+
+${CONSTRAINTS_GPT}
+- not a photograph
+- not a painting
+- no hard vector lines
+- no cartoon styling
+- no fake photo-to-sketch effects`,
+
+    fluxPrompt: (petDesc) =>
+      `Premium fine art sketch portrait of ${petDesc}. Hand-drawn charcoal and graphite on textured paper. Elegant linework, soft shading, refined tonal depth. Delicate pencil marks, subtle crosshatching, blended graphite shadows. Strong focal detail on eyes, nose, expression. Minimal soft background, paper texture. Intimate, sophisticated, timeless, museum-quality. Not a photo filter, not cartoon.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, premium fine art sketch, charcoal and graphite on textured paper, elegant linework, soft crosshatching, blended shadows, museum-quality portrait drawing, timeless and sophisticated`,
+  },
 ]
 
 // ── Memory Portrait scene builder — same style families as base ──
