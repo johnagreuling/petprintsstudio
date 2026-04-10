@@ -113,10 +113,12 @@ export default function Home() {
 
             {/* STEP 1 — Upload photo */}
             <div className="card" style={{padding:0,overflow:'hidden',position:'relative'}}>
-              <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#1a1412',position:'relative'}}>
+              <div style={{background:'var(--ink)',padding:'12px 0',textAlign:'center',borderBottom:'1px solid var(--border)'}}>
+                <div style={{fontSize:42,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>1</div>
+              </div>
+              <div style={{aspectRatio:'1',overflow:'hidden',background:'#1a1412',position:'relative'}}>
                 <img src="/process-upload.jpg" alt="Upload your pet photo" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
-                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.8) 0%,rgba(10,10,10,.1) 60%,transparent 100%)'}} />
-                <div style={{position:'absolute',top:16,left:18,fontSize:60,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>1</div>
+                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.6) 0%,transparent 50%)'}} />
               </div>
               <div style={{padding:'20px 20px 28px'}}>
                 <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>Upload Their Photo</h3>
@@ -126,20 +128,21 @@ export default function Home() {
 
             {/* STEP 2 — Questionnaire */}
             <div className="card" style={{padding:0,overflow:'hidden',position:'relative'}}>
-              <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#111',position:'relative',display:'flex',flexDirection:'column',justifyContent:'center',padding:'28px 24px',gap:10}}>
+              <div style={{background:'var(--ink)',padding:'12px 0',textAlign:'center',borderBottom:'1px solid var(--border)'}}>
+                <div style={{fontSize:42,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>2</div>
+              </div>
+              <div style={{aspectRatio:'1',overflow:'hidden',background:'#111',position:'relative',display:'flex',flexDirection:'column',justifyContent:'center',padding:'20px 18px',gap:8}}>
                 {[
                   {q:'What makes them unique?',a:'She carries her squeaky toy everywhere...'},
                   {q:'Favorite place?',a:'The back seat with the window down'},
                   {q:'How do they greet you?',a:'Spins in circles, never stops'},
                   {q:'What would their song say?',a:'Something about being loved completely'},
                 ].map((item,i)=>(
-                  <div key={i} style={{background:'rgba(245,240,232,.05)',border:'1px solid rgba(245,240,232,.08)',padding:'10px 12px',borderRadius:2}}>
-                    <div style={{fontSize:9,color:'var(--gold)',letterSpacing:'.15em',textTransform:'uppercase',marginBottom:4}}>{item.q}</div>
-                    <div style={{fontSize:11,color:'rgba(245,240,232,.7)',lineHeight:1.5,fontStyle:'italic'}}>&ldquo;{item.a}&rdquo;</div>
+                  <div key={i} style={{background:'rgba(245,240,232,.05)',border:'1px solid rgba(245,240,232,.08)',padding:'8px 10px',borderRadius:2}}>
+                    <div style={{fontSize:8,color:'var(--gold)',letterSpacing:'.15em',textTransform:'uppercase',marginBottom:3}}>{item.q}</div>
+                    <div style={{fontSize:10,color:'rgba(245,240,232,.7)',lineHeight:1.4,fontStyle:'italic'}}>&ldquo;{item.a}&rdquo;</div>
                   </div>
                 ))}
-                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.8) 0%,transparent 60%)'}} />
-                <div style={{position:'absolute',top:16,left:18,fontSize:60,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>2</div>
               </div>
               <div style={{padding:'20px 20px 28px'}}>
                 <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>Tell Us Their Story</h3>
@@ -149,7 +152,10 @@ export default function Home() {
 
             {/* STEP 3 — Choose style */}
             <div className="card" style={{padding:0,overflow:'hidden',position:'relative'}}>
-              <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#111',position:'relative'}}>
+              <div style={{background:'var(--ink)',padding:'12px 0',textAlign:'center',borderBottom:'1px solid var(--border)'}}>
+                <div style={{fontSize:42,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>3</div>
+              </div>
+              <div style={{aspectRatio:'1',overflow:'hidden',background:'#111',position:'relative'}}>
                 <div style={{width:'100%',height:'100%',display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:1.5,padding:1.5}}>
                   {ART_STYLES.slice(0,16).map(s=>(
                     <div key={s.id} style={{overflow:'hidden',position:'relative'}}>
@@ -160,8 +166,6 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.8) 0%,rgba(10,10,10,.1) 60%,transparent 100%)'}} />
-                <div style={{position:'absolute',top:16,left:18,fontSize:60,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>3</div>
               </div>
               <div style={{padding:'20px 20px 28px'}}>
                 <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>Choose Your Style</h3>
@@ -171,10 +175,12 @@ export default function Home() {
 
             {/* STEP 4 — Portrait generated */}
             <div className="card" style={{padding:0,overflow:'hidden',position:'relative'}}>
-              <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#1a1412',position:'relative'}}>
+              <div style={{background:'var(--ink)',padding:'12px 0',textAlign:'center',borderBottom:'1px solid var(--border)'}}>
+                <div style={{fontSize:42,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>4</div>
+              </div>
+              <div style={{aspectRatio:'1',overflow:'hidden',background:'#1a1412',position:'relative'}}>
                 <img src="https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/14213989-5ed0-4d83-95ad-665855f994d4_pet/a5fcc975-46e3-477a-8de2-60ece3f6b0db.png" alt="Your portrait" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
-                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.8) 0%,rgba(10,10,10,.1) 60%,transparent 100%)'}} />
-                <div style={{position:'absolute',top:16,left:18,fontSize:60,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>4</div>
+                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.5) 0%,transparent 40%)'}} />
               </div>
               <div style={{padding:'20px 20px 28px'}}>
                 <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>Pick Your Portrait</h3>
@@ -184,10 +190,12 @@ export default function Home() {
 
             {/* STEP 5 — Printed & shipped */}
             <div className="card" style={{padding:0,overflow:'hidden',position:'relative'}}>
-              <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#1a1412',position:'relative'}}>
+              <div style={{background:'var(--ink)',padding:'12px 0',textAlign:'center',borderBottom:'1px solid var(--border)'}}>
+                <div style={{fontSize:42,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>5</div>
+              </div>
+              <div style={{aspectRatio:'1',overflow:'hidden',background:'#1a1412',position:'relative'}}>
                 <img src="https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/14213989-5ed0-4d83-95ad-665855f994d4_pet/69508879-38da-4363-8550-bfa2b0de317a.png" alt="Printed and shipped" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
-                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.8) 0%,rgba(10,10,10,.1) 60%,transparent 100%)'}} />
-                <div style={{position:'absolute',top:16,left:18,fontSize:60,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>5</div>
+                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.5) 0%,transparent 40%)'}} />
               </div>
               <div style={{padding:'20px 20px 28px'}}>
                 <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>Printed &amp; Shipped</h3>
@@ -197,7 +205,7 @@ export default function Home() {
 
           </div>
 
-          {/* STEP 5 — Joy */}
+          {/* The Best Part — Testimonial section */}
           <div className="card" style={{padding:0,overflow:'hidden',position:'relative',display:'grid',gridTemplateColumns:'1fr 1fr',marginTop:2}}>
             <div style={{position:'relative',overflow:'hidden',minHeight:360}}>
               <img
@@ -207,7 +215,6 @@ export default function Home() {
                 onError={(e)=>{(e.target as HTMLImageElement).style.opacity='0'}}
               />
               <div style={{position:'absolute',inset:0,background:'linear-gradient(135deg, rgba(10,10,10,.05) 0%, rgba(10,10,10,.4) 100%)'}} />
-              <div style={{position:'absolute',top:28,left:28,fontSize:72,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif",opacity:.95}}>5</div>
             </div>
             <div style={{padding:'48px 52px',display:'flex',flexDirection:'column',justifyContent:'center',background:'#111'}}>
               <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>The Best Part</div>
