@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { v4 as uuidv4 } from 'uuid'
+import { saveSession, SessionImage } from '@/lib/db'
 
 export const maxDuration = 300
 export const dynamic = 'force-dynamic'
@@ -770,6 +771,28 @@ export async function POST(req: NextRequest) {
         }
 
         await saveSessionMetadata(sessionFolder, { sessionId: sessionId || sessionFolder, petName: petName || petType || 'Unknown', petType: petType || 'dog', petDescription: petDesc, isMemory, imageCount: allImages.length, createdAt: sessionStart, styles: [...new Set(allImages.map((i: any) => i.styleName))], images: allImages, brief: brief || null, songTitle: brief?.song_title || null, sunoPrompt: brief?.suno_prompt_full || null })
+        
+        // Save to Postgres for admin browsing
+        try {
+          const dbImages: SessionImage[] = allImages.map((img: any, idx: number) => ({
+            style_id: img.styleId || 'unknown',
+            style_name: img.styleName || 'Unknown Style',
+            url: img.url,
+            variant_index: idx
+          }))
+          await saveSession({
+            sessionId: sessionFolder,
+            customerEmail: answers?.email || '',
+            customerLastName: answers?.lastName || answers?.ownerName?.split(' ').pop() || '',
+            petName: petName || answers?.petName || '',
+            petType: petType || 'dog',
+            images: dbImages,
+            questionnaire: answers || {}
+          })
+        } catch (dbErr) {
+          console.error('Database save failed (non-fatal):', dbErr)
+        }
+
         // Send song notification email to admin if brief has suno prompt
         if (brief?.suno_prompt_full && process.env.RESEND_API_KEY) {
           sendSongNotificationEmail({
