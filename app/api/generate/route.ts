@@ -353,16 +353,13 @@ ${CONSTRAINTS_GPT}
     emoji: '⚡',
     gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
 
-STYLE
-Classic 1960s Warhol-inspired pop-art screenprint with luxury gallery-poster feel. A 2×2 grid, same portrait in all four panels, each with a different bold saturated palette: Panel 1 hot pink and yellow, Panel 2 cyan and red, Panel 3 lime green and blue, Panel 4 orange and purple. Strong color blocking, crisp graphic edges, simplified tonal shapes, high contrast, flat graphic background.
-
-The pet must be highly recognizable in every panel. Eyes, nose, facial markings, and silhouette stay accurate and expressive. Final result should feel iconic, stylish, collectible, bright, and premium.
+Render this image as a bold, premium gallery pop art portrait with clean graphic composition, striking color contrast, and refined contemporary style. The result should feel like high-end pop-inspired wall art displayed in a modern gallery, not a cartoon, not a meme, and not a cheap novelty print. Preserve the pet's recognizable likeness, expression, and personality while simplifying the subject into strong shapes, crisp edges, and confident color blocking. Use a vibrant but curated palette with high contrast tones and smooth color transitions. The composition must be a single, centered portrait with one subject. Do not use multiple panels, repeated images, grids, or quadrant layouts. The background should be minimal, clean, and design-forward, supporting the subject without clutter. Avoid photorealism, muddy color, collage effects, childish styling, plastic textures, or generic AI smoothness. The final image should feel iconic, stylish, modern, and premium, like a gallery-quality pop art portrait.
 
 ${CONSTRAINTS_GPT}
-- no text or typography
-- not photorealistic
-- not painterly or impressionistic
-- four panels, 2x2 grid`,
+- single centered portrait only
+- no multiple panels or grids
+- no Warhol quadrant layout
+- not photorealistic`,
 
     fluxPrompt: (petDesc) =>
       `A four-panel 2x2 pop-art screenprint of the exact dog from the reference image. Same dog in all four panels — same breed, face, markings, expression. 1960s Warhol pop-art style: bold flat color blocking, crisp graphic edges, high contrast. Each panel a different saturated palette: hot pink/yellow, cyan/red, lime green/blue, orange/purple. Iconic, collectible, gallery-worthy.`,
