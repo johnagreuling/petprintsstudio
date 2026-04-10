@@ -405,6 +405,24 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Listen to Real Songs */}
+          <div style={{textAlign:'center',marginBottom:48,padding:'40px 20px',background:'var(--mid)',borderRadius:12,border:'1px solid var(--border)'}}>
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Hear What We Create</div>
+            <h3 className="serif" style={{fontSize:28,marginBottom:8,fontWeight:400,color:'var(--cream)'}}>Real Songs for Real Pets</h3>
+            <p style={{fontSize:14,color:'var(--muted)',marginBottom:24,maxWidth:500,margin:'0 auto 24px'}}>Every song is written just for them — their name, their story, their spirit. Press play and hear for yourself.</p>
+            <div style={{display:'flex',flexWrap:'wrap',gap:12,justifyContent:'center'}}>
+              {[
+                {name:'Sasha',song:'/songs/sasha-on-the-sandbar.mp3',desc:'On the Sandbar'},
+              ].map(({name,song,desc})=>(
+                <button key={name} onClick={()=>{const a=document.getElementById('song-player') as HTMLAudioElement;if(a){a.src=song;a.play()}}} style={{background:'var(--gold)',color:'var(--ink)',padding:'12px 24px',fontSize:11,fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',border:'none',borderRadius:6,cursor:'pointer',display:'flex',alignItems:'center',gap:8}}>
+                  <span style={{fontSize:16}}>▶</span> {name} — {desc}
+                </button>
+              ))}
+            </div>
+            <audio id="song-player" style={{display:'none'}}/>
+            <p style={{fontSize:11,color:'var(--muted)',marginTop:16}}>🎧 Turn up your volume</p>
+          </div>
+
           {/* Closing statement */}
           <div style={{textAlign:'center',marginBottom:40}}>
             <p style={{fontSize:15,color:'var(--muted)',lineHeight:2,maxWidth:600,margin:'0 auto 24px'}}>
