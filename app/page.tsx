@@ -256,7 +256,7 @@ export default function Home() {
 
       {/* MEMORY PORTRAIT FEATURE */}
       <section id="the-experience" style={{padding:'120px 60px',background:'var(--soft)'}}>
-        <div style={{maxWidth:1100,margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 1fr',gap:80,alignItems:'center'}}>
+        <div style={{maxWidth:1100,margin:'0 auto',display:'grid',gridTemplateColumns:'1.2fr 1fr',gap:60,alignItems:'center'}}>
           <div>
             <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>Signature Portrait &mdash; Starting at $49</div>
             <h2 className="serif" style={{fontSize:'clamp(36px,4vw,60px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>Their Story Is<br/><em>Worth Remembering.</em></h2>
