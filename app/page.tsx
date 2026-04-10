@@ -257,19 +257,18 @@ export default function Home() {
       <section id="the-experience" style={{padding:'120px 60px',background:'var(--soft)'}}>
         <div style={{maxWidth:1100,margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 1fr',gap:80,alignItems:'center'}}>
           <div>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>Signature Custom Portrait &mdash; Starting at $49</div>
-            <h2 className="serif" style={{fontSize:'clamp(36px,4vw,60px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>The Portrait That<br/><em>Actually Looks Like Them.</em></h2>
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>Signature Portrait &mdash; Starting at $49</div>
+            <h2 className="serif" style={{fontSize:'clamp(36px,4vw,60px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>Their Story Is<br/><em>Worth Remembering.</em></h2>
             <p style={{fontSize:16,lineHeight:1.9,color:'var(--muted)',marginBottom:32}}>
-              We build a scene around everything that makes them who they are — their favorite toy, their couch spot, the places they love. A portrait that makes you say &ldquo;that&rsquo;s exactly them.&rdquo; We write an original song just for them. Then we give it all a QR code so you can hear it anytime.
+              A pet is so much more than a picture. It&rsquo;s the morning walks. The rides with the windows down. The spot on the couch that&rsquo;s always theirs. The little moments that somehow become the big ones. We turn all of that into a portrait — and a song — that captures who they really are.
             </p>
             <div style={{display:'flex',flexDirection:'column',gap:14,marginBottom:40}}>
               {[
-                {icon:'🏈', text:'Favorite team collar or jersey in the scene'},
-                {icon:'🚗', text:"Their beloved car — they're in the passenger seat, ears out the window"},
-                {icon:'📍', text:'Hometown backdrop with recognizable landmarks'},
-                {icon:'🎾', text:'Favorite toy placed right in their paw'},
-                {icon:'🍕', text:'Their favorite food somewhere in the scene'},
-                {icon:'✨', text:'Every answer becomes a visual easter egg'},
+                {icon:'🌅', text:'The beach where you spent every summer together'},
+                {icon:'🚗', text:'Ears out the window on your favorite drive'},
+                {icon:'🛋️', text:'Their spot on the couch, the one that\'s always theirs'},
+                {icon:'🎾', text:'That tennis ball they\'ve had since day one'},
+                {icon:'🏡', text:'The backyard, the park, the places that feel like home'},
               ].map(({icon,text})=>(
                 <div key={text} style={{display:'flex',gap:14,alignItems:'flex-start'}}>
                   <span style={{fontSize:18,flexShrink:0}}>{icon}</span>
@@ -277,7 +276,8 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <Link href="/create" className="btn-gold">🐾 Start Their Story &mdash; $49</Link>
+            <p style={{fontSize:14,color:'var(--cream)',marginBottom:24,lineHeight:1.8}}>Just tell us their story. We&rsquo;ll do the rest.</p>
+            <Link href="/create" className="btn-gold">🐾 Start Their Story</Link>
           </div>
 
           {/* Portrait examples - full images */}
