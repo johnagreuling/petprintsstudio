@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { useState } from 'react'
-import { PRODUCTS } from '@/lib/config'
+import { ART_STYLES, PRODUCTS } from '@/lib/config'
 
 export default function Home() {
   const [activeStyle, setActiveStyle] = useState(0)
@@ -84,7 +84,7 @@ export default function Home() {
         {/* Style hint */}
         <div className="fu fu4" style={{marginBottom:64,textAlign:'center'}}>
           <p style={{fontSize:12,color:'rgba(201,168,76,.6)',letterSpacing:'.08em'}}>
-            Available in 16 artistic styles &nbsp;&middot;&nbsp; <Link href="/styles" style={{color:'var(--gold)',textDecoration:'none',borderBottom:'1px solid rgba(201,168,76,.4)'}}>See all styles →</Link>
+            Infinite styles &amp; customization &nbsp;&middot;&nbsp; 16 custom-tuned presets for stunning results &nbsp;&middot;&nbsp; <Link href="/styles" style={{color:'var(--gold)',textDecoration:'none',borderBottom:'1px solid rgba(201,168,76,.4)'}}>Explore styles →</Link>
           </p>
         </div>
 
@@ -106,45 +106,84 @@ export default function Home() {
         <div style={{maxWidth:1200,margin:'0 auto'}}>
           <div style={{textAlign:'center',marginBottom:80}}>
             <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>The Process</div>
-            <h2 className="serif" style={{fontSize:'clamp(40px,5vw,72px)',fontWeight:400}}>Tell Us Who They Are.<br/><em>We'll Bring Them to Life.</em></h2>
+            <h2 className="serif" style={{fontSize:'clamp(40px,5vw,72px)',fontWeight:400}}>Tell Us Who They Are.<br/><em>We&rsquo;ll Bring Them to Life.</em></h2>
           </div>
 
           <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:2}}>
-            {[
-              {n:'1',icon:'📸',title:'Upload Their Photo',desc:'A clear, well-lit photo is all we need. Front-facing works best. We handle everything from there.'},
-              {n:'2',icon:'🎨',title:'Choose a Style',desc:'Pick from 16 artistic styles — from Oil Painting to Neon Glow. Or describe any style you can imagine.'},
-              {n:'3',icon:'⚡',title:'We Generate Your Portrait',desc:'Our AI creates a custom portrait using your pet\'s exact likeness. 16 styles generated — you pick your favorite.'},
-              {n:'4',icon:'📦',title:'Printed & Shipped',desc:'Your portrait arrives on premium canvas or fine art print. Scan the QR code to hear their song. Delivered in 5–7 days.'},
-            ].map((s,i)=>(
-              <div key={s.n} className="card" style={{padding:'40px 28px',position:'relative',overflow:'hidden'}}>
-                {/* Big visible step number */}
-                <div style={{
-                  width:56, height:56, borderRadius:'50%',
-                  background:'var(--gold)', color:'var(--ink)',
-                  display:'flex', alignItems:'center', justifyContent:'center',
-                  fontSize:22, fontWeight:700, marginBottom:24,
-                  fontFamily:"'DM Sans',sans-serif",
-                  flexShrink:0
-                }}>{s.n}</div>
-                <div style={{fontSize:40,marginBottom:16}}>{s.icon}</div>
-                <h3 className="serif" style={{fontSize:22,marginBottom:12,fontWeight:400}}>{s.title}</h3>
-                <p style={{fontSize:13,color:'var(--muted)',lineHeight:1.8}}>{s.desc}</p>
+
+            {/* STEP 1 — Upload photo */}
+            <div className="card" style={{padding:0,overflow:'hidden',position:'relative'}}>
+              <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#1a1412',position:'relative'}}>
+                <img src="/process-upload.jpg" alt="Upload your pet's photo" style={{width:'100%',height:'100%',objectFit:'cover',display:'block',opacity:0.9}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
+                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top, rgba(10,10,10,.85) 0%, rgba(10,10,10,.1) 60%, transparent 100%)'}} />
+                <div style={{position:'absolute',top:20,left:20,fontSize:72,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif",opacity:.9}}>1</div>
               </div>
-            ))}
+              <div style={{padding:'24px 24px 32px'}}>
+                <h3 className="serif" style={{fontSize:22,marginBottom:10,fontWeight:400}}>Upload Their Photo</h3>
+                <p style={{fontSize:13,color:'var(--muted)',lineHeight:1.8}}>A clear, well-lit photo is all we need. Front-facing works best. We handle everything from there.</p>
+              </div>
+            </div>
+
+            {/* STEP 2 — Choose style */}
+            <div className="card" style={{padding:0,overflow:'hidden',position:'relative'}}>
+              <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#111',position:'relative',display:'flex',flexDirection:'column'}}>
+                <div style={{flex:1,display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:2,padding:2}}>
+                  {ART_STYLES.slice(0,16).map(s=>(
+                    <div key={s.id} style={{aspectRatio:'1/1',overflow:'hidden',position:'relative'}}>
+                      {s.styleImage
+                        ? <img src={s.styleImage} alt={s.name} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
+                        : <div style={{width:'100%',height:'100%',background:(s as any).styleBg||'#1a1a1a',display:'flex',alignItems:'center',justifyContent:'center',fontSize:16}}>{s.emoji}</div>
+                      }
+                    </div>
+                  ))}
+                </div>
+                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top, rgba(10,10,10,.85) 0%, rgba(10,10,10,.1) 60%, transparent 100%)'}} />
+                <div style={{position:'absolute',top:20,left:20,fontSize:72,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif",opacity:.9}}>2</div>
+              </div>
+              <div style={{padding:'24px 24px 32px'}}>
+                <h3 className="serif" style={{fontSize:22,marginBottom:10,fontWeight:400}}>Choose Your Style</h3>
+                <p style={{fontSize:13,color:'var(--muted)',lineHeight:1.8}}>Pick from 16 custom-tuned artistic styles — or describe any style you can imagine. Infinite customization.</p>
+              </div>
+            </div>
+
+            {/* STEP 3 — Portrait generated */}
+            <div className="card" style={{padding:0,overflow:'hidden',position:'relative'}}>
+              <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#1a1412',position:'relative'}}>
+                <img src="/process-portrait.jpg" alt="Your portrait generated" style={{width:'100%',height:'100%',objectFit:'cover',display:'block',opacity:0.9}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
+                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top, rgba(10,10,10,.85) 0%, rgba(10,10,10,.1) 60%, transparent 100%)'}} />
+                <div style={{position:'absolute',top:20,left:20,fontSize:72,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif",opacity:.9}}>3</div>
+              </div>
+              <div style={{padding:'24px 24px 32px'}}>
+                <h3 className="serif" style={{fontSize:22,marginBottom:10,fontWeight:400}}>We Generate Your Portrait</h3>
+                <p style={{fontSize:13,color:'var(--muted)',lineHeight:1.8}}>16 portraits generated — one in every style. Pick your favorite. Every one is custom-made for your pet.</p>
+              </div>
+            </div>
+
+            {/* STEP 4 — Printed & shipped */}
+            <div className="card" style={{padding:0,overflow:'hidden',position:'relative'}}>
+              <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#1a1412',position:'relative'}}>
+                <img src="/process-print.jpg" alt="Printed and shipped" style={{width:'100%',height:'100%',objectFit:'cover',display:'block',opacity:0.9}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
+                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top, rgba(10,10,10,.85) 0%, rgba(10,10,10,.1) 60%, transparent 100%)'}} />
+                <div style={{position:'absolute',top:20,left:20,fontSize:72,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif",opacity:.9}}>4</div>
+              </div>
+              <div style={{padding:'24px 24px 32px'}}>
+                <h3 className="serif" style={{fontSize:22,marginBottom:10,fontWeight:400}}>Printed &amp; Shipped</h3>
+                <p style={{fontSize:13,color:'var(--muted)',lineHeight:1.8}}>Premium canvas or fine art print, delivered to your door. Scan the QR code to hear their song. 5&ndash;7 days.</p>
+              </div>
+            </div>
+
           </div>
 
-          {/* Big obvious CTA */}
+          {/* CTA */}
           <div style={{textAlign:'center',marginTop:64}}>
             <Link href="/create" style={{
-              background:'var(--gold)', color:'var(--ink)',
-              padding:'22px 64px', fontSize:15, fontWeight:700,
-              letterSpacing:'.1em', textTransform:'uppercase',
-              textDecoration:'none', display:'inline-block',
+              background:'var(--gold)',color:'var(--ink)',
+              padding:'22px 64px',fontSize:15,fontWeight:700,
+              letterSpacing:'.1em',textTransform:'uppercase',
+              textDecoration:'none',display:'inline-block',
               boxShadow:'0 8px 40px rgba(201,168,76,.35)'
-            }}>
-              🐾 &nbsp;Start Their Story Now
-            </Link>
-            <p style={{marginTop:16,fontSize:12,color:'var(--muted)'}}>Free to preview · No account needed · Prints shipped in 5–7 days</p>
+            }}>🐾 &nbsp;Start Their Story Now</Link>
+            <p style={{marginTop:16,fontSize:12,color:'var(--muted)'}}>Free to preview &nbsp;&middot;&nbsp; No account needed &nbsp;&middot;&nbsp; Prints shipped in 5&ndash;7 days</p>
           </div>
         </div>
       </section>
