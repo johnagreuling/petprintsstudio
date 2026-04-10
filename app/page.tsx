@@ -352,14 +352,19 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Holiday example */}
-          <div className="card" style={{padding:0,display:'flex',alignItems:'stretch',gap:0,marginBottom:24,overflow:'hidden'}}>
-            <div style={{width:200,overflow:'hidden',flexShrink:0}}>
-              <img src="/portrait-christmas.png" alt="Holiday pet portrait" style={{width:'100%',display:'block'}}/>
+          {/* Any Occasion - bookends */}
+          <div style={{display:'grid',gridTemplateColumns:'1fr 2fr 1fr',gap:24,marginBottom:24,alignItems:'center'}}>
+            <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
+              <img src="/portrait-christmas.png" alt="Christmas pet portrait" style={{width:'100%',display:'block'}}/>
             </div>
-            <div style={{flex:1,padding:'24px 28px',display:'flex',flexDirection:'column',justifyContent:'center'}}>
-              <div className="serif" style={{fontSize:20,marginBottom:6}}>Perfect for Every Occasion</div>
-              <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>Holidays, birthdays, memorials — we craft the scene to match the moment. Tell us the occasion, we&rsquo;ll make it unforgettable.</div>
+            <div style={{textAlign:'center',padding:'20px 16px'}}>
+              <h3 className="serif" style={{fontSize:28,marginBottom:16,fontWeight:400,color:'var(--cream)'}}>Perfect for Every Occasion</h3>
+              <p style={{fontSize:15,color:'var(--muted)',lineHeight:2}}>
+                Holidays, birthdays, memorials, gotcha days — we craft the scene to match the moment. Tell us the occasion, and we&rsquo;ll make it unforgettable.
+              </p>
+            </div>
+            <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
+              <img src="/portrait-birthday.png" alt="Birthday pet portrait" style={{width:'100%',display:'block'}}/>
             </div>
           </div>
 
