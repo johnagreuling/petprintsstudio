@@ -51,8 +51,9 @@ export default function Home() {
         </Link>
         <div style={{display:'flex',gap:36,alignItems:'center'}}>
           <a href="#how-it-works">How It Works</a>
+          <a href="#the-experience">The Portrait</a>
           <Link href="/styles" style={{color:'var(--muted)',textDecoration:'none',fontSize:12,letterSpacing:'.12em',textTransform:'uppercase'}}>Styles</Link>
-          <a href="#the-experience">The Experience</a>
+          <a href="#the-story">Experience</a>
           <Link href="/create" className="btn-gold" style={{padding:'12px 24px'}}>Begin Their Story</Link>
         </div>
       </nav>
@@ -304,7 +305,7 @@ export default function Home() {
       <div className="divider"/>
 
       {/* THEIR STORY BROUGHT TO LIFE */}
-      <section style={{padding:'100px 60px',background:'var(--soft)'}}>
+      <section id="the-story" style={{padding:'100px 60px',background:'var(--soft)'}}>
         <div style={{maxWidth:1000,margin:'0 auto'}}>
           <div style={{textAlign:'center',marginBottom:56}}>
             <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>The Experience</div>
