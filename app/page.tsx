@@ -293,6 +293,13 @@ export default function Home() {
                 Our team reviews every Memory Portrait prompt before the AI runs — ensuring the scene makes sense, catches any conflicts, and is set up for the best possible result. That&rsquo;s the +$20 difference.
               </div>
             </div>
+            <div style={{marginTop:16,borderRadius:4,overflow:'hidden',border:'1px solid var(--border)'}}>
+              <img src="/portrait-sasha.png" alt="Sasha - Signature Portrait Example" style={{width:'100%',display:'block'}}/>
+              <div style={{background:'var(--mid)',padding:'16px 20px',borderTop:'1px solid var(--border)'}}>
+                <div style={{fontSize:12,color:'var(--gold)',fontWeight:500,marginBottom:4}}>Sasha&rsquo;s Signature Portrait</div>
+                <div style={{fontSize:11,color:'var(--muted)',lineHeight:1.6}}>BMW, sunset drive, name on the plate — every detail from her story.</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -323,7 +330,7 @@ export default function Home() {
           <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:48}}>
             {[
               {image:'/gallery-quality.png',title:'Gallery Prints',desc:'Canvas & archival prints from 8×10 to 24×36. Built to last generations.'},
-              {image:'/portrait-christmas.png',title:'The Portrait',desc:'Their personality, their world, their story — made visible.'},
+              {image:'/portrait-jack.png',title:'The Portrait',desc:'Their personality, their world, their story — made visible.'},
               {image:'/song-lifestyle.png',title:'Original Song',desc:'Custom music written from their story. Their name in the lyrics.'},
               {svg:'qr',title:'QR Code',desc:'Scan from the wall. Hear their song. The portrait comes alive.'},
             ].map(p=>(
