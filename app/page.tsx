@@ -323,8 +323,8 @@ export default function Home() {
           <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:48}}>
             {[
               {image:'/gallery-quality.png',title:'Gallery Prints',desc:'Canvas & archival prints from 8×10 to 24×36. Built to last generations.'},
-              {image:'https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/14213989-5ed0-4d83-95ad-665855f994d4_pet/db78566f-64f5-4d0a-985c-03aa8f3e8b88.png',title:'The Portrait',desc:'Their personality, their world, their story — made visible.'},
-              {svg:'waveform',title:'Original Song',desc:'Custom music written from their story. Their name in the lyrics.'},
+              {image:'/portrait-christmas.png',title:'The Portrait',desc:'Their personality, their world, their story — made visible.'},
+              {image:'/song-lifestyle.png',title:'Original Song',desc:'Custom music written from their story. Their name in the lyrics.'},
               {svg:'qr',title:'QR Code',desc:'Scan from the wall. Hear their song. The portrait comes alive.'},
             ].map(p=>(
               <div key={p.title} className="card" style={{padding:0,overflow:'hidden',textAlign:'center'}}>
