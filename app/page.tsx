@@ -102,9 +102,19 @@ export default function Home() {
           A custom portrait that captures who they are. An original song written just for them. A QR code that plays it every time you look at the wall.
         </p>
 
-        <p className="fu fu3" style={{fontSize:13,color:'rgba(201,168,76,.8)',letterSpacing:'.04em',lineHeight:2,marginBottom:16}}>Portrait + Song + QR Code &nbsp;&middot;&nbsp; Delivered in 24 hours &nbsp;&middot;&nbsp; Starting at $49</p>
+        <p className="fu fu3" style={{fontSize:13,color:'rgba(201,168,76,.8)',letterSpacing:'.04em',lineHeight:2,marginBottom:24}}>Portrait + Song + QR Code &nbsp;&middot;&nbsp; Delivered in 24 hours &nbsp;&middot;&nbsp; Starting at $49</p>
+        
+        {/* Upload Dropbox - Right on homepage */}
+        <div className="fu fu4" style={{marginBottom:48,maxWidth:500,margin:'0 auto 48px'}}>
+          <Link href="/create" style={{display:'block',border:'2px dashed rgba(201,168,76,.5)',borderRadius:12,padding:'40px 32px',textAlign:'center',textDecoration:'none',background:'rgba(201,168,76,.05)',transition:'all .2s'}}>
+            <div style={{fontSize:32,marginBottom:12}}>🐾</div>
+            <div style={{fontSize:18,color:'var(--cream)',fontWeight:500,marginBottom:8}}>Drop your pet&apos;s photo here</div>
+            <div style={{fontSize:13,color:'var(--muted)',marginBottom:16}}>or click to browse &nbsp;·&nbsp; JPG, PNG, WEBP</div>
+            <div style={{display:'inline-block',background:'var(--gold)',color:'var(--ink)',padding:'12px 32px',fontSize:12,fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',borderRadius:6}}>Upload Photo & Start</div>
+          </Link>
+        </div>
+
         <div className="fu fu4" style={{display:'flex',gap:16,flexWrap:'wrap',justifyContent:'center',marginBottom:72}}>
-          <Link href="/create" className="btn-gold">🐾 Start Their Story</Link>
           <a href="#how-it-works" className="btn-out">See How It Works</a>
         </div>
 
