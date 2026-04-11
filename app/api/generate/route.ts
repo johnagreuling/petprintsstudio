@@ -370,6 +370,44 @@ ${CONSTRAINTS_GPT}
   },
 
   {
+    id: 'chateau_pop',
+    name: 'Chateau Pop',
+    emoji: '🪩',
+    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+
+STYLE
+Contemporary expressionist interior painting. The dog replaces a human subject as the central figure. Thick impasto oil painting with heavy palette-knife texture, layered paint, bold broken brush strokes. Expressive distortion while keeping the dog clearly recognizable.
+
+COMPOSITION
+Dog positioned as a dignified, human-like subject, seated upright in a classic wingback chair, centered composition, facing forward with calm, slightly haunting presence. Dog's face = primary focal point. Chair = structural anchor. Background = flat and graphic.
+
+SETTING
+Refined French interior, simplified and partially abstracted, with hints of ornate molding and paneling. Loose painterly birds moving across the scene, adding surreal motion and contrast. A painterly disco ball suspended in the scene, rendered in impasto style with broken mirrored facets suggested through thick brush strokes, reflecting surrounding colors.
+
+COLOR PALETTE
+Bold, flat, saturated color blocking in background (hot pink, muted teal, or warm ochre). Strong graphic separation from subject. Exaggerated tonal shifts in shadows and highlights (cool blues, purples, greens mixed into fur).
+
+PAINT SURFACE
+Fur translated into chunky painterly strokes, not realistic strands. Rough painterly edges, not clean. Highlights as thick directional strokes, not smooth gradients. Slightly grainy finish.
+
+${CONSTRAINTS_GPT}
+- no photorealism
+- no smooth gradients
+- no fine detail fur strands
+- no glossy 3D
+- no vector art
+- no anime
+- no sharp outlines
+- no clean digital rendering`,
+
+    fluxPrompt: (petDesc) =>
+      `Edit the uploaded dog photo and transform it into a contemporary expressionist interior painting, where the dog replaces the human subject as the central figure. Preserve the exact dog's identity, facial structure, expression, proportions, and recognizable features. The dog should be positioned as a dignified, human-like subject, seated upright in a classic wingback chair, centered composition, facing forward with a calm, slightly haunting presence. Set within a refined French interior, simplified and partially abstracted, with hints of ornate molding and paneling. Behind the subject, loose painterly birds move across the scene, adding surreal motion and contrast. Background features bold, flat, saturated color blocking (hot pink, muted teal, or warm ochre), creating strong graphic separation from the subject. Render in thick impasto oil painting style with heavy palette-knife texture, layered paint, and bold broken brush strokes. Use expressive distortion while keeping the dog clearly recognizable. Fur should be translated into chunky painterly strokes, not realistic strands. Edges should be rough and painterly, not clean. Use exaggerated tonal shifts in shadows and highlights (cool blues, purples, greens mixed into fur and surrounding elements). Apply highlights as thick directional strokes, not smooth gradients. Add a painterly disco ball suspended in the scene, rendered in the same impasto style with broken mirrored facets suggested through thick brush strokes, reflecting surrounding colors (pink, teal, ochre). The disco ball should be a secondary focal element, slightly subdued in contrast, with subtle fragmented light reflections cast onto the subject and chair. Overall feel: modern fine art, upscale gallery aesthetic, semi-abstract, textured, slightly grainy, moody yet elegant, with a surreal French editorial atmosphere.`,
+
+    astriaPrompt: (petType) =>
+      `portrait of sks ${petType}, contemporary expressionist impasto oil painting, wingback chair, French interior, disco ball, painterly birds, hot pink teal ochre color blocking, thick palette-knife texture, surreal editorial atmosphere`,
+  },
+
+  {
     id: 'impressionist',
     name: 'Impressionist',
     emoji: '🌸',
