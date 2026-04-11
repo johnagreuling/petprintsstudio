@@ -58,7 +58,7 @@ export default function Home() {
           .bookend-grid{display:flex!important;flex-direction:column!important;gap:20px!important}
           .bookend-grid>*{width:100%!important}
           .steps-grid{grid-template-columns:1fr 1fr!important}
-          .product-grid{grid-template-columns:1fr 1fr!important}
+          .product-grid{display:grid!important;grid-template-columns:1fr 1fr!important}
         }
         .section-padding{padding:120px 60px;background:var(--soft)}
         .responsive-grid-2col{display:grid;grid-template-columns:1.5fr 1fr}
@@ -66,7 +66,7 @@ export default function Home() {
         .responsive-grid-4col{display:grid;grid-template-columns:repeat(4,1fr)}
         .bookend-grid{display:grid;grid-template-columns:1fr 2fr 1fr}
         .steps-grid{grid-template-columns:repeat(6,1fr)}
-        .product-grid{grid-template-columns:repeat(4,1fr)}
+        .product-grid{display:grid;grid-template-columns:repeat(4,1fr)}
       `}</style>
 
       {/* NAV */}
