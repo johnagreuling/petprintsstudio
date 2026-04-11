@@ -13,6 +13,9 @@ export default function CreatePage() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const [uploadedUrl, setUploadedUrl] = useState('')
   const [isDragging, setIsDragging] = useState(false)
+  const [showCrop, setShowCrop] = useState(false)
+  const [cropOffset, setCropOffset] = useState({x:0, y:0})
+  const [cropZoom, setCropZoom] = useState(1)
   const [primaryProduct, setPrimaryProduct] = useState<typeof PRODUCTS[0] | null>(null)
   const [primarySize, setPrimarySize] = useState('')
   const [isMemory, setIsMemory] = useState(false)
@@ -54,11 +57,17 @@ export default function CreatePage() {
   }, [])
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
+  const cropRef = useRef<HTMLDivElement>(null)
+  const [isDraggingCrop, setIsDraggingCrop] = useState(false)
+  const [dragStart, setDragStart] = useState({x:0, y:0})
 
   const handleFile = (file: File) => {
     if (file.size > 20 * 1024 * 1024) { setError('Image must be under 20MB'); return }
     setUploadedFile(file)
     setError('')
+    setCropOffset({x:0, y:0})
+    setCropZoom(1)
+    setShowCrop(false)
     const r = new FileReader()
     r.onload = e => setPreview(e.target?.result as string)
     r.readAsDataURL(file)
@@ -499,12 +508,71 @@ export default function CreatePage() {
               <p style={{color:'var(--muted)',fontSize:15,lineHeight:1.8}}>Clear, well-lit photos work best. Front-facing gives the most accurate results.</p>
             </div>
 
-            <div className={`drop${isDragging?' over':''}`} onDrop={handleDrop} onDragOver={e=>{e.preventDefault();setIsDragging(true)}} onDragLeave={()=>setIsDragging(false)} onClick={()=>fileRef.current?.click()}>
+            {/* Crop Modal */}
+            {showCrop && preview && (
+              <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.95)',zIndex:1000,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:20}}>
+                <div style={{marginBottom:20,textAlign:'center'}}>
+                  <h3 className="serif" style={{fontSize:24,marginBottom:8}}>Adjust Your Photo</h3>
+                  <p style={{color:'var(--muted)',fontSize:13}}>Drag to reposition · Zoom to adjust</p>
+                </div>
+                <div 
+                  ref={cropRef}
+                  style={{width:320,height:320,overflow:'hidden',borderRadius:8,border:'2px solid var(--gold)',position:'relative',cursor:'grab',background:'#000'}}
+                  onMouseDown={e=>{e.preventDefault();setIsDraggingCrop(true);setDragStart({x:e.clientX-cropOffset.x, y:e.clientY-cropOffset.y})}}
+                  onMouseMove={e=>{if(isDraggingCrop){setCropOffset({x:e.clientX-dragStart.x, y:e.clientY-dragStart.y})}}}
+                  onMouseUp={()=>setIsDraggingCrop(false)}
+                  onMouseLeave={()=>setIsDraggingCrop(false)}
+                  onTouchStart={e=>{const t=e.touches[0];setIsDraggingCrop(true);setDragStart({x:t.clientX-cropOffset.x, y:t.clientY-cropOffset.y})}}
+                  onTouchMove={e=>{if(isDraggingCrop){const t=e.touches[0];setCropOffset({x:t.clientX-dragStart.x, y:t.clientY-dragStart.y})}}}
+                  onTouchEnd={()=>setIsDraggingCrop(false)}
+                >
+                  <img 
+                    src={preview} 
+                    alt="Crop preview" 
+                    draggable={false}
+                    style={{
+                      position:'absolute',
+                      left:'50%',
+                      top:'50%',
+                      transform:`translate(calc(-50% + ${cropOffset.x}px), calc(-50% + ${cropOffset.y}px)) scale(${cropZoom})`,
+                      minWidth:'100%',
+                      minHeight:'100%',
+                      objectFit:'cover',
+                      pointerEvents:'none',
+                      userSelect:'none'
+                    }}
+                  />
+                </div>
+                <div style={{marginTop:20,display:'flex',alignItems:'center',gap:16}}>
+                  <span style={{fontSize:12,color:'var(--muted)'}}>Zoom</span>
+                  <input 
+                    type="range" 
+                    min="1" 
+                    max="3" 
+                    step="0.1" 
+                    value={cropZoom} 
+                    onChange={e=>setCropZoom(parseFloat(e.target.value))}
+                    style={{width:150,accentColor:'var(--gold)'}}
+                  />
+                </div>
+                <div style={{marginTop:24,display:'flex',gap:16}}>
+                  <button onClick={()=>{setCropOffset({x:0,y:0});setCropZoom(1)}} className="btn-out">Reset</button>
+                  <button onClick={()=>setShowCrop(false)} className="btn-gold">Done</button>
+                </div>
+              </div>
+            )}
+
+            <div className={`drop${isDragging?' over':''}`} onDrop={handleDrop} onDragOver={e=>{e.preventDefault();setIsDragging(true)}} onDragLeave={()=>setIsDragging(false)} onClick={()=>!preview&&fileRef.current?.click()}>
               {preview?(
-                <div>
-                  <img src={preview} alt="Pet preview" style={{maxHeight:360,maxWidth:'100%',objectFit:'contain',display:'block',margin:'0 auto'}}/>
+                <div onClick={e=>e.stopPropagation()}>
+                  <div style={{position:'relative',display:'inline-block'}}>
+                    <img src={preview} alt="Pet preview" style={{maxHeight:360,maxWidth:'100%',objectFit:'contain',display:'block',margin:'0 auto'}}/>
+                  </div>
                   <div style={{marginTop:16,fontSize:13,color:'var(--gold)'}}>✓ Looking great!</div>
-                  <button onClick={e=>{e.stopPropagation();setUploadedFile(null);setPreview('')}} style={{marginTop:8,background:'none',border:'none',color:'var(--muted)',cursor:'pointer',fontSize:11,letterSpacing:'.15em',textTransform:'uppercase'}}>Change photo</button>
+                  <div style={{marginTop:12,display:'flex',gap:12,justifyContent:'center'}}>
+                    <button onClick={()=>setShowCrop(true)} style={{background:'none',border:'1px solid var(--gold)',color:'var(--gold)',cursor:'pointer',fontSize:11,letterSpacing:'.1em',textTransform:'uppercase',padding:'8px 16px',borderRadius:4}}>✂️ Crop / Adjust</button>
+                    <button onClick={()=>{setUploadedFile(null);setPreview('');setCropOffset({x:0,y:0});setCropZoom(1)}} style={{background:'none',border:'1px solid var(--border)',color:'var(--muted)',cursor:'pointer',fontSize:11,letterSpacing:'.1em',textTransform:'uppercase',padding:'8px 16px',borderRadius:4}}>Change Photo</button>
+                  </div>
                 </div>
               ):(
                 <div>
