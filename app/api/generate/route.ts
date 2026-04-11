@@ -333,34 +333,40 @@ ${CONSTRAINTS_GPT}
   },
 
   {
-    id: 'charcoal',
-    name: 'Charcoal & Graphite',
-    emoji: '✏️',
+    id: 'impasto',
+    name: 'Impasto Expressionism',
+    emoji: '🖌️',
     gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
 
 STYLE
-Fine charcoal and graphite drawing on textured paper. Individual drawn marks throughout. Hatching and cross-hatching for shadow. Varying line weight. Classical portrait tradition. Elegant, intimate, and technically masterful.
+Contemporary expressionist impasto oil painting. Thick palette-knife texture, heavy layered paint, bold broken brush strokes, rough painterly edges, visible impasto, and chunky abstracted fur strokes instead of realistic fur strands. Keep the dog clearly recognizable, preserving key identifying facial features, eyes, muzzle, ear shape, and coat pattern.
 
 COMPOSITION
-Centered portrait. Strong tonal range from near-white to deep charcoal. Eyes and muzzle sharply rendered.
-
-PAINT SURFACE
-Visible individual marks. Smooth tonal blends in shadow areas. Crisp detail on eyes, nose, whiskers.
+Preserve the exact dog's identity, pose, facial expression, proportions, and composition from the original image. Maintain the original composition and framing. Reinterpret the photo as a painting, not as a new generated dog.
 
 BACKGROUND
-Clean white or very light gestural strokes suggesting space. Focus entirely on the dog.
+Subtly suggested French interior with minimal ornate wall molding and simplified paneling. Muted, sophisticated palette of soft sage green, dusty blue, warm beige, muted ochre, and desaturated rose. Elegant, low-saturation, and softly color-blocked. Loose painterly birds in the background as a secondary surreal design element.
+
+PAINT SURFACE
+Controlled expressive distortion while keeping the subject recognizable. Rich texture, visible brushwork, slightly grainy finish.
 
 ${CONSTRAINTS_GPT}
-- no color
-- not ink wash
-- not digital
-- not cartoon`,
+- no photorealism
+- no smooth gradients
+- no hyper-detailed fur strands
+- no glossy 3D
+- no vector art
+- no anime
+- no sharp outlines
+- no clean digital rendering
+- no plastic texture
+- no cartoon look`,
 
     fluxPrompt: (petDesc) =>
-      `A fine-art portrait of the dog from the reference image. Change the artistic style of this dog portrait to fine charcoal and graphite drawing on textured paper, while maintaining the same dog, pose, and composition. The dog stays exactly as photographed — same breed, coat color rendered in graphite tones, markings, eyes, ears, and accessories. Render the style as hatching and cross-hatching technique, strong tonal range near-white to deep charcoal, crisp detail in eyes and nose, classical intimate drawing finish.`,
+      `Edit the uploaded dog photo into a contemporary expressionist impasto oil painting. Preserve the exact dog's identity, pose, facial expression, proportions, and composition from the original image. Maintain the original composition and framing. Reinterpret the photo as a painting, not as a new generated dog. Render the dog with thick palette-knife texture, heavy layered paint, bold broken brush strokes, rough painterly edges, visible impasto, and chunky abstracted fur strokes instead of realistic fur strands. Keep the dog clearly recognizable, preserving key identifying facial features, eyes, muzzle, ear shape, and coat pattern. Place the dog in a subtly suggested French interior with minimal ornate wall molding and simplified paneling. Use a muted, sophisticated palette of soft sage green, dusty blue, warm beige, muted ochre, and desaturated rose. Keep the background elegant, low-saturation, and softly color-blocked. Add loose painterly birds in the background as a secondary surreal design element. Use controlled expressive distortion while keeping the subject recognizable. The final result should feel like the original photograph has been transformed into a high-end semi-abstract gallery painting with rich texture, visible brushwork, and a slightly grainy finish. Overall feel: modern fine art, upscale gallery aesthetic, emotional, calm, refined, luxury interior artwork.`,
 
     astriaPrompt: (petType) =>
-      `portrait of sks ${petType}, fine charcoal graphite drawing, hatching cross-hatching, strong tonal range, white paper background`,
+      `portrait of sks ${petType}, contemporary expressionist impasto oil painting, thick palette-knife texture, heavy layered paint, bold broken brush strokes, French interior background, muted sophisticated palette, modern fine art gallery aesthetic`,
   },
 
   {
