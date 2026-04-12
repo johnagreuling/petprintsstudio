@@ -57,18 +57,26 @@ export default function StylesGallery() {
       <section style={{padding:'0 48px 80px',maxWidth:1400,margin:'0 auto'}}>
         {/* Signature Portrait Showcase */}
         <div style={{marginBottom:80}}>
-          <div style={{textAlign:'center',marginBottom:32}}>
-            <div style={{fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Signature Portrait</div>
+          <div style={{textAlign:'center',marginBottom:40}}>
+            <div style={{fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Signature Portraits</div>
             <h2 className="serif" style={{fontSize:'clamp(28px,4vw,48px)',fontWeight:400,marginBottom:12}}>Impasto Expressionism</h2>
             <p style={{color:'var(--muted)',fontSize:15,maxWidth:600,margin:'0 auto',lineHeight:1.8}}>
               Heavy palette-knife texture, bold broken brush strokes, and a surreal French editorial atmosphere. Museum-quality fine art that tells their story.
             </p>
           </div>
-          <div style={{maxWidth:700,margin:'0 auto',borderRadius:8,overflow:'hidden',boxShadow:'0 40px 100px rgba(0,0,0,.5)'}}>
-            <img src="/styles/signature-jack.png" alt="Signature Portrait - Jack in Impasto Expressionism" style={{width:'100%',display:'block'}}/>
-          </div>
-          <div style={{textAlign:'center',marginTop:24}}>
-            <p style={{fontSize:13,color:'var(--muted)',fontStyle:'italic'}}>&ldquo;Jack&rdquo; — Gold chains, flamingos, candlelit feast. A portrait as bold as he is.</p>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(320px,1fr))',gap:24,maxWidth:1100,margin:'0 auto'}}>
+            <div>
+              <div style={{borderRadius:8,overflow:'hidden',boxShadow:'0 40px 100px rgba(0,0,0,.5)'}}>
+                <img src="/styles/signature-jack.png" alt="Signature Portrait - Jack" style={{width:'100%',display:'block'}}/>
+              </div>
+              <p style={{textAlign:'center',marginTop:16,fontSize:13,color:'var(--muted)',fontStyle:'italic'}}>&ldquo;Jack&rdquo; — Gold chains, flamingos, candlelit feast.</p>
+            </div>
+            <div>
+              <div style={{borderRadius:8,overflow:'hidden',boxShadow:'0 40px 100px rgba(0,0,0,.5)'}}>
+                <img src="/styles/signature-sylas.png" alt="Signature Portrait - Sylas" style={{width:'100%',display:'block'}}/>
+              </div>
+              <p style={{textAlign:'center',marginTop:16,fontSize:13,color:'var(--muted)',fontStyle:'italic'}}>&ldquo;Sylas&rdquo; — Abandoned chateau, velvet chaise, quiet dignity.</p>
+            </div>
           </div>
         </div>
 
