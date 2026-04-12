@@ -55,31 +55,6 @@ export default function StylesGallery() {
       </section>
 
       <section style={{padding:'0 48px 80px',maxWidth:1400,margin:'0 auto'}}>
-        {/* Signature Portrait Showcase */}
-        <div style={{marginBottom:80}}>
-          <div style={{textAlign:'center',marginBottom:40}}>
-            <div style={{fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Signature Portraits</div>
-            <h2 className="serif" style={{fontSize:'clamp(28px,4vw,48px)',fontWeight:400,marginBottom:12}}>Impasto Expressionism</h2>
-            <p style={{color:'var(--muted)',fontSize:15,maxWidth:600,margin:'0 auto',lineHeight:1.8}}>
-              Heavy palette-knife texture, bold broken brush strokes, and a surreal French editorial atmosphere. Museum-quality fine art that tells their story.
-            </p>
-          </div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(320px,1fr))',gap:24,maxWidth:1100,margin:'0 auto'}}>
-            <div>
-              <div style={{borderRadius:8,overflow:'hidden',boxShadow:'0 40px 100px rgba(0,0,0,.5)'}}>
-                <img src="/styles/signature-jack.png" alt="Signature Portrait - Jack" style={{width:'100%',display:'block'}}/>
-              </div>
-              <p style={{textAlign:'center',marginTop:16,fontSize:13,color:'var(--muted)',fontStyle:'italic'}}>&ldquo;Jack&rdquo; — Gold chains, flamingos, candlelit feast.</p>
-            </div>
-            <div>
-              <div style={{borderRadius:8,overflow:'hidden',boxShadow:'0 40px 100px rgba(0,0,0,.5)'}}>
-                <img src="/styles/signature-sylas.png" alt="Signature Portrait - Sylas" style={{width:'100%',display:'block'}}/>
-              </div>
-              <p style={{textAlign:'center',marginTop:16,fontSize:13,color:'var(--muted)',fontStyle:'italic'}}>&ldquo;Sylas&rdquo; — Abandoned chateau, velvet chaise, quiet dignity.</p>
-            </div>
-          </div>
-        </div>
-
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:3}}>
           {ART_STYLES.map((style, idx) => (
             <div key={style.id} className="style-card" style={{position:'relative',aspectRatio:'3/4',overflow:'hidden',background:'#111'}} onClick={() => setLightbox({style, idx})}>
@@ -128,6 +103,37 @@ export default function StylesGallery() {
           </div>
         </div>
       )}
+
+      {/* Signature Portraits Row */}
+      <section style={{padding:'80px 48px',maxWidth:1400,margin:'0 auto'}}>
+        <div style={{textAlign:'center',marginBottom:40}}>
+          <div style={{fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Signature Portraits</div>
+          <h2 className="serif" style={{fontSize:'clamp(28px,4vw,48px)',fontWeight:400,marginBottom:12}}>Impasto Expressionism</h2>
+          <p style={{color:'var(--muted)',fontSize:15,maxWidth:600,margin:'0 auto',lineHeight:1.8}}>
+            Heavy palette-knife texture, bold broken brush strokes, and a surreal French editorial atmosphere. Museum-quality fine art that tells their story.
+          </p>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:20}}>
+          <div>
+            <div style={{borderRadius:8,overflow:'hidden',boxShadow:'0 20px 60px rgba(0,0,0,.4)',aspectRatio:'2/3'}}>
+              <img src="/styles/signature-jack.png" alt="Signature Portrait - Jack" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
+            </div>
+            <p style={{textAlign:'center',marginTop:12,fontSize:12,color:'var(--muted)',fontStyle:'italic'}}>&ldquo;Jack&rdquo;</p>
+          </div>
+          <div>
+            <div style={{borderRadius:8,overflow:'hidden',boxShadow:'0 20px 60px rgba(0,0,0,.4)',aspectRatio:'2/3'}}>
+              <img src="/styles/signature-sylas.png" alt="Signature Portrait - Sylas" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
+            </div>
+            <p style={{textAlign:'center',marginTop:12,fontSize:12,color:'var(--muted)',fontStyle:'italic'}}>&ldquo;Sylas&rdquo;</p>
+          </div>
+          <div>
+            <div style={{borderRadius:8,overflow:'hidden',boxShadow:'0 20px 60px rgba(0,0,0,.4)',aspectRatio:'2/3'}}>
+              <img src="/styles/signature-mason.png" alt="Signature Portrait - Mason" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
+            </div>
+            <p style={{textAlign:'center',marginTop:12,fontSize:12,color:'var(--muted)',fontStyle:'italic'}}>&ldquo;Mason&rdquo;</p>
+          </div>
+        </div>
+      </section>
 
       <section style={{background:'var(--gold)',padding:'80px 48px',textAlign:'center'}}>
         <h2 className="serif" style={{fontSize:'clamp(32px,5vw,64px)',color:'var(--ink)',fontWeight:400,marginBottom:16}}>Infinite Styles.<br/>16 Custom-Tuned Presets.</h2>
