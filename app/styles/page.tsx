@@ -54,7 +54,24 @@ export default function StylesGallery() {
         <Link href="/create" style={{background:'var(--gold)',color:'var(--ink)',padding:'16px 44px',fontSize:12,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',textDecoration:'none',display:'inline-block'}}>🐾 Start Their Story — $49</Link>
       </section>
 
-      <section style={{padding:'0 48px 120px',maxWidth:1400,margin:'0 auto'}}>
+      <section style={{padding:'0 48px 80px',maxWidth:1400,margin:'0 auto'}}>
+        {/* Signature Portrait Showcase */}
+        <div style={{marginBottom:80}}>
+          <div style={{textAlign:'center',marginBottom:32}}>
+            <div style={{fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Signature Portrait</div>
+            <h2 className="serif" style={{fontSize:'clamp(28px,4vw,48px)',fontWeight:400,marginBottom:12}}>Impasto Expressionism</h2>
+            <p style={{color:'var(--muted)',fontSize:15,maxWidth:600,margin:'0 auto',lineHeight:1.8}}>
+              Heavy palette-knife texture, bold broken brush strokes, and a surreal French editorial atmosphere. Museum-quality fine art that tells their story.
+            </p>
+          </div>
+          <div style={{maxWidth:700,margin:'0 auto',borderRadius:8,overflow:'hidden',boxShadow:'0 40px 100px rgba(0,0,0,.5)'}}>
+            <img src="/styles/signature-jack.png" alt="Signature Portrait - Jack in Impasto Expressionism" style={{width:'100%',display:'block'}}/>
+          </div>
+          <div style={{textAlign:'center',marginTop:24}}>
+            <p style={{fontSize:13,color:'var(--muted)',fontStyle:'italic'}}>&ldquo;Jack&rdquo; — Gold chains, flamingos, candlelit feast. A portrait as bold as he is.</p>
+          </div>
+        </div>
+
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:3}}>
           {ART_STYLES.map((style, idx) => (
             <div key={style.id} className="style-card" style={{position:'relative',aspectRatio:'3/4',overflow:'hidden',background:'#111'}} onClick={() => setLightbox({style, idx})}>
