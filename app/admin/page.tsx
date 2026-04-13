@@ -390,6 +390,7 @@ export default function AdminDashboard() {
           <Link href="/admin" style={styles.navLinkActive}>Dashboard</Link>
           <Link href="/admin/sessions" style={styles.navLink}>Sessions</Link>
           <Link href="/admin/orders" style={styles.navLink}>Orders</Link>
+          <Link href="/admin/styles" style={styles.navLink}>🎨 Styles</Link>
         </div>
       </nav>
       
