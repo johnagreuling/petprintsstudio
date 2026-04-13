@@ -96,23 +96,87 @@ const STYLE_FAMILIES: Array<{
     id: 'retro_pop',
     name: 'Retro Pop',
     emoji: '🟥',
-    gptPrompt: (petDesc) => `${subjectIdentityBlock(petDesc)}
+    gptPrompt: (petDesc) => `Create a premium retro pop-art portrait of the exact animal shown in the input image.
 
-Create a strict 2x2 grid layout consisting of four equal square panels. This grid structure is mandatory and must be clearly visible. Each panel must contain the same centered portrait of the pet, repeated identically with matching crop, scale, head position, and framing.
-Reconstruct the pet into a clean, centered head-and-shoulders portrait before applying the grid. The subject must be fully visible, properly framed, and positioned in the center of each square.
-Render the image as premium retro pop art with bold, fully saturated, high-contrast color palettes. Each of the four panels must use a distinctly different vivid color combination. Colors must be bright, striking, and intense — not muted, not pastel, not desaturated.
-Use crisp edges, strong graphic simplification, and smooth color blocking. Backgrounds should be flat and minimal to maintain clarity in each panel.
-Do not preserve the original image composition if it interferes with the grid layout. Ignore background clutter and rebuild the composition to fit the centered portrait format required for the grid.
-Do not create a single image, do not create partial layouts, and do not omit the grid. The final output must be a clear, evenly spaced four-panel pop art grid with identical subject placement in each quadrant.
-Avoid photorealism, muddy colors, painterly effects, uneven spacing, off-center subjects, collage layouts, or distorted repetition.
+SUBJECT IDENTITY
+Preserve the exact animal from the input photo:
+- ${petDesc}
+- exact breed appearance and body proportions
+- exact face shape and facial proportions
+- exact muzzle shape
+- exact ear shape and ear set
+- exact eye color and expression
+- exact coat color and all markings
+- exact fur length, texture, and volume
+- preserve any visible accessories (collar, harness, tags, bandana)
+- do not invent new markings or change age, body type, or expression
+
+COMPOSITION AND FRAMING — CRITICAL
+Reconstruct the pet into a loose, centered portrait composition designed to keep the entire head fully visible inside each square panel.
+The full head must be completely contained within the frame, including:
+- both ears in their entirety
+- the full outer fur silhouette
+- the top of the head
+- cheeks
+- muzzle
+- chin
+Do not crop, clip, or trim any part of the ears, head, muzzle, chin, or outer fur shape.
+Leave generous negative space above the tallest point of the ears and on both sides of the head.
+The portrait must feel intentionally loose and safely framed, never tight.
+Scale rule:
+- the full head and upper chest should occupy approximately 55–65% of the height of each square panel
+- the widest part of the head including ears should occupy no more than about 70–75% of the width of each square panel
+The subject must be centered and fully visible with safe margin on all sides.
+Do not use a close-up crop.
+Do not use a tight head-and-shoulders crop.
+Do not allow the face or ears to approach the edges of the square.
+
+GRID LAYOUT
+Create a strict 2x2 grid layout consisting of four equal square panels.
+This grid structure is mandatory and must be clearly visible.
+Each panel must contain the same centered portrait of the pet, repeated identically with matching:
+- crop
+- scale
+- head position
+- ear visibility
+- framing
+All four portraits must be compositionally identical.
+Only the color palette may change from panel to panel.
+
+STYLE
+Render the image as premium retro pop art with bold, fully saturated, high-contrast color palettes.
+Each of the four panels must use a distinctly different vivid color combination.
+Colors must be bright, striking, and intense — not muted, not pastel, not desaturated.
+Use crisp edges, strong graphic simplification, and smooth color blocking.
+Backgrounds should be flat and minimal to maintain clarity in each panel.
+
+LAYOUT PRIORITY
+Do not preserve the original image composition if it interferes with the grid layout.
+Ignore background clutter and rebuild the composition to fit the centered, fully contained portrait format required for the grid.
+Do not create a single image, do not create partial layouts, and do not omit the grid.
+The final output must be a clear, evenly spaced four-panel pop-art grid with identical subject placement in each quadrant.
+Avoid photorealism, muddy colors, painterly effects, uneven spacing, off-center subjects, collage layouts, distorted repetition, or inconsistent framing.
 Ensure all four panels are perfectly aligned, evenly spaced, and visually balanced, with identical centered composition in each quadrant.
 
-${CONSTRAINTS_GPT}
+CONSTRAINTS
+- no text
+- no watermark
+- no extra animals
+- no extra limbs
+- no distorted anatomy
+- not photorealistic photography
+- not cartoon styling
+- not anime styling
+- not flat vector art
 - four panels, perfectly aligned 2x2 grid
 - same pet, same crop, same framing in every panel
-- only color palette changes per panel — bold vivid fully saturated colors
+- only color palette changes per panel
+- bold vivid fully saturated colors only
 - no muted, pastel, desaturated, or neutral tones
-- no misaligned panels, uneven spacing, or off-center framing`,
+- no misaligned panels, uneven spacing, or off-center framing
+- no tight crop
+- no cropped ears
+- no clipped fur silhouette`,
 
     fluxPrompt: (petDesc) =>
       `Four-panel 2x2 pop art grid of ${petDesc}. Same pet centered in all four quadrants, perfectly symmetrical. Each panel a different bold high-contrast palette: hot pink/yellow, cyan/red, lime/blue, orange/purple. Crisp graphic edges, flat color-blocked backgrounds, clean separation between panels. Premium gallery pop art, Warhol-inspired, collectible.`,
