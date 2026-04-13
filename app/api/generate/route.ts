@@ -62,8 +62,13 @@ const CONSTRAINTS_GPT = `CONSTRAINTS
 - not anime styling
 - not flat vector art`
 
+const FRAMING_INSTRUCTION = `PROFESSIONAL PORTRAIT FRAMING
+Compose the subject fully and intentionally for portrait use. Keep the entire head, ears, and chin comfortably inside the frame at all times. Do not crop into the top of the head, forehead, chin, or sides of the face. Leave generous breathing room around the subject, especially above the head and at both sides. Frame as a properly composed portrait, centered or intentionally balanced, with the full face clearly visible and unobstructed.`
+
 function subjectIdentityBlock(petDesc: string): string {
   return `Create a premium fine-art portrait of the exact animal shown in the input image.
+
+${FRAMING_INSTRUCTION}
 
 SUBJECT IDENTITY
 Preserve the exact animal from the input photo:
