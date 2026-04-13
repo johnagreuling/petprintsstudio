@@ -17,37 +17,41 @@ const CONSTRAINTS_GPT = `CONSTRAINTS
 - not anime styling
 - not flat vector art`;
 
-// Three framing modes - styles opt into what they need
-type FramingMode = 'natural' | 'portrait' | 'full_body';
+// ════════════════════════════════════════════════════════════════
+//  COMPOSITION BLOCKS — How much of the animal is shown
+//  These are SEPARATE from identity and style.
+// ════════════════════════════════════════════════════════════════
 
-const FRAMING = {
-  natural: `COMPOSITION
-Preserve the original framing and composition from the source image.
-Do not crop, zoom, or reframe the subject.
-Keep the same pose, angle, and spatial relationship as the input photo.
-The subject should occupy approximately the same portion of the frame as in the original.`,
+type CompositionMode = 'preserve_source' | 'full_subject' | 'face_portrait';
 
-  portrait: `PORTRAIT FRAMING
-Compose as a head-and-shoulders portrait with the full head comfortably inside the frame.
-Include: full head, both ears, chin, and upper chest/shoulders.
-Leave generous breathing room above the head and on both sides.
-Do not crop into the top of the head, ears, or chin.
-Center the subject with the face clearly visible and unobstructed.
+const COMPOSITION = {
+  preserve_source: `SOURCE-FRAMING PRESERVATION — CRITICAL
+Use the uploaded image as the strict framing reference.
+Preserve the subject scale and framing logic from the source image.
+If the uploaded image shows the full animal, the output must also show the full animal.
+If the uploaded image shows head and shoulders, maintain that framing.
+Do not crop more tightly than the source image.
+Do not reinterpret the image as a headshot or tight crop.
+Do not zoom in beyond what the source shows.`,
+
+  full_subject: `FULL-SUBJECT COMPOSITION — CRITICAL
+Show the entire visible animal comfortably contained in frame.
+Include: full head, both ears, full torso, all legs, all paws, tail if visible, full outer silhouette.
+Do not crop ears, muzzle, torso, legs, paws, tail, or outer fur silhouette.
+Leave generous breathing room on all sides.
+The full animal should occupy approximately 60-75% of the frame.
+Do not let any part of the animal touch the edges.`,
+
+  face_portrait: `FACE-DOMINANT COMPOSITION
+Create a head-focused image with the full head, both ears, and chin fully visible.
+Include upper chest/shoulders for context.
+Leave breathing room above the head and on both sides.
 The head should occupy approximately 50-65% of the frame height.`,
-
-  full_body: `FULL-BODY FRAMING
-Show the entire animal fully visible within the frame.
-Include: full head, both ears, full torso, all legs, all paws, tail if visible.
-Leave generous negative space around the subject on all sides.
-Do not crop, clip, or trim any part of the animal.
-The full animal should occupy approximately 60-75% of the frame height.
-Do not let ears, paws, tail, or fur silhouette touch the edges.`,
 };
 
-function subjectIdentityBlock(petDesc: string, framing: FramingMode = 'natural'): string {
-  return `Transform the exact animal shown in the input image into a stylized artwork.
-
-SUBJECT IDENTITY
+// Identity block — what the animal IS (no composition language)
+function identityBlock(petDesc: string): string {
+  return `SUBJECT IDENTITY — CRITICAL
 Preserve the exact animal from the input photo:
 - ${petDesc}
 - exact breed appearance and body proportions
@@ -58,9 +62,16 @@ Preserve the exact animal from the input photo:
 - exact coat color and all markings
 - exact fur length, texture, and volume
 - preserve any visible accessories (collar, harness, tags, bandana)
-- do not invent new markings or change age, body type, or expression
+- do not invent new markings or change age, body type, or expression`;
+}
 
-${FRAMING[framing]}`;
+// Combined block for convenience
+function subjectBlock(petDesc: string, composition: CompositionMode = 'preserve_source'): string {
+  return `Transform the exact animal shown in the input image into a stylized artwork.
+
+${identityBlock(petDesc)}
+
+${COMPOSITION[composition]}`;
 }
 
 // Sample pet description for generating example prompts
