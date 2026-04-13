@@ -62,13 +62,46 @@ const CONSTRAINTS_GPT = `CONSTRAINTS
 - not anime styling
 - not flat vector art`
 
-const FRAMING_INSTRUCTION = `PROFESSIONAL PORTRAIT FRAMING
-Compose the subject fully and intentionally for portrait use. Keep the entire head, ears, and chin comfortably inside the frame at all times. Do not crop into the top of the head, forehead, chin, or sides of the face. Leave generous breathing room around the subject, especially above the head and at both sides. Frame as a properly composed portrait, centered or intentionally balanced, with the full face clearly visible and unobstructed.`
+// ════════════════════════════════════════════════════════════════
+//  THREE FRAMING MODES
+//
+//  Styles opt into the framing that fits their composition needs.
+//  Default is 'natural' — preserves the source image framing.
+// ════════════════════════════════════════════════════════════════
 
-function subjectIdentityBlock(petDesc: string): string {
-  return `Create a premium fine-art portrait of the exact animal shown in the input image.
+type FramingMode = 'natural' | 'portrait' | 'full_body'
 
-${FRAMING_INSTRUCTION}
+const FRAMING = {
+  // DEFAULT: Preserve source image composition — no reframing instructions
+  natural: `COMPOSITION
+Preserve the original framing and composition from the source image.
+Do not crop, zoom, or reframe the subject.
+Keep the same pose, angle, and spatial relationship as the input photo.
+The subject should occupy approximately the same portion of the frame as in the original.`,
+
+  // OPT-IN: Head and shoulders portrait with breathing room
+  portrait: `PORTRAIT FRAMING
+Compose as a head-and-shoulders portrait with the full head comfortably inside the frame.
+Include: full head, both ears, chin, and upper chest/shoulders.
+Leave generous breathing room above the head and on both sides.
+Do not crop into the top of the head, ears, or chin.
+Center the subject with the face clearly visible and unobstructed.
+The head should occupy approximately 50-65% of the frame height.`,
+
+  // OPT-IN: Full body visible with safe margins
+  full_body: `FULL-BODY FRAMING
+Show the entire animal fully visible within the frame.
+Include: full head, both ears, full torso, all legs, all paws, tail if visible.
+Leave generous negative space around the subject on all sides.
+Do not crop, clip, or trim any part of the animal.
+The full animal should occupy approximately 60-75% of the frame height.
+Do not let ears, paws, tail, or fur silhouette touch the edges.`,
+}
+
+// Subject identity block — used by all styles
+// Framing mode is passed in and inserted appropriately
+function subjectIdentityBlock(petDesc: string, framing: FramingMode = 'natural'): string {
+  return `Transform the exact animal shown in the input image into a stylized artwork.
 
 SUBJECT IDENTITY
 Preserve the exact animal from the input photo:
@@ -81,13 +114,16 @@ Preserve the exact animal from the input photo:
 - exact coat color and all markings
 - exact fur length, texture, and volume
 - preserve any visible accessories (collar, harness, tags, bandana)
-- do not invent new markings or change age, body type, or expression`
+- do not invent new markings or change age, body type, or expression
+
+${FRAMING[framing]}`
 }
 
 const STYLE_FAMILIES: Array<{
   id: string
   name: string
   emoji: string
+  framing?: FramingMode  // Optional — defaults to 'natural'
   gptPrompt: (petDesc: string) => string
   fluxPrompt: (petDesc: string) => string
   astriaPrompt: (petType: string) => string
