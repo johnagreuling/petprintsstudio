@@ -1,5 +1,9 @@
 import { sql } from '@vercel/postgres';
 
+// ============================================================================
+// TYPES
+// ============================================================================
+
 // Session metadata stored for each generation run
 export interface SessionRecord {
   id: string;
@@ -20,8 +24,57 @@ export interface SessionImage {
   variant_index: number;
 }
 
-// Initialize the sessions table
+// API usage tracking
+export interface ApiUsageRecord {
+  id: number;
+  session_id: string | null;
+  provider: string;
+  model: string;
+  operation: string;
+  tokens_input: number;
+  tokens_output: number;
+  images_generated: number;
+  cost_cents: number;
+  created_at: string;
+}
+
+// Order tracking
+export interface OrderRecord {
+  id: number;
+  session_id: string;
+  printify_order_id: string | null;
+  stripe_payment_id: string | null;
+  customer_email: string;
+  customer_name: string;
+  product_type: string;
+  product_name: string;
+  quantity: number;
+  subtotal_cents: number;
+  status: 'pending' | 'paid' | 'processing' | 'fulfilled' | 'shipped' | 'cancelled';
+  created_at: string;
+  updated_at: string;
+}
+
+// Page view tracking
+export interface PageViewRecord {
+  id: number;
+  path: string;
+  referrer: string | null;
+  user_agent: string | null;
+  country: string | null;
+  city: string | null;
+  region: string | null;
+  visitor_id: string;
+  created_at: string;
+}
+
+// ============================================================================
+// DATABASE INITIALIZATION
+// ============================================================================
+
+// Initialize all database tables
 export async function initializeDatabase() {
+  // Sessions table
   await sql`
     CREATE TABLE IF NOT EXISTS sessions (
       id SERIAL PRIMARY KEY,
@@ -36,11 +89,73 @@ export async function initializeDatabase() {
     )
   `;
   
-  // Create indexes for fast searching
+  // API usage tracking table
+  await sql`
+    CREATE TABLE IF NOT EXISTS api_usage (
+      id SERIAL PRIMARY KEY,
+      session_id VARCHAR(255),
+      provider VARCHAR(50) NOT NULL,
+      model VARCHAR(100) NOT NULL,
+      operation VARCHAR(100) NOT NULL,
+      tokens_input INT DEFAULT 0,
+      tokens_output INT DEFAULT 0,
+      images_generated INT DEFAULT 0,
+      cost_cents INT DEFAULT 0,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `;
+  
+  // Orders table
+  await sql`
+    CREATE TABLE IF NOT EXISTS orders (
+      id SERIAL PRIMARY KEY,
+      session_id VARCHAR(255),
+      printify_order_id VARCHAR(255),
+      stripe_payment_id VARCHAR(255),
+      customer_email VARCHAR(255),
+      customer_name VARCHAR(255),
+      product_type VARCHAR(100),
+      product_name VARCHAR(255),
+      quantity INT DEFAULT 1,
+      subtotal_cents INT DEFAULT 0,
+      status VARCHAR(50) DEFAULT 'pending',
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    )
+  `;
+  
+  // Page views table (lightweight analytics)
+  await sql`
+    CREATE TABLE IF NOT EXISTS page_views (
+      id SERIAL PRIMARY KEY,
+      path VARCHAR(500) NOT NULL,
+      referrer VARCHAR(500),
+      user_agent TEXT,
+      country VARCHAR(100),
+      city VARCHAR(100),
+      region VARCHAR(100),
+      visitor_id VARCHAR(255),
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `;
+  
+  // Create indexes for fast querying
   await sql`CREATE INDEX IF NOT EXISTS idx_sessions_pet_name ON sessions(pet_name)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_sessions_last_name ON sessions(customer_last_name)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_sessions_created_at ON sessions(created_at DESC)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_sessions_session_id ON sessions(session_id)`;
+  
+  await sql`CREATE INDEX IF NOT EXISTS idx_api_usage_created_at ON api_usage(created_at DESC)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_api_usage_session_id ON api_usage(session_id)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_api_usage_provider ON api_usage(provider)`;
+  
+  await sql`CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at DESC)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_orders_session_id ON orders(session_id)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status)`;
+  
+  await sql`CREATE INDEX IF NOT EXISTS idx_page_views_created_at ON page_views(created_at DESC)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_page_views_path ON page_views(path)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_page_views_visitor ON page_views(visitor_id)`;
 }
 
 // Save a new session
@@ -137,4 +252,308 @@ export async function getSession(sessionId: string) {
 export async function getSessionCount() {
   const result = await sql`SELECT COUNT(*) as count FROM sessions`;
   return parseInt(result.rows[0].count);
+}
+
+// ============================================================================
+// API USAGE TRACKING
+// ============================================================================
+
+// OpenAI pricing (as of 2024) - in cents per unit
+const PRICING = {
+  'gpt-image-1': { perImage: 4 }, // ~$0.04 per image edit
+  'gpt-4o-mini': { inputPer1k: 0.015, outputPer1k: 0.06 }, // $0.15/1M input, $0.60/1M output
+  'gpt-4o': { inputPer1k: 0.25, outputPer1k: 1.0 }, // $2.50/1M input, $10/1M output
+  'dall-e-3': { perImage: 4 }, // $0.04 standard
+  'fal-flux-pro': { perImage: 5.5 }, // ~$0.055 per image
+};
+
+export async function logApiUsage(data: {
+  sessionId?: string;
+  provider: string;
+  model: string;
+  operation: string;
+  tokensInput?: number;
+  tokensOutput?: number;
+  imagesGenerated?: number;
+}) {
+  const { sessionId, provider, model, operation, tokensInput = 0, tokensOutput = 0, imagesGenerated = 0 } = data;
+  
+  // Calculate cost based on model
+  let costCents = 0;
+  const pricing = PRICING[model as keyof typeof PRICING];
+  
+  if (pricing) {
+    if ('perImage' in pricing && imagesGenerated > 0) {
+      costCents = Math.round(pricing.perImage * imagesGenerated);
+    } else if ('inputPer1k' in pricing) {
+      costCents = Math.round(
+        (tokensInput / 1000) * pricing.inputPer1k +
+        (tokensOutput / 1000) * pricing.outputPer1k
+      );
+    }
+  }
+  
+  await sql`
+    INSERT INTO api_usage (session_id, provider, model, operation, tokens_input, tokens_output, images_generated, cost_cents)
+    VALUES (${sessionId || null}, ${provider}, ${model}, ${operation}, ${tokensInput}, ${tokensOutput}, ${imagesGenerated}, ${costCents})
+  `;
+  
+  return costCents;
+}
+
+export async function getApiUsageStats(days: number = 30) {
+  const result = await sql`
+    SELECT 
+      DATE(created_at) as date,
+      provider,
+      model,
+      COUNT(*) as calls,
+      SUM(tokens_input) as total_tokens_input,
+      SUM(tokens_output) as total_tokens_output,
+      SUM(images_generated) as total_images,
+      SUM(cost_cents) as total_cost_cents
+    FROM api_usage
+    WHERE created_at > NOW() - INTERVAL '${days} days'
+    GROUP BY DATE(created_at), provider, model
+    ORDER BY date DESC
+  `;
+  return result.rows;
+}
+
+export async function getTotalApiSpend() {
+  const result = await sql`
+    SELECT 
+      SUM(cost_cents) as total_cents,
+      SUM(images_generated) as total_images,
+      COUNT(*) as total_calls
+    FROM api_usage
+  `;
+  return {
+    totalCents: parseInt(result.rows[0]?.total_cents || '0'),
+    totalImages: parseInt(result.rows[0]?.total_images || '0'),
+    totalCalls: parseInt(result.rows[0]?.total_calls || '0'),
+  };
+}
+
+export async function getDailyApiSpend(days: number = 30) {
+  const result = await sql`
+    SELECT 
+      DATE(created_at) as date,
+      SUM(cost_cents) as cost_cents,
+      SUM(images_generated) as images
+    FROM api_usage
+    WHERE created_at > NOW() - INTERVAL '1 day' * ${days}
+    GROUP BY DATE(created_at)
+    ORDER BY date ASC
+  `;
+  return result.rows;
+}
+
+// ============================================================================
+// ORDERS
+// ============================================================================
+
+export async function createOrder(data: {
+  sessionId: string;
+  customerEmail: string;
+  customerName: string;
+  productType: string;
+  productName: string;
+  quantity: number;
+  subtotalCents: number;
+  stripePaymentId?: string;
+}) {
+  const result = await sql`
+    INSERT INTO orders (session_id, customer_email, customer_name, product_type, product_name, quantity, subtotal_cents, stripe_payment_id, status)
+    VALUES (${data.sessionId}, ${data.customerEmail}, ${data.customerName}, ${data.productType}, ${data.productName}, ${data.quantity}, ${data.subtotalCents}, ${data.stripePaymentId || null}, 'pending')
+    RETURNING id
+  `;
+  return result.rows[0].id;
+}
+
+export async function updateOrderStatus(orderId: number, status: string, printifyOrderId?: string) {
+  await sql`
+    UPDATE orders 
+    SET status = ${status}, printify_order_id = COALESCE(${printifyOrderId || null}, printify_order_id), updated_at = NOW()
+    WHERE id = ${orderId}
+  `;
+}
+
+export async function getOrders(options: { limit?: number; status?: string } = {}) {
+  const { limit = 50, status } = options;
+  
+  if (status) {
+    const result = await sql`
+      SELECT * FROM orders WHERE status = ${status} ORDER BY created_at DESC LIMIT ${limit}
+    `;
+    return result.rows;
+  }
+  
+  const result = await sql`
+    SELECT * FROM orders ORDER BY created_at DESC LIMIT ${limit}
+  `;
+  return result.rows;
+}
+
+export async function getOrderStats() {
+  const result = await sql`
+    SELECT 
+      COUNT(*) as total_orders,
+      SUM(CASE WHEN status = 'paid' OR status = 'fulfilled' OR status = 'shipped' THEN subtotal_cents ELSE 0 END) as total_revenue_cents,
+      COUNT(CASE WHEN status = 'paid' OR status = 'fulfilled' OR status = 'shipped' THEN 1 END) as completed_orders
+    FROM orders
+  `;
+  return {
+    totalOrders: parseInt(result.rows[0]?.total_orders || '0'),
+    totalRevenueCents: parseInt(result.rows[0]?.total_revenue_cents || '0'),
+    completedOrders: parseInt(result.rows[0]?.completed_orders || '0'),
+  };
+}
+
+export async function getDailyRevenue(days: number = 30) {
+  const result = await sql`
+    SELECT 
+      DATE(created_at) as date,
+      SUM(subtotal_cents) as revenue_cents,
+      COUNT(*) as orders
+    FROM orders
+    WHERE created_at > NOW() - INTERVAL '1 day' * ${days}
+      AND (status = 'paid' OR status = 'fulfilled' OR status = 'shipped')
+    GROUP BY DATE(created_at)
+    ORDER BY date ASC
+  `;
+  return result.rows;
+}
+
+// ============================================================================
+// PAGE VIEWS / ANALYTICS
+// ============================================================================
+
+export async function logPageView(data: {
+  path: string;
+  referrer?: string;
+  userAgent?: string;
+  country?: string;
+  city?: string;
+  region?: string;
+  visitorId: string;
+}) {
+  await sql`
+    INSERT INTO page_views (path, referrer, user_agent, country, city, region, visitor_id)
+    VALUES (${data.path}, ${data.referrer || null}, ${data.userAgent || null}, ${data.country || null}, ${data.city || null}, ${data.region || null}, ${data.visitorId})
+  `;
+}
+
+export async function getPageViewStats(days: number = 30) {
+  const result = await sql`
+    SELECT 
+      COUNT(*) as total_views,
+      COUNT(DISTINCT visitor_id) as unique_visitors
+    FROM page_views
+    WHERE created_at > NOW() - INTERVAL '1 day' * ${days}
+  `;
+  return {
+    totalViews: parseInt(result.rows[0]?.total_views || '0'),
+    uniqueVisitors: parseInt(result.rows[0]?.unique_visitors || '0'),
+  };
+}
+
+export async function getDailyPageViews(days: number = 30) {
+  const result = await sql`
+    SELECT 
+      DATE(created_at) as date,
+      COUNT(*) as views,
+      COUNT(DISTINCT visitor_id) as visitors
+    FROM page_views
+    WHERE created_at > NOW() - INTERVAL '1 day' * ${days}
+    GROUP BY DATE(created_at)
+    ORDER BY date ASC
+  `;
+  return result.rows;
+}
+
+export async function getTopPages(days: number = 30, limit: number = 10) {
+  const result = await sql`
+    SELECT 
+      path,
+      COUNT(*) as views,
+      COUNT(DISTINCT visitor_id) as visitors
+    FROM page_views
+    WHERE created_at > NOW() - INTERVAL '1 day' * ${days}
+    GROUP BY path
+    ORDER BY views DESC
+    LIMIT ${limit}
+  `;
+  return result.rows;
+}
+
+export async function getTopReferrers(days: number = 30, limit: number = 10) {
+  const result = await sql`
+    SELECT 
+      COALESCE(referrer, 'Direct') as referrer,
+      COUNT(*) as visits,
+      COUNT(DISTINCT visitor_id) as visitors
+    FROM page_views
+    WHERE created_at > NOW() - INTERVAL '1 day' * ${days}
+    GROUP BY referrer
+    ORDER BY visits DESC
+    LIMIT ${limit}
+  `;
+  return result.rows;
+}
+
+export async function getVisitorLocations(days: number = 30, limit: number = 10) {
+  const result = await sql`
+    SELECT 
+      COALESCE(country, 'Unknown') as country,
+      COALESCE(region, '') as region,
+      COUNT(*) as visits,
+      COUNT(DISTINCT visitor_id) as visitors
+    FROM page_views
+    WHERE created_at > NOW() - INTERVAL '1 day' * ${days}
+    GROUP BY country, region
+    ORDER BY visitors DESC
+    LIMIT ${limit}
+  `;
+  return result.rows;
+}
+
+// ============================================================================
+// DASHBOARD AGGREGATES
+// ============================================================================
+
+export async function getDashboardStats() {
+  // Get all stats in parallel
+  const [sessionCount, apiSpend, orderStats, pageViewStats] = await Promise.all([
+    getSessionCount(),
+    getTotalApiSpend(),
+    getOrderStats(),
+    getPageViewStats(30),
+  ]);
+  
+  // Calculate conversion rate (orders / sessions)
+  const conversionRate = sessionCount > 0 
+    ? ((orderStats.completedOrders / sessionCount) * 100).toFixed(1)
+    : '0';
+  
+  return {
+    sessions: {
+      total: sessionCount,
+    },
+    api: {
+      totalSpendCents: apiSpend.totalCents,
+      totalImages: apiSpend.totalImages,
+      totalCalls: apiSpend.totalCalls,
+    },
+    orders: {
+      total: orderStats.totalOrders,
+      completed: orderStats.completedOrders,
+      revenueCents: orderStats.totalRevenueCents,
+    },
+    traffic: {
+      views: pageViewStats.totalViews,
+      visitors: pageViewStats.uniqueVisitors,
+    },
+    conversionRate,
+  };
 }

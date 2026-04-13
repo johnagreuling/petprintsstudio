@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { v4 as uuidv4 } from 'uuid'
-import { saveSession, SessionImage } from '@/lib/db'
+import { saveSession, SessionImage, logApiUsage } from '@/lib/db'
 
 export const maxDuration = 300
 export const dynamic = 'force-dynamic'
@@ -832,6 +832,48 @@ export async function POST(req: NextRequest) {
             petType: petType || 'dog',
             images: dbImages,
             questionnaire: answers || {}
+          })
+          
+          // Track API usage for billing/analytics
+          const gptImages = allImages.filter((x: any) => x.model === 'gpt').length
+          const fluxImages = allImages.filter((x: any) => x.model === 'flux').length
+          const astriaImages = allImages.filter((x: any) => x.model === 'astria').length
+          
+          if (gptImages > 0) {
+            await logApiUsage({
+              sessionId: sessionFolder,
+              provider: 'openai',
+              model: 'gpt-image-1',
+              operation: 'image_edit',
+              imagesGenerated: gptImages,
+            })
+          }
+          if (fluxImages > 0) {
+            await logApiUsage({
+              sessionId: sessionFolder,
+              provider: 'fal',
+              model: 'fal-flux-pro',
+              operation: 'image_generation',
+              imagesGenerated: fluxImages,
+            })
+          }
+          if (astriaImages > 0) {
+            await logApiUsage({
+              sessionId: sessionFolder,
+              provider: 'astria',
+              model: 'astria-lora',
+              operation: 'fine_tuned_generation',
+              imagesGenerated: astriaImages,
+            })
+          }
+          // Also track the vision call for pet description
+          await logApiUsage({
+            sessionId: sessionFolder,
+            provider: 'openai',
+            model: 'gpt-4o-mini',
+            operation: 'vision',
+            tokensInput: 1000, // Approximate
+            tokensOutput: 200, // Approximate
           })
         } catch (dbErr) {
           console.error('Database save failed (non-fatal):', dbErr)
