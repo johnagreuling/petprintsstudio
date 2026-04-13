@@ -111,36 +111,37 @@ Preserve the exact animal from the input photo:
 - preserve any visible accessories (collar, harness, tags, bandana)
 - do not invent new markings or change age, body type, or expression
 
-COMPOSITION AND FRAMING — CRITICAL
-Reconstruct the pet into a loose, centered portrait composition designed to keep the entire head fully visible inside each square panel.
-The full head must be completely contained within the frame, including:
-- both ears in their entirety
-- the full outer fur silhouette
-- the top of the head
-- cheeks
-- muzzle
-- chin
-Do not crop, clip, or trim any part of the ears, head, muzzle, chin, or outer fur shape.
-Leave generous negative space above the tallest point of the ears and on both sides of the head.
-The portrait must feel intentionally loose and safely framed, never tight.
+FULL-SUBJECT COMPOSITION — CRITICAL
+Reconstruct the pet as a fully visible, zoomed-out subject within each square panel.
+The entire animal must be shown completely inside the frame, including:
+- full head
+- both ears
+- full torso
+- all legs
+- all paws
+- tail if visible in the source image
+- full outer fur silhouette
+Do not crop, clip, or trim any part of the animal.
+Leave generous negative space around the subject on all sides.
+The composition must feel intentionally zoomed out and safely framed, never tight.
 Scale rule:
-- the full head and upper chest should occupy approximately 55–65% of the height of each square panel
-- the widest part of the head including ears should occupy no more than about 70–75% of the width of each square panel
-The subject must be centered and fully visible with safe margin on all sides.
-Do not use a close-up crop.
-Do not use a tight head-and-shoulders crop.
-Do not allow the face or ears to approach the edges of the square.
+- the full animal should occupy approximately 60–75% of the height of each square panel
+- the full animal should occupy approximately 50–70% of the width of each square panel, depending on breed and pose
+The pet must be fully visible, comfortably contained in frame, and clearly readable as a complete animal.
+Do not create a face-only portrait.
+Do not create a head-and-shoulders crop.
+Do not create a close-up.
+Do not crop into the body for stylistic effect.
+Do not let ears, paws, tail, or fur silhouette touch the edges.
 
 GRID LAYOUT
-Create a strict 2x2 grid layout consisting of four equal square panels.
-This grid structure is mandatory and must be clearly visible.
-Each panel must contain the same centered portrait of the pet, repeated identically with matching:
+Create a strict 2x2 grid layout consisting of four equal square panels. This grid structure is mandatory and must be clearly visible.
+Each panel must contain the same fully visible, zoomed-out depiction of the pet, repeated identically with matching:
 - crop
 - scale
-- head position
-- ear visibility
+- pose
+- placement
 - framing
-All four portraits must be compositionally identical.
 Only the color palette may change from panel to panel.
 
 STYLE
@@ -152,11 +153,11 @@ Backgrounds should be flat and minimal to maintain clarity in each panel.
 
 LAYOUT PRIORITY
 Do not preserve the original image composition if it interferes with the grid layout.
-Ignore background clutter and rebuild the composition to fit the centered, fully contained portrait format required for the grid.
+Ignore background clutter and rebuild the composition to fit the centered or balanced full-subject format required for the grid.
 Do not create a single image, do not create partial layouts, and do not omit the grid.
 The final output must be a clear, evenly spaced four-panel pop-art grid with identical subject placement in each quadrant.
 Avoid photorealism, muddy colors, painterly effects, uneven spacing, off-center subjects, collage layouts, distorted repetition, or inconsistent framing.
-Ensure all four panels are perfectly aligned, evenly spaced, and visually balanced, with identical centered composition in each quadrant.
+Ensure all four panels are perfectly aligned, evenly spaced, and visually balanced.
 
 CONSTRAINTS
 - no text
@@ -175,8 +176,13 @@ CONSTRAINTS
 - no muted, pastel, desaturated, or neutral tones
 - no misaligned panels, uneven spacing, or off-center framing
 - no tight crop
+- no face-only crop
 - no cropped ears
-- no clipped fur silhouette`,
+- no cropped paws
+- no clipped fur silhouette
+
+FINAL COMPOSITION CHECK:
+Before rendering, ensure the entire animal is fully visible inside each square panel with comfortable margin on all sides.`,
 
     fluxPrompt: (petDesc) =>
       `Four-panel 2x2 pop art grid of ${petDesc}. Same pet centered in all four quadrants, perfectly symmetrical. Each panel a different bold high-contrast palette: hot pink/yellow, cyan/red, lime/blue, orange/purple. Crisp graphic edges, flat color-blocked backgrounds, clean separation between panels. Premium gallery pop art, Warhol-inspired, collectible.`,
