@@ -168,18 +168,8 @@ export default function Home() {
               <div style={{background:'var(--ink)',padding:'12px 0',textAlign:'center',borderBottom:'1px solid var(--border)'}}>
                 <div style={{fontSize:42,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>2</div>
               </div>
-              <div style={{aspectRatio:'1',overflow:'hidden',background:'#111',position:'relative',display:'flex',flexDirection:'column',justifyContent:'center',padding:'20px 18px',gap:8}}>
-                {[
-                  {q:'What makes them unique?',a:'She carries her squeaky toy everywhere...'},
-                  {q:'Favorite place?',a:'The back seat with the window down'},
-                  {q:'How do they greet you?',a:'Spins in circles, never stops'},
-                  {q:'What would their song say?',a:'Something about being loved completely'},
-                ].map((item,i)=>(
-                  <div key={i} style={{background:'rgba(245,240,232,.05)',border:'1px solid rgba(245,240,232,.08)',padding:'8px 10px',borderRadius:2}}>
-                    <div style={{fontSize:8,color:'var(--gold)',letterSpacing:'.15em',textTransform:'uppercase',marginBottom:3}}>{item.q}</div>
-                    <div style={{fontSize:10,color:'rgba(245,240,232,.7)',lineHeight:1.4,fontStyle:'italic'}}>&ldquo;{item.a}&rdquo;</div>
-                  </div>
-                ))}
+              <div style={{aspectRatio:'1',overflow:'hidden',background:'#111',position:'relative'}}>
+                <img src="/process-story.png" alt="Tell us their story" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
               </div>
               <div style={{padding:'20px 20px 28px'}}>
                 <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>Tell Us Their Story</h3>
