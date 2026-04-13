@@ -34,13 +34,158 @@ function formatDateTime(dateStr: string): string {
   });
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-yellow-500/20 text-yellow-400',
-  paid: 'bg-green-500/20 text-green-400',
-  processing: 'bg-blue-500/20 text-blue-400',
-  fulfilled: 'bg-emerald-500/20 text-emerald-400',
-  shipped: 'bg-purple-500/20 text-purple-400',
-  cancelled: 'bg-red-500/20 text-red-400',
+const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
+  pending: { bg: 'rgba(234, 179, 8, 0.2)', color: '#facc15' },
+  paid: { bg: 'rgba(34, 197, 94, 0.2)', color: '#22c55e' },
+  processing: { bg: 'rgba(59, 130, 246, 0.2)', color: '#3b82f6' },
+  fulfilled: { bg: 'rgba(16, 185, 129, 0.2)', color: '#10b981' },
+  shipped: { bg: 'rgba(168, 85, 247, 0.2)', color: '#a855f7' },
+  cancelled: { bg: 'rgba(239, 68, 68, 0.2)', color: '#ef4444' },
+};
+
+const styles = {
+  page: {
+    minHeight: '100vh',
+    background: '#0A0A0A',
+    color: '#F5F0E8',
+    fontFamily: "'DM Sans', system-ui, sans-serif",
+  },
+  header: {
+    borderBottom: '1px solid #27272a',
+    background: '#111',
+    padding: '16px 24px',
+  },
+  headerContent: {
+    maxWidth: '1400px',
+    margin: '0 auto',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  logo: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+  },
+  logoEmoji: {
+    fontSize: '28px',
+  },
+  logoText: {
+    fontSize: '20px',
+    fontWeight: 700,
+  },
+  logoSub: {
+    fontSize: '13px',
+    color: '#71717a',
+  },
+  button: {
+    background: '#18181b',
+    border: '1px solid #27272a',
+    borderRadius: '6px',
+    padding: '8px 16px',
+    color: '#F5F0E8',
+    fontSize: '14px',
+    cursor: 'pointer',
+  },
+  nav: {
+    borderBottom: '1px solid #27272a',
+    background: 'rgba(17,17,17,0.5)',
+  },
+  navContent: {
+    maxWidth: '1400px',
+    margin: '0 auto',
+    display: 'flex',
+    gap: '4px',
+    padding: '0 24px',
+  },
+  navLink: {
+    padding: '12px 16px',
+    color: '#71717a',
+    textDecoration: 'none',
+    fontSize: '14px',
+  },
+  navLinkActive: {
+    padding: '12px 16px',
+    color: '#D4AF37',
+    textDecoration: 'none',
+    fontSize: '14px',
+    fontWeight: 600,
+    borderBottom: '2px solid #D4AF37',
+  },
+  main: {
+    maxWidth: '1400px',
+    margin: '0 auto',
+    padding: '32px 24px',
+  },
+  statsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '16px',
+    marginBottom: '32px',
+  },
+  statCard: {
+    background: '#18181b',
+    border: '1px solid #27272a',
+    borderRadius: '12px',
+    padding: '24px',
+  },
+  statLabel: {
+    color: '#71717a',
+    fontSize: '14px',
+  },
+  statValue: {
+    fontSize: '32px',
+    fontWeight: 700,
+    marginTop: '4px',
+  },
+  filters: {
+    display: 'flex',
+    gap: '8px',
+    marginBottom: '24px',
+    flexWrap: 'wrap' as const,
+  },
+  filterBtn: {
+    padding: '8px 16px',
+    borderRadius: '8px',
+    fontSize: '14px',
+    cursor: 'pointer',
+    border: 'none',
+    textTransform: 'capitalize' as const,
+  },
+  tableCard: {
+    background: '#18181b',
+    border: '1px solid #27272a',
+    borderRadius: '12px',
+    overflow: 'hidden',
+  },
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse' as const,
+  },
+  th: {
+    textAlign: 'left' as const,
+    padding: '12px 16px',
+    color: '#71717a',
+    fontWeight: 500,
+    fontSize: '14px',
+    background: 'rgba(39,39,42,0.5)',
+  },
+  td: {
+    padding: '12px 16px',
+    borderTop: '1px solid #27272a',
+    fontSize: '14px',
+  },
+  emptyState: {
+    padding: '48px',
+    textAlign: 'center' as const,
+  },
+  statusBadge: {
+    padding: '4px 8px',
+    borderRadius: '4px',
+    fontSize: '12px',
+    fontWeight: 500,
+    textTransform: 'capitalize' as const,
+  },
 };
 
 export default function OrdersPage() {
@@ -51,10 +196,7 @@ export default function OrdersPage() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const url = filter === 'all' 
-        ? '/api/admin/dashboard?section=recent-orders'
-        : `/api/admin/orders?status=${filter}`;
-      const res = await fetch(url);
+      const res = await fetch('/api/admin/dashboard?section=recent-orders');
       const data = await res.json();
       setOrders(Array.isArray(data) ? data : []);
     } catch (e) {
@@ -68,82 +210,68 @@ export default function OrdersPage() {
     fetchOrders();
   }, [filter]);
   
-  // Calculate stats
+  const filteredOrders = filter === 'all' 
+    ? orders 
+    : orders.filter(o => o.status === filter);
+  
   const totalRevenue = orders.reduce((sum, o) => 
     ['paid', 'fulfilled', 'shipped'].includes(o.status) ? sum + o.subtotal_cents : sum, 0
   );
   const completedOrders = orders.filter(o => ['paid', 'fulfilled', 'shipped'].includes(o.status)).length;
   
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div style={styles.page}>
       {/* Header */}
-      <header className="border-b border-zinc-800 bg-zinc-950">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <span className="text-2xl">🐾</span>
-              <div>
-                <h1 className="text-xl font-bold">Pet Prints Studio</h1>
-                <p className="text-zinc-500 text-sm">Orders</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <button 
-                onClick={fetchOrders}
-                className="px-3 py-1.5 bg-zinc-800 border border-zinc-700 rounded text-sm hover:bg-zinc-700"
-              >
-                ↻ Refresh
-              </button>
+      <header style={styles.header}>
+        <div style={styles.headerContent}>
+          <div style={styles.logo}>
+            <span style={styles.logoEmoji}>🐾</span>
+            <div>
+              <div style={styles.logoText}>Pet Prints Studio</div>
+              <div style={styles.logoSub}>Orders</div>
             </div>
           </div>
+          <button onClick={fetchOrders} style={styles.button}>↻ Refresh</button>
         </div>
       </header>
       
       {/* Navigation */}
-      <nav className="border-b border-zinc-800 bg-zinc-950/50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex gap-1">
-            <Link href="/admin" className="px-4 py-3 text-zinc-400 hover:text-white">
-              Dashboard
-            </Link>
-            <Link href="/admin/sessions" className="px-4 py-3 text-zinc-400 hover:text-white">
-              Sessions
-            </Link>
-            <Link href="/admin/orders" className="px-4 py-3 text-amber-400 border-b-2 border-amber-400 font-medium">
-              Orders
-            </Link>
-          </div>
+      <nav style={styles.nav}>
+        <div style={styles.navContent}>
+          <Link href="/admin" style={styles.navLink}>Dashboard</Link>
+          <Link href="/admin/sessions" style={styles.navLink}>Sessions</Link>
+          <Link href="/admin/orders" style={styles.navLinkActive}>Orders</Link>
         </div>
       </nav>
       
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main style={styles.main}>
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-            <p className="text-zinc-400 text-sm">Total Orders</p>
-            <p className="text-3xl font-bold">{orders.length}</p>
+        <div style={styles.statsGrid}>
+          <div style={styles.statCard}>
+            <p style={styles.statLabel}>Total Orders</p>
+            <p style={styles.statValue}>{orders.length}</p>
           </div>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-            <p className="text-zinc-400 text-sm">Completed</p>
-            <p className="text-3xl font-bold text-green-400">{completedOrders}</p>
+          <div style={styles.statCard}>
+            <p style={styles.statLabel}>Completed</p>
+            <p style={{ ...styles.statValue, color: '#22c55e' }}>{completedOrders}</p>
           </div>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-            <p className="text-zinc-400 text-sm">Revenue</p>
-            <p className="text-3xl font-bold text-emerald-400">{formatCurrency(totalRevenue)}</p>
+          <div style={styles.statCard}>
+            <p style={styles.statLabel}>Revenue</p>
+            <p style={{ ...styles.statValue, color: '#10b981' }}>{formatCurrency(totalRevenue)}</p>
           </div>
         </div>
         
         {/* Filters */}
-        <div className="flex gap-2 mb-6">
+        <div style={styles.filters}>
           {['all', 'pending', 'paid', 'processing', 'fulfilled', 'shipped', 'cancelled'].map(status => (
             <button
               key={status}
               onClick={() => setFilter(status)}
-              className={`px-4 py-2 rounded-lg text-sm capitalize ${
-                filter === status 
-                  ? 'bg-amber-600 text-white' 
-                  : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
-              }`}
+              style={{
+                ...styles.filterBtn,
+                background: filter === status ? '#D4AF37' : '#27272a',
+                color: filter === status ? '#0A0A0A' : '#a1a1aa',
+              }}
             >
               {status}
             </button>
@@ -151,54 +279,63 @@ export default function OrdersPage() {
         </div>
         
         {/* Orders Table */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+        <div style={styles.tableCard}>
           {loading ? (
-            <div className="p-12 text-center text-zinc-500">Loading orders...</div>
-          ) : orders.length === 0 ? (
-            <div className="p-12 text-center">
-              <p className="text-4xl mb-4">📦</p>
-              <p className="text-zinc-400">No orders yet</p>
-              <p className="text-zinc-500 text-sm">Orders will appear here after customers complete purchases</p>
+            <div style={styles.emptyState}>
+              <p style={{ color: '#71717a' }}>Loading orders...</p>
+            </div>
+          ) : filteredOrders.length === 0 ? (
+            <div style={styles.emptyState}>
+              <p style={{ fontSize: '48px', marginBottom: '16px' }}>📦</p>
+              <p style={{ color: '#a1a1aa' }}>No orders yet</p>
+              <p style={{ color: '#52525b', fontSize: '14px' }}>Orders will appear here after customers complete purchases</p>
             </div>
           ) : (
-            <table className="w-full">
-              <thead className="bg-zinc-800/50">
+            <table style={styles.table}>
+              <thead>
                 <tr>
-                  <th className="text-left py-3 px-4 text-zinc-400 font-medium text-sm">Order</th>
-                  <th className="text-left py-3 px-4 text-zinc-400 font-medium text-sm">Customer</th>
-                  <th className="text-left py-3 px-4 text-zinc-400 font-medium text-sm">Product</th>
-                  <th className="text-left py-3 px-4 text-zinc-400 font-medium text-sm">Amount</th>
-                  <th className="text-left py-3 px-4 text-zinc-400 font-medium text-sm">Status</th>
-                  <th className="text-left py-3 px-4 text-zinc-400 font-medium text-sm">Date</th>
+                  <th style={styles.th}>Order</th>
+                  <th style={styles.th}>Customer</th>
+                  <th style={styles.th}>Product</th>
+                  <th style={styles.th}>Amount</th>
+                  <th style={styles.th}>Status</th>
+                  <th style={styles.th}>Date</th>
                 </tr>
               </thead>
               <tbody>
-                {orders.map(order => (
-                  <tr key={order.id} className="border-t border-zinc-800 hover:bg-zinc-800/30">
-                    <td className="py-3 px-4">
-                      <span className="font-mono text-sm text-zinc-400">#{order.id}</span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="font-medium">{order.customer_name || 'Unknown'}</div>
-                      <div className="text-zinc-500 text-sm">{order.customer_email}</div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div>{order.product_name}</div>
-                      <div className="text-zinc-500 text-sm">Qty: {order.quantity}</div>
-                    </td>
-                    <td className="py-3 px-4 font-medium">
-                      {formatCurrency(order.subtotal_cents)}
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className={`px-2 py-1 rounded text-xs font-medium capitalize ${STATUS_COLORS[order.status] || 'bg-zinc-700'}`}>
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-zinc-400 text-sm">
-                      {formatDateTime(order.created_at)}
-                    </td>
-                  </tr>
-                ))}
+                {filteredOrders.map(order => {
+                  const statusStyle = STATUS_COLORS[order.status] || { bg: '#27272a', color: '#a1a1aa' };
+                  return (
+                    <tr key={order.id}>
+                      <td style={styles.td}>
+                        <span style={{ fontFamily: 'monospace', color: '#71717a' }}>#{order.id}</span>
+                      </td>
+                      <td style={styles.td}>
+                        <div style={{ fontWeight: 500 }}>{order.customer_name || 'Unknown'}</div>
+                        <div style={{ color: '#52525b', fontSize: '13px' }}>{order.customer_email}</div>
+                      </td>
+                      <td style={styles.td}>
+                        <div>{order.product_name}</div>
+                        <div style={{ color: '#52525b', fontSize: '13px' }}>Qty: {order.quantity}</div>
+                      </td>
+                      <td style={{ ...styles.td, fontWeight: 500 }}>
+                        {formatCurrency(order.subtotal_cents)}
+                      </td>
+                      <td style={styles.td}>
+                        <span style={{
+                          ...styles.statusBadge,
+                          background: statusStyle.bg,
+                          color: statusStyle.color,
+                        }}>
+                          {order.status}
+                        </span>
+                      </td>
+                      <td style={{ ...styles.td, color: '#71717a' }}>
+                        {formatDateTime(order.created_at)}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
