@@ -681,13 +681,20 @@ export async function POST(req: NextRequest) {
         // ── Step 1: Fetch pet image ─────────────────────────────
         let petImageBuffer: Buffer | null = null
         try {
+          console.log('\n========== FETCHING SOURCE IMAGE ==========')
+          console.log('Source URL:', accessibleImageUrl.slice(0, 100) + '...')
+          
           const imgRes = await fetch(accessibleImageUrl, {
             headers: { 'User-Agent': 'PetPrintsStudio/1.0' },
             signal: AbortSignal.timeout(30000),
           })
           if (imgRes.ok) {
             petImageBuffer = Buffer.from(await imgRes.arrayBuffer())
-            console.log('Pet image fetched, size:', petImageBuffer.length)
+            console.log('Image fetched successfully')
+            console.log('Buffer size:', petImageBuffer.length, 'bytes')
+            console.log('Content-Type from response:', imgRes.headers.get('content-type'))
+            console.log('NOTE: Image is passed to OpenAI AS-IS — no cropping, no resizing')
+            console.log('============================================\n')
           } else {
             console.error('Pet image fetch failed:', imgRes.status)
           }
@@ -759,9 +766,23 @@ export async function POST(req: NextRequest) {
             Array.from({ length: variantsToRun }, (_, v) => async () => {
               try {
                 if (!petImageBuffer) { console.error('No buffer for GPT'); done++; return }
+                
+                const promptText = family.gptPrompt(petDesc)
+                
+                // === DEBUG LOGGING ===
+                console.log(`\n========== GPT IMAGE CALL: ${family.name} v${v} ==========`)
+                console.log('Image buffer size:', petImageBuffer.length, 'bytes')
+                console.log('Model: gpt-image-1')
+                console.log('Size: 1024x1024')
+                console.log('Quality: medium')
+                console.log('Prompt length:', promptText.length, 'chars')
+                console.log('Prompt preview (first 500 chars):', promptText.slice(0, 500))
+                console.log('Prompt preview (last 300 chars):', promptText.slice(-300))
+                console.log('======================================================\n')
+                
                 const fd = new FormData()
                 fd.append('model', 'gpt-image-1')
-                fd.append('prompt', family.gptPrompt(petDesc))
+                fd.append('prompt', promptText)
                 fd.append('n', '1')
                 fd.append('size', '1024x1024')
                 fd.append('quality', 'medium')
