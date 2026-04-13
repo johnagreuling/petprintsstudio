@@ -260,10 +260,9 @@ export default function Home() {
           <div className="card" style={{padding:0,overflow:'hidden',position:'relative',display:'grid',gridTemplateColumns:'1fr 1fr',marginTop:2}}>
             <div style={{position:'relative',overflow:'hidden',minHeight:360}}>
               <img
-                src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=900&q=80&fit=crop&crop=faces"
-                alt="Overwhelmed with joy"
-                style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center top',display:'block'}}
-                onError={(e)=>{(e.target as HTMLImageElement).style.opacity='0'}}
+                src="/dog-squad-hero.png"
+                alt="Dogs of all breeds lined up"
+                style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center center',display:'block'}}
               />
               <div style={{position:'absolute',inset:0,background:'linear-gradient(135deg, rgba(10,10,10,.05) 0%, rgba(10,10,10,.4) 100%)'}} />
             </div>
