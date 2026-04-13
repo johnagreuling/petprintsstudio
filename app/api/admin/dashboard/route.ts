@@ -12,6 +12,15 @@ import {
   searchSessions
 } from '@/lib/db';
 
+// Helper to parse JSONB fields that may come back as strings
+function parseSessionImages(sessions: any[]) {
+  return sessions.map((s: any) => ({
+    ...s,
+    images: typeof s.images === 'string' ? JSON.parse(s.images) : (s.images || []),
+    questionnaire: typeof s.questionnaire === 'string' ? JSON.parse(s.questionnaire) : (s.questionnaire || {}),
+  }));
+}
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -40,7 +49,8 @@ export async function GET(request: Request) {
         case 'recent-orders':
           return NextResponse.json(await getOrders({ limit: 10 }));
         case 'recent-sessions':
-          return NextResponse.json(await searchSessions({ limit: 10 }));
+          const sessions = await searchSessions({ limit: 10 });
+          return NextResponse.json(parseSessionImages(sessions));
         default:
           return NextResponse.json({ error: 'Unknown section' }, { status: 400 });
       }
@@ -56,7 +66,7 @@ export async function GET(request: Request) {
       referrers,
       locations,
       recentOrders,
-      recentSessions,
+      recentSessionsRaw,
     ] = await Promise.all([
       getDashboardStats(),
       getDailyApiSpend(days),
@@ -81,7 +91,7 @@ export async function GET(request: Request) {
         referrers,
         locations,
         recentOrders,
-        recentSessions,
+        recentSessions: parseSessionImages(recentSessionsRaw),
       },
       meta: {
         days,
@@ -91,7 +101,7 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error('Dashboard API error:', error);
     return NextResponse.json(
-      { error: 'Failed to load dashboard data' },
+      { error: 'Failed to load dashboard data', details: String(error) },
       { status: 500 }
     );
   }

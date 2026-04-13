@@ -18,14 +18,21 @@ export async function GET(request: NextRequest) {
       getSessionCount()
     ]);
     
+    // Ensure images are parsed (JSONB can sometimes come back as string)
+    const parsedSessions = sessions.map((s: any) => ({
+      ...s,
+      images: typeof s.images === 'string' ? JSON.parse(s.images) : (s.images || []),
+      questionnaire: typeof s.questionnaire === 'string' ? JSON.parse(s.questionnaire) : (s.questionnaire || {}),
+    }));
+    
     return NextResponse.json({
-      sessions,
+      sessions: parsedSessions,
       total: totalCount,
       limit,
       offset
     });
   } catch (error) {
     console.error('Admin sessions error:', error);
-    return NextResponse.json({ error: 'Failed to fetch sessions' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch sessions', details: String(error) }, { status: 500 });
   }
 }
