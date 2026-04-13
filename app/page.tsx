@@ -225,7 +225,7 @@ export default function Home() {
               </div>
               <div style={{padding:'20px 20px 28px'}}>
                 <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>The Magic Happens</h3>
-                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>Our team creates 5 original songs about your pet — their name, their personality, their story told through music. Delivered in 24 hours.</p>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>Our team creates two original songs about your pet, inspired by the story you&rsquo;ve shared — a personalized tribute that captures who they are through the beauty of music.</p>
               </div>
             </div>
 
