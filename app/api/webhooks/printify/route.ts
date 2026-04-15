@@ -174,7 +174,7 @@ async function sendShippingNotification(data: {
 
   try {
     await axios.post('https://api.resend.com/emails', {
-      from: 'Pet Prints Studio <orders@petprintsstudio.com>',
+      from: process.env.RESEND_FROM_EMAIL || 'Pet Prints Studio <onboarding@resend.dev>',
       to: data.email,
       subject: `📦 Your Portrait Has Shipped!`,
       html,

@@ -130,8 +130,11 @@ async function sendEmail({ to, imageUrl, checkoutLink, petName, personalMessage 
 </body>
 </html>`
 
+  // Use verified domain if available, otherwise use Resend's default
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'Pet Prints Studio <onboarding@resend.dev>'
+
   await axios.post('https://api.resend.com/emails', {
-    from: 'Pet Prints Studio <orders@petprintsstudio.com>',
+    from: fromEmail,
     to,
     subject: `${petLabel} Portrait is Ready! 🎨`,
     html,

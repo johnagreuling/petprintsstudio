@@ -293,7 +293,7 @@ async function sendAdminNotification(data: {
 
   try {
     await axios.post('https://api.resend.com/emails', {
-      from: 'Pet Prints Studio <orders@petprintsstudio.com>',
+      from: process.env.RESEND_FROM_EMAIL || 'Pet Prints Studio <onboarding@resend.dev>',
       to: ADMIN_EMAIL,
       subject: `💰 New Order: ${data.petName} — $${(data.totalCents / 100).toFixed(2)}`,
       html,
@@ -346,7 +346,7 @@ async function sendOrderConfirmationEmail(data: {
 
   try {
     await axios.post('https://api.resend.com/emails', {
-      from: 'Pet Prints Studio <orders@petprintsstudio.com>',
+      from: process.env.RESEND_FROM_EMAIL || 'Pet Prints Studio <onboarding@resend.dev>',
       to: data.email,
       subject: `🎨 Order Confirmed — ${data.petName}'s Portrait`,
       html,
@@ -392,7 +392,7 @@ async function sendDigitalDownloadEmail({ email, name, petName, imageUrl, sessio
   }
   
   await axios.post('https://api.resend.com/emails', { 
-    from: 'Pet Prints Studio <orders@petprintsstudio.com>', 
+    from: process.env.RESEND_FROM_EMAIL || 'Pet Prints Studio <onboarding@resend.dev>', 
     to: email, 
     subject: `Your ${petName} Portrait is Ready 🐾`, 
     html 
