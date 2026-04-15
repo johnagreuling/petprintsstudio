@@ -12,5 +12,11 @@ export async function POST() {
 }
 
 export async function GET() {
-  return NextResponse.json({ message: 'POST to this endpoint to initialize the database' });
+  try {
+    await initializeDatabase();
+    return NextResponse.json({ success: true, message: 'Database initialized successfully' });
+  } catch (error) {
+    console.error('DB init error:', error);
+    return NextResponse.json({ error: 'Failed to initialize database' }, { status: 500 });
+  }
 }
