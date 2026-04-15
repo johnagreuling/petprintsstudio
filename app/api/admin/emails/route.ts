@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { neon } from '@neondatabase/serverless';
+import { sql } from '@vercel/postgres';
 
 interface OrderEmail {
   id: number;
@@ -24,27 +24,26 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   
-  // Create database connection at runtime, not build time
-  const sql = neon(process.env.DATABASE_URL!);
-  
   try {
     // Fetch orders with customer emails
-    const orders = await sql`
+    const ordersResult = await sql`
       SELECT id, customer_email, customer_name, status, created_at, product_name
       FROM orders
-      WHERE customer_email IS NOT NULL
+      WHERE customer_email IS NOT NULL AND customer_email != ''
       ORDER BY created_at DESC
       LIMIT 50
-    ` as OrderEmail[];
+    `;
+    const orders = ordersResult.rows as OrderEmail[];
     
     // Fetch sessions with customer emails (from direct orders)
-    const sessions = await sql`
+    const sessionsResult = await sql`
       SELECT session_id, customer_email, pet_name, created_at
       FROM sessions
-      WHERE customer_email IS NOT NULL
+      WHERE customer_email IS NOT NULL AND customer_email != ''
       ORDER BY created_at DESC
       LIMIT 50
-    ` as SessionEmail[];
+    `;
+    const sessions = sessionsResult.rows as SessionEmail[];
     
     // Combine and format as emails
     const orderEmails = orders.map((order) => ({
