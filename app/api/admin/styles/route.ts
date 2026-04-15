@@ -177,7 +177,7 @@ Before rendering, ensure the entire animal is fully visible inside each square p
     name: 'Fairytale',
     emoji: '✨',
     description: 'Soft magical storybook portrait with warm golden light, soulful eyes, floating sparkles, and a cozy whimsical scene.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 Render this image in a premium storybook portrait style with soft illustrated brushwork, warm golden light, and a cozy magical atmosphere. The result should feel like a beautifully painted children's book illustration, not a photograph, not a cartoon, and not a polished digital render. Preserve the pet's accurate likeness, especially the face shape, nose, curls, and gentle head tilt, while giving the eyes a slightly larger, more expressive, soulful storybook quality. Use soft edges, subtle painterly texture, warm highlights, gentle glow, floating dust-like sparkles, and an inviting interior scene with simple whimsical background elements such as a softly lit window, curtains, flowers, books, or a cozy home setting. Keep the pet centered and emotionally engaging as the clear focal point. Fur should feel soft and painterly, not overly detailed or hyperreal. Avoid photorealism, hard outlines, comic-book styling, plastic AI textures, oversharpening, cluttered backgrounds, or cheap novelty illustration. The final image should feel heartwarming, nostalgic, magical, and premium, like a treasured storybook portrait worthy of framing.
 
@@ -192,7 +192,7 @@ ${CONSTRAINTS_GPT}
     name: 'Premium Comic',
     emoji: '💥',
     description: 'Bold comic book portrait with clean inked linework, cel shading, cinematic lighting, and vivid animated character energy.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 Render this image as a premium animated comic book portrait with bold, clean inked linework, expressive stylization, and polished cel shading. The result should feel like a high-end illustrated panel from a modern comic book, with confident contour lines, simplified forms, and strong visual clarity. Preserve the pet's accurate likeness, including facial structure, fur pattern, and expression, while subtly stylizing the features to feel more animated and character-driven. The eyes should be slightly larger and more expressive, with a lively, emotional quality. Fur should be simplified into clean, stylized curls and directional shapes rather than hyper-detailed texture. Use smooth cel shading with clear light and shadow separation, avoiding overly soft blending. Lighting should be cinematic and directional, with warm highlights and defined shadows that enhance depth and form. Ensure clean, consistent ink outlines with controlled line weight variation for a polished and professional comic look. The background should be softly simplified and illustrated, supporting the subject without clutter, like a well-composed comic panel. Avoid photorealism, painterly brush textures, excessive detail, noisy linework, heavy halftone effects, plastic AI textures, or cheap cartoon aesthetics. The final image should feel vivid, animated, collectible, and premium, like real comic book art worthy of framing.
 
@@ -206,7 +206,7 @@ ${CONSTRAINTS_GPT}
     name: 'Fine Art Sketch',
     emoji: '🖊️',
     description: 'Museum-quality charcoal and graphite portrait on textured paper. Elegant linework, soft crosshatching, and deeply emotional presence.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 Render this image as a premium fine art sketch portrait with the look of a hand-drawn charcoal and graphite artwork on textured paper. The result should feel like a real commissioned drawing created by a skilled portrait artist, not a photograph, not a painting, and not a generic digital filter. Preserve the pet's accurate likeness, facial structure, fur pattern, expression, and emotional presence while translating the portrait into elegant linework, soft shading, and refined tonal depth. Use delicate pencil and charcoal marks, subtle crosshatching, blended graphite shadows, and strong focal detail around the eyes, nose, and expression. The background should remain minimal, soft, and unobtrusive, with only gentle tonal suggestion or paper texture so the pet remains the clear emotional focus. Keep the composition timeless, balanced, and dignified. Avoid glossy digital polish, hard vector lines, cartoon styling, excessive detail everywhere, muddy smudging, fake photo-to-sketch effects, noisy textures, or cheap novelty aesthetics. The final image should feel intimate, sophisticated, timeless, and deeply emotional, like a museum-quality pet portrait sketch worthy of framing.
 
@@ -221,7 +221,7 @@ ${CONSTRAINTS_GPT}
     name: 'Neon Glow',
     emoji: '🌟',
     description: 'Electric, cinematic, high-contrast. Glowing neon outlines on a deep dark background.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 STYLE
 Render this portrait in a Neon Glow style with a dark, cinematic background and vivid neon lighting accents. Preserve the subject's likeness and expression while reinterpreting the scene with bold glowing outlines, luminous highlights, and high contrast color. Use saturated neon tones such as electric blue, magenta, purple, teal, and gold against deep shadow. The lighting should feel dynamic and stylized, emphasizing contours and key elements of the scene. The final image should feel sleek, modern, high-energy, and visually striking, like premium cyber-inspired wall art with a nightlife aesthetic.
@@ -245,7 +245,7 @@ ${CONSTRAINTS_GPT}
     name: 'Storybook Nostalgia',
     emoji: '📖',
     description: 'Warm, cozy, memory-filled. A painterly scene that feels like a cherished illustrated storybook.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 STYLE
 Render this portrait in a warm storybook nostalgia style, with soft painterly brushwork, gentle lighting, and a cozy, emotionally rich atmosphere. Preserve the subject's likeness, expression, and personality while placing them naturally within a story-driven environment. The scene should feel lived-in and meaningful, with subtle environmental details that support memory and narrative without overwhelming the subject. Use warm, inviting color tones, soft edges, and natural light. The overall composition should feel intimate, sentimental, and timeless, like a cherished illustrated memory brought to life.
@@ -270,7 +270,7 @@ ${CONSTRAINTS_GPT}
     name: 'Ethereal Painterly',
     emoji: '🎨',
     description: 'Soft, dreamlike brushwork with luminous depth. Your pet rendered in a timeless painterly style worthy of any gallery wall.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 Render this image in an ethereal painterly style with soft, expressive brushwork, atmospheric depth, and an emotionally rich fine-art composition. The result should feel like a real hand-painted artwork created by a skilled contemporary painter, not a photograph, not a digital illustration, and not a polished AI render. Preserve the pet's recognizable likeness, soulful eyes, and emotional presence, while interpreting the scene with softness, memory, and artistic intuition rather than literal realism. Use layered painterly texture, broken edges, subtle asymmetry, soft blending, and visible brushstrokes that allow parts of the subject and background to gently dissolve into one another. The palette should feel harmonious, muted but expressive, with nuanced color shifts and a dreamlike atmosphere. Backgrounds should remain suggestive and atmospheric, supporting the story and mood without becoming overly detailed or visually busy. Avoid photorealism, glossy digital smoothness, hard outlines, cartoon styling, over-rendered fur detail, plastic textures, sharp vector edges, or generic decorative illustration. The finished image should feel intimate, emotional, poetic, and timeless, like a treasured painting built from memory, feeling, and presence.
 
@@ -281,7 +281,7 @@ ${CONSTRAINTS_GPT}`,
     name: 'Contemporary Bold',
     emoji: '✨',
     description: 'Bold, jewel-toned, and vividly alive. Contemporary graphic energy with a gallery-quality finish.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 Render this image in a bold modern surreal style with striking color, dramatic contrast, and a polished contemporary fine-art composition. The result should feel like a high-end gallery painting — luxurious, vibrant, and visually arresting — not a cartoon, not a photograph, and not a generic digital illustration. Preserve the pet's recognizable likeness, expressive presence, and key personality traits, while elevating the image through intensified color, surreal visual drama, and refined artistic stylization. Use rich jewel tones, luminous highlights, crisp focal areas, and a sophisticated balance of realism and fantasy. The composition should feel intentional, high-impact, and elegant, with bold visual clarity and premium decorative appeal. Backgrounds may include stylized natural or symbolic elements, but should remain integrated, artful, and compositionally controlled rather than cluttered or literal. Avoid childish pop styling, muddy colors, low-end poster aesthetics, messy collage effects, plastic textures, generic AI smoothness, or cheap novelty energy. The final image should feel powerful, glamorous, modern, and collectible, like luxury statement art created for a beautiful interior.
 
@@ -292,7 +292,7 @@ ${CONSTRAINTS_GPT}`,
     name: 'Oil Painting',
     emoji: '🖼️',
     description: 'Rich classical oil portrait. Dramatic light, deep color, and Old Masters gravitas.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 STYLE
 Classical Old Masters oil portrait tradition. Rich warm tones. Dramatic chiaroscuro — deep shadows with luminous highlights. Museum-quality fine art. Rembrandt-style lighting. Dense layered paint. Serious and timeless.
@@ -315,7 +315,7 @@ ${CONSTRAINTS_GPT}
     name: 'Watercolor Fine Art',
     emoji: '💧',
     description: 'Delicate washes and soft edges. A luminous, flowing watercolor portrait with the feel of fine art on paper.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 STYLE
 Transparent watercolor on cold-press paper. Loose fluid brushwork. Soft bleeding edges. Luminous transparent washes layered for depth. Visible paper texture in highlights. Soft halo around fur edges. Delicate and airy.
@@ -339,7 +339,7 @@ ${CONSTRAINTS_GPT}
     name: 'Impasto Expressionism',
     emoji: '🖌️',
     description: 'Thick palette-knife texture, heavy layered paint, bold broken brush strokes. Modern fine art with a luxury gallery aesthetic.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 STYLE
 Contemporary expressionist impasto oil painting. Thick palette-knife texture, heavy layered paint, bold broken brush strokes, rough painterly edges, visible impasto, and chunky abstracted fur strokes instead of realistic fur strands. Keep the dog clearly recognizable, preserving key identifying facial features, eyes, muzzle, ear shape, and coat pattern.
@@ -370,7 +370,7 @@ ${CONSTRAINTS_GPT}
     name: 'Chateau Pop',
     emoji: '🪩',
     description: 'Surreal French interior with disco ball, wingback chair, and painterly birds. Bold impasto texture meets editorial elegance.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 STYLE
 Contemporary expressionist interior painting. The dog replaces a human subject as the central figure. Thick impasto oil painting with heavy palette-knife texture, layered paint, bold broken brush strokes. Expressive distortion while keeping the dog clearly recognizable.
@@ -402,7 +402,7 @@ ${CONSTRAINTS_GPT}
     name: 'Impressionist',
     emoji: '🌸',
     description: 'Monet-style dappled light and visible brushwork. Color and emotion over precision.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 STYLE
 Impressionist oil painting in the tradition of Monet and Renoir. Dappled sunlight effect. Loose visible brushstrokes throughout — no smooth passages. Vibrant blended colors. Plein air feeling. Light and movement in every stroke.
@@ -425,7 +425,7 @@ ${CONSTRAINTS_GPT}
     name: 'Soft Pastel',
     emoji: '🕊️',
     description: 'Dreamy pastel chalk on toned paper. Delicate, warm, and deeply tender.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 STYLE
 Soft, dreamy pastel portrait with a fine-art illustration quality. Think of a beautifully rendered pastel drawing on toned paper — delicate blended color, soft gradients, gentle light, and an intimate, emotional warmth. The texture should feel like real pastel chalk or colored pencil on quality art paper.
@@ -445,7 +445,7 @@ ${CONSTRAINTS_GPT}
     name: 'Vintage Poster',
     emoji: '🗺️',
     description: 'Mid-century travel poster energy. Bold graphic composition, flat shapes, nostalgic retro palette.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 Render this image as a premium vintage poster illustration with bold graphic composition, simplified painterly shapes, strong silhouette, and timeless retro print energy. The result should feel like a beautifully designed mid-century travel or advertising poster, not a cartoon, not a photograph, and not a modern digital illustration. Preserve the pet's recognizable likeness, posture, and personality while stylizing the scene into elegant flattened forms, controlled shading, and nostalgic color harmony. Use a curated retro palette, confident line structure, subtle print texture, and balanced composition with strong visual readability from a distance. Background elements should feel iconic and design-forward rather than overly detailed, helping tell the story in a clear, memorable way. Avoid photorealism, glossy rendering, plastic AI textures, muddy color, childish cartoon styling, messy collage effects, and generic poster templates. The final image should feel collectible, stylish, nostalgic, and premium, like a classic illustrated poster worthy of framing.
 
@@ -460,7 +460,7 @@ ${CONSTRAINTS_GPT}
     name: 'Gallery Pop',
     emoji: '⚡',
     description: 'Bold single-portrait gallery pop art. Clean graphic shapes, vibrant color blocking, modern gallery energy.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 Render this image as a premium single-image gallery pop portrait with bold graphic styling, striking color contrast, and a polished contemporary art feel. The result should feel like high-end pop-inspired wall art for a modern gallery, not a cartoon, not a meme, and not a cheap novelty print. Preserve the pet's recognizable likeness, expression, and personality while simplifying the subject into strong shapes, crisp edges, smooth color blocking, and clean visual structure. Use a vibrant but curated color palette with bold contrast, confident composition, and stylish modern-art energy. The portrait must be a single centered composition with one subject only. Do not use multiple panels, repeated images, quadrant layouts, grids, split frames, duplicated portraits, or Warhol-style repetition. The background should be simple, clean, and design-forward, supporting the pet without clutter and without creating a poster-grid look. Avoid photorealism, muddy color, childish illustration, collage effects, plastic AI textures, generic digital smoothness, and low-end pop-art novelty aesthetics. The final image should feel iconic, stylish, modern, and premium, like a collectible single-image pop portrait worthy of framing.
 
@@ -476,7 +476,7 @@ ${CONSTRAINTS_GPT}
     name: 'Heritage Poster',
     emoji: '🏛️',
     description: 'Premium retro collectible with badge and sunburst elements. Frame-worthy vintage wall art.',
-    gptPrompt: `${subjectIdentityBlock(SAMPLE_PET_DESC)}
+    gptPrompt: `${subjectBlock(SAMPLE_PET_DESC)}
 
 Create a premium heritage poster portrait of the exact animal shown in the input image.
 

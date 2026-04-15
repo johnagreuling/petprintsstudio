@@ -67,10 +67,12 @@ async function fulfillOrder(session: any, stripe: Stripe) {
       productName: `${meta.petName || 'Pet'} ${meta.styleName} - ${primaryProduct?.name || 'Portrait'} ${primaryProduct?.size || ''}`,
       quantity: 1,
       subtotalCents: totalCents,
-      stripePaymentId: session.payment_intent,
+      stripePaymentId: session.payment_intent as string | undefined,
     })
-    await updateOrderStatus(orderId, 'paid')
-    console.log(`✅ Order #${orderId} recorded in database`)
+    if (orderId) {
+      await updateOrderStatus(orderId, 'paid')
+      console.log(`✅ Order #${orderId} recorded in database`)
+    }
   } catch (err) {
     console.error('Failed to record order in database:', err)
   }
@@ -179,7 +181,7 @@ async function fulfillOrder(session: any, stripe: Stripe) {
 
       // Update order status in DB
       if (orderId) {
-        await updateOrderStatus(orderId, 'processing', printifyOrderId)
+        await updateOrderStatus(orderId, 'processing', printifyOrderId || undefined)
       }
     } catch (err: any) {
       console.error('Printify order creation failed:', err.response?.data || err.message)
