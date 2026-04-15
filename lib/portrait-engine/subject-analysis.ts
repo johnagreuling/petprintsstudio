@@ -15,6 +15,15 @@
 
 import { SubjectProfile, PET_TRAIT_KEYS } from './types'
 
+/**
+ * The analysis prompt for pet subjects.
+ * Returns structured JSON with 13 identity fields.
+ *
+ * Designed to be:
+ * - Exhaustive: captures every visual trait that matters for identity
+ * - Specific: "golden apricot with cream chest blaze" not "light colored"
+ * - Painter-oriented: describes what an artist needs to know to paint this exact animal
+ */
 const PET_ANALYSIS_SYSTEM_PROMPT = `You are a master portrait painter's assistant. Your job is to describe the exact animal in this photo with the precision needed for an artist to paint a perfect likeness without ever seeing the original.
 
 Respond with ONLY a valid JSON object (no markdown, no backticks, no preamble). Every field must be a descriptive string, not a single word.
@@ -36,6 +45,15 @@ Required JSON fields:
   "distinctiveFeatures": "1-3 most identifying traits a painter must get right (e.g., 'signature teddy bear face with round dark eyes, prominent fluffy golden curls framing face')"
 }`
 
+/**
+ * Extract a structured SubjectProfile from an uploaded pet photo.
+ *
+ * @param imageUrl - Accessible URL of the pet photo (presigned R2 URL)
+ * @param apiKey - OpenAI API key
+ * @param petType - Optional hint: "dog" or "cat"
+ * @param petName - Optional name for fallback description
+ * @returns SubjectProfile with structured identity traits
+ */
 export async function analyzePetSubject(
   imageUrl: string,
   apiKey: string,
@@ -54,13 +72,13 @@ export async function analyzePetSubject(
       body: JSON.stringify({
         model: 'gpt-4o',
         max_tokens: 800,
-        temperature: 0.2,
+        temperature: 0.2, // Low temperature for consistent, precise descriptions
         messages: [{
           role: 'user',
           content: [
             {
               type: 'image_url',
-              image_url: { url: imageUrl, detail: 'high' },
+              image_url: { url: imageUrl, detail: 'high' }, // 'high' detail for identity extraction
             },
             {
               type: 'text',
@@ -84,6 +102,7 @@ export async function analyzePetSubject(
       return buildFallbackProfile(fallbackSummary, petType)
     }
 
+    // Parse the JSON — handle potential markdown wrapping
     let traits: Record<string, string>
     try {
       const cleaned = content
@@ -93,6 +112,7 @@ export async function analyzePetSubject(
       traits = JSON.parse(cleaned)
     } catch (parseErr) {
       console.error('Failed to parse vision response as JSON:', content.slice(0, 200))
+      // Fallback: use the raw text as a summary
       return {
         subjectType: 'pet',
         summary: content.slice(0, 500),
@@ -102,12 +122,14 @@ export async function analyzePetSubject(
       }
     }
 
+    // Build a rich one-line summary from the structured data
     const summary = [
       traits.breed || traits.species || petType || 'pet',
       traits.coatColors ? `with ${traits.coatColors} coat` : '',
       traits.distinctiveFeatures ? `— ${traits.distinctiveFeatures}` : '',
     ].filter(Boolean).join(' ')
 
+    // Determine which traits are critical for identity preservation
     const mustPreserve = PET_TRAIT_KEYS.filter(key =>
       traits[key] && traits[key] !== 'none visible' && traits[key].length > 3
     )
@@ -125,6 +147,7 @@ export async function analyzePetSubject(
   }
 }
 
+/** Build a minimal fallback profile when vision analysis fails */
 function buildFallbackProfile(summary: string, petType?: string): SubjectProfile {
   return {
     subjectType: 'pet',

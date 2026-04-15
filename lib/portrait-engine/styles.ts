@@ -1,0 +1,650 @@
+// ════════════════════════════════════════════════════════════════════════════
+//  PORTRAIT ENGINE — Style Library
+//
+//  30 premium styles organized into 5 categories.
+//  Each style is PURE DATA — it describes artistic intent.
+//  The prompt-builder module handles assembly into actual prompts.
+//
+//  To add a new style: add an object to the appropriate category array.
+//  To edit a style: change the descriptive fields.
+//  To disable a style: set isActive: false.
+//  No prompt logic lives here. No template strings. No interpolation.
+//
+//  Style design principles:
+//  - Each style should produce a visually distinct result
+//  - Technique describes HOW it's rendered (medium, brushwork, finish)
+//  - Background describes the SETTING (not composition — that's separate)
+//  - Lighting describes the LIGHT (direction, quality, warmth)
+//  - ColorPalette describes the COLOR RANGE
+//  - Mood describes the EMOTIONAL QUALITY
+//  - PaintSurface describes the TEXTURE of the final artwork
+//  - ForbiddenTraits prevents the style from drifting into wrong territory
+// ════════════════════════════════════════════════════════════════════════════
+
+import { StyleTemplate, StyleCategory } from './types'
+
+// ── Category metadata ────────────────────────────────────────────────────
+
+export const CATEGORY_INFO: Record<StyleCategory, { name: string; description: string; emoji: string }> = {
+  classic_portraits:    { name: 'Classic Portraits',      description: 'Timeless studio and Old Masters styles',     emoji: '🏛️' },
+  painterly_fine_art:   { name: 'Painterly Fine Art',     description: 'Gallery-quality painting techniques',        emoji: '🎨' },
+  golden_hour_nature:   { name: 'Golden Hour & Nature',   description: 'Beautiful outdoor and natural settings',     emoji: '🌅' },
+  lifestyle_story:      { name: 'Lifestyle & Story',      description: 'Rich narrative and interior settings',       emoji: '📖' },
+  pop_modern:           { name: 'Pop & Modern',           description: 'Bold contemporary and graphic styles',       emoji: '⚡' },
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  CATEGORY 1: CLASSIC PORTRAITS
+// ════════════════════════════════════════════════════════════════════════════
+
+const CLASSIC_PORTRAITS: StyleTemplate[] = [
+  {
+    id: 'museum_black',
+    name: 'Museum Portrait',
+    emoji: '🖤',
+    category: 'classic_portraits',
+    description: 'Timeless black background studio portrait with dramatic lighting and gallery gravitas.',
+    version: 1,
+    isActive: true,
+    technique: 'Classical studio portrait photography rendered as fine art. Sharp subject with buttery depth falloff. Professional portrait lighting with catchlights in eyes. The look of a master photographer\'s best work, translated into painterly fine art.',
+    background: 'Pure deep black void. No visible backdrop elements. The subject emerges from absolute darkness, floating in space. Clean, elegant, timeless.',
+    lighting: 'Dramatic Rembrandt-style lighting from upper left. Strong key light sculpting the face with warm highlights. Deep shadows on the opposite side. Subtle rim light separating subject from black background. Catchlights in both eyes.',
+    colorPalette: 'Rich warm tones against absolute black. Golden highlights on fur and features. Deep shadows with subtle warm undertones. Minimal color — let the subject\'s natural colors shine against the void.',
+    mood: 'Dignified, timeless, powerful. The gravity of a museum masterwork. Intimate yet commanding.',
+    paintSurface: 'Smooth refined finish with subtle painterly softness. Not photorealistic — has the quality of a fine art print. Soft edges where subject meets black background.',
+    preferredFraming: 'bust',
+    forbiddenTraits: ['busy backgrounds', 'props', 'text', 'bright colors in background', 'flat lighting', 'snapshot quality'],
+    styleConstraints: ['Background must be pure deep black', 'Catchlights in eyes are essential', 'Face must be the brightest element in the image'],
+  },
+  {
+    id: 'rembrandt_master',
+    name: 'Rembrandt Master',
+    emoji: '🎭',
+    category: 'classic_portraits',
+    description: 'Dramatic Old Masters oil painting with deep chiaroscuro and museum-quality gravitas.',
+    version: 1,
+    isActive: true,
+    technique: 'Classical Old Masters oil painting in the Rembrandt tradition. Rich layered glazes over dense impasto underlayer. Visible brushwork in textured areas (fur, fabric) with smooth glazed passages in shadows. Museum-quality fine art that feels centuries old.',
+    background: 'Deep rich darkness — dark umber, burnt sienna, or forest green. Suggestion of draped fabric or architectural element barely visible in shadows. The background recedes, pushing all attention to the subject.',
+    lighting: 'Dramatic chiaroscuro — a single strong light source from upper left. Deep shadows with luminous highlights. Rembrandt triangle of light under the eye on the shadow side. Warm golden light quality. Dense, sculptural shadow modeling.',
+    colorPalette: 'Rich warm earth tones. Deep browns, warm golds, burnt sienna, ivory highlights. Occasional deep red or forest green accent. Limited palette, maximum depth.',
+    mood: 'Serious, timeless, dignified. The weight of centuries. A portrait meant to hang in a great hall.',
+    paintSurface: 'Smooth glazed surface over impasto underlayer. Visible brushwork in fur and textured areas. Luminous depth in eyes — like looking into lit amber. Dense, layered paint quality.',
+    forbiddenTraits: ['bright colors', 'modern elements', 'flat lighting', 'impressionist brushwork', 'cartoon styling', 'photorealistic finish'],
+    styleConstraints: ['Must feel like a painting you could touch', 'Eyes must have luminous glazed depth', 'Shadows should have warm color, never dead black'],
+  },
+  {
+    id: 'baroque_royal',
+    name: 'Baroque Royalty',
+    emoji: '👑',
+    category: 'classic_portraits',
+    description: 'Ornate aristocratic portrait with gold and velvet, fit for palace walls.',
+    version: 1,
+    isActive: true,
+    technique: 'Baroque court portrait painting. Elaborate and ornate with meticulous detail in decorative elements. Rich velvet textures, gold leaf accents, jeweled accessories rendered with exquisite precision. The subject posed as nobility.',
+    background: 'Opulent interior suggestion — deep crimson velvet drapes, ornate gold frame elements, possibly a marble column or coat of arms partially visible. Rich and regal without overwhelming the subject.',
+    lighting: 'Warm diffused court lighting with subtle dramatic modeling. Not as harsh as Rembrandt — more like candlelight in a grand chamber. Golden warm highlights. Soft shadow edges.',
+    colorPalette: 'Deep crimson, royal purple, gold, ivory, dark forest green. Jewel-toned and luxurious. Gold accents throughout — in lighting, accessories, and background elements.',
+    mood: 'Regal, commanding, luxurious. The subject is royalty. Opulent but dignified, never gaudy.',
+    paintSurface: 'Highly refined oil painting surface. Smooth skin-like quality in face areas. Rich impasto in decorative elements — gold, velvet, jewels. Fine detail brushwork throughout.',
+    preferredFraming: 'three_quarter',
+    forbiddenTraits: ['casual styling', 'modern elements', 'minimalism', 'rough texture', 'flat colors', 'muted palette'],
+    styleConstraints: ['Must include at least one regal element (velvet, gold, ornate detail)', 'Subject should feel elevated and noble', 'Decorative elements should enhance, not distract from, the subject'],
+  },
+  {
+    id: 'blue_velvet',
+    name: 'Blue Velvet Elegance',
+    emoji: '💎',
+    category: 'classic_portraits',
+    description: 'Sophisticated sapphire-toned portrait with rich depth and quiet luxury.',
+    version: 1,
+    isActive: true,
+    technique: 'Refined tonal portrait painting dominated by deep blue and cool silver tones. Monochromatic approach with warm accents only in the subject\'s features. Elegant restraint — the blue does the emotional work.',
+    background: 'Deep sapphire blue to midnight blue gradient. Subtle velvet texture implied. May include faint suggestion of draped blue fabric or soft blue atmosphere. Cool and sophisticated.',
+    lighting: 'Cool directional light with warm highlights only on the subject. Silver-blue rim lighting. Subtle warm golden accents in eyes and nose to anchor the viewer. The contrast between cool environment and warm subject creates drama.',
+    colorPalette: 'Dominant sapphire blue, midnight blue, cool silver, steel blue. Warm accents ONLY on the subject — golden eyes, warm nose, natural coat color preserved against the blue world. The subject is the warm center of a cool universe.',
+    mood: 'Sophisticated, serene, quietly powerful. The elegance of a sapphire. Contemplative luxury.',
+    paintSurface: 'Smooth sophisticated oil finish. Subtle cool-toned glazes in background. Warmer, more textured brushwork on the subject. The surface itself transitions from cool precision to warm life.',
+    preferredFraming: 'bust',
+    forbiddenTraits: ['bright warm backgrounds', 'busy scenes', 'casual energy', 'heavy impasto everywhere', 'cartoon styling'],
+    styleConstraints: ['Blue tones must dominate the environment', 'Subject coat colors must remain accurate despite blue surroundings', 'Warm tones only on the living subject, not the background'],
+  },
+  {
+    id: 'renaissance_noble',
+    name: 'Renaissance Noble',
+    emoji: '🏰',
+    category: 'classic_portraits',
+    description: 'Italian Renaissance portrait with sfumato softness and eternal beauty.',
+    version: 1,
+    isActive: true,
+    technique: 'Italian High Renaissance portrait in the tradition of Leonardo and Raphael. Sfumato technique — ultra-soft transitions between light and shadow with no hard edges. Atmospheric perspective. The famous smoky quality of da Vinci translated to a pet portrait.',
+    background: 'Distant landscape visible through arched window or loggia. Rolling Tuscan hills, soft blue-green sky, winding river in far distance. The background should be sfumato-soft, almost dreamlike, with atmospheric perspective making distant elements blue and hazy.',
+    lighting: 'Soft diffused natural light from the left. No harsh shadows — all transitions are gentle and gradual. The sfumato effect makes light seem to emanate from within the subject. Warm but not dramatic.',
+    colorPalette: 'Warm earth tones with cool landscape distance. Subject in warm amber, sienna, and gold. Background transitions to cool blue-green. The classic warm-cool balance of Renaissance painting.',
+    mood: 'Eternal, serene, mysteriously beautiful. The quiet power of Renaissance portraiture. Timeless grace.',
+    paintSurface: 'Ultra-smooth sfumato surface. No visible brushstrokes. Edges dissolve softly. The paint surface itself seems to glow from within. Thin glazes creating depth through layered transparency.',
+    forbiddenTraits: ['bold brushstrokes', 'heavy impasto', 'modern elements', 'graphic styling', 'harsh light', 'hard edges anywhere'],
+    styleConstraints: ['Sfumato softness is non-negotiable — NO hard edges', 'Background must include distant landscape element', 'Must feel like it could hang in the Uffizi'],
+  },
+  {
+    id: 'minimal_studio',
+    name: 'Minimal Fine Art',
+    emoji: '◻️',
+    category: 'classic_portraits',
+    description: 'Clean, modern studio portrait. Maximum subject, minimum everything else.',
+    version: 1,
+    isActive: true,
+    technique: 'Modern fine art photography rendered as painting. Clean, precise, deliberate. Every element is intentional. The subject is everything — the background is nothing. Contemporary gallery aesthetic with painterly softness.',
+    background: 'Clean warm white, soft cream, or light warm gray. Subtle gradient from slightly darker at edges to lighter behind subject. No objects, no texture, no distraction. Pure simplicity.',
+    lighting: 'Clean professional studio lighting. Soft key light from front-left with gentle fill. Even, flattering, without harsh shadows. Modern beauty lighting that makes the subject glow.',
+    colorPalette: 'The subject\'s natural colors against clean neutral tones. Let the coat color be the star. Background should be warm white or cream, never stark cold white. Minimal palette, maximum impact.',
+    mood: 'Clean, contemporary, confident. Modern gallery energy. The subject is important enough to need nothing else.',
+    paintSurface: 'Clean with subtle painterly warmth. Not photorealistic — has the softness of a fine art print. Slightly diffused edges. Contemporary art quality.',
+    forbiddenTraits: ['busy backgrounds', 'props', 'dramatic lighting', 'heavy texture', 'dark moody tones', 'ornate elements'],
+    styleConstraints: ['Background must be clean and minimal', 'Subject is the ONLY visual element', 'Modern and contemporary — not vintage or classical'],
+  },
+]
+
+// ════════════════════════════════════════════════════════════════════════════
+//  CATEGORY 2: PAINTERLY FINE ART
+// ════════════════════════════════════════════════════════════════════════════
+
+const PAINTERLY_FINE_ART: StyleTemplate[] = [
+  {
+    id: 'classical_oil',
+    name: 'Classical Oil',
+    emoji: '🖼️',
+    category: 'painterly_fine_art',
+    description: 'Traditional museum oil painting. Rich warm tones, dramatic light, timeless gravitas.',
+    version: 1,
+    isActive: true,
+    technique: 'Traditional oil painting with smooth glazed surface over impasto underlayer. Visible brushwork in fur and textured areas. Luminous depth in eyes. Dense layered paint. Serious museum-quality fine art.',
+    background: 'Deep rich background — dark brown, burgundy, or forest green. Suggestion of draped fabric or architectural detail.',
+    lighting: 'Dramatic chiaroscuro. Deep shadows with luminous highlights. Rembrandt-style single-source directional light from upper left.',
+    colorPalette: 'Rich warm earth tones. Deep browns, warm golds, burnt sienna, ivory highlights. Occasional deep red or green accent.',
+    mood: 'Serious, dignified, timeless. The weight and presence of a museum painting.',
+    paintSurface: 'Smooth glazed oil surface with luminous depth. Visible brushwork in fur. Dense layered paint quality.',
+    forbiddenTraits: ['impressionist looseness', 'modern styling', 'bright pop colors', 'flat lighting', 'digital smoothness'],
+    styleConstraints: ['Must feel like a real oil painting', 'Eyes must have luminous glazed depth'],
+  },
+  {
+    id: 'heavy_impasto',
+    name: 'Bold Impasto',
+    emoji: '🖌️',
+    category: 'painterly_fine_art',
+    description: 'Thick palette knife textures, heavy layered paint, bold expressive energy.',
+    version: 1,
+    isActive: true,
+    technique: 'Contemporary expressionist impasto oil painting. Thick palette-knife texture throughout. Heavy layered paint with visible ridges and valleys. Bold broken brush strokes. Chunky abstracted fur strokes — not realistic strands. The paint IS the subject.',
+    background: 'Subtly suggested interior or abstract color field. Muted sophisticated palette of soft sage green, dusty blue, warm beige, ochre. Color-blocked background with loose painterly elements.',
+    lighting: 'Directional warm light with exaggerated tonal shifts in shadows (cool blues, purples mixed into fur). Highlights as thick directional strokes.',
+    colorPalette: 'Muted sophistication — soft sage, dusty blue, warm beige, ochre, desaturated rose. Rich but restrained. The impasto texture creates visual richness, not the color saturation.',
+    mood: 'Energetic, modern, gallery-worthy. The confidence of bold brushwork. Upscale art-world energy.',
+    paintSurface: 'Heavy thick impasto throughout. Visible palette knife marks. Paint ridges catch light. Rough painterly edges, not clean. Slightly grainy finish. You can almost feel the texture.',
+    forbiddenTraits: ['photorealism', 'smooth gradients', 'hyper-detailed fur strands', 'glossy 3D', 'clean digital rendering', 'sharp outlines'],
+    styleConstraints: ['Texture must be visible and prominent', 'Fur rendered as chunky strokes not individual hairs', 'Must feel like a painting you could touch'],
+  },
+  {
+    id: 'ethereal_dream',
+    name: 'Ethereal Dreamscape',
+    emoji: '🌙',
+    category: 'painterly_fine_art',
+    description: 'Soft dreamy atmospheric painting with broken edges and poetic mood.',
+    version: 1,
+    isActive: true,
+    technique: 'Ethereal painterly fine art with soft expressive brushwork, atmospheric depth, and emotionally rich composition. Hand-painted feeling — not digital, not photographic. Layered painterly texture, broken edges, subtle asymmetry, soft blending, visible brushstrokes.',
+    background: 'Suggestive and atmospheric. Soft botanical elements, muted florals, or abstract washes. Background dissolves into the subject — edges blend together. Nothing literal or sharp.',
+    lighting: 'Warm diffused light — golden hour quality. Soft highlights, gentle shadow transitions. Light seems to come from within the painting rather than a specific source.',
+    colorPalette: 'Harmonious and muted but expressive. Soft warm tones — ivory, sage, dusty rose, warm gold. Nuanced color shifts throughout. Dreamlike atmosphere.',
+    mood: 'Intimate, emotional, poetic, timeless. Like a treasured painting built from memory, feeling, and presence. Quietly profound.',
+    paintSurface: 'Layered painterly texture. Broken edges where subject and background merge. Subtle asymmetry. Soft blending with visible brushstrokes. Parts of the image gently dissolve.',
+    forbiddenTraits: ['photorealism', 'glossy digital smoothness', 'hard outlines', 'over-rendered fur', 'sharp vector edges', 'bright saturated colors'],
+    styleConstraints: ['Edges must dissolve — no hard boundaries', 'Background and subject should share color harmony', 'Must feel hand-painted'],
+  },
+  {
+    id: 'watercolor_fine',
+    name: 'Watercolor Fine Art',
+    emoji: '💧',
+    category: 'painterly_fine_art',
+    description: 'Luminous transparent watercolor on cold-press paper. Flowing and delicate.',
+    version: 1,
+    isActive: true,
+    technique: 'Transparent watercolor on cold-press paper. Loose fluid brushwork with soft bleeding edges. Luminous transparent washes layered for depth. Visible paper texture in highlights. Wet-on-wet blooms in background. The medium itself is beautiful.',
+    background: 'Very loose abstract washes. Warm ivory, blush, sky blue. Minimal — the white of the paper shows through. Soft watercolor blooms that look like happy accidents.',
+    lighting: 'Soft natural light from above. The paper itself provides the brightest highlights. Subtle warm shadows achieved through layered washes, not dark paint.',
+    colorPalette: 'Transparent luminous colors. Warm golden tones, soft blush, sky blue washes. Colors mix optically through layered transparent washes, not by blending opaque paint.',
+    mood: 'Delicate, airy, luminous. The grace of watercolor — effortless-looking but deeply skilled.',
+    paintSurface: 'Transparent layered washes, not opaque. Visible cold-press paper texture. Wet-on-wet soft blooms. More defined brushwork only on eyes and muzzle. Soft halo around fur edges.',
+    forbiddenTraits: ['oil paint texture', 'digital smoothness', 'harsh outlines', 'opaque painting', 'heavy dark values', 'thick impasto'],
+    styleConstraints: ['Paper texture must be visible', 'Highlights come from unpainted paper, not white paint', 'Must feel transparent and luminous'],
+  },
+  {
+    id: 'impressionist_garden',
+    name: 'Impressionist Garden',
+    emoji: '🌸',
+    category: 'painterly_fine_art',
+    description: 'Monet-style dappled sunlight with loose visible brushwork and garden setting.',
+    version: 1,
+    isActive: true,
+    technique: 'Impressionist oil painting in the tradition of Monet and Renoir. Dappled sunlight effect throughout. Loose visible brushstrokes — no smooth passages anywhere. Short thick dabs of paint placed side-by-side. Colors blend optically, not on the canvas.',
+    background: 'Lush garden setting with loose impressionist foliage. Blues, greens, purples, gold. Light broken across leaves and flowers. Plein air feeling.',
+    lighting: 'Dappled warm sunlight filtering through foliage. Light broken into color patches across the subject. Warm golden light with cool blue-purple shadow notes. The light itself is painted in visible strokes.',
+    colorPalette: 'Vibrant but harmonious. Blues, greens, purples, gold, warm pink. Colors placed side-by-side for optical mixing. No flat areas — even shadows have color variation.',
+    mood: 'Joyful, sun-drenched, alive. The happiness of a summer garden. Movement and light in every stroke.',
+    paintSurface: 'Short thick dabs of paint throughout. Colors placed side-by-side rather than blended. Vibrant energetic surface. Every square inch has visible brushwork.',
+    forbiddenTraits: ['photorealism', 'smooth blending', 'pointillism', 'dark moody tones', 'clean edges', 'digital smoothness'],
+    styleConstraints: ['Every surface must have visible brushwork', 'Dappled light patches on the subject are essential', 'Garden elements must be present in background'],
+  },
+  {
+    id: 'color_block',
+    name: 'Contemporary Color Block',
+    emoji: '🟦',
+    category: 'painterly_fine_art',
+    description: 'Bold modern painting with striking jewel tones and confident graphic energy.',
+    version: 1,
+    isActive: true,
+    technique: 'Bold modern fine art with striking color, dramatic contrast, and polished contemporary composition. Rich jewel tones, luminous highlights, crisp focal areas. Sophisticated balance of realism and stylization.',
+    background: 'Stylized botanical or geometric color field. Bold flat color blocks behind the subject. May include abstracted floral or natural elements rendered in the same bold palette.',
+    lighting: 'Dramatic and high-contrast. Strong directional light creating bold shadows. Luminous rim lighting. The lighting is part of the style statement.',
+    colorPalette: 'Saturated jewel tones — sapphire, emerald, ruby, amethyst, gold. Bold and luxurious. Color is turned up to 11 but stays sophisticated, never garish.',
+    mood: 'Powerful, glamorous, modern. Luxury gallery statement art. Confident and visually arresting.',
+    paintSurface: 'Thick impasto oil with confident brushwork. Jewel-toned glazes. Rich surface texture that catches light. Premium gallery finish.',
+    forbiddenTraits: ['childish pop styling', 'muddy colors', 'poster aesthetics', 'collage effects', 'plastic AI textures', 'muted palette'],
+    styleConstraints: ['Colors must be bold and saturated', 'Must feel like luxury gallery art', 'Subject should pop dramatically from background'],
+  },
+]
+
+// ════════════════════════════════════════════════════════════════════════════
+//  CATEGORY 3: GOLDEN HOUR & NATURE
+// ════════════════════════════════════════════════════════════════════════════
+
+const GOLDEN_HOUR_NATURE: StyleTemplate[] = [
+  {
+    id: 'coastal_golden',
+    name: 'Coastal Golden Hour',
+    emoji: '🌅',
+    category: 'golden_hour_nature',
+    description: 'Beach sunset with warm golden light, sand textures, and ocean atmosphere.',
+    version: 1,
+    isActive: true,
+    technique: 'Luminous plein air oil painting with golden hour warmth. Soft atmospheric edges blending subject into the coastal environment. Rich warm glazes over cooler undertones. The kind of painting that makes you feel the salt air.',
+    background: 'Sandy beach at golden hour. Soft ocean waves in mid-distance. Warm sky with peach, coral, and gold cloud formations. Gentle surf foam. Dune grass suggestions on edges.',
+    lighting: 'Full golden hour — warm amber light from the low sun behind or beside the subject. Long soft shadows. Warm highlights on fur catching the golden light. Subtle warm rim lighting.',
+    colorPalette: 'Warm gold, amber, peach, coral, soft sky blue, sand tan, warm white foam. The entire palette is bathed in golden warmth.',
+    mood: 'Warm, free, joyful. The magic of golden hour on the coast. Nostalgic summer happiness.',
+    paintSurface: 'Luminous oil with warm glazes. Soft atmospheric edges. Visible but controlled brushwork. The surface glows with warm light.',
+    preferredFraming: 'full_subject',
+    forbiddenTraits: ['harsh midday light', 'cold tones', 'studio backdrop', 'dark shadows', 'urban elements'],
+    styleConstraints: ['Golden hour warmth must permeate the entire image', 'Beach/ocean elements must be present', 'Subject should look naturally at home in the scene'],
+  },
+  {
+    id: 'autumn_leaves',
+    name: 'Autumn Splendor',
+    emoji: '🍂',
+    category: 'golden_hour_nature',
+    description: 'Peak fall foliage with warm amber light and rich autumnal colors.',
+    version: 1,
+    isActive: true,
+    technique: 'Rich autumnal oil painting with warm color saturation and soft natural light. Painterly rendering of fall foliage — each leaf a brushstroke. Warm atmospheric perspective.',
+    background: 'Peak autumn foliage. Rich reds, oranges, golds, and deep greens. Fallen leaves on the ground. Tree canopy with light filtering through colored leaves. Forest path or park setting.',
+    lighting: 'Warm autumn light filtering through colored canopy. Dappled light patches on the subject. Warm golden backlight through translucent leaves. Soft warm shadows.',
+    colorPalette: 'Rich autumn spectrum — deep red, burnt orange, warm gold, amber, russet, forest green. The subject\'s coat colors interact with the autumn palette.',
+    mood: 'Warm, rich, contemplative. The bittersweet beauty of peak autumn. Cozy and magnificent.',
+    paintSurface: 'Rich oil painting with warm glazes. Visible brushwork in foliage. Softer, more refined rendering on the subject face. Textured and alive.',
+    preferredFraming: 'environmental',
+    forbiddenTraits: ['summer greens', 'winter bare trees', 'cold tones', 'studio backdrop', 'flat lighting'],
+    styleConstraints: ['Must clearly read as peak autumn', 'Foliage colors must be rich and varied', 'Subject naturally placed in the scene'],
+  },
+  {
+    id: 'snow_day',
+    name: 'Snow Day Magic',
+    emoji: '❄️',
+    category: 'golden_hour_nature',
+    description: 'Winter wonderland with fresh snow, soft light, and magical atmosphere.',
+    version: 1,
+    isActive: true,
+    technique: 'Winter landscape painting with soft diffused light and delicate snow textures. Luminous cool tones with warm highlights on the subject. Gentle atmospheric snowfall or fresh-fallen snow. The quiet beauty of a winter world.',
+    background: 'Fresh snow-covered landscape. Snow-laden evergreen trees or frosted branches. Gentle snowfall or sparkling fresh snow. Clean white ground with subtle blue-purple shadows in snow.',
+    lighting: 'Soft diffused winter light — overcast sky glow. Cool overall with warm highlights on the subject\'s face and fur. Snow reflects soft ambient light upward. Gentle, enveloping.',
+    colorPalette: 'Cool whites, soft blue-grays, ice blue, lavender in snow shadows. Warm accents only on the subject — warm nose, golden eyes, natural coat warmth. The subject is the warm center of a cool world.',
+    mood: 'Magical, peaceful, wonder. The first snowfall feeling. Quiet joy.',
+    paintSurface: 'Soft painterly finish with delicate snow texture. Slightly sparkling quality in snow highlights. Gentle edges where fur meets snow. Clean and luminous.',
+    preferredFraming: 'full_subject',
+    forbiddenTraits: ['harsh shadows', 'warm backgrounds', 'dark moody tones', 'urban slush', 'blizzard conditions'],
+    styleConstraints: ['Snow must look fresh and clean', 'Subject should stand out warmly against cool scene', 'Atmosphere should feel magical not harsh'],
+  },
+  {
+    id: 'lake_sunset',
+    name: 'Lakeside Serenity',
+    emoji: '🏞️',
+    category: 'golden_hour_nature',
+    description: 'Peaceful lake at golden hour with reflections and quiet beauty.',
+    version: 1,
+    isActive: true,
+    technique: 'Serene landscape painting with mirror-like water reflections and warm twilight atmosphere. Controlled impressionist brushwork — looser in water and sky, more precise on subject. Hudson River School meets modern plein air.',
+    background: 'Calm lake at golden hour with mirror reflections. Distant mountain silhouettes. Warm sky reflected in still water. Shoreline with natural elements — rocks, reeds, wildflowers.',
+    lighting: 'Late golden hour — the sun is low. Long horizontal warm light skimming across the water. Warm highlights, cool reflected light from water on shadow side. Peaceful, diffused.',
+    colorPalette: 'Warm golds, soft peach, lavender-blue sky, forest green, deep blue water. Reflected colors in the lake. The palette shifts warm to cool from sky to water.',
+    mood: 'Peaceful, contemplative, serene. The last light of a perfect day. Quiet majesty.',
+    paintSurface: 'Smooth atmospheric painting with controlled brushwork. Looser in reflections and sky. More precise on subject. Luminous glazes in water.',
+    preferredFraming: 'environmental',
+    forbiddenTraits: ['rough water', 'stormy sky', 'harsh light', 'urban elements', 'heavy impasto'],
+    styleConstraints: ['Water must be calm with reflections', 'Golden hour light quality is essential', 'Scene should feel peaceful not dramatic'],
+  },
+  {
+    id: 'mountain_hero',
+    name: 'Mountain Vista',
+    emoji: '🏔️',
+    category: 'golden_hour_nature',
+    description: 'Epic mountain backdrop with dramatic sky and adventurous spirit.',
+    version: 1,
+    isActive: true,
+    technique: 'Epic landscape painting with dramatic mountain scenery and heroic composition. Bold atmospheric perspective — subject sharp in foreground, mountains atmospheric in distance. The grandeur of the American West translated to fine art.',
+    background: 'Dramatic mountain peaks with snow caps. Sweeping valley or alpine meadow. Big dramatic sky with sculptured clouds catching warm light. Epic scale — mountains dwarf everything but the subject commands attention.',
+    lighting: 'Dramatic directional light — low-angle sun illuminating the subject and mountain peaks while valleys remain in atmospheric shadow. God rays or volumetric light through clouds. Bold and cinematic.',
+    colorPalette: 'Cool mountain blues and purples in distance. Warm golden foreground. Green alpine meadow. White snow peaks. Dramatic sky colors — coral, gold, deep blue.',
+    mood: 'Epic, adventurous, majestic. The thrill of high places. Bold and free.',
+    paintSurface: 'Bold atmospheric painting. Sharp detailed foreground with subject. Progressively softer and more atmospheric toward distant peaks. Dramatic but controlled.',
+    preferredFraming: 'full_subject',
+    forbiddenTraits: ['flat terrain', 'indoor elements', 'gentle lighting', 'small scale', 'urban backdrop'],
+    styleConstraints: ['Mountains must be dramatic and prominent', 'Subject must feel heroic in the landscape', 'Scale contrast between subject and mountains creates impact'],
+  },
+  {
+    id: 'garden_estate',
+    name: 'Garden Estate',
+    emoji: '🌿',
+    category: 'golden_hour_nature',
+    description: 'Lush formal garden setting with elegant natural beauty.',
+    version: 1,
+    isActive: true,
+    technique: 'Elegant garden portrait painting with lush botanical detail and refined natural light. Classical plein air tradition with modern polish. Flowers and foliage rendered with botanical accuracy but painterly softness.',
+    background: 'Formal English or French estate garden. Manicured hedges, rose bushes in bloom, stone pathway or fountain in middle distance. Wisteria or climbing roses on stone wall. Lush and abundant.',
+    lighting: 'Soft dappled garden light filtering through canopy. Warm natural light with gentle shadows. Flowers catch light beautifully. Peaceful mid-morning or late afternoon quality.',
+    colorPalette: 'Rich garden greens, soft pink and white roses, warm stone gray, lavender, soft yellow. Natural and abundant. The subject\'s colors harmonize with the garden.',
+    mood: 'Elegant, peaceful, abundant. The grace of a well-tended garden. Refined natural beauty.',
+    paintSurface: 'Refined painterly finish with botanical detail in key areas. Softer impressionist treatment of background foliage. More precise rendering on subject and nearest flowers.',
+    preferredFraming: 'environmental',
+    forbiddenTraits: ['wild/unkempt vegetation', 'urban elements', 'harsh light', 'dark moody tones', 'minimal styling'],
+    styleConstraints: ['Garden must look formal and well-tended', 'Flowers and foliage are important supporting elements', 'Must feel like an estate or botanical garden'],
+  },
+]
+
+// ════════════════════════════════════════════════════════════════════════════
+//  CATEGORY 4: LIFESTYLE & STORY
+// ════════════════════════════════════════════════════════════════════════════
+
+const LIFESTYLE_STORY: StyleTemplate[] = [
+  {
+    id: 'cozy_home',
+    name: 'Cozy Home',
+    emoji: '🏡',
+    category: 'lifestyle_story',
+    description: 'Warm home interior with natural light, soft textiles, and lived-in comfort.',
+    version: 1,
+    isActive: true,
+    technique: 'Warm interior portrait with storybook-quality painterly rendering. Soft natural light, textured fabrics, and lived-in warmth. Not a photograph — a painted memory of home. Intimate and personal.',
+    background: 'Cozy home interior — soft sofa with throw blankets, warm-toned walls, window with natural light, perhaps books or houseplants. Lived-in and real, not staged.',
+    lighting: 'Warm natural window light flooding in from one side. Soft golden quality. Gentle shadows. The kind of light that makes everything feel like Sunday morning.',
+    colorPalette: 'Warm neutrals — cream, warm taupe, soft caramel, dusty rose, sage green. Warm wood tones. Natural textile colors. Inviting and comfortable.',
+    mood: 'Warm, cozy, beloved. The feeling of home. A portrait of belonging.',
+    paintSurface: 'Soft painterly finish with warm texture. Visible but gentle brushwork. Soft textile textures in blankets and pillows. More detail on the subject than the setting.',
+    preferredFraming: 'preserve_source',
+    forbiddenTraits: ['cold sterile interiors', 'harsh lighting', 'dark moody tones', 'magazine-staged look', 'outdoor elements'],
+    styleConstraints: ['Must feel like a real home, not a showroom', 'Natural light is essential', 'Soft textiles should be present'],
+  },
+  {
+    id: 'convertible_ride',
+    name: 'Convertible Adventure',
+    emoji: '🚗',
+    category: 'lifestyle_story',
+    description: 'Classic car scene with wind in fur and open-road joy.',
+    version: 1,
+    isActive: true,
+    technique: 'Cinematic lifestyle painting with motion energy and adventure spirit. Painterly rendering with slight motion blur in background suggesting movement. The romance of the open road.',
+    background: 'Classic convertible car — suggesting vintage American muscle or European roadster. Open road, coastal highway or scenic route. Blue sky, motion blur in background trees or scenery.',
+    lighting: 'Bright outdoor sunshine with wind-swept feel. Direct sunlight on the subject. Blue sky reflected in car chrome. Hair/fur catching the wind and light.',
+    colorPalette: 'Bright and vivid — red or blue car paint, chrome highlights, blue sky, green roadside blur, golden sunlight. Energetic and alive.',
+    mood: 'Joyful, free, adventurous. Wind in the fur. The happiness of riding with your best friend.',
+    paintSurface: 'Dynamic painterly finish with motion energy. Background looser and more impressionistic suggesting speed. Subject sharp and detailed. Chrome and car paint rendered with confident brushwork.',
+    preferredFraming: 'three_quarter',
+    forbiddenTraits: ['static feeling', 'indoor setting', 'dark moody tones', 'formal composition', 'modern SUV'],
+    styleConstraints: ['Car must be classic/vintage convertible', 'Motion and wind must be suggested', 'Joy and freedom must be palpable'],
+  },
+  {
+    id: 'luxury_interior',
+    name: 'Luxury Editorial',
+    emoji: '✨',
+    category: 'lifestyle_story',
+    description: 'High-end Architectural Digest-style interior with sophisticated design.',
+    version: 1,
+    isActive: true,
+    technique: 'High-end interior portrait with AD magazine sophistication. Clean modern luxury rendered with painterly warmth. Every design element is intentional. The subject belongs in this elevated world.',
+    background: 'Sophisticated modern luxury interior — designer furniture, quality materials, curated art on walls. Marble, brass, rich wood, velvet. Statement lighting fixture. High-end but not ostentatious.',
+    lighting: 'Controlled luxury lighting — layered ambient with accent spots. Warm architectural lighting. Professional interior design lighting that flatters everything it touches.',
+    colorPalette: 'Sophisticated neutral luxury — charcoal, warm white, brass gold, deep emerald or navy accent, rich caramel leather. Curated and intentional.',
+    mood: 'Elevated, sophisticated, luxurious. The subject as protagonist of a beautiful life. Aspirational but warm.',
+    paintSurface: 'Refined painterly finish with clean precision in architectural elements. Warmer, softer rendering on the subject. The contrast between precise interiors and soft subject is the magic.',
+    preferredFraming: 'environmental',
+    forbiddenTraits: ['casual clutter', 'outdoor elements', 'cheap furnishings', 'harsh overhead lighting', 'bland generic rooms'],
+    styleConstraints: ['Interior must read as high-end design', 'Materials must look premium — marble, brass, velvet, wood', 'Subject should look naturally at home in luxury'],
+  },
+  {
+    id: 'library_study',
+    name: 'Library Portrait',
+    emoji: '📚',
+    category: 'lifestyle_story',
+    description: 'Scholarly setting with leather, books, warm lamplight, and quiet wisdom.',
+    version: 1,
+    isActive: true,
+    technique: 'Intimate library portrait with warm lamplight and intellectual atmosphere. Rich textures — leather, aged paper, dark wood. The portrait equivalent of a great novel. Warm, deep, full of character.',
+    background: 'Classic library or study. Floor-to-ceiling bookshelves with aged leather-bound books. Deep leather chair or desk. Green banker\'s lamp. Rich dark wood paneling. Globe or brass instruments.',
+    lighting: 'Warm lamplight — focused golden glow from a desk lamp or reading light. Rich warm highlights, deep cozy shadows. The warmth of a fire-lit study.',
+    colorPalette: 'Deep warm tones — dark mahogany, racing green, burgundy leather, old gold, warm ivory. Rich and masculine but inviting. The palette of a well-appointed library.',
+    mood: 'Intellectual, warm, distinguished. Old-world wisdom. The comfort of knowledge and tradition.',
+    paintSurface: 'Rich oil painting quality with warm glazes. Detail in leather and wood grain textures. Soft warm light on subject. Dense, layered, sophisticated.',
+    preferredFraming: 'three_quarter',
+    forbiddenTraits: ['modern minimalism', 'cold lighting', 'outdoor elements', 'bright colors', 'casual setting'],
+    styleConstraints: ['Books must be prominent', 'Warm lamplight is essential', 'Must feel like a private study or library'],
+  },
+  {
+    id: 'yacht_marina',
+    name: 'Marina Portrait',
+    emoji: '⛵',
+    category: 'lifestyle_story',
+    description: 'Nautical luxury with coastal light, mahogany decks, and maritime elegance.',
+    version: 1,
+    isActive: true,
+    technique: 'Nautical lifestyle painting with coastal luxury atmosphere. Bright marine light with mahogany warmth. Brass hardware details. The casual elegance of yacht club life.',
+    background: 'Classic yacht deck or marina setting. Polished mahogany, brass fittings, white rope coils. Harbor with sailboats in middle distance. Blue sky and sea. Perhaps a lighthouse or harbor village.',
+    lighting: 'Bright coastal natural light — open sky illumination with water reflections adding fill light. Clean, bright, slightly salty. Late morning or early afternoon quality.',
+    colorPalette: 'Classic nautical — navy blue, white, polished mahogany brown, brass gold, sea blue-green. Clean and crisp. The palette of a classic yacht.',
+    mood: 'Elegant, coastal, refined. Maritime tradition meets casual luxury. Salty sophistication.',
+    paintSurface: 'Clean painterly finish with attention to reflective surfaces — water, brass, polished wood. Fresh and luminous. Slight sea-spray atmosphere.',
+    preferredFraming: 'three_quarter',
+    forbiddenTraits: ['urban elements', 'dark moody tones', 'rough seas', 'modern speedboat', 'overcast gloom'],
+    styleConstraints: ['Nautical elements are essential — boat, water, harbor', 'Must feel luxurious not utilitarian', 'Classic yacht aesthetic not modern fiberglass'],
+  },
+  {
+    id: 'greenhouse',
+    name: 'Conservatory Portrait',
+    emoji: '🌱',
+    category: 'lifestyle_story',
+    description: 'Victorian greenhouse with lush tropicals, iron framework, and filtered light.',
+    version: 1,
+    isActive: true,
+    technique: 'Botanical-rich portrait set in a Victorian conservatory. Lush tropical plants, iron and glass architecture, filtered warm light. The intersection of nature and architecture. Rich, detailed, alive.',
+    background: 'Victorian iron-and-glass conservatory or greenhouse. Lush tropical plants — palm fronds, monstera, ferns, orchids, hanging vines. Wrought iron framework visible. Stone or tile floor with terracotta pots.',
+    lighting: 'Warm filtered light through glass panels and plant canopy. Dappled green-gold light. Humid, warm, tropical quality. Light catches moisture in the air.',
+    colorPalette: 'Rich tropical greens, warm terracotta, iron black, glass-filtered warm light, flower accents — orchid purple, pink, white. Lush and abundant.',
+    mood: 'Lush, warm, alive. The beauty of cultivated wilderness. Victorian botanical elegance.',
+    paintSurface: 'Rich painterly detail in botanical elements. Slightly humid atmospheric quality. Warm tones with green-filtered light. Dense and layered.',
+    preferredFraming: 'environmental',
+    forbiddenTraits: ['modern architecture', 'minimal plants', 'cold tones', 'outdoor garden', 'dark moody tones'],
+    styleConstraints: ['Greenhouse/conservatory structure must be visible', 'Plants must be lush and abundant', 'Must feel warm and tropical'],
+  },
+]
+
+// ════════════════════════════════════════════════════════════════════════════
+//  CATEGORY 5: POP & MODERN
+// ════════════════════════════════════════════════════════════════════════════
+
+const POP_MODERN: StyleTemplate[] = [
+  {
+    id: 'retro_pop_grid',
+    name: 'Retro Pop Grid',
+    emoji: '🟥',
+    category: 'pop_modern',
+    description: 'Warhol-style 4-panel grid with bold color variations. Iconic and collectible.',
+    version: 1,
+    isActive: true,
+    technique: 'Premium retro pop-art in strict 2x2 grid layout. Four panels, each with the same subject in different bold color palettes. Crisp graphic edges, strong simplified forms, smooth color blocking. Warhol screenprint aesthetic elevated to gallery quality.',
+    background: 'Flat minimal background in each panel — different bold color for each quadrant. Simple, clean, letting the subject and color do the work.',
+    lighting: 'Flat graphic lighting with bold contrast. No atmospheric depth — this is graphic art, not painting. Strong silhouette definition.',
+    colorPalette: 'Four distinctly different bold palettes: hot pink/yellow, cyan/red, lime green/blue, orange/purple. Fully saturated, high contrast. No muted tones, no pastels. Bold, vivid, electric.',
+    mood: 'Iconic, bold, collectible. Pop art energy. The kind of image that defines a wall.',
+    paintSurface: 'Smooth flat color blocking with crisp edges. Clean screenprint quality. No visible brushwork — this is graphic art. Perfectly aligned panels.',
+    preferredFraming: 'full_subject',
+    forbiddenTraits: ['painterly texture', 'atmospheric depth', 'muted colors', 'single image', 'photorealistic rendering', 'uneven panels'],
+    styleConstraints: [
+      'MUST be a strict 2x2 grid with four equal panels',
+      'Same subject in identical pose/crop in all four panels',
+      'Only the color palette changes between panels',
+      'Colors must be bold and fully saturated',
+      'Panels must be perfectly aligned and evenly spaced',
+    ],
+  },
+  {
+    id: 'neon_glow',
+    name: 'Neon Glow',
+    emoji: '💜',
+    category: 'pop_modern',
+    description: 'Electric cyberpunk neon lighting on a deep dark background.',
+    version: 1,
+    isActive: true,
+    technique: 'Sleek modern digital-art quality with neon light as the primary design element. The subject is sculpted entirely by colored light — no natural lighting. High contrast between absolute darkness and luminous neon edges. Cinematic cyberpunk aesthetic.',
+    background: 'Deep dark void — near black with subtle ambient neon glow. Perhaps faint neon geometric shapes or light streaks in the far background. The darkness makes the neon sing.',
+    lighting: 'Multiple colored neon light sources sculpting the subject from different sides. Electric purple, hot pink, cyan blue, vivid green. Strong rim lighting. Neon reflections on fur and features. Glowing edge highlights.',
+    colorPalette: 'Neon purple, electric cyan, hot pink, vivid green against near-black. The subject\'s natural colors are tinted by the neon lights. Dramatic and electric.',
+    mood: 'Electric, cinematic, futuristic. Nightclub energy. Moody but vibrant.',
+    paintSurface: 'Sleek and polished with sharp glowing edges. High contrast. Smooth dark passages with luminous highlights. Modern digital-art quality.',
+    preferredFraming: 'bust',
+    forbiddenTraits: ['natural lighting', 'warm tones', 'outdoor scenes', 'painterly texture', 'soft edges', 'muted colors'],
+    styleConstraints: ['Neon lighting is the entire visual concept', 'Background must be very dark', 'Multiple neon colors must be present', 'Glow/bloom effect on neon edges'],
+  },
+  {
+    id: 'vintage_70s',
+    name: '1970s Luxe',
+    emoji: '📷',
+    category: 'pop_modern',
+    description: 'Vintage film aesthetic with warm grain, faded richness, and retro glamour.',
+    version: 1,
+    isActive: true,
+    technique: 'Vintage 1970s photography aesthetic rendered as art. Warm film grain, slightly faded highlights, rich warm shadows. The look of Kodachrome or Ektachrome film stock. Beautiful imperfection. Not a filter — a faithful recreation of the analog film era.',
+    background: 'Period-appropriate 1970s interior or outdoor setting. Warm wood paneling, shag carpet, vintage furniture, or sun-drenched outdoor scene. Authentic retro environment.',
+    lighting: 'Warm available light with slight overexposure in highlights. The amber warmth of tungsten bulbs or golden afternoon sun. Soft lens flare. The light quality of vintage film.',
+    colorPalette: 'Warm Kodachrome palette — rich oranges, warm yellows, slightly desaturated greens, warm brown shadows. Slightly lifted blacks. The unmistakable warmth of 1970s film.',
+    mood: 'Nostalgic, warm, authentic. The romance of analog photography. Vintage glamour.',
+    paintSurface: 'Fine film grain throughout. Slightly soft focus with sharp center. Warm color cast. The texture and character of film stock, not digital.',
+    forbiddenTraits: ['modern elements', 'digital clean look', 'cold tones', 'harsh contrast', 'perfect sharpness', 'neon colors'],
+    styleConstraints: ['Film grain must be visible', 'Warm color cast is essential', 'Must authentically evoke the 1970s', 'Highlights slightly blown, shadows slightly lifted'],
+  },
+  {
+    id: 'comic_hero',
+    name: 'Comic Book Hero',
+    emoji: '💥',
+    category: 'pop_modern',
+    description: 'Bold inked linework, cel shading, and animated character energy.',
+    version: 1,
+    isActive: true,
+    technique: 'Premium animated comic book illustration with bold clean inked linework, expressive stylization, and polished cel shading. Modern comic book quality — not cartoon, not manga. Confident contour lines, simplified forms, strong visual clarity. The subject as a comic book character.',
+    background: 'Simplified illustrated environment supporting the character. Solid color or simple graphic elements. Clean comic panel composition.',
+    lighting: 'Cinematic directional lighting translated to cel shading. Clear light and shadow separation with minimal gradation. Warm highlights, defined shadows. Comic book drama.',
+    colorPalette: 'Bold and vivid but controlled. Rich saturated colors with clean separations. No muddy midtones. Each color area is confident and intentional.',
+    mood: 'Vivid, animated, heroic. The energy of a comic book splash page. Character and personality amplified.',
+    paintSurface: 'Smooth cel shading with clean line weight variation. No painterly texture — this is illustration. Crisp inked outlines, smooth color fills, controlled shading.',
+    forbiddenTraits: ['photorealism', 'painterly brushwork', 'heavy halftone', 'anime/manga style', 'cheap cartoon aesthetic', 'noisy linework'],
+    styleConstraints: ['Clean inked outlines are essential', 'Cel shading not painterly blending', 'Eyes slightly larger and more expressive', 'Must feel premium, not clip-art'],
+  },
+  {
+    id: 'fairytale_magic',
+    name: 'Fairytale Magic',
+    emoji: '✨',
+    category: 'pop_modern',
+    description: 'Magical storybook illustration with golden light, sparkles, and wonder.',
+    version: 1,
+    isActive: true,
+    technique: 'Premium storybook illustration with soft painterly brushwork, warm golden light, and cozy magical atmosphere. Children\'s book quality — not a photograph, not a cartoon. Larger, more soulful eyes with a slight storybook quality. Soft edges, warm highlights, floating sparkles.',
+    background: 'Cozy magical interior or enchanted setting — softly lit window, curtains, flowers, books, or a whimsical forest glade. Warm and inviting with subtle magical elements.',
+    lighting: 'Warm golden light suffusing the scene. Soft glow. Floating dust-mote sparkles catching light. Gentle and enveloping. The light of a fairy tale.',
+    colorPalette: 'Warm golds, soft amber, gentle greens, warm ivory, lavender hints. The palette of a beloved storybook. Rich but soft.',
+    mood: 'Heartwarming, nostalgic, magical. The wonder of childhood stories. Gentle enchantment.',
+    paintSurface: 'Soft illustrated brushwork with warm texture. Not photorealistic — has the quality of hand-painted illustration. Gentle edges, floating particles, magical atmosphere.',
+    forbiddenTraits: ['photorealism', 'hard outlines', 'dark moody tones', 'adult themes', 'harsh lighting', 'clinical precision'],
+    styleConstraints: ['Magical sparkles/particles are essential', 'Eyes should be slightly larger and more soulful', 'Must feel like a treasured storybook illustration', 'Warm golden light throughout'],
+  },
+  {
+    id: 'vintage_poster',
+    name: 'Heritage Poster',
+    emoji: '🏛️',
+    category: 'pop_modern',
+    description: 'Mid-century collectible poster with bold graphics and nostalgic warmth.',
+    version: 1,
+    isActive: true,
+    technique: 'Premium heritage poster with the aesthetic of classic naturalist illustration elevated to collectible wall art. Bold graphic composition, simplified painterly shapes, strong silhouette. Aged parchment warmth, subtle distressed texture, ornamental border elements.',
+    background: 'Warm textured parchment or aged paper background. Ornamental heritage design elements — subtle crest shapes, elegant borders, badge-style framing. Warm earth-toned backdrop.',
+    lighting: 'Flat graphic lighting appropriate to poster illustration. Clear, even illumination with defined shadows for graphic impact. Not atmospheric — bold and readable.',
+    colorPalette: 'Warm cream, rich tan, burnt sienna, forest green, deep navy, gold, aged ivory, warm brown, muted terracotta. Rich, dignified, timelessly elegant.',
+    mood: 'Distinguished, classic, collectible. The feeling of a treasured antique print. Heritage and tradition.',
+    paintSurface: 'Flat graphic rendering with subtle aged texture. Slight distressed quality. Clean edges with vintage print imperfection. Hand-crafted premium feel.',
+    forbiddenTraits: ['photorealism', 'modern styling', 'neon colors', 'heavy painterly texture', 'cartoon aesthetic', 'Warhol multi-panel'],
+    styleConstraints: ['Must include ornamental/badge design elements', 'Vintage poster composition and hierarchy', 'Aged paper texture is essential', 'Subject as noble focal point'],
+  },
+]
+
+// ════════════════════════════════════════════════════════════════════════════
+//  EXPORTS — Combined style library
+// ════════════════════════════════════════════════════════════════════════════
+
+/** All 30 styles in a flat array */
+export const ALL_STYLES: StyleTemplate[] = [
+  ...CLASSIC_PORTRAITS,
+  ...PAINTERLY_FINE_ART,
+  ...GOLDEN_HOUR_NATURE,
+  ...LIFESTYLE_STORY,
+  ...POP_MODERN,
+]
+
+/** Get a style by ID */
+export function getStyleById(id: string): StyleTemplate | undefined {
+  return ALL_STYLES.find(s => s.id === id)
+}
+
+/** Get all styles in a category */
+export function getStylesByCategory(category: StyleCategory): StyleTemplate[] {
+  return ALL_STYLES.filter(s => s.category === category)
+}
+
+/** Get all active styles */
+export function getActiveStyles(): StyleTemplate[] {
+  return ALL_STYLES.filter(s => s.isActive)
+}
+
+/** Get style categories with their styles for UI display */
+export function getStyleCatalog(): Array<{
+  category: StyleCategory
+  info: typeof CATEGORY_INFO[StyleCategory]
+  styles: StyleTemplate[]
+}> {
+  const categories: StyleCategory[] = [
+    'classic_portraits',
+    'painterly_fine_art',
+    'golden_hour_nature',
+    'lifestyle_story',
+    'pop_modern',
+  ]
+  return categories.map(cat => ({
+    category: cat,
+    info: CATEGORY_INFO[cat],
+    styles: getStylesByCategory(cat).filter(s => s.isActive),
+  }))
+}
