@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { neon } from '@neondatabase/serverless';
 
-// Get emails from our orders/sessions that we've emailed
-const sql = neon(process.env.DATABASE_URL!);
-
 interface OrderEmail {
   id: number;
   customer_email: string;
@@ -26,6 +23,9 @@ export async function GET(request: NextRequest) {
   if (password !== 'mason2024') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+  
+  // Create database connection at runtime, not build time
+  const sql = neon(process.env.DATABASE_URL!);
   
   try {
     // Fetch orders with customer emails
