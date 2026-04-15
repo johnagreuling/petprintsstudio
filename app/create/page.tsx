@@ -28,6 +28,7 @@ export default function CreatePage() {
   const [generatingCustomStyle, setGeneratingCustomStyle] = useState(false)
   const [generated, setGenerated] = useState<Array<{url:string;styleId:string;styleName:string;model:string}>>([])
   const [picked, setPicked] = useState<{url:string;styleId:string;styleName:string;model:string} | null>(null)
+  const [lightboxImg, setLightboxImg] = useState<{url:string;styleName:string}|null>(null)
   const [progress, setProgress] = useState(0)
   const [progressMsg, setProgressMsg] = useState('Preparing your portraits...')
   const [error, setError] = useState('')
@@ -869,6 +870,12 @@ export default function CreatePage() {
                         <div key={i} style={{position:'relative',cursor:'pointer'}} onClick={()=>setPicked(img)}>
                           <WatermarkedImage src={img.url} alt={`${name} ${i+1}`} width={400} height={600} displayRatio="2/3" className={`img-card${picked?.url===img.url?' picked':''}`}/>
                           {picked?.url===img.url&&<div style={{position:'absolute',top:10,right:10,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:13}}>✓</div>}
+                          {/* Fullscreen preview button */}
+                          <button 
+                            onClick={(e)=>{e.stopPropagation();setLightboxImg({url:img.url,styleName:img.styleName})}}
+                            style={{position:'absolute',bottom:10,right:10,background:'rgba(0,0,0,.7)',border:'none',color:'#fff',width:32,height:32,borderRadius:'50%',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:14,opacity:0.7,transition:'opacity .2s'}}
+                            title="View fullscreen"
+                          >🔍</button>
                         </div>
                       ))}
                     </div>
@@ -1065,6 +1072,108 @@ export default function CreatePage() {
         )}
 
       </div>
+
+      {/* ── FULLSCREEN LIGHTBOX ── */}
+      {lightboxImg && (
+        <div 
+          onClick={() => setLightboxImg(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,.95)',
+            zIndex: 9999,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            padding: 20
+          }}
+        >
+          {/* Close button */}
+          <button 
+            onClick={() => setLightboxImg(null)}
+            style={{
+              position: 'absolute',
+              top: 20,
+              right: 20,
+              background: 'rgba(255,255,255,.1)',
+              border: 'none',
+              color: '#fff',
+              width: 44,
+              height: 44,
+              borderRadius: '50%',
+              cursor: 'pointer',
+              fontSize: 20,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >✕</button>
+          
+          {/* Style name */}
+          <div style={{
+            position: 'absolute',
+            top: 24,
+            left: 24,
+            color: 'var(--gold)',
+            fontSize: 12,
+            letterSpacing: '.2em',
+            textTransform: 'uppercase'
+          }}>{lightboxImg.styleName}</div>
+          
+          {/* Full resolution image with small corner watermark */}
+          <img 
+            src={lightboxImg.url} 
+            alt={lightboxImg.styleName}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              maxWidth: '90vw',
+              maxHeight: '85vh',
+              objectFit: 'contain',
+              cursor: 'default',
+              boxShadow: '0 20px 60px rgba(0,0,0,.5)'
+            }}
+          />
+          
+          {/* Watermark overlay */}
+          <div style={{
+            position: 'absolute',
+            bottom: 'calc(7.5vh + 20px)',
+            right: 'calc(5vw + 16px)',
+            background: 'rgba(0,0,0,.6)',
+            color: 'var(--gold)',
+            fontSize: 11,
+            padding: '6px 12px',
+            borderRadius: 4,
+            pointerEvents: 'none'
+          }}>© petprintsstudio.com</div>
+          
+          {/* Select button */}
+          <button 
+            onClick={(e) => {
+              e.stopPropagation()
+              const img = generated.find(g => g.url === lightboxImg.url)
+              if (img) setPicked(img)
+              setLightboxImg(null)
+            }}
+            style={{
+              marginTop: 20,
+              background: 'var(--gold)',
+              color: 'var(--ink)',
+              border: 'none',
+              padding: '14px 36px',
+              fontSize: 12,
+              fontWeight: 600,
+              letterSpacing: '.1em',
+              textTransform: 'uppercase',
+              cursor: 'pointer'
+            }}
+          >Select This Portrait</button>
+          
+          <div style={{marginTop:12,fontSize:11,color:'rgba(255,255,255,.4)'}}>Click anywhere to close</div>
+        </div>
+      )}
     </div>
   )
 }
