@@ -169,11 +169,11 @@ export default function Home() {
                 <div style={{fontSize:42,fontWeight:900,color:'var(--gold)',lineHeight:1,fontFamily:"'DM Sans',sans-serif"}}>2</div>
               </div>
               <div style={{aspectRatio:'1',overflow:'hidden',background:'#111',position:'relative'}}>
-                <img src="/step2-mustang.jpg" alt="Tell us their story" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
+                <img src="/step2-wyatt.jpg" alt="Wyatt the USA hockey fan on the beach with his red ball" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} />
               </div>
               <div style={{padding:'20px 20px 28px'}}>
                 <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>Tell Us Their Story</h3>
-                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>Share their name, personality, quirks, favorite places. The more you tell us, the more personal every portrait becomes.</p>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>Like Wyatt—the USA hockey fan who loves his favorite beach and his trusty red ball. Share their name, personality, quirks, and favorite things.</p>
               </div>
             </div>
 
