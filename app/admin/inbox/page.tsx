@@ -5,11 +5,12 @@ import Link from 'next/link';
 
 interface Email {
   id: string;
-  from: string;
+  type: string;
   to: string;
   subject: string;
   createdAt: string;
   status: string;
+  customerName?: string | null;
 }
 
 const styles = {
@@ -321,12 +322,12 @@ export default function InboxPage() {
     fetchEmails();
   }, []);
   
-  // Calculate stats
+  // Calculate stats from emails
   const stats = {
     total: emails.length,
-    delivered: emails.filter(e => e.status.toLowerCase() === 'delivered').length,
-    opened: emails.filter(e => e.status.toLowerCase() === 'opened').length,
-    clicked: emails.filter(e => e.status.toLowerCase() === 'clicked').length,
+    orders: emails.filter(e => e.type === 'order').length,
+    directOrders: emails.filter(e => e.type === 'direct_order').length,
+    delivered: emails.filter(e => e.status === 'delivered' || e.status === 'shipped').length,
   };
   
   return (
@@ -384,28 +385,28 @@ export default function InboxPage() {
             <div style={{ ...styles.statIcon, background: 'rgba(59, 130, 246, 0.15)' }}>📤</div>
             <div>
               <div style={styles.statValue}>{stats.total}</div>
-              <div style={styles.statLabel}>Total Sent</div>
+              <div style={styles.statLabel}>Total Emails</div>
             </div>
           </div>
           <div style={styles.statCard}>
-            <div style={{ ...styles.statIcon, background: 'rgba(34, 197, 94, 0.15)' }}>✅</div>
+            <div style={{ ...styles.statIcon, background: 'rgba(34, 197, 94, 0.15)' }}>📦</div>
+            <div>
+              <div style={styles.statValue}>{stats.orders}</div>
+              <div style={styles.statLabel}>Order Confirmations</div>
+            </div>
+          </div>
+          <div style={styles.statCard}>
+            <div style={{ ...styles.statIcon, background: 'rgba(168, 85, 247, 0.15)' }}>🎨</div>
+            <div>
+              <div style={styles.statValue}>{stats.directOrders}</div>
+              <div style={styles.statLabel}>Direct Orders</div>
+            </div>
+          </div>
+          <div style={styles.statCard}>
+            <div style={{ ...styles.statIcon, background: 'rgba(212, 175, 55, 0.15)' }}>✅</div>
             <div>
               <div style={styles.statValue}>{stats.delivered}</div>
               <div style={styles.statLabel}>Delivered</div>
-            </div>
-          </div>
-          <div style={styles.statCard}>
-            <div style={{ ...styles.statIcon, background: 'rgba(168, 85, 247, 0.15)' }}>👁️</div>
-            <div>
-              <div style={styles.statValue}>{stats.opened}</div>
-              <div style={styles.statLabel}>Opened</div>
-            </div>
-          </div>
-          <div style={styles.statCard}>
-            <div style={{ ...styles.statIcon, background: 'rgba(212, 175, 55, 0.15)' }}>🖱️</div>
-            <div>
-              <div style={styles.statValue}>{stats.clicked}</div>
-              <div style={styles.statLabel}>Clicked</div>
             </div>
           </div>
         </div>
@@ -460,6 +461,7 @@ export default function InboxPage() {
                 <tr>
                   <th style={styles.th}>To</th>
                   <th style={styles.th}>Subject</th>
+                  <th style={styles.th}>Type</th>
                   <th style={styles.th}>Status</th>
                   <th style={styles.th}>Sent</th>
                 </tr>
@@ -474,9 +476,21 @@ export default function InboxPage() {
                   >
                     <td style={styles.td}>
                       <div style={styles.to}>{email.to}</div>
+                      {email.customerName && (
+                        <div style={{ fontSize: '12px', color: '#71717a' }}>{email.customerName}</div>
+                      )}
                     </td>
                     <td style={styles.td}>
                       <div style={styles.subject}>{email.subject || '(no subject)'}</div>
+                    </td>
+                    <td style={styles.td}>
+                      <span style={{ 
+                        ...styles.statusBadge, 
+                        background: email.type === 'order' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(168, 85, 247, 0.15)',
+                        color: email.type === 'order' ? '#3b82f6' : '#a855f7',
+                      }}>
+                        {email.type === 'order' ? '📦 Order' : '🎨 Direct'}
+                      </span>
                     </td>
                     <td style={styles.td}>
                       <span style={{ ...styles.statusBadge, ...getStatusStyle(email.status) }}>
