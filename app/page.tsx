@@ -330,10 +330,10 @@ export default function Home() {
               </div>
             </div>
             <div style={{borderRadius:6,overflow:'hidden',border:'1px solid var(--border)'}}>
-              <img src="/portrait-lily.png" alt="Lily - Signature Portrait" style={{width:'100%',display:'block'}}/>
+              <img src="/portrait-wyatt.png" alt="Wyatt - USA Hockey Fan" style={{width:'100%',display:'block'}}/>
               <div style={{background:'var(--mid)',padding:'10px 12px',borderTop:'1px solid var(--border)'}}>
-                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500}}>Lily</div>
-                <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>Disco queen in her favorite wingback chair.</div>
+                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500}}>Wyatt</div>
+                <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>USA hockey fan on his favorite beach with his favorite red ball.</div>
               </div>
             </div>
           </div>
