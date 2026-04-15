@@ -391,6 +391,7 @@ export default function AdminDashboard() {
           <Link href="/admin/sessions" style={styles.navLink}>Sessions</Link>
           <Link href="/admin/orders" style={styles.navLink}>Orders</Link>
           <Link href="/admin/direct-order" style={styles.navLink}>📧 Direct Order</Link>
+          <Link href="/admin/inbox" style={styles.navLink}>📬 Inbox</Link>
           <Link href="/admin/styles" style={styles.navLink}>🎨 Styles</Link>
         </div>
       </nav>
