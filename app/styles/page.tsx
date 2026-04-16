@@ -229,20 +229,6 @@ export default function StylesGallery() {
                     <div style={{ fontSize: 11, color: '#444', letterSpacing: '.1em', textTransform: 'uppercase' }}>Preview soon</div>
                   </div>
                 )}
-                <div style={{
-                  position: 'absolute',
-                  top: 12,
-                  left: 12,
-                  background: 'rgba(0,0,0,.75)',
-                  padding: '4px 10px',
-                  fontSize: 9,
-                  textTransform: 'uppercase',
-                  letterSpacing: '.1em',
-                  color: CATEGORY_COLORS[style.category] || '#888',
-                  borderLeft: `2px solid ${CATEGORY_COLORS[style.category] || '#444'}`,
-                }}>
-                  {style.category.replace(/_/g, ' ')}
-                </div>
                 <div className="card-overlay" style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,10,10,.95) 0%, rgba(10,10,10,.3) 50%, transparent 100%)' }}>
                   <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '24px 20px' }}>
                     <div style={{ fontSize: 11, letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 6 }}>{style.emoji} {style.name}</div>
