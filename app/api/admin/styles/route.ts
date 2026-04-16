@@ -1,514 +1,126 @@
-import { NextRequest } from 'next/server'
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import { v4 as uuidv4 } from 'uuid'
-import { saveSession, SessionImage, logApiUsage } from '@/lib/db'
+import { NextResponse } from 'next/server';
+import { sql } from '@vercel/postgres';
 import {
-  analyzePetSubject,
-  buildPrompt,
-  buildMemoryScenePrompt,
-  ALL_STYLES,
-  getStyleById,
   getActiveStyles,
+  getStyleCatalog,
+  buildPrompt,
   DEFAULT_COMPOSITION,
   type SubjectProfile,
-  type StyleTemplate,
-  type GenerationResult,
-} from '@/lib/portrait-engine'
+} from '@/lib/portrait-engine';
 
-// ── Config ───────────────────────────────────────────────────────────────
-export const maxDuration = 600   // 10 minutes — 30 styles at quality:high
-export const dynamic = 'force-dynamic'
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+//  ADMIN STYLES API
+//
+//  Reads from the portrait engine's style library (single source of truth).
+//  Builds a sample prompt for each style using a demo pet description.
+//  Pulls sample images from recent generation sessions in the database.
+// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
-// ── R2 Client ────────────────────────────────────────────────────────────
-const r2 = new S3Client({
-  region: 'auto',
-  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+// Sample pet profile for generating example prompts in the admin view
+const SAMPLE_PET: SubjectProfile = {
+  subjectType: 'pet',
+  summary: 'Goldendoodle with golden apricot coat â signature teddy bear face with round dark eyes',
+  traits: {
+    species: 'dog',
+    breed: 'Goldendoodle with loose curly coat',
+    coatColors: 'golden apricot primary with cream highlights on chest and muzzle',
+    coatTexture: 'medium-length loose wavy curls, soft and fluffy, matte finish',
+    markings: 'darker apricot on ears fading to cream on muzzle, lighter chest',
+    eyeColor: 'dark brown, warm and expressive',
+    earType: 'medium floppy drop ears, covered in wavy fur',
+    muzzleShape: 'medium-length rounded muzzle with prominent black nose',
+    noseColor: 'solid black',
+    bodySize: 'medium build, athletic but fluffy',
+    accessories: 'none visible',
+    expression: 'happy, relaxed, friendly with soft eyes',
+    distinctiveFeatures: 'signature teddy bear face with round dark eyes, prominent fluffy golden curls framing face',
   },
-})
-
-async function uploadB64ToR2(b64: string, ext = 'png', sessionFolder = 'generated'): Promise<string> {
-  const key = `${sessionFolder}/${uuidv4()}.${ext}`
-  const buffer = Buffer.from(b64, 'base64')
-  await r2.send(new PutObjectCommand({
-    Bucket: process.env.R2_BUCKET_NAME!,
-    Key: key,
-    Body: buffer,
-    ContentType: `image/${ext}`,
-    CacheControl: 'public, max-age=86400',
-  }))
-  return `${process.env.R2_PUBLIC_URL?.replace(/\/$/, '')}/${key}`
+  mustPreserve: ['breed', 'coatColors', 'coatTexture', 'markings', 'eyeColor', 'earType', 'muzzleShape', 'distinctiveFeatures'],
+  rawAnalysis: '',
 }
 
-async function saveSessionMetadata(sessionFolder: string, meta: object) {
+export async function GET() {
   try {
-    await r2.send(new PutObjectCommand({
-      Bucket: process.env.R2_BUCKET_NAME!,
-      Key: `${sessionFolder}/session.json`,
-      Body: JSON.stringify(meta, null, 2),
-      ContentType: 'application/json',
-      CacheControl: 'no-cache',
-    }))
-  } catch (e) { console.error('Session meta save failed:', e) }
-}
-
-// ── Style ID Mapping ─────────────────────────────────────────────────────
-// Maps old style IDs from config.ts ART_STYLES → new portrait-engine IDs
-// This keeps the frontend working without changes
-const LEGACY_STYLE_MAP: Record<string, string> = {
-  'ethereal': 'ethereal_dream',
-  'watercolor': 'watercolor_fine',
-  'impasto': 'heavy_impasto',
-  'bold_contemporary': 'color_block',
-  'classical_oil': 'classical_oil',
-  'impressionist': 'impressionist_garden',
-  'pastel': 'ethereal_dream',
-  'vintage_poster': 'vintage_poster',
-  'vintage_pop_art': 'color_block',
-  'vintage_poster_v2': 'vintage_poster',
-  'neon_glow': 'neon_glow',
-  'storybook': 'fairytale_magic',
-  'retro_pop': 'retro_pop_grid',
-  'fairytale': 'fairytale_magic',
-  'comic_animation': 'comic_hero',
-  'fine_art_sketch': 'minimal_studio',
-  'chateau_pop': 'heavy_impasto',
-  'editorial_acrylic': 'color_block',
-}
-
-function resolveStyleId(id: string): string {
-  return LEGACY_STYLE_MAP[id] || id
-}
-
-// ── Memory Scene Definitions ─────────────────────────────────────────────
-const MEMORY_SCENES = [
-  { id: 'mem_adventure', name: '🚗 Adventure', defaultStyleId: 'color_block',
-    template: (name: string, place: string) => `${name} on an adventure at ${place}. Cinematic outdoor landscape, sense of freedom and joy.` },
-  { id: 'mem_royal', name: '👑 Royal', defaultStyleId: 'baroque_royal',
-    template: (name: string, _place: string) => `${name} as royalty. Ornate gold-leaf setting, velvet drapes, jeweled collar, commanding pose.` },
-  { id: 'mem_golden_hour', name: '🌅 Golden Hour', defaultStyleId: 'coastal_golden',
-    template: (name: string, place: string) => `${name} at ${place} during golden hour. Warm amber light catching the fur.` },
-  { id: 'mem_holiday', name: '🎄 Holiday', defaultStyleId: 'cozy_home',
-    template: (name: string, _place: string) => `${name} in a cozy holiday scene — fireplace glow, decorated tree, warm candlelight.` },
-  { id: 'mem_city', name: '🏙️ City', defaultStyleId: 'neon_glow',
-    template: (name: string, place: string) => `${name} in ${place || 'a vibrant city'} at dusk. City lights bokeh, confident and stylish.` },
-  { id: 'mem_perfect_day', name: '✨ Perfect Day', defaultStyleId: 'impressionist_garden',
-    template: (name: string, place: string) => `${name}'s perfect day at ${place}. Joyful and free.` },
-]
-
-// ════════════════════════════════════════════════════════════════════════════
-//  MAIN HANDLER
-// ════════════════════════════════════════════════════════════════════════════
-
-export async function POST(req: NextRequest) {
-  const {
-    imageUrl,
-    isMemory,
-    answers,
-    petType,
-    petName,
-    sessionId,
-    brief,
-    imagePromptCore,
-    targetStyleId,
-    variantCount,
-  } = await req.json()
-
-  // ── Resolve accessible image URL ────────────────────────────────────
-  const r2PublicBase = process.env.R2_PUBLIC_URL?.replace(/\/$/, '') || ''
-  const imageKey = imageUrl.startsWith(r2PublicBase)
-    ? imageUrl.slice(r2PublicBase.length + 1)
-    : imageUrl.split('/uploads/').pop() ? `uploads/${imageUrl.split('/uploads/').pop()}` : null
-
-  let accessibleImageUrl = imageUrl
-  if (imageKey) {
+    // Get sample images from recent sessions for each style
+    const styleImages: Record<string, string> = {};
+    
     try {
-      accessibleImageUrl = await getSignedUrl(r2, new GetObjectCommand({
-        Bucket: process.env.R2_BUCKET_NAME!, Key: imageKey
-      }), { expiresIn: 3600 })
-    } catch (e) { console.error('Presign failed:', e) }
-  }
-
-  // ── SSE Stream Setup ────────────────────────────────────────────────
-  const encoder = new TextEncoder()
-  const stream = new ReadableStream({
-    async start(controller) {
-      const send = (data: object) =>
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`))
-
-      try {
-        const allImages: GenerationResult[] = []
-        send({ type: 'progress', value: 3, message: 'Analyzing your pet...' })
-
-        // ══════════════════════════════════════════════════════════════
-        //  STEP 1: Fetch source image
-        // ══════════════════════════════════════════════════════════════
-        let petImageBuffer: Buffer | null = null
-        try {
-          console.log('\n========== FETCHING SOURCE IMAGE ==========')
-          console.log('Source URL:', accessibleImageUrl.slice(0, 100) + '...')
-          const imgRes = await fetch(accessibleImageUrl, {
-            headers: { 'User-Agent': 'PetPrintsStudio/2.0' },
-            signal: AbortSignal.timeout(30000),
-          })
-          if (imgRes.ok) {
-            petImageBuffer = Buffer.from(await imgRes.arrayBuffer())
-            console.log('Image fetched:', petImageBuffer.length, 'bytes')
-          } else {
-            console.error('Pet image fetch failed:', imgRes.status)
-          }
-        } catch (e) { console.error('Fetch error:', e) }
-
-        // ══════════════════════════════════════════════════════════════
-        //  STEP 2: Subject Identity Extraction
-        //
-        //  The foundation of everything. GPT-4o (full) with high detail
-        //  extracts 13 structured identity fields.
-        //  Cost: ~$0.01 per analysis
-        //  Value: prevents $1-5+ in failed generations
-        // ══════════════════════════════════════════════════════════════
-        send({ type: 'progress', value: 5, message: 'Building identity profile...' })
-
-        const subjectProfile = await analyzePetSubject(
-          accessibleImageUrl,
-          process.env.OPENAI_API_KEY!,
-          petType,
-          petName,
-        )
-
-        console.log('\n========== SUBJECT PROFILE ==========')
-        console.log('Summary:', subjectProfile.summary)
-        console.log('Traits:', JSON.stringify(subjectProfile.traits, null, 2))
-        console.log('Must preserve:', subjectProfile.mustPreserve)
-        console.log('=====================================\n')
-
-        send({ type: 'progress', value: 10, message: 'Identity locked — starting portraits...' })
-
-        const petSlug = (petName || petType || 'pet').toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 20)
-        const sessionFolder = `sessions/${sessionId || uuidv4()}_${petSlug}`
-        const sessionStart = new Date().toISOString()
-
-        if (!isMemory) {
-          // ══════════════════════════════════════════════════════════
-          //  STYLE TRANSFER GENERATION
-          //
-          //  Each style: build modular prompt → call OpenAI /images/edits
-          //  Model: gpt-image-1
-          //  Size: 1024x1536 (2:3 portrait)
-          //  Quality: high
-          //  Input fidelity: high (preserves source identity)
-          //
-          //  Batch: 3 concurrent with 20s gap between batches
-          //  (quality:high is slower — give the API breathing room)
-          // ══════════════════════════════════════════════════════════
-
-          // Determine which styles to generate
-          let stylesToRun: StyleTemplate[]
-          if (targetStyleId) {
-            const resolvedId = resolveStyleId(targetStyleId)
-            const style = getStyleById(resolvedId)
-            stylesToRun = style ? [style] : getActiveStyles().slice(0, 1)
-          } else {
-            stylesToRun = getActiveStyles()
-          }
-
-          const variantsPerStyle = variantCount || 1
-          const totalImages = stylesToRun.length * variantsPerStyle
-          let completedImages = 0
-
-          console.log(`\n========== GENERATION PLAN ==========`)
-          console.log(`Styles: ${stylesToRun.length}`)
-          console.log(`Variants per style: ${variantsPerStyle}`)
-          console.log(`Total images: ${totalImages}`)
-          console.log(`Model: gpt-image-1`)
-          console.log(`Size: 1024x1536`)
-          console.log(`Quality: high`)
-          console.log(`Input fidelity: high`)
-          console.log(`======================================\n`)
-
-          // Build all generation tasks
-          const allTasks = stylesToRun.flatMap(style =>
-            Array.from({ length: variantsPerStyle }, (_, variantIdx) => async () => {
-              try {
-                if (!petImageBuffer) { console.error('No image buffer'); completedImages++; return }
-
-                // Build modular prompt using the engine
-                const promptPackage = buildPrompt(subjectProfile, style, DEFAULT_COMPOSITION)
-
-                console.log(`\n===== GENERATING: ${style.name} (v${variantIdx}) =====`)
-                console.log(`Style ID: ${style.id}`)
-                console.log(`Prompt length: ${promptPackage.fullPrompt.length} chars`)
-                console.log(`First 300 chars: ${promptPackage.fullPrompt.slice(0, 300)}`)
-                console.log(`==========================================\n`)
-
-                // Call OpenAI /images/edits
-                const fd = new FormData()
-                fd.append('model', 'gpt-image-1')
-                fd.append('prompt', promptPackage.fullPrompt)
-                fd.append('n', '1')
-                fd.append('size', '1024x1536')
-                fd.append('quality', 'high')
-                fd.append('input_fidelity', 'high')
-                fd.append('image[]', new Blob([petImageBuffer as unknown as BlobPart], { type: 'image/jpeg' }), 'pet.jpg')
-
-                const res = await fetch('https://api.openai.com/v1/images/edits', {
-                  method: 'POST',
-                  headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
-                  body: fd,
-                })
-
-                if (res.ok) {
-                  const d = await res.json()
-                  const b64 = d.data?.[0]?.b64_json
-                  if (b64) {
-                    const url = await uploadB64ToR2(b64, 'png', sessionFolder)
-                    const img: GenerationResult = {
-                      url,
-                      styleId: `${style.id}_${variantIdx}`,
-                      styleName: `${style.emoji} ${style.name}`,
-                      model: 'gpt',
-                    }
-                    allImages.push(img)
-                    send({ type: 'image', image: img })
-                  }
-                } else {
-                  const errText = await res.text()
-                  console.error(`GPT error [${style.name} v${variantIdx}]:`, res.status, errText.slice(0, 300))
-                }
-              } catch (e) {
-                console.error(`GPT task error [${style.name} v${variantIdx}]:`, e)
-              }
-              completedImages++
-              send({
-                type: 'progress',
-                value: Math.min(10 + Math.round((completedImages / totalImages) * 80), 90),
-                message: `${allImages.length} of ${totalImages} portraits ready...`,
-              })
-            })
-          )
-
-          // Run in batches of 3 with 20s gap
-          // quality:high + 1024x1536 is slower than quality:medium + 1024x1024
-          // 3 concurrent stays safely under the 5 images/min rate limit
-          const BATCH_SIZE = 3
-          const BATCH_DELAY_MS = 20000
-          for (let i = 0; i < allTasks.length; i += BATCH_SIZE) {
-            if (i > 0) {
-              console.log(`Batch delay: waiting ${BATCH_DELAY_MS / 1000}s before next batch...`)
-              await new Promise(r => setTimeout(r, BATCH_DELAY_MS))
+      const result = await sql`
+        SELECT images FROM sessions 
+        WHERE images IS NOT NULL AND jsonb_array_length(images) > 0
+        ORDER BY created_at DESC 
+        LIMIT 30
+      `;
+      
+      for (const row of result.rows) {
+        const images = typeof row.images === 'string' ? JSON.parse(row.images) : row.images;
+        for (const img of images || []) {
+          const styleId = img.style_id || img.styleId;
+          if (styleId && !styleImages[styleId] && img.url) {
+            // Strip variant suffix (e.g., "museum_black_0" â "museum_black")
+            const baseId = styleId.replace(/_\d+$/, '');
+            if (!styleImages[baseId]) {
+              styleImages[baseId] = img.url;
             }
-            const batch = allTasks.slice(i, i + BATCH_SIZE)
-            console.log(`Running batch ${Math.floor(i / BATCH_SIZE) + 1}: ${batch.length} images`)
-            await Promise.all(batch.map(t => t()))
-          }
-
-        } else {
-          // ══════════════════════════════════════════════════════════
-          //  MEMORY PORTRAIT GENERATION
-          //  Scene-based portraits using personal questionnaire answers
-          // ══════════════════════════════════════════════════════════
-
-          const name = answers?.petName || petName || 'the pet'
-          const place = answers?.favPlace || answers?.favOutdoorSpot || 'a beautiful setting'
-
-          const extras = [
-            answers?.favCar ? `posed with or in a ${answers.favCar}` : '',
-            answers?.favTeam ? `wearing a ${answers.favTeam} collar or bandana` : '',
-            answers?.favToy ? `holding a ${answers.favToy}` : '',
-            answers?.favFood ? `with ${answers.favFood} visible` : '',
-          ].filter(Boolean).join(', ')
-
-          const memTasks = MEMORY_SCENES.map(scene => async () => {
-            try {
-              if (!petImageBuffer) return
-
-              const style = getStyleById(scene.defaultStyleId) || ALL_STYLES[0]
-              const sceneDesc = scene.id === 'mem_perfect_day' && answers?.perfectDay
-                ? answers.perfectDay
-                : scene.template(name, place)
-
-              const promptPackage = buildMemoryScenePrompt(
-                subjectProfile,
-                style,
-                sceneDesc,
-                extras,
-                DEFAULT_COMPOSITION,
-              )
-
-              console.log(`\n===== MEMORY SCENE: ${scene.name} =====`)
-              console.log(`Style: ${style.name}`)
-              console.log(`Prompt length: ${promptPackage.fullPrompt.length} chars`)
-              console.log(`==========================================\n`)
-
-              const fd = new FormData()
-              fd.append('model', 'gpt-image-1')
-              fd.append('prompt', promptPackage.fullPrompt)
-              fd.append('n', '1')
-              fd.append('size', '1024x1536')
-              fd.append('quality', 'high')
-              fd.append('input_fidelity', 'high')
-              fd.append('image[]', new Blob([petImageBuffer as unknown as BlobPart], { type: 'image/jpeg' }), 'pet.jpg')
-
-              const res = await fetch('https://api.openai.com/v1/images/edits', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
-                body: fd,
-              })
-
-              if (res.ok) {
-                const d = await res.json()
-                const b64 = d.data?.[0]?.b64_json
-                if (b64) {
-                  const url = await uploadB64ToR2(b64, 'png', sessionFolder)
-                  const img: GenerationResult = {
-                    url,
-                    styleId: `${scene.id}_gpt`,
-                    styleName: scene.name,
-                    model: 'gpt',
-                  }
-                  allImages.push(img)
-                  send({ type: 'image', image: img })
-                }
-              } else {
-                console.error(`Memory GPT error [${scene.id}]:`, res.status, (await res.text()).slice(0, 200))
-              }
-            } catch (e) { console.error('Memory scene error:', e) }
-          })
-
-          send({ type: 'progress', value: 15, message: 'Generating memory scenes...' })
-          for (let i = 0; i < memTasks.length; i += 3) {
-            if (i > 0) await new Promise(r => setTimeout(r, 20000))
-            await Promise.all(memTasks.slice(i, i + 3).map(t => t()))
-            send({
-              type: 'progress',
-              value: 15 + Math.round(((i + 3) / memTasks.length) * 75),
-              message: `${allImages.length} memory portraits ready...`,
-            })
           }
         }
-
-        // ══════════════════════════════════════════════════════════════
-        //  POST-GENERATION: Save metadata, log usage, notify admin
-        // ══════════════════════════════════════════════════════════════
-
-        await saveSessionMetadata(sessionFolder, {
-          sessionId: sessionId || sessionFolder,
-          petName: petName || petType || 'Unknown',
-          petType: petType || 'dog',
-          petDescription: subjectProfile.summary,
-          subjectProfile: subjectProfile.traits,
-          isMemory,
-          imageCount: allImages.length,
-          createdAt: sessionStart,
-          engineVersion: '2.0',
-          generationParams: {
-            model: 'gpt-image-1',
-            size: '1024x1536',
-            quality: 'high',
-            inputFidelity: 'high',
-          },
-          styles: [...new Set(allImages.map(i => i.styleName))],
-          images: allImages,
-          brief: brief || null,
-          songTitle: brief?.song_title || null,
-          sunoPrompt: brief?.suno_prompt_full || null,
-        })
-
-        // Save to Postgres
-        try {
-          const dbImages: SessionImage[] = allImages.map((img, idx) => ({
-            style_id: img.styleId || 'unknown',
-            style_name: img.styleName || 'Unknown Style',
-            url: img.url,
-            variant_index: idx,
-          }))
-          await saveSession({
-            sessionId: sessionFolder,
-            customerEmail: answers?.email || '',
-            customerLastName: answers?.lastName || answers?.ownerName?.split(' ').pop() || '',
-            petName: petName || answers?.petName || '',
-            petType: petType || 'dog',
-            images: dbImages,
-            questionnaire: answers || {},
-          })
-
-          // Log API usage
-          const gptCount = allImages.filter(x => x.model === 'gpt').length
-          if (gptCount > 0) {
-            await logApiUsage({
-              sessionId: sessionFolder,
-              provider: 'openai',
-              model: 'gpt-image-1',
-              operation: 'image_edit',
-              imagesGenerated: gptCount,
-            })
-          }
-          await logApiUsage({
-            sessionId: sessionFolder,
-            provider: 'openai',
-            model: 'gpt-4o',
-            operation: 'vision_analysis',
-            tokensInput: 2000,
-            tokensOutput: 500,
-          })
-        } catch (dbErr) {
-          console.error('Database save failed (non-fatal):', dbErr)
-        }
-
-        // Song notification email
-        if (brief?.suno_prompt_full && process.env.RESEND_API_KEY) {
-          sendSongNotificationEmail({
-            petName: petName || petType || 'Unknown',
-            songTitle: brief.song_title || 'Custom Song',
-            sunoPrompt: brief.suno_prompt_full,
-            portraitTitle: brief.portrait_title || '',
-            sessionFolder,
-            firstImageUrl: allImages[0]?.url || '',
-          }).catch((e: unknown) => console.error('Song notification email failed:', e))
-        }
-
-        send({ type: 'progress', value: 100, message: 'All portraits ready!' })
-        send({
-          type: 'done',
-          images: allImages,
-          sessionFolder,
-          counts: {
-            gpt: allImages.filter(x => x.model === 'gpt').length,
-            total: allImages.length,
-          },
-        })
-        controller.close()
-
-      } catch (err) {
-        console.error('Pipeline error:', err)
-        send({ type: 'error', message: 'Generation failed. Please try again.' })
-        controller.close()
       }
-    },
-  })
+    } catch (dbErr) {
+      console.error('DB query for style images failed (non-fatal):', dbErr);
+    }
 
-  return new Response(stream, {
-    headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
-    },
-  })
-}
+    // Build the style catalog from the portrait engine
+    const catalog = getStyleCatalog();
+    const allStyles = getActiveStyles();
 
-// ── Song Notification Email ──────────────────────────────────────────────
-async function sendSongNotificationEmail({ petName, songTitle, sunoPrompt, portraitTitle, sessionFolder, firstImageUrl }: {
-  petName: string; songTitle: string; sunoPrompt: string; portraitTitle: string; sessionFolder: string; firstImageUrl: string
-}) {
-  const adminEmail = process.env.ADMIN_EMAIL || 'johnagreuling@icloud.com'
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.petprintsstudio.com'
-  const html = `<!DOCTYPE html><html><body style="background:#0A0A0A;color:#F5F0E8;font-family:Arial,sans-serif"><div style="max-width:600px;margin:0 auto;padding:40px 24px"><div style="background:#141414;border:1px solid rgba(201,168,76,.3);padding:32px;margin-bottom:20px"><div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#C9A84C;margin-bottom:12px">New Song Request — Action Required</div><h1 style="font-size:28px;font-weight:400;color:#F5F0E8;margin:0 0 8px">🎵 ${petName}</h1><p style="color:rgba(245,240,232,.5);font-size:14px;margin:0 0 24px">${portraitTitle}</p><div style="background:#0A0A0A;border:1px solid rgba(245,240,232,.08);padding:16px;margin-bottom:16px"><div style="font-size:10px;letter-spacing:.2em;color:#C9A84C;margin-bottom:8px;text-transform:uppercase">Song Title</div><div style="font-size:16px;font-weight:600">${songTitle}</div></div><div style="background:#0A0A0A;border:2px solid rgba(201,168,76,.4);padding:16px;margin-bottom:24px"><div style="font-size:10px;letter-spacing:.2em;color:#C9A84C;margin-bottom:8px;text-transform:uppercase">Suno Prompt — Copy this into suno.com/create</div><div style="font-size:14px;line-height:1.8;color:rgba(245,240,232,.9);white-space:pre-wrap">${sunoPrompt}</div></div><a href="${appUrl}/admin/songs" style="display:inline-block;background:#C9A84C;color:#0A0A0A;padding:14px 28px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none">→ Open Song Admin to paste MP3 URL</a></div><div style="font-size:11px;color:rgba(245,240,232,.2);text-align:center">Session: ${sessionFolder}</div></div></body></html>`
-  await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: 'Pet Prints Studio <orders@petprintsstudio.com>', to: adminEmail, subject: `🎵 New Song Request — ${petName}: "${songTitle}"`, html })
-  })
+    // Build response: for each style, generate the sample prompt and attach sample image
+    const stylesWithPrompts = allStyles.map(style => {
+      const promptPackage = buildPrompt(SAMPLE_PET, style, DEFAULT_COMPOSITION);
+      
+      return {
+        id: style.id,
+        name: style.name,
+        emoji: style.emoji,
+        category: style.category,
+        description: style.description,
+        version: style.version,
+        // The full assembled prompt (what the API actually sends to OpenAI)
+        gptPrompt: promptPackage.fullPrompt,
+        // Individual blocks for inspection
+        blocks: promptPackage.blocks,
+        // Style-specific fields for reference
+        technique: style.technique,
+        background: style.background,
+        lighting: style.lighting,
+        colorPalette: style.colorPalette,
+        mood: style.mood,
+        paintSurface: style.paintSurface,
+        preferredFraming: style.preferredFraming || 'preserve_source',
+        forbiddenTraits: style.forbiddenTraits,
+        styleConstraints: style.styleConstraints,
+        // Sample image from past generations
+        sampleImageUrl: styleImages[style.id] || null,
+      };
+    });
+
+    return NextResponse.json({
+      styles: stylesWithPrompts,
+      categories: catalog.map(c => ({
+        id: c.category,
+        name: c.info.name,
+        description: c.info.description,
+        emoji: c.info.emoji,
+        styleCount: c.styles.length,
+      })),
+      meta: {
+        totalStyles: allStyles.length,
+        stylesWithSamples: Object.keys(styleImages).length,
+        engineVersion: '2.0',
+        generatedAt: new Date().toISOString(),
+      }
+    });
+  } catch (error) {
+    console.error('Styles API error:', error);
+    return NextResponse.json({ error: 'Failed to fetch styles', details: String(error) }, { status: 500 });
+  }
 }
