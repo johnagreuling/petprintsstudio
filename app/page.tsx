@@ -150,11 +150,11 @@ export default function Home() {
           Turn Their Story Into<br/><em style={{color:'var(--gold)'}}>Something Unforgettable.</em>
         </h1>
 
-        <p className="fu fu3" style={{fontSize:17,lineHeight:1.7,color:'var(--muted)',maxWidth:520,marginBottom:36,fontWeight:300,letterSpacing:'.005em'}}>
-          A custom portrait that captures who they are. An original song written just for them. A QR code that plays it every time you look at the wall.
+        <p className="fu fu3" style={{fontSize:17,lineHeight:1.7,color:'var(--muted)',maxWidth:540,marginBottom:36,fontWeight:300,letterSpacing:'.005em'}}>
+          A fully custom portrait that captures exactly who they are. An original song written just for them. Printed on gallery canvas, sherpa blankets, and more — real things you can hold.
         </p>
 
-        <p className="fu fu3" style={{fontSize:11,color:'rgba(201,168,76,.7)',letterSpacing:'.22em',textTransform:'uppercase',marginBottom:36,fontWeight:600}}>Portrait &nbsp;·&nbsp; Song &nbsp;·&nbsp; QR Code &nbsp;·&nbsp; From $49</p>
+        <p className="fu fu3" style={{fontSize:11,color:'rgba(201,168,76,.7)',letterSpacing:'.22em',textTransform:'uppercase',marginBottom:36,fontWeight:600}}>Portrait &nbsp;·&nbsp; Song &nbsp;·&nbsp; Canvas &nbsp;·&nbsp; From $49</p>
         
         {/* Upload Dropbox - Right on homepage */}
         <div className="fu fu4" style={{marginBottom:32,maxWidth:480,margin:'0 auto 32px',width:'100%'}}>
@@ -495,7 +495,7 @@ export default function Home() {
           Give a Gift<br/>They&rsquo;ll Never Forget.
         </h2>
         <p style={{fontSize:17,color:'rgba(10,10,10,.6)',marginBottom:40,maxWidth:460,margin:'0 auto 40px',lineHeight:1.8}}>
-          A portrait. A song. A QR code. Everything you need to celebrate who they are — now and forever.
+          A portrait. A song. A canvas on the wall. Everything you need to celebrate who they are — now and forever.
         </p>
         <Link href="/create" style={{background:'var(--ink)',color:'var(--gold)',padding:'20px 52px',fontSize:12,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',textDecoration:'none',display:'inline-block'}}>
           🐾 Begin Their Story
