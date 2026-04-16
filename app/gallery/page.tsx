@@ -186,18 +186,17 @@ export default function GalleryPage() {
                     <div style={{fontSize:11,letterSpacing:'.2em',textTransform:'uppercase',color:'#C9A84C',marginBottom:12}}>{style}</div>
                     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:8}}>
                       {styleImgs.map((img, i) => (
-                        <div key={img.url} style={{position:'relative'}}>
+                        <div key={img.url} style={{position:'relative',cursor:'pointer'}} onClick={() => setLightbox(img.url)}>
                           <img
                             src={img.url}
                             className="img-card"
-                            onClick={() => setLightbox(img.url)}
                             style={{width:'100%',aspectRatio:'1',objectFit:'cover',display:'block',border:'1px solid rgba(245,240,232,.06)'}}
                           />
-                          <div style={{position:'absolute',bottom:0,left:0,right:0,background:'linear-gradient(transparent,rgba(0,0,0,.7))',padding:'8px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                          <div style={{position:'absolute',bottom:0,left:0,right:0,background:'linear-gradient(transparent,rgba(0,0,0,.7))',padding:'8px',display:'flex',justifyContent:'space-between',alignItems:'center',pointerEvents:'none'}}>
                             <span style={{fontSize:9,color:'rgba(245,240,232,.6)',letterSpacing:'.1em',textTransform:'uppercase'}}>{img.model}</span>
                             <button
                               onClick={e => { e.stopPropagation(); downloadImage(img.url, `${selected.petName}_${style.replace(/[^a-z0-9]/gi,'_')}_${i+1}.png`) }}
-                              style={{background:'rgba(201,168,76,.9)',color:'#0A0A0A',border:'none',padding:'3px 8px',fontSize:10,cursor:'pointer',fontWeight:600}}
+                              style={{background:'rgba(201,168,76,.9)',color:'#0A0A0A',border:'none',padding:'3px 8px',fontSize:10,cursor:'pointer',fontWeight:600,pointerEvents:'auto'}}
                             >↓</button>
                           </div>
                         </div>

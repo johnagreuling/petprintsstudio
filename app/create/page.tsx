@@ -867,15 +867,15 @@ export default function CreatePage() {
                     </div>
                     <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:4}}>
                       {imgs.map((img,i)=>(
-                        <div key={i} style={{position:'relative',cursor:'pointer'}} onClick={()=>setPicked(img)}>
+                        <div key={i} style={{position:'relative',cursor:'pointer'}} onClick={()=>setLightboxImg({url:img.url,styleName:img.styleName})}>
                           <WatermarkedImage src={img.url} alt={`${name} ${i+1}`} width={400} height={600} displayRatio="2/3" className={`img-card${picked?.url===img.url?' picked':''}`}/>
-                          {picked?.url===img.url&&<div style={{position:'absolute',top:10,right:10,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:13}}>✓</div>}
-                          {/* Fullscreen preview button */}
-                          <button 
-                            onClick={(e)=>{e.stopPropagation();setLightboxImg({url:img.url,styleName:img.styleName})}}
-                            style={{position:'absolute',bottom:10,right:10,background:'rgba(0,0,0,.7)',border:'none',color:'#fff',width:32,height:32,borderRadius:'50%',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:14,opacity:0.7,transition:'opacity .2s'}}
-                            title="View fullscreen"
-                          >🔍</button>
+                          {picked?.url===img.url&&<div style={{position:'absolute',top:10,right:10,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:13,pointerEvents:'none'}}>✓</div>}
+                          {/* Quick-select button (doesn't open lightbox) */}
+                          <button
+                            onClick={(e)=>{e.stopPropagation();setPicked(img)}}
+                            style={{position:'absolute',bottom:10,right:10,background:picked?.url===img.url?'var(--gold)':'rgba(0,0,0,.7)',border:'none',color:picked?.url===img.url?'var(--ink)':'#fff',padding:'6px 12px',borderRadius:3,cursor:'pointer',fontSize:10,fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',opacity:0.9}}
+                            title="Select this portrait"
+                          >{picked?.url===img.url?'✓ Selected':'Select'}</button>
                         </div>
                       ))}
                     </div>
