@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ART_STYLES, PRODUCTS } from '@/lib/config'
 
 type HeroShowcase = { url: string; style: string; pet: string }
@@ -8,9 +8,9 @@ type HeroShowcase = { url: string; style: string; pet: string }
 export default function Home() {
   const [activeStyle, setActiveStyle] = useState(0)
   const [heroShowcase, setHeroShowcase] = useState<HeroShowcase[]>([])
-  const [activeHero, setActiveHero] = useState(0)
+  const sliderRef = useRef<HTMLDivElement>(null)
 
-  // Load curated portrait showcase for the hero band
+  // Load ALL curated portraits for the hero slider (32 if all picked)
   useEffect(() => {
     (async () => {
       try {
@@ -21,33 +21,27 @@ export default function Home() {
         const { picks = {} } = await picksRes.json()
         const { styles = [] } = await stylesRes.json()
         const styleNameById: Record<string, string> = Object.fromEntries(styles.map((s: any) => [s.id, s.name]))
-        // Prefer hero styles: classical_oil, museum_black, coastal_golden, soft_pastel, comic_hero
-        const HERO_PREFERENCE = ['classical_oil', 'museum_black', 'coastal_golden', 'soft_pastel', 'watercolor_fine', 'impressionist_garden', 'neon_glow', 'rembrandt_master']
-        const shortlist: HeroShowcase[] = []
-        for (const id of HERO_PREFERENCE) {
+        // Use engine order so the slider flows from classic → painterly → nature → lifestyle → pop
+        const styleOrder: string[] = styles.map((s: any) => s.id)
+        const full: HeroShowcase[] = []
+        for (const id of styleOrder) {
           const pick = picks[id]
-          if (pick?.url) shortlist.push({ url: pick.url, style: styleNameById[id] || id, pet: pick.pet || '' })
-          if (shortlist.length >= 5) break
+          if (pick?.url) full.push({ url: pick.url, style: styleNameById[id] || id, pet: pick.pet || '' })
         }
-        // Backfill from any remaining picks if we didn't get 5 from the shortlist
-        if (shortlist.length < 5) {
-          for (const [id, pick] of Object.entries(picks as Record<string, any>)) {
-            if (shortlist.find(s => s.style === styleNameById[id])) continue
-            if (pick?.url) shortlist.push({ url: pick.url, style: styleNameById[id] || id, pet: pick.pet || '' })
-            if (shortlist.length >= 5) break
-          }
-        }
-        setHeroShowcase(shortlist)
-      } catch (e) { /* silent degrade — hero works without showcase */ }
+        setHeroShowcase(full)
+      } catch (e) { /* silent degrade */ }
     })()
   }, [])
 
-  // Auto-rotate the featured hero portrait every 4s
-  useEffect(() => {
-    if (heroShowcase.length < 2) return
-    const t = setInterval(() => setActiveHero(i => (i + 1) % heroShowcase.length), 4000)
-    return () => clearInterval(t)
-  }, [heroShowcase.length])
+  // Arrow scroll helpers — scroll by ~one card width with smooth animation
+  const scrollBy = (dir: 1 | -1) => {
+    const el = sliderRef.current
+    if (!el) return
+    const cardWidth = el.firstElementChild instanceof HTMLElement
+      ? el.firstElementChild.offsetWidth + 16  // card + gap
+      : 280
+    el.scrollBy({ left: dir * cardWidth * 2, behavior: 'smooth' })
+  }
 
   return (
     <main style={{background:'#0A0A0A',color:'#F5F0E8',fontFamily:"'DM Sans',sans-serif",minHeight:'100vh'}}>
@@ -85,6 +79,12 @@ export default function Home() {
         .tag{display:inline-block;border:1px solid rgba(201,168,76,.3);color:var(--gold);font-size:10px;letter-spacing:.25em;text-transform:uppercase;padding:6px 14px;margin:4px}
         .popular-badge{position:absolute;top:10px;right:10px;background:var(--gold);color:var(--ink);font-size:8px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:3px 8px}
         
+        /* Hide scrollbar on the hero slider for a cleaner look */
+        .hero-slider::-webkit-scrollbar{display:none}
+        .hero-slider{scrollbar-width:none}
+        .hero-slide:hover{transform:translateY(-4px);box-shadow:0 20px 60px rgba(201,168,76,.2)}
+        .slider-arrow:hover{background:rgba(201,168,76,.2)!important;border-color:var(--gold)!important}
+
         /* Mobile Responsive */
         @media(max-width:768px){
           .divider{margin:0 20px}
@@ -102,10 +102,13 @@ export default function Home() {
           .bookend-grid>*{width:100%!important}
           .steps-grid{grid-template-columns:1fr 1fr!important}
           .product-grid{display:grid!important;grid-template-columns:1fr 1fr!important}
-          .hero-showcase{gap:6px!important}
-          .hero-showcase-card{width:90px!important;height:120px!important}
-          .hero-showcase-card:nth-child(n+4){display:none!important}
-          .hero-showcase-card[style*="border: 2px solid"]{width:140px!important;height:190px!important}
+          /* Slider: smaller cards on phone, peek of next card, arrows recede */
+          .hero-slider{padding:8px 20px!important;gap:10px!important}
+          .hero-slide{width:220px!important;height:300px!important}
+          .slider-arrow{width:36px!important;height:36px!important;font-size:16px!important}
+          .slider-arrow-left{left:6px!important}
+          .slider-arrow-right{right:6px!important}
+          .slider-fade-left,.slider-fade-right{width:40px!important}
         }
         .section-padding{padding:120px 60px;background:var(--soft)}
         .responsive-grid-2col{display:grid;grid-template-columns:1.5fr 1fr}
@@ -161,30 +164,65 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* ── Hero Portrait Showcase ────────────────────────────────
-            Real curated portraits from Mason/Sylas/Sasha sessions,
-            auto-rotating every 4s. Gives the hero visual proof. ── */}
+        {/* ── Hero Portrait Slider ─────────────────────────────────
+            Horizontal scroll slider with all 32 curated portraits.
+            Left/right arrows on desktop, native momentum thumb-flick on iOS.
+            scroll-snap centers each card as it comes into view. ── */}
         {heroShowcase.length > 0 && (
-          <div className="fu fu4 hero-showcase" style={{display:'flex',gap:12,marginBottom:48,maxWidth:960,width:'100%',justifyContent:'center',flexWrap:'wrap'}}>
-            {heroShowcase.slice(0, 5).map((item, i) => {
-              const isActive = i === activeHero
-              return (
-                <div
-                  key={item.url}
-                  className="hero-showcase-card"
+          <div className="fu fu4" style={{position:'relative',width:'100%',maxWidth:1200,margin:'0 auto 48px'}}>
+            {/* Edge fade masks */}
+            <div aria-hidden className="slider-fade-left" style={{position:'absolute',left:0,top:0,bottom:0,width:80,background:'linear-gradient(to right,#0A0A0A 0%,rgba(10,10,10,.6) 50%,transparent 100%)',pointerEvents:'none',zIndex:2}}/>
+            <div aria-hidden className="slider-fade-right" style={{position:'absolute',right:0,top:0,bottom:0,width:80,background:'linear-gradient(to left,#0A0A0A 0%,rgba(10,10,10,.6) 50%,transparent 100%)',pointerEvents:'none',zIndex:2}}/>
+
+            {/* Arrows */}
+            <button
+              aria-label="Previous styles"
+              onClick={()=>scrollBy(-1)}
+              className="slider-arrow slider-arrow-left"
+              style={{position:'absolute',left:16,top:'50%',transform:'translateY(-50%)',zIndex:3,width:44,height:44,borderRadius:'50%',background:'rgba(10,10,10,.8)',border:'1px solid rgba(201,168,76,.4)',color:'var(--gold)',fontSize:18,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',backdropFilter:'blur(8px)',transition:'all .2s'}}
+            >‹</button>
+            <button
+              aria-label="Next styles"
+              onClick={()=>scrollBy(1)}
+              className="slider-arrow slider-arrow-right"
+              style={{position:'absolute',right:16,top:'50%',transform:'translateY(-50%)',zIndex:3,width:44,height:44,borderRadius:'50%',background:'rgba(10,10,10,.8)',border:'1px solid rgba(201,168,76,.4)',color:'var(--gold)',fontSize:18,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',backdropFilter:'blur(8px)',transition:'all .2s'}}
+            >›</button>
+
+            {/* Scroll container */}
+            <div
+              ref={sliderRef}
+              className="hero-slider"
+              style={{
+                display:'flex',
+                gap:16,
+                overflowX:'auto',
+                scrollSnapType:'x mandatory',
+                WebkitOverflowScrolling:'touch',
+                scrollBehavior:'smooth',
+                padding:'8px 60px',
+                scrollbarWidth:'none',
+                msOverflowStyle:'none',
+              }}
+            >
+              {heroShowcase.map((item, i) => (
+                <Link
+                  key={item.url + i}
+                  href="/styles"
+                  className="hero-slide"
                   style={{
-                    position:'relative',
-                    width:isActive ? 220 : 140,
-                    height:isActive ? 290 : 190,
-                    borderRadius:8,
-                    overflow:'hidden',
-                    cursor:'pointer',
-                    border:isActive ? '2px solid var(--gold)' : '1px solid rgba(245,240,232,.1)',
-                    boxShadow:isActive ? '0 20px 60px rgba(201,168,76,.2)' : '0 4px 20px rgba(0,0,0,.5)',
-                    transition:'all .6s cubic-bezier(.2,.8,.2,1)',
                     flexShrink:0,
+                    width:280,
+                    height:380,
+                    borderRadius:10,
+                    overflow:'hidden',
+                    scrollSnapAlign:'center',
+                    position:'relative',
+                    border:'1px solid rgba(245,240,232,.08)',
+                    boxShadow:'0 8px 32px rgba(0,0,0,.5)',
+                    transition:'transform .3s, box-shadow .3s',
+                    textDecoration:'none',
+                    display:'block',
                   }}
-                  onClick={()=>setActiveHero(i)}
                 >
                   <img src={item.url} alt={`${item.pet} — ${item.style}`} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} loading="lazy" />
                   <div style={{
@@ -192,21 +230,20 @@ export default function Home() {
                     bottom:0,
                     left:0,
                     right:0,
-                    padding: isActive ? '24px 16px 12px' : '12px 10px 8px',
-                    background:'linear-gradient(to top, rgba(10,10,10,.9) 0%, transparent 100%)',
-                    textAlign:'center',
+                    padding:'40px 16px 14px',
+                    background:'linear-gradient(to top, rgba(10,10,10,.92) 0%, transparent 100%)',
                   }}>
-                    <div style={{
-                      fontSize: isActive ? 11 : 9,
-                      letterSpacing:'.2em',
-                      textTransform:'uppercase',
-                      color:'var(--gold)',
-                      fontWeight:600,
-                    }}>{item.style}</div>
+                    <div style={{fontSize:10,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600,marginBottom:3}}>{item.style}</div>
+                    <div style={{fontSize:11,color:'rgba(245,240,232,.6)',textTransform:'capitalize'}}>{item.pet}</div>
                   </div>
-                </div>
-              )
-            })}
+                </Link>
+              ))}
+            </div>
+
+            {/* Helper hint below slider */}
+            <div style={{textAlign:'center',marginTop:14,fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'rgba(245,240,232,.3)'}}>
+              Swipe · {heroShowcase.length} curated styles
+            </div>
           </div>
         )}
 
@@ -292,7 +329,7 @@ export default function Home() {
               </div>
               <div style={{padding:'20px 20px 28px'}}>
                 <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>Choose Your Style</h3>
-                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>16 custom-tuned styles from Oil Painting to Neon Glow — or describe any style you can imagine.</p>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>32 custom-tuned styles from Oil Painting to Neon Glow — or describe any style you can imagine.</p>
               </div>
             </div>
 
