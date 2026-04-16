@@ -717,50 +717,54 @@ export default function CreatePage() {
           </div>
         )}
 
-        {/* ── STEP 2: PRODUCT SELECTION (Paywall) ── */}
+        {/* ── STEP 2: PRODUCT SELECTION ── */}
         {step==='product'&&(
           <div>
-            <div style={{textAlign:'center',marginBottom:48}}>
+            <div style={{textAlign:'center',marginBottom:52}}>
               <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Step 2 of 5</div>
-              <h1 className="serif" style={{fontSize:'clamp(32px,5vw,52px)',fontWeight:400,marginBottom:12}}>Choose Your Product</h1>
-              <p style={{color:'var(--muted)',fontSize:15,lineHeight:1.8}}>What are we putting this on? Pick your primary product — you can add more after you see your portraits.</p>
+              <h1 className="serif" style={{fontSize:'clamp(32px,5vw,52px)',fontWeight:400,marginBottom:14,letterSpacing:'-.01em'}}>Where Should We<br/><em style={{color:'var(--gold)'}}>Put This?</em></h1>
+              <p style={{color:'var(--muted)',fontSize:14,lineHeight:1.8,maxWidth:480,margin:'0 auto'}}>Pick your primary product now — you can add more prints, mugs, and merch after you see your portraits.</p>
             </div>
 
-            {/* Pet photo preview */}
+            {/* Pet photo preview — confirmed state */}
             {preview&&(
-              <div style={{display:'flex',gap:20,alignItems:'center',padding:'20px',background:'#141414',marginBottom:32,border:'1px solid rgba(201,168,76,.15)'}}>
-                <img src={preview} alt="Your pet" style={{width:72,height:72,objectFit:'cover',borderRadius:2}}/>
-                <div>
-                  <div style={{fontSize:13,fontWeight:600}}>Your pet{answers.petName?` — ${answers.petName}`:''}</div>
-                  <div style={{fontSize:11,color:'var(--muted)',marginTop:4}}>32 AI portraits will be generated from this photo</div>
+              <div style={{display:'flex',gap:20,alignItems:'center',padding:'20px 24px',background:'linear-gradient(135deg,rgba(201,168,76,.06),rgba(10,10,10,.4))',marginBottom:40,border:'1px solid rgba(201,168,76,.2)'}}>
+                <div style={{width:64,height:64,borderRadius:4,overflow:'hidden',flexShrink:0,border:'2px solid rgba(201,168,76,.3)',boxShadow:'0 4px 16px rgba(0,0,0,.5)'}}>
+                  <img src={preview} alt="Your pet" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
                 </div>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:10,color:'var(--gold)',letterSpacing:'.2em',textTransform:'uppercase',fontWeight:600,marginBottom:4}}>Photo uploaded</div>
+                  <div style={{fontSize:14,fontWeight:500}}>{answers.petName||'Your pet'}</div>
+                  <div style={{fontSize:11,color:'var(--muted)',marginTop:2}}>32 custom portraits will be generated</div>
+                </div>
+                <div style={{fontSize:24,opacity:.5}}>✓</div>
               </div>
             )}
 
-            {/* Category tabs — prints only */}
-            <div style={{borderBottom:'1px solid rgba(245,240,232,.06)',marginBottom:28}}>
+            {/* Category tabs */}
+            <div style={{borderBottom:'1px solid rgba(245,240,232,.06)',marginBottom:28,display:'flex',gap:0}}>
               {['Canvas','Prints'].map(c=>(
                 <button key={c} className={`cat-tab${activeCategory===c?' on':''}`} onClick={()=>setActiveCategory(c)}>{c}</button>
               ))}
             </div>
-            <div style={{fontSize:11,color:'var(--muted)',marginBottom:16,opacity:.7}}>🎁 Mugs, blankets, apparel &amp; more available after you see your portraits</div>
 
-            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(185px,1fr))',gap:2,marginBottom:32}}>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(185px,1fr))',gap:3,marginBottom:36}}>
               {PRODUCTS.filter(p=>['Canvas','Prints'].includes(p.category)&&p.category===activeCategory).map(p=>(
                 <div key={p.id} className={`product-card${primaryProduct?.id===p.id?' on':''}`} onClick={()=>{setPrimaryProduct(p);setPrimarySize('')}} style={{padding:0,overflow:'hidden'}}>
                   {p.popular&&<div style={{position:'absolute',top:8,right:8,background:'var(--gold)',color:'var(--ink)',fontSize:7,fontWeight:700,letterSpacing:'.15em',textTransform:'uppercase',padding:'3px 7px',zIndex:2}}>Popular</div>}
-                  {primaryProduct?.id===p.id&&<div style={{position:'absolute',top:8,left:8,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:20,height:20,display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,fontWeight:700,zIndex:2}}>✓</div>}
-                  {/* Product mockup */}
+                  {primaryProduct?.id===p.id&&<div style={{position:'absolute',top:8,left:8,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:22,height:22,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:700,zIndex:2}}>✓</div>}
                   <ProductMockup productId={p.id} category={p.category} size={p.size} previewUrl={preview} isSelected={primaryProduct?.id===p.id} />
-                  <div style={{padding:'0 14px 16px'}}>
+                  <div style={{padding:'0 14px 18px'}}>
                     <div className="serif" style={{fontSize:15,marginBottom:3,fontWeight:400}}>{p.name}</div>
                     <div style={{fontSize:11,color:'var(--muted)',marginBottom:2}}>{p.size}</div>
-                    <div style={{fontSize:10,color:'var(--muted)',opacity:.6,marginBottom:10}}>{p.description}</div>
-                    <div className="serif" style={{fontSize:20,color:'var(--gold)'}}>${p.price}</div>
+                    <div style={{fontSize:10,color:'var(--muted)',opacity:.5,marginBottom:10}}>{p.description}</div>
+                    <div className="serif" style={{fontSize:22,color:'var(--gold)'}}>${p.price}</div>
                   </div>
                 </div>
               ))}
             </div>
+
+            <div style={{fontSize:11,color:'var(--muted)',marginBottom:24,opacity:.6,textAlign:'center'}}>🎁 Mugs, blankets, apparel &amp; more available after you see your portraits</div>
 
             {/* Size selector for apparel */}
             {primaryProduct&&'sizes' in primaryProduct&&(primaryProduct as any).sizes&&(
@@ -776,60 +780,60 @@ export default function CreatePage() {
               </div>
             )}
 
-            {/* Memory Portrait upgrade */}
-            <div style={{marginBottom:28}}>
-              <div style={{fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--muted)',marginBottom:12}}>Portrait Type</div>
-              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:2}}>
-                <div onClick={()=>setIsMemory(false)} style={{background:'#141414',border:`1px solid ${!isMemory?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'20px',cursor:'pointer',transition:'all .2s'}}>
-                  <div style={{fontSize:20,marginBottom:8}}>🎨</div>
-                  <div className="serif" style={{fontSize:17,marginBottom:4,fontWeight:400}}>Style Transfer</div>
-                  <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>Your photo reimagined in all 32 custom-built artistic styles. Ready in ~7 minutes.</div>
-                  <div style={{fontSize:12,color:'var(--gold)',marginTop:8,fontWeight:600}}>Included</div>
+            {/* Portrait Type toggle */}
+            <div style={{marginBottom:32}}>
+              <div style={{fontSize:10,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--muted)',marginBottom:14}}>Portrait Type</div>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:3}}>
+                <div onClick={()=>setIsMemory(false)} style={{background:!isMemory?'rgba(201,168,76,.06)':'#141414',border:`1px solid ${!isMemory?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'24px 20px',cursor:'pointer',transition:'all .25s'}}>
+                  <div style={{fontSize:24,marginBottom:10}}>🎨</div>
+                  <div className="serif" style={{fontSize:18,marginBottom:6,fontWeight:400}}>Style Transfer</div>
+                  <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>Your photo reimagined in all 32 custom-built artistic styles. Ready in ~5 minutes.</div>
+                  <div style={{fontSize:12,color:'var(--gold)',marginTop:10,fontWeight:700}}>Included</div>
                 </div>
-                <div onClick={()=>setIsMemory(true)} style={{background:'#141414',border:`1px solid ${isMemory?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'20px',cursor:'pointer',transition:'all .2s',position:'relative'}}>
+                <div onClick={()=>setIsMemory(true)} style={{background:isMemory?'rgba(201,168,76,.06)':'#141414',border:`1px solid ${isMemory?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'24px 20px',cursor:'pointer',transition:'all .25s',position:'relative'}}>
                   <div style={{position:'absolute',top:10,right:10,background:'var(--gold)',color:'var(--ink)',fontSize:7,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase',padding:'3px 7px'}}>Premium</div>
-                  <div style={{fontSize:20,marginBottom:8}}>✨</div>
-                  <div className="serif" style={{fontSize:17,marginBottom:4,fontWeight:400}}>Memory Portrait</div>
+                  <div style={{fontSize:24,marginBottom:10}}>✨</div>
+                  <div className="serif" style={{fontSize:18,marginBottom:6,fontWeight:400}}>Memory Portrait</div>
                   <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>Custom scene built from your pet&rsquo;s life — team, car, hometown, toys. Human-reviewed.</div>
-                  <div style={{fontSize:12,color:'var(--gold)',marginTop:8,fontWeight:600}}>+${MEMORY_UPGRADE_PRICE.toFixed(2)}</div>
+                  <div style={{fontSize:12,color:'var(--gold)',marginTop:10,fontWeight:700}}>+${MEMORY_UPGRADE_PRICE.toFixed(2)}</div>
                 </div>
               </div>
             </div>
 
-            {/* Order summary */}
+            {/* Order summary — premium receipt */}
             {primaryProduct&&(
-              <div style={{background:'#141414',border:'1px solid rgba(201,168,76,.15)',padding:'20px 24px',marginBottom:24}}>
-                <div style={{fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Order Summary</div>
-                <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}>
+              <div style={{background:'linear-gradient(180deg,#141414,#111)',border:'1px solid rgba(201,168,76,.2)',padding:'24px 28px',marginBottom:28}}>
+                <div style={{fontSize:9,letterSpacing:'.25em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14,fontWeight:600}}>Order Summary</div>
+                <div style={{display:'flex',justifyContent:'space-between',marginBottom:8,alignItems:'baseline'}}>
                   <span style={{fontSize:14}}>{primaryProduct.name} {primaryProduct.size}{primarySize?` — ${primarySize}`:''}</span>
-                  <span style={{fontSize:14,color:'var(--gold)'}}>${primaryProduct.price}</span>
+                  <span style={{fontSize:14,color:'var(--cream)',fontFamily:"'DM Sans',sans-serif"}}>${primaryProduct.price}</span>
                 </div>
                 {isMemory&&(
-                  <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}>
-                    <span style={{fontSize:14}}>Memory Portrait upgrade</span>
-                    <span style={{fontSize:14,color:'var(--gold)'}}>+${MEMORY_UPGRADE_PRICE.toFixed(2)}</span>
+                  <div style={{display:'flex',justifyContent:'space-between',marginBottom:8,alignItems:'baseline'}}>
+                    <span style={{fontSize:14}}>✨ Memory Portrait upgrade</span>
+                    <span style={{fontSize:14,color:'var(--cream)'}}>+${MEMORY_UPGRADE_PRICE.toFixed(2)}</span>
                   </div>
                 )}
-                <div style={{borderTop:'1px solid rgba(245,240,232,.08)',paddingTop:12,marginTop:4,display:'flex',justifyContent:'space-between'}}>
-                  <span style={{fontSize:15,fontWeight:600}}>Total</span>
-                  <span className="serif" style={{fontSize:20,color:'var(--gold)'}}>${(primaryProduct.price+(isMemory?MEMORY_UPGRADE_PRICE:0)).toFixed(2)}</span>
+                <div style={{borderTop:'1px solid rgba(201,168,76,.15)',paddingTop:14,marginTop:8,display:'flex',justifyContent:'space-between',alignItems:'baseline'}}>
+                  <span style={{fontSize:13,fontWeight:600,letterSpacing:'.08em',textTransform:'uppercase'}}>Total</span>
+                  <span className="serif" style={{fontSize:26,color:'var(--gold)'}}>${(primaryProduct.price+(isMemory?MEMORY_UPGRADE_PRICE:0)).toFixed(2)}</span>
                 </div>
               </div>
             )}
 
             {error&&<div style={{color:'#C4622D',fontSize:13,marginBottom:16,padding:'12px 16px',background:'rgba(196,98,45,.08)',border:'1px solid rgba(196,98,45,.15)'}}>{error}</div>}
 
-            <div style={{display:'grid',gridTemplateColumns:'1fr 2fr',gap:2}}>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 2.5fr',gap:3}}>
               <button className="btn-out" onClick={()=>setStep('upload')}>← Back</button>
               <button className="btn-gold"
                 disabled={!primaryProduct||('sizes' in (primaryProduct||{})&&!(primaryProduct as any).sizes?.includes(primarySize)&&(primaryProduct as any).sizes?.length>0)}
                 onClick={()=>isMemory?setStep('questionnaire'):handleGenerate()}>
-                {isMemory?'Continue to Questionnaire →':`Pay & Generate My Portraits — $${(primaryProduct?.price||0)+(isMemory?MEMORY_UPGRADE_PRICE:0)}`}
+                {isMemory?'Continue to Questionnaire →':'Generate My Portraits →'}
               </button>
             </div>
-            <div style={{marginTop:16,display:'flex',gap:20,justifyContent:'center',flexWrap:'wrap'}}>
-              {['🔒 Secure Stripe checkout','🚀 Ships in 5–7 days','↩️ Satisfaction guaranteed'].map(t=>(
-                <span key={t} style={{fontSize:11,color:'var(--muted)'}}>{t}</span>
+            <div style={{marginTop:20,display:'flex',gap:24,justifyContent:'center',flexWrap:'wrap'}}>
+              {['🔒 Secure checkout','🚀 Ships 5–7 days','↩️ Satisfaction guaranteed'].map(t=>(
+                <span key={t} style={{fontSize:10,color:'var(--muted)',letterSpacing:'.04em'}}>{t}</span>
               ))}
             </div>
           </div>
@@ -1078,96 +1082,94 @@ export default function CreatePage() {
         {/* ── STEP 6: UPSELL ── */}
         {step==='upsell'&&picked&&(
           <div>
-            <div style={{textAlign:'center',marginBottom:48}}>
+            <div style={{textAlign:'center',marginBottom:56}}>
               <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Step 5 of 5</div>
-              <h1 className="serif" style={{fontSize:'clamp(28px,5vw,48px)',fontWeight:400,marginBottom:12}}>Make It A Complete Package</h1>
-              <p style={{color:'var(--muted)',fontSize:15,lineHeight:1.8,maxWidth:520,margin:'0 auto'}}>Your portrait is gallery-ready. Add digital files, a custom song, and more products — all with the same portrait.</p>
+              <h1 className="serif" style={{fontSize:'clamp(28px,5vw,48px)',fontWeight:400,marginBottom:14,letterSpacing:'-.01em'}}>Make It <em style={{color:'var(--gold)'}}>Complete</em>.</h1>
+              <p style={{color:'var(--muted)',fontSize:14,lineHeight:1.8,maxWidth:480,margin:'0 auto'}}>Your portrait is gallery-ready. Add extras to make it unforgettable.</p>
             </div>
 
-            {/* Selected portrait + print confirmation */}
-            <div style={{display:'flex',gap:20,alignItems:'center',padding:'20px',background:'#141414',border:'1px solid rgba(201,168,76,.2)',marginBottom:8}}>
-              <img src={picked.url} alt="Your portrait" style={{width:88,height:88,objectFit:'cover'}}/>
-              <div style={{flex:1}}>
-                <div style={{fontSize:11,color:'var(--gold)',letterSpacing:'.1em',textTransform:'uppercase',marginBottom:4}}>Your Portrait</div>
-                <div style={{fontSize:15,fontWeight:600,marginBottom:2}}>{picked.styleName}</div>
-                <div style={{fontSize:12,color:'var(--muted)'}}>Printing on: {primaryProduct?.name} {primaryProduct?.size}</div>
+            {/* Selected portrait — celebration card */}
+            <div style={{display:'flex',gap:24,alignItems:'center',padding:'24px 28px',background:'linear-gradient(135deg,rgba(201,168,76,.08),rgba(10,10,10,.4))',border:'1px solid rgba(201,168,76,.3)',marginBottom:12}}>
+              <div style={{width:100,height:140,borderRadius:4,overflow:'hidden',flexShrink:0,border:'2px solid rgba(201,168,76,.4)',boxShadow:'0 8px 32px rgba(201,168,76,.15)'}}>
+                <img src={picked.url} alt="Your portrait" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
               </div>
-              <div className="serif" style={{fontSize:22,color:'var(--gold)'}}>${primaryProduct?.price}</div>
+              <div style={{flex:1}}>
+                <div style={{fontSize:9,color:'var(--gold)',letterSpacing:'.25em',textTransform:'uppercase',fontWeight:700,marginBottom:6}}>Your Portrait</div>
+                <div className="serif" style={{fontSize:20,fontWeight:400,marginBottom:4}}>{picked.styleName}</div>
+                <div style={{fontSize:12,color:'var(--muted)'}}>Printing on {primaryProduct?.name} {primaryProduct?.size}</div>
+              </div>
+              <div style={{textAlign:'right',flexShrink:0}}>
+                <div className="serif" style={{fontSize:28,color:'var(--gold)'}}>${primaryProduct?.price}</div>
+              </div>
             </div>
             {isMemory&&(
-              <div style={{padding:'10px 20px',background:'rgba(201,168,76,.06)',border:'1px solid rgba(201,168,76,.15)',borderTop:'none',marginBottom:36,display:'flex',justifyContent:'space-between'}}>
+              <div style={{padding:'12px 28px',background:'rgba(201,168,76,.04)',border:'1px solid rgba(201,168,76,.12)',borderTop:'none',marginBottom:0,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                 <span style={{fontSize:12,color:'var(--muted)'}}>✨ Memory Portrait upgrade</span>
-                <span style={{fontSize:12,color:'var(--gold)'}}>+${MEMORY_UPGRADE_PRICE.toFixed(2)}</span>
+                <span style={{fontSize:12,color:'var(--gold)',fontWeight:600}}>+${MEMORY_UPGRADE_PRICE.toFixed(2)}</span>
               </div>
             )}
-            {!isMemory&&<div style={{marginBottom:36}}/>}
+            <div style={{marginBottom:44}}/>
 
-            {/* ── DIGITAL ADD-ONS SECTION ── */}
-            <div style={{fontSize:10,letterSpacing:'.25em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>⚡ Digital Add-Ons — Instant Delivery, Zero Shipping</div>
+            {/* ── DIGITAL ADD-ONS ── */}
+            <div style={{fontSize:9,letterSpacing:'.28em',textTransform:'uppercase',color:'var(--gold)',marginBottom:18,fontWeight:600}}>⚡ Digital Add-Ons</div>
 
             {/* All 32 portraits */}
-            <div onClick={()=>setWantAllImages(b=>!b)} style={{background:'#141414',border:`1px solid ${wantAllImages?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'24px',marginBottom:3,cursor:'pointer',transition:'all .2s',position:'relative'}}>
-              {wantAllImages&&<div style={{position:'absolute',top:16,right:16,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:24,height:24,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:12}}>✓</div>}
-              <div style={{display:'flex',alignItems:'center',gap:20}}>
-                <div style={{fontSize:36}}>🖼️</div>
-                <div style={{flex:1}}>
-                  <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:6}}>
-                    <div className="serif" style={{fontSize:20,fontWeight:400}}>All 32 Portrait Files</div>
-                    <div style={{background:'rgba(201,168,76,.15)',color:'var(--gold)',fontSize:9,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase',padding:'3px 8px'}}>Best Value</div>
-                  </div>
-                  <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>Every portrait in full resolution — all styles, all variants. Print anywhere, share with family, use as wallpaper. Yours forever.</div>
+            <div onClick={()=>setWantAllImages(b=>!b)} className={`upsell-card${wantAllImages?' on':''}`} style={{background:wantAllImages?'rgba(201,168,76,.06)':'#141414',border:`1px solid ${wantAllImages?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'28px',marginBottom:4,cursor:'pointer',transition:'all .25s',position:'relative',display:'flex',gap:20,alignItems:'center'}}>
+              {wantAllImages&&<div style={{position:'absolute',top:18,right:18,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:26,height:26,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:13}}>✓</div>}
+              <div style={{fontSize:40,flexShrink:0}}>🖼️</div>
+              <div style={{flex:1}}>
+                <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:6}}>
+                  <div className="serif" style={{fontSize:20,fontWeight:400}}>All 32 Portrait Files</div>
+                  <div style={{background:'rgba(201,168,76,.15)',color:'var(--gold)',fontSize:8,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',padding:'3px 9px'}}>Best Value</div>
                 </div>
-                <div style={{textAlign:'right',flexShrink:0}}>
-                  <div className="serif" style={{fontSize:24,color:'var(--gold)'}}>$29.99</div>
-                  <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>36 hi-res files</div>
-                </div>
+                <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>Every portrait in full resolution. Print anywhere, share with family, use as wallpaper. Yours forever.</div>
+              </div>
+              <div style={{textAlign:'right',flexShrink:0}}>
+                <div className="serif" style={{fontSize:26,color:'var(--gold)'}}>$29.99</div>
+                <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>32 hi-res files</div>
               </div>
             </div>
 
             {/* Pet Song */}
-            <div onClick={()=>setWantSong(b=>!b)} style={{background:'#141414',border:`1px solid ${wantSong?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'24px',marginBottom:3,cursor:'pointer',transition:'all .2s',position:'relative'}}>
-              {wantSong&&<div style={{position:'absolute',top:16,right:16,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:24,height:24,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:12}}>✓</div>}
-              <div style={{display:'flex',alignItems:'center',gap:20}}>
-                <div style={{fontSize:36}}>🎵</div>
-                <div style={{flex:1}}>
-                  <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:6}}>
-                    <div className="serif" style={{fontSize:20,fontWeight:400}}>Custom Pet Song</div>
-                    <div style={{background:'rgba(139,92,246,.2)',color:'#A78BFA',fontSize:9,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase',padding:'3px 8px'}}>New</div>
-                  </div>
-                  <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>A one-of-a-kind song written and composed for your pet — using the same memory details from your portrait. Delivered as an MP3. The ultimate keepsake.</div>
+            <div onClick={()=>setWantSong(b=>!b)} className={`upsell-card${wantSong?' on':''}`} style={{background:wantSong?'rgba(139,92,246,.04)':'#141414',border:`1px solid ${wantSong?'#A78BFA':'rgba(245,240,232,.08)'}`,padding:'28px',marginBottom:4,cursor:'pointer',transition:'all .25s',position:'relative',display:'flex',gap:20,alignItems:'center'}}>
+              {wantSong&&<div style={{position:'absolute',top:18,right:18,background:'#A78BFA',color:'#fff',borderRadius:'50%',width:26,height:26,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:13}}>✓</div>}
+              <div style={{fontSize:40,flexShrink:0}}>🎵</div>
+              <div style={{flex:1}}>
+                <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:6}}>
+                  <div className="serif" style={{fontSize:20,fontWeight:400}}>Custom Pet Song</div>
+                  <div style={{background:'rgba(139,92,246,.2)',color:'#A78BFA',fontSize:8,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',padding:'3px 9px'}}>Unique</div>
                 </div>
-                <div style={{textAlign:'right',flexShrink:0}}>
-                  <div className="serif" style={{fontSize:24,color:'var(--gold)'}}>$19</div>
-                  <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>Custom MP3</div>
-                </div>
+                <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>A one-of-a-kind song written and composed for your pet. Delivered as MP3. The ultimate keepsake.</div>
+              </div>
+              <div style={{textAlign:'right',flexShrink:0}}>
+                <div className="serif" style={{fontSize:26,color:'#A78BFA'}}>$19</div>
+                <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>Custom MP3</div>
               </div>
             </div>
 
-            {/* Digital Bundle (select prints) */}
-            <div onClick={()=>setWantBundle(b=>!b)} style={{background:'#141414',border:`1px solid ${wantBundle?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'24px',marginBottom:36,cursor:'pointer',transition:'all .2s',position:'relative'}}>
-              {wantBundle&&<div style={{position:'absolute',top:16,right:16,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:24,height:24,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:12}}>✓</div>}
-              <div style={{display:'flex',alignItems:'center',gap:20}}>
-                <div style={{fontSize:36}}>💾</div>
-                <div style={{flex:1}}>
-                  <div className="serif" style={{fontSize:20,fontWeight:400,marginBottom:6}}>Your Favorite Portrait — Digital File</div>
-                  <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>High-resolution file of your selected portrait. Perfect for digital frames, phone wallpaper, or printing yourself.</div>
-                </div>
-                <div style={{textAlign:'right',flexShrink:0}}>
-                  <div className="serif" style={{fontSize:24,color:'var(--gold)'}}>${DIGITAL_BUNDLE_PRICE}</div>
-                  <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>Instant download</div>
-                </div>
+            {/* Digital Bundle (single file) */}
+            <div onClick={()=>setWantBundle(b=>!b)} className={`upsell-card${wantBundle?' on':''}`} style={{background:wantBundle?'rgba(201,168,76,.04)':'#141414',border:`1px solid ${wantBundle?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'28px',marginBottom:48,cursor:'pointer',transition:'all .25s',position:'relative',display:'flex',gap:20,alignItems:'center'}}>
+              {wantBundle&&<div style={{position:'absolute',top:18,right:18,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:26,height:26,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:13}}>✓</div>}
+              <div style={{fontSize:40,flexShrink:0}}>💾</div>
+              <div style={{flex:1}}>
+                <div className="serif" style={{fontSize:20,fontWeight:400,marginBottom:6}}>Your Favorite — Digital File</div>
+                <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>Hi-res file of your selected portrait. Digital frames, phone wallpaper, or print yourself.</div>
+              </div>
+              <div style={{textAlign:'right',flexShrink:0}}>
+                <div className="serif" style={{fontSize:26,color:'var(--gold)'}}>${DIGITAL_BUNDLE_PRICE}</div>
+                <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>Instant download</div>
               </div>
             </div>
 
-            {/* ── PHYSICAL PRODUCTS SECTION ── */}
-            <div style={{fontSize:10,letterSpacing:'.25em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>📦 More Products — Same Portrait, Shipped to You</div>
+            {/* ── MORE PRODUCTS ── */}
+            <div style={{fontSize:9,letterSpacing:'.28em',textTransform:'uppercase',color:'var(--gold)',marginBottom:18,fontWeight:600}}>📦 More Products</div>
             {['Home','Apparel','Accessories'].map(cat=>{
               const items = PRODUCTS.filter(p=>p.category===cat&&p.id!==primaryProduct?.id)
               if(!items.length) return null
               return (
-                <div key={cat} style={{marginBottom:28}}>
-                  <div style={{fontSize:9,letterSpacing:'.25em',textTransform:'uppercase',color:'rgba(245,240,232,.35)',marginBottom:12}}>{cat}</div>
-                  <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))',gap:2}}>
+                <div key={cat} style={{marginBottom:32}}>
+                  <div style={{fontSize:9,letterSpacing:'.22em',textTransform:'uppercase',color:'rgba(245,240,232,.35)',marginBottom:14}}>{cat}</div>
+                  <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))',gap:3}}>
                     {items.map(p=>{
                       const isOn = cartExtras.includes(p.id)
                       return (
@@ -1187,21 +1189,21 @@ export default function CreatePage() {
               )
             })}
 
-            {/* Final total */}
-            <div style={{background:'#141414',border:'1px solid rgba(201,168,76,.2)',padding:'24px',marginBottom:24,marginTop:16}}>
-              <div style={{fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>Order Total</div>
-              <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}>
+            {/* ── PREMIUM RECEIPT ── */}
+            <div style={{background:'linear-gradient(180deg,#161616,#111)',border:'1px solid rgba(201,168,76,.25)',padding:'28px 32px',marginBottom:28,marginTop:8}}>
+              <div style={{fontSize:9,letterSpacing:'.28em',textTransform:'uppercase',color:'var(--gold)',marginBottom:18,fontWeight:600}}>Order Total</div>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}>
                 <span style={{fontSize:14}}>{primaryProduct?.name} {primaryProduct?.size}</span>
                 <span style={{fontSize:14}}>${primaryProduct?.price}</span>
               </div>
-              {isMemory&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>✨ Memory Portrait upgrade</span><span style={{fontSize:14}}>${MEMORY_UPGRADE_PRICE.toFixed(2)}</span></div>}
-              {wantAllImages&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>🖼️ All 32 Portrait Files</span><span style={{fontSize:14}}>$29.99</span></div>}
-              {wantSong&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>🎵 Custom Pet Song</span><span style={{fontSize:14}}>$19.00</span></div>}
-              {wantBundle&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>💾 Portrait Digital File</span><span style={{fontSize:14}}>${DIGITAL_BUNDLE_PRICE}</span></div>}
-              {cartExtras.map(id=>{const p=PRODUCTS.find(x=>x.id===id)!;return <div key={id} style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>{p.emoji} {p.name} {p.size}</span><span style={{fontSize:14}}>${p.price}</span></div>})}
-              <div style={{borderTop:'1px solid rgba(245,240,232,.08)',paddingTop:16,marginTop:8,display:'flex',justifyContent:'space-between'}}>
-                <span style={{fontSize:15,fontWeight:600}}>Total</span>
-                <span className="serif" style={{fontSize:24,color:'var(--gold)'}}>
+              {isMemory&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14}}>✨ Memory Portrait</span><span style={{fontSize:14}}>${MEMORY_UPGRADE_PRICE.toFixed(2)}</span></div>}
+              {wantAllImages&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14}}>🖼️ All 32 Portrait Files</span><span style={{fontSize:14}}>$29.99</span></div>}
+              {wantSong&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14}}>🎵 Custom Pet Song</span><span style={{fontSize:14}}>$19.00</span></div>}
+              {wantBundle&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14}}>💾 Portrait Digital File</span><span style={{fontSize:14}}>${DIGITAL_BUNDLE_PRICE}</span></div>}
+              {cartExtras.map(id=>{const p=PRODUCTS.find(x=>x.id===id)!;return <div key={id} style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14}}>{p.emoji} {p.name} {p.size}</span><span style={{fontSize:14}}>${p.price}</span></div>})}
+              <div style={{borderTop:'1px solid rgba(201,168,76,.2)',paddingTop:16,marginTop:12,display:'flex',justifyContent:'space-between',alignItems:'baseline'}}>
+                <span style={{fontSize:12,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase'}}>Total</span>
+                <span className="serif" style={{fontSize:32,color:'var(--gold)'}}>
                   ${((primaryProduct?.price||0)+(isMemory?MEMORY_UPGRADE_PRICE:0)+(wantBundle?DIGITAL_BUNDLE_PRICE:0)+(wantAllImages?29.99:0)+(wantSong?19:0)+cartExtras.reduce((sum,id)=>sum+(PRODUCTS.find(p=>p.id===id)?.price||0),0)).toFixed(2)}
                 </span>
               </div>
@@ -1209,12 +1211,12 @@ export default function CreatePage() {
 
             {error&&<div style={{color:'#C4622D',fontSize:13,marginBottom:16,padding:'12px 16px',background:'rgba(196,98,45,.08)'}}>{error}</div>}
 
-            <button className="btn-gold" onClick={handleCheckout} disabled={checkoutLoading}>
+            <button className="btn-gold" onClick={handleCheckout} disabled={checkoutLoading} style={{marginBottom:20}}>
               {checkoutLoading ? '⏳ Redirecting to Stripe...' : 'Proceed to Secure Checkout →'}
             </button>
-            <div style={{marginTop:16,display:'flex',gap:20,justifyContent:'center',flexWrap:'wrap'}}>
-              {['🔒 Stripe secure checkout','📦 Ships in 5–7 days','✓ Satisfaction guarantee'].map(t=>(
-                <span key={t} style={{fontSize:11,color:'var(--muted)'}}>{t}</span>
+            <div style={{display:'flex',gap:24,justifyContent:'center',flexWrap:'wrap'}}>
+              {['🔒 Secure checkout','📦 Ships 5–7 days','✓ Satisfaction guarantee'].map(t=>(
+                <span key={t} style={{fontSize:10,color:'var(--muted)',letterSpacing:'.04em'}}>{t}</span>
               ))}
             </div>
           </div>
