@@ -240,31 +240,15 @@ export async function POST(req: NextRequest) {
           // ══════════════════════════════════════════════════════════
 
           // Determine which styles to generate
-          // Default set: 8 curated styles (keeps generation under 5 min)
-          // Full 30 can be triggered with targetStyleId='all'
-          const DEFAULT_STYLE_IDS = [
-            'museum_black',         // Classic Portraits
-            'rembrandt_master',     // Classic Portraits
-            'classical_oil',       // Painterly Fine Art
-            'watercolor_fine',     // Painterly Fine Art
-            'coastal_golden',      // Golden Hour & Nature
-            'cozy_home',           // Lifestyle & Story
-            'retro_pop_grid',      // Pop & Modern
-            'neon_glow',           // Pop & Modern
-          ]
-
+          // Default: ALL 30 styles (full gallery)
+          // Override with targetStyleId to run a single style by ID
           let stylesToRun: StyleTemplate[]
-          if (targetStyleId === 'all') {
+          if (targetStyleId === 'all' || !targetStyleId) {
             stylesToRun = getActiveStyles()
-          } else if (targetStyleId) {
+          } else {
             const resolvedId = resolveStyleId(targetStyleId)
             const style = getStyleById(resolvedId)
             stylesToRun = style ? [style] : getActiveStyles().slice(0, 1)
-          } else {
-            // Default: curated set of 8 for fast generation
-            stylesToRun = DEFAULT_STYLE_IDS
-              .map(id => getStyleById(id))
-              .filter((s): s is StyleTemplate => s !== undefined)
           }
 
           const variantsPerStyle = variantCount || 1
