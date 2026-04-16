@@ -281,12 +281,15 @@ export async function POST(req: NextRequest) {
                 console.log(`==========================================\n`)
 
                 // Call OpenAI /images/edits
+                // Quality tier: style.qualityTier === 'high' → high ($0.25/img)
+                //               otherwise medium ($0.063/img, default for 28 of 32 styles)
+                const quality = style.qualityTier === 'high' ? 'high' : 'medium'
                 const fd = new FormData()
                 fd.append('model', 'gpt-image-1')
                 fd.append('prompt', promptPackage.fullPrompt)
                 fd.append('n', '1')
                 fd.append('size', '1024x1536')
-                fd.append('quality', 'high')
+                fd.append('quality', quality)
                 fd.append('input_fidelity', 'high')
                 fd.append('image[]', new Blob([petImageBuffer as unknown as BlobPart], { type: 'image/jpeg' }), 'pet.jpg')
 
@@ -381,12 +384,13 @@ export async function POST(req: NextRequest) {
               console.log(`Prompt length: ${promptPackage.fullPrompt.length} chars`)
               console.log(`==========================================\n`)
 
+              const quality = style.qualityTier === 'high' ? 'high' : 'medium'
               const fd = new FormData()
               fd.append('model', 'gpt-image-1')
               fd.append('prompt', promptPackage.fullPrompt)
               fd.append('n', '1')
               fd.append('size', '1024x1536')
-              fd.append('quality', 'high')
+              fd.append('quality', quality)
               fd.append('input_fidelity', 'high')
               fd.append('image[]', new Blob([petImageBuffer as unknown as BlobPart], { type: 'image/jpeg' }), 'pet.jpg')
 
@@ -446,7 +450,7 @@ export async function POST(req: NextRequest) {
           generationParams: {
             model: 'gpt-image-1',
             size: '1024x1536',
-            quality: 'high',
+            quality: 'tiered (high for photorealistic styles, medium for painterly/stylized)',
             inputFidelity: 'high',
           },
           styles: [...new Set(allImages.map(i => i.styleName))],

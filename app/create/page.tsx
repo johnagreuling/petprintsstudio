@@ -489,6 +489,49 @@ export default function CreatePage() {
         .step-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;display:inline-block}
         @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}.pulse{animation:pulse 1.8s ease infinite}
         @keyframes spin{to{transform:rotate(360deg)}}.spin{animation:spin 1s linear infinite;display:inline-block}
+
+        /* Mobile polish — iPhone-first */
+        @media(max-width:640px){
+          nav{padding:14px 16px !important;gap:8px !important}
+          nav > div:first-child > span{font-size:16px !important}
+          nav > div:nth-child(2){display:none !important}  /* hide stepper on phone */
+          nav > div:last-child{font-size:10px !important}
+
+          main{padding:24px 16px 60px !important}
+          h1{font-size:clamp(26px,7vw,36px) !important;line-height:1.15 !important}
+
+          /* Upload drop zone on phone — bigger touch target, less padding */
+          .drop{padding:40px 20px !important;min-height:260px !important}
+          .drop > div > div:first-child{font-size:40px !important}  /* paw emoji */
+
+          /* Buttons full width, larger touch */
+          .btn-gold{padding:16px 24px !important;font-size:12px !important;width:100% !important}
+          .btn-out{padding:14px 20px !important;font-size:10px !important}
+
+          /* Product / style grids: 2-up on phone */
+          [style*="gridTemplateColumns:'repeat(4"],
+          [style*="gridTemplateColumns: 'repeat(4"]{grid-template-columns:1fr 1fr !important;gap:10px !important}
+          [style*="gridTemplateColumns:'repeat(3"],
+          [style*="gridTemplateColumns: 'repeat(3"]{grid-template-columns:1fr 1fr !important;gap:10px !important}
+
+          /* Portrait gallery on the reveal page — 2 per row on phone */
+          .img-card{aspect-ratio:3/4 !important}
+
+          /* Inputs larger touch target */
+          .input,.select{font-size:16px !important;padding:14px 16px !important}  /* 16px prevents iOS zoom */
+
+          /* Pet name + breed side-by-side → stacked on phone */
+          [style*="gridTemplateColumns:'1fr 1fr'"][style*="gap:16"]{grid-template-columns:1fr !important;gap:12px !important}
+
+          /* Category tabs — scroll horizontally rather than wrap */
+          .cat-tab{margin-right:16px !important;font-size:10px !important}
+
+          /* Modal / overlays use full screen on phone */
+          [style*="position:'fixed'"][style*="inset:0"] > div{max-width:95vw !important;max-height:95vh !important}
+
+          /* Reduce hero section padding */
+          section[style*="padding:'140px 24px 80px'"]{padding:100px 16px 60px !important}
+        }
       `}</style>
 
       {/* NAV */}

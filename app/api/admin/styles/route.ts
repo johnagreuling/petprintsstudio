@@ -8,18 +8,18 @@ import {
   type SubjectProfile,
 } from '@/lib/portrait-engine';
 
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ════════════════════════════════════════════════════════════════
 //  ADMIN STYLES API
 //
 //  Reads from the portrait engine's style library (single source of truth).
 //  Builds a sample prompt for each style using a demo pet description.
 //  Pulls sample images from recent generation sessions in the database.
-// ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ════════════════════════════════════════════════════════════════
 
 // Sample pet profile for generating example prompts in the admin view
 const SAMPLE_PET: SubjectProfile = {
   subjectType: 'pet',
-  summary: 'Goldendoodle with golden apricot coat â signature teddy bear face with round dark eyes',
+  summary: 'Goldendoodle with golden apricot coat — signature teddy bear face with round dark eyes',
   traits: {
     species: 'dog',
     breed: 'Goldendoodle with loose curly coat',
@@ -57,7 +57,7 @@ export async function GET() {
         for (const img of images || []) {
           const styleId = img.style_id || img.styleId;
           if (styleId && !styleImages[styleId] && img.url) {
-            // Strip variant suffix (e.g., "museum_black_0" â "museum_black")
+            // Strip variant suffix (e.g., "museum_black_0" → "museum_black")
             const baseId = styleId.replace(/_\d+$/, '');
             if (!styleImages[baseId]) {
               styleImages[baseId] = img.url;
@@ -98,6 +98,7 @@ export async function GET() {
         preferredFraming: style.preferredFraming || 'preserve_source',
         forbiddenTraits: style.forbiddenTraits,
         styleConstraints: style.styleConstraints,
+        qualityTier: style.qualityTier || 'medium',
         // Sample image from past generations
         sampleImageUrl: styleImages[style.id] || null,
       };

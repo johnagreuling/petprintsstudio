@@ -1,10 +1,53 @@
 'use client'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ART_STYLES, PRODUCTS } from '@/lib/config'
+
+type HeroShowcase = { url: string; style: string; pet: string }
 
 export default function Home() {
   const [activeStyle, setActiveStyle] = useState(0)
+  const [heroShowcase, setHeroShowcase] = useState<HeroShowcase[]>([])
+  const [activeHero, setActiveHero] = useState(0)
+
+  // Load curated portrait showcase for the hero band
+  useEffect(() => {
+    (async () => {
+      try {
+        const [picksRes, stylesRes] = await Promise.all([
+          fetch('/api/admin/curate-picks'),
+          fetch('/api/admin/styles'),
+        ])
+        const { picks = {} } = await picksRes.json()
+        const { styles = [] } = await stylesRes.json()
+        const styleNameById: Record<string, string> = Object.fromEntries(styles.map((s: any) => [s.id, s.name]))
+        // Prefer hero styles: classical_oil, museum_black, coastal_golden, soft_pastel, comic_hero
+        const HERO_PREFERENCE = ['classical_oil', 'museum_black', 'coastal_golden', 'soft_pastel', 'watercolor_fine', 'impressionist_garden', 'neon_glow', 'rembrandt_master']
+        const shortlist: HeroShowcase[] = []
+        for (const id of HERO_PREFERENCE) {
+          const pick = picks[id]
+          if (pick?.url) shortlist.push({ url: pick.url, style: styleNameById[id] || id, pet: pick.pet || '' })
+          if (shortlist.length >= 5) break
+        }
+        // Backfill from any remaining picks if we didn't get 5 from the shortlist
+        if (shortlist.length < 5) {
+          for (const [id, pick] of Object.entries(picks as Record<string, any>)) {
+            if (shortlist.find(s => s.style === styleNameById[id])) continue
+            if (pick?.url) shortlist.push({ url: pick.url, style: styleNameById[id] || id, pet: pick.pet || '' })
+            if (shortlist.length >= 5) break
+          }
+        }
+        setHeroShowcase(shortlist)
+      } catch (e) { /* silent degrade — hero works without showcase */ }
+    })()
+  }, [])
+
+  // Auto-rotate the featured hero portrait every 4s
+  useEffect(() => {
+    if (heroShowcase.length < 2) return
+    const t = setInterval(() => setActiveHero(i => (i + 1) % heroShowcase.length), 4000)
+    return () => clearInterval(t)
+  }, [heroShowcase.length])
 
   return (
     <main style={{background:'#0A0A0A',color:'#F5F0E8',fontFamily:"'DM Sans',sans-serif",minHeight:'100vh'}}>
@@ -59,6 +102,10 @@ export default function Home() {
           .bookend-grid>*{width:100%!important}
           .steps-grid{grid-template-columns:1fr 1fr!important}
           .product-grid{display:grid!important;grid-template-columns:1fr 1fr!important}
+          .hero-showcase{gap:6px!important}
+          .hero-showcase-card{width:90px!important;height:120px!important}
+          .hero-showcase-card:nth-child(n+4){display:none!important}
+          .hero-showcase-card[style*="border: 2px solid"]{width:140px!important;height:190px!important}
         }
         .section-padding{padding:120px 60px;background:var(--soft)}
         .responsive-grid-2col{display:grid;grid-template-columns:1.5fr 1fr}
@@ -105,7 +152,7 @@ export default function Home() {
         <p className="fu fu3" style={{fontSize:13,color:'rgba(201,168,76,.8)',letterSpacing:'.04em',lineHeight:2,marginBottom:24}}>Portrait + Song + QR Code &nbsp;&middot;&nbsp; Delivered in 24 hours &nbsp;&middot;&nbsp; Starting at $49</p>
         
         {/* Upload Dropbox - Right on homepage */}
-        <div className="fu fu4" style={{marginBottom:48,maxWidth:500,margin:'0 auto 48px'}}>
+        <div className="fu fu4" style={{marginBottom:40,maxWidth:500,margin:'0 auto 40px'}}>
           <Link href="/create" style={{display:'block',border:'2px dashed rgba(201,168,76,.5)',borderRadius:12,padding:'40px 32px',textAlign:'center',textDecoration:'none',background:'rgba(201,168,76,.05)',transition:'all .2s'}}>
             <div style={{fontSize:32,marginBottom:12}}>🐾</div>
             <div style={{fontSize:18,color:'var(--cream)',fontWeight:500,marginBottom:8}}>Drop your pet&apos;s photo here</div>
@@ -114,6 +161,55 @@ export default function Home() {
           </Link>
         </div>
 
+        {/* ── Hero Portrait Showcase ────────────────────────────────
+            Real curated portraits from Mason/Sylas/Sasha sessions,
+            auto-rotating every 4s. Gives the hero visual proof. ── */}
+        {heroShowcase.length > 0 && (
+          <div className="fu fu4 hero-showcase" style={{display:'flex',gap:12,marginBottom:48,maxWidth:960,width:'100%',justifyContent:'center',flexWrap:'wrap'}}>
+            {heroShowcase.slice(0, 5).map((item, i) => {
+              const isActive = i === activeHero
+              return (
+                <div
+                  key={item.url}
+                  className="hero-showcase-card"
+                  style={{
+                    position:'relative',
+                    width:isActive ? 220 : 140,
+                    height:isActive ? 290 : 190,
+                    borderRadius:8,
+                    overflow:'hidden',
+                    cursor:'pointer',
+                    border:isActive ? '2px solid var(--gold)' : '1px solid rgba(245,240,232,.1)',
+                    boxShadow:isActive ? '0 20px 60px rgba(201,168,76,.2)' : '0 4px 20px rgba(0,0,0,.5)',
+                    transition:'all .6s cubic-bezier(.2,.8,.2,1)',
+                    flexShrink:0,
+                  }}
+                  onClick={()=>setActiveHero(i)}
+                >
+                  <img src={item.url} alt={`${item.pet} — ${item.style}`} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} loading="lazy" />
+                  <div style={{
+                    position:'absolute',
+                    bottom:0,
+                    left:0,
+                    right:0,
+                    padding: isActive ? '24px 16px 12px' : '12px 10px 8px',
+                    background:'linear-gradient(to top, rgba(10,10,10,.9) 0%, transparent 100%)',
+                    textAlign:'center',
+                  }}>
+                    <div style={{
+                      fontSize: isActive ? 11 : 9,
+                      letterSpacing:'.2em',
+                      textTransform:'uppercase',
+                      color:'var(--gold)',
+                      fontWeight:600,
+                    }}>{item.style}</div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+
         <div className="fu fu4" style={{display:'flex',gap:16,flexWrap:'wrap',justifyContent:'center',marginBottom:72}}>
           <a href="#how-it-works" className="btn-out">See How It Works</a>
         </div>
@@ -121,13 +217,13 @@ export default function Home() {
         {/* Style hint */}
         <div className="fu fu4" style={{marginBottom:64,textAlign:'center'}}>
           <p style={{fontSize:12,color:'rgba(201,168,76,.6)',letterSpacing:'.08em'}}>
-            Infinite styles &amp; customization &nbsp;&middot;&nbsp; 16 custom-tuned presets for stunning results &nbsp;&middot;&nbsp; <Link href="/styles" style={{color:'var(--gold)',textDecoration:'none',borderBottom:'1px solid rgba(201,168,76,.4)'}}>Explore styles →</Link>
+            32 custom-tuned styles &nbsp;&middot;&nbsp; Every one included &nbsp;&middot;&nbsp; <Link href="/styles" style={{color:'var(--gold)',textDecoration:'none',borderBottom:'1px solid rgba(201,168,76,.4)'}}>Explore styles →</Link>
           </p>
         </div>
 
         {/* Stats */}
         <div className="fu fu4" style={{display:'flex',gap:60,flexWrap:'wrap',justifyContent:'center'}}>
-          {[['36','Portraits Per Story'],['1,000+','Pet Stories Told'],['♪','Beautiful Original Music'],['4.9★','Customer Average']].map(([n,l1])=>(
+          {[['32','Portraits Per Story'],['1,000+','Pet Stories Told'],['♪','Beautiful Original Music'],['4.9★','Customer Average']].map(([n,l1])=>(
             <div key={l1} style={{textAlign:'center'}}>
               <div className="serif" style={{fontSize:36,color:'var(--gold)',lineHeight:1,marginBottom:4}}>{n}</div>
               <div style={{fontSize:9,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--muted)',marginTop:6,lineHeight:1.6}}>{l1}</div>

@@ -55,6 +55,7 @@ const CLASSIC_PORTRAITS: StyleTemplate[] = [
     preferredFraming: 'bust',
     forbiddenTraits: ['busy backgrounds', 'props', 'text', 'bright colors in background', 'flat lighting', 'snapshot quality'],
     styleConstraints: ['Background must be pure deep black', 'Catchlights in eyes are essential', 'Face must be the brightest element in the image'],
+    qualityTier: 'high',
   },
   {
     id: 'rembrandt_master',
@@ -72,6 +73,7 @@ const CLASSIC_PORTRAITS: StyleTemplate[] = [
     paintSurface: 'Smooth glazed surface over impasto underlayer. Visible brushwork in fur and textured areas. Luminous depth in eyes — like looking into lit amber. Dense, layered paint quality.',
     forbiddenTraits: ['bright colors', 'modern elements', 'flat lighting', 'impressionist brushwork', 'cartoon styling', 'photorealistic finish'],
     styleConstraints: ['Must feel like a painting you could touch', 'Eyes must have luminous glazed depth', 'Shadows should have warm color, never dead black'],
+    qualityTier: 'high',
   },
   {
     id: 'baroque_royal',
@@ -142,6 +144,7 @@ const CLASSIC_PORTRAITS: StyleTemplate[] = [
     paintSurface: 'Clean with subtle painterly warmth. Not photorealistic — has the softness of a fine art print. Slightly diffused edges. Contemporary art quality.',
     forbiddenTraits: ['busy backgrounds', 'props', 'dramatic lighting', 'heavy texture', 'dark moody tones', 'ornate elements'],
     styleConstraints: ['Background must be clean and minimal', 'Subject is the ONLY visual element', 'Modern and contemporary — not vintage or classical'],
+    qualityTier: 'high',
   },
 ]
 
@@ -166,6 +169,7 @@ const PAINTERLY_FINE_ART: StyleTemplate[] = [
     paintSurface: 'Smooth glazed oil surface with luminous depth. Visible brushwork in fur. Dense layered paint quality.',
     forbiddenTraits: ['impressionist looseness', 'modern styling', 'bright pop colors', 'flat lighting', 'digital smoothness'],
     styleConstraints: ['Must feel like a real oil painting', 'Eyes must have luminous glazed depth'],
+    qualityTier: 'high',
   },
   {
     id: 'heavy_impasto',

@@ -133,6 +133,34 @@ export default function StylesGallery() {
         .cat-pill { padding: 10px 18px; border-radius: 24px; font-size: 12px; cursor: pointer; border: 1px solid #333; background: transparent; color: #888; transition: all .15s; letter-spacing: .08em; text-transform: uppercase; }
         .cat-pill:hover { border-color: #555; color: var(--cream); }
         .cat-pill.on { color: var(--cream); }
+
+        /* Mobile polish */
+        @media (max-width: 640px) {
+          nav { padding: 14px 16px !important; gap: 8px !important; }
+          nav > div:nth-child(2) > a:not([href="/styles"]):not([href="/create"]) { display: none !important; }
+          nav > div:nth-child(2) { gap: 12px !important; }
+
+          section { padding-left: 16px !important; padding-right: 16px !important; }
+          section[style*="paddingTop: 140"], section[style*="padding: '140px"] { padding-top: 96px !important; }
+
+          h1 { font-size: clamp(32px, 9vw, 48px) !important; line-height: 1.1 !important; }
+          h2 { font-size: clamp(24px, 7vw, 36px) !important; }
+
+          /* Gallery: 2-up on phone, proper aspect ratio */
+          [style*="gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))'"] {
+            grid-template-columns: 1fr 1fr !important; gap: 6px !important;
+          }
+
+          /* Category filter pills — horizontal scroll on phone */
+          .cat-pill { padding: 8px 14px !important; font-size: 10px !important; }
+
+          /* Card labels smaller */
+          .style-card { aspect-ratio: 3/4 !important; }
+
+          /* Lightbox arrows on phone: don't go off-screen */
+          [style*="left: -64"] { left: 4px !important; background: rgba(10,10,10,.8) !important; z-index: 5; }
+          [style*="right: -64"] { right: 4px !important; background: rgba(10,10,10,.8) !important; z-index: 5; }
+        }
       `}</style>
 
       <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, padding: '20px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(10,10,10,.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid var(--border)' }}>

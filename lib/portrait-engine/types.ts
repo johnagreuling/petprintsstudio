@@ -128,6 +128,11 @@ export interface StyleTemplate {
   forbiddenTraits: string[]
   /** Style-specific positive constraints */
   styleConstraints: string[]
+  /** OpenAI quality tier — 'high' for styles where crispness/fidelity is the product
+   *  (photorealistic, classic portraits), 'medium' for painterly/textural styles
+   *  where style noise buries any medium-quality artifacts. Cost impact: $0.25 vs
+   *  $0.063 per image. Defaults to 'medium' in the generate route if omitted. */
+  qualityTier?: 'medium' | 'high'
 }
 
 // ── Prompt Assembly ──────────────────────────────────────────────────────
