@@ -664,7 +664,7 @@ export default function CreatePage() {
               <button className="btn-gold" disabled={!uploadedFile || !imageLoaded} onClick={()=>setStep('product')}>Choose Your Canvas Size →</button>
             </div>
             <div style={{marginTop:16,display:'flex',gap:20,justifyContent:'center',flexWrap:'wrap'}}>
-              {['✓ No account needed','✓ 30 AI portraits generated','✓ Free to preview','✓ Prints shipped in 5–7 days'].map(t=>(
+              {['✓ No account needed','✓ 32 AI portraits generated','✓ Free to preview','✓ Prints shipped in 5–7 days'].map(t=>(
                 <span key={t} style={{fontSize:11,color:'var(--muted)'}}>{t}</span>
               ))}
             </div>
@@ -686,7 +686,7 @@ export default function CreatePage() {
                 <img src={preview} alt="Your pet" style={{width:72,height:72,objectFit:'cover',borderRadius:2}}/>
                 <div>
                   <div style={{fontSize:13,fontWeight:600}}>Your pet{answers.petName?` — ${answers.petName}`:''}</div>
-                  <div style={{fontSize:11,color:'var(--muted)',marginTop:4}}>30 AI portraits will be generated from this photo</div>
+                  <div style={{fontSize:11,color:'var(--muted)',marginTop:4}}>32 AI portraits will be generated from this photo</div>
                 </div>
               </div>
             )}
@@ -737,7 +737,7 @@ export default function CreatePage() {
                 <div onClick={()=>setIsMemory(false)} style={{background:'#141414',border:`1px solid ${!isMemory?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'20px',cursor:'pointer',transition:'all .2s'}}>
                   <div style={{fontSize:20,marginBottom:8}}>🎨</div>
                   <div className="serif" style={{fontSize:17,marginBottom:4,fontWeight:400}}>Style Transfer</div>
-                  <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>Your photo reimagined in all 30 custom-built artistic styles. Ready in ~7 minutes.</div>
+                  <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>Your photo reimagined in all 32 custom-built artistic styles. Ready in ~7 minutes.</div>
                   <div style={{fontSize:12,color:'var(--gold)',marginTop:8,fontWeight:600}}>Included</div>
                 </div>
                 <div onClick={()=>setIsMemory(true)} style={{background:'#141414',border:`1px solid ${isMemory?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'20px',cursor:'pointer',transition:'all .2s',position:'relative'}}>

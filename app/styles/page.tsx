@@ -149,12 +149,12 @@ export default function StylesGallery() {
       </nav>
 
       <section style={{ paddingTop: 140, paddingBottom: 40, textAlign: 'center', padding: '140px 48px 40px' }}>
-        <div style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 16 }}>30 Custom-Tuned Styles &bull; Every One Included</div>
+        <div style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 16 }}>32 Custom-Tuned Styles &bull; Every One Included</div>
         <h1 className="serif" style={{ fontSize: 'clamp(40px,6vw,80px)', fontWeight: 400, marginBottom: 16, lineHeight: 1.05 }}>
           Every Portrait.<br /><em>A Different Story.</em>
         </h1>
         <p style={{ color: 'var(--muted)', fontSize: 17, maxWidth: 600, margin: '0 auto 40px', lineHeight: 1.9 }}>
-          Upload one photo. We generate a portrait in all 30 styles — you just pick the one that feels most like them.
+          Upload one photo. We generate a portrait in all 32 styles — you just pick the one that feels most like them.
         </p>
         <Link href="/create" style={{ background: 'var(--gold)', color: 'var(--ink)', padding: '16px 44px', fontSize: 12, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', textDecoration: 'none', display: 'inline-block' }}>🐾 Start Their Story — $49</Link>
       </section>
@@ -262,8 +262,8 @@ export default function StylesGallery() {
       )}
 
       <section style={{ background: 'var(--gold)', padding: '80px 48px', textAlign: 'center' }}>
-        <h2 className="serif" style={{ fontSize: 'clamp(32px,5vw,64px)', color: 'var(--ink)', fontWeight: 400, marginBottom: 16 }}>30 Custom Styles.<br />All Included.</h2>
-        <p style={{ fontSize: 17, color: 'rgba(10,10,10,.6)', marginBottom: 40, maxWidth: 460, margin: '0 auto 40px', lineHeight: 1.8 }}>Upload your pet&rsquo;s photo and get a portrait in every style — all 30. Pick your favorite.</p>
+        <h2 className="serif" style={{ fontSize: 'clamp(32px,5vw,64px)', color: 'var(--ink)', fontWeight: 400, marginBottom: 16 }}>32 Custom Styles.<br />All Included.</h2>
+        <p style={{ fontSize: 17, color: 'rgba(10,10,10,.6)', marginBottom: 40, maxWidth: 460, margin: '0 auto 40px', lineHeight: 1.8 }}>Upload your pet&rsquo;s photo and get a portrait in every style — all 32. Pick your favorite.</p>
         <Link href="/create" style={{ background: 'var(--ink)', color: 'var(--gold)', padding: '18px 52px', fontSize: 12, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', textDecoration: 'none', display: 'inline-block' }}>🐾 Start Their Story — $49</Link>
       </section>
     </main>

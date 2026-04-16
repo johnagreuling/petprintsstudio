@@ -252,6 +252,40 @@ const PAINTERLY_FINE_ART: StyleTemplate[] = [
     forbiddenTraits: ['childish pop styling', 'muddy colors', 'poster aesthetics', 'collage effects', 'plastic AI textures', 'muted palette'],
     styleConstraints: ['Colors must be bold and saturated', 'Must feel like luxury gallery art', 'Subject should pop dramatically from background'],
   },
+  {
+    id: 'soft_pastel',
+    name: 'Soft Pastel',
+    emoji: '🌷',
+    category: 'painterly_fine_art',
+    description: 'Powdery chalk pastel on textured paper. Velvety blended transitions with visible paper tooth. Gallery-grade classic commission.',
+    version: 1,
+    isActive: true,
+    technique: 'Gallery-grade soft pastel portrait on medium-tooth sanded pastel paper. Chalk pastel applied in layers — broad blending with fingers and blending stumps combined with crisp pastel-pencil detail in focal areas (eyes, nose, muzzle). Visible paper tooth throughout. Velvety powdery surface. The medium itself must be unmistakable — powder, not paint. No digital smoothness, no oil paint gloss, no watercolor flow. Feels hand-drawn.',
+    background: 'Soft atmospheric background in complementary muted tones. Loose broad pastel strokes, gently blended color fields — dusty sage, warm cream, muted blush, soft slate. Background drawn with the same medium as the subject, not separate. Some paper tooth peeking through. Edges dissolve softly into subject.',
+    lighting: 'Soft studio natural light from upper front. Gentle form shadows built in overlapping powder layers — no harsh contrast. Highlights achieved by lifting color with a kneaded eraser or leaving lighter pastel over the warm paper tone. Pastels are inherently mid-tonal; the drama comes from subtle temperature shifts, not extreme value.',
+    colorPalette: 'Harmonious muted tones with subtle warm and cool shifts. Dusty rose, warm ivory, soft sage, pale ochre, muted slate, gentle umber shadows. Colors feel chalky and slightly desaturated — never plastic or over-saturated. Natural pastel-stick range throughout.',
+    mood: 'Refined, intimate, timeless. The warmth of a commissioned artist portrait — the kind a gallery would frame. Quiet confidence and classical craft. Premium fine-art presence without drama.',
+    paintSurface: 'Powdery velvety surface with visible paper tooth in every area. Broad soft-blended color masses combined with crisper pastel-pencil strokes for eyes and muzzle. Occasional visible chalk strokes across fur. Subtle granularity — pigment sitting on the paper grain. Lifted highlights reveal paper color underneath.',
+    forbiddenTraits: ['watercolor transparency', 'oil paint gloss', 'digital smoothness', 'high color saturation', 'hard vector edges', 'thick impasto', 'glossy 3D rendering', 'photographic finish'],
+    styleConstraints: ['Paper tooth must be visible throughout', 'Surface must look chalky and powdery — never wet or smooth', 'Highlights come from lifted paper or pastel stick, never white paint', 'Must feel like a premium commissioned portrait'],
+  },
+  {
+    id: 'charcoal_graphite',
+    name: 'Charcoal & Graphite',
+    emoji: '✏️',
+    category: 'painterly_fine_art',
+    description: 'Monochrome drawing in charcoal and graphite on toothed paper. Velvety blacks, crisp detail, atmospheric smudging.',
+    version: 1,
+    isActive: true,
+    technique: 'Fine-art black-and-white drawing combining vine charcoal, compressed charcoal, and graphite pencil on medium-tooth drawing paper. Broad tonal masses laid in with vine charcoal, blended with a tortillon, then refined with compressed charcoal in darkest shadows and graphite pencil for crisp detail at eyes, muzzle, and individual fur strand indications. Highlights lifted with a kneaded eraser. Absolutely monochrome — no color whatsoever.',
+    background: 'Soft atmospheric smudged charcoal. Gentle gradient from mid-grey to near-paper-white. Loose blended passages with some vine charcoal stroke marks visible at the edges. Background fades gently — the subject emerges from ambient tone rather than sitting on a defined environment. No depicted objects, no color.',
+    lighting: 'Classical chiaroscuro translated into monochrome. Strong directional light from upper front. Deep velvety shadow side built up in dense charcoal layering. Luminous form transitions smudged and atmospheric. Highlight areas show bare paper or eraser lifts — never white pigment. Shadow-to-light transitions are blended with a stump, not sharp.',
+    colorPalette: 'Pure monochrome range. Deep blacks (compressed charcoal), warm mid-greys (vine charcoal), cool silver-greys (graphite), paper-white highlights. ZERO color — not sepia, not toned, not warm-white. Pure black-to-white value scale only. The paper itself provides the warmest tone in the piece.',
+    mood: 'Classical, masterful, timeless. The quiet authority of a commissioned artist drawing. Feels like a study by John Singer Sargent or a contemporary master draftsman. Museum-quality craft and restraint.',
+    paintSurface: 'Paper tooth visible throughout. Velvety dense blacks in deepest shadows (compressed charcoal). Soft blended mid-tones with visible stump marks. Crisp graphite strokes for fine details around eyes and nose. Kneaded-eraser lifted highlights show bright paper. Occasional hard-edged charcoal strokes at form edges. Controlled smudging at form transitions.',
+    forbiddenTraits: ['any color at all', 'sepia toning', 'digital vector lines', 'anime line art', 'pen-and-ink stippling', 'harsh graphic outlines', 'plastic smoothness', 'watercolor washes', 'paint texture'],
+    styleConstraints: ['Absolutely monochrome — black, white, grey only, no tint or cast', 'Paper tooth must be visible', 'Deepest shadows must be dense velvety charcoal, not flat digital black', 'Eyes and muzzle must show crisp graphite detail', 'Highlights come from paper or eraser lifts, never white paint'],
+  },
 ]
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -605,7 +639,7 @@ const POP_MODERN: StyleTemplate[] = [
 //  EXPORTS — Combined style library
 // ════════════════════════════════════════════════════════════════════════════
 
-/** All 30 styles in a flat array */
+/** All 32 styles in a flat array */
 export const ALL_STYLES: StyleTemplate[] = [
   ...CLASSIC_PORTRAITS,
   ...PAINTERLY_FINE_ART,

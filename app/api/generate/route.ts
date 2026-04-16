@@ -17,7 +17,7 @@ import {
 } from '@/lib/portrait-engine'
 
 // ── Config ───────────────────────────────────────────────────────────────
-export const maxDuration = 600   // 10 minutes — 30 styles at quality:high
+export const maxDuration = 600   // 10 minutes — 32 styles at quality:high
 export const dynamic = 'force-dynamic'
 
 // ── R2 Client ────────────────────────────────────────────────────────────
@@ -240,7 +240,7 @@ export async function POST(req: NextRequest) {
           // ══════════════════════════════════════════════════════════
 
           // Determine which styles to generate
-          // Default: ALL 30 styles (full gallery)
+          // Default: ALL 32 styles (full gallery)
           // Override with targetStyleId to run a single style by ID
           let stylesToRun: StyleTemplate[]
           if (targetStyleId === 'all' || !targetStyleId) {
@@ -332,7 +332,7 @@ export async function POST(req: NextRequest) {
           // quality:high + 1024x1536 is slower than quality:medium + 1024x1024
           // 3 concurrent stays safely under the 5 images/min rate limit
           const BATCH_SIZE = 4
-          const BATCH_DELAY_MS = 15000
+          const BATCH_DELAY_MS = 10000  // 10s — tuned to fit 32 styles within 10min maxDuration
           for (let i = 0; i < allTasks.length; i += BATCH_SIZE) {
             if (i > 0) {
               console.log(`Batch delay: waiting ${BATCH_DELAY_MS / 1000}s before next batch...`)

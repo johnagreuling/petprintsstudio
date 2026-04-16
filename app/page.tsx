@@ -211,7 +211,7 @@ export default function Home() {
               </div>
               <div style={{padding:'20px 20px 28px'}}>
                 <h3 className="serif" style={{fontSize:20,marginBottom:8,fontWeight:400}}>Pick Your Portrait</h3>
-                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>We generate your portrait across all 16 styles. Pick the one that feels most like them.</p>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>We generate your portrait across all 32 styles — every one included. Pick the one that feels most like them.</p>
               </div>
             </div>
 
@@ -351,7 +351,7 @@ export default function Home() {
             <h2 className="serif" style={{fontSize:'clamp(32px,5vw,56px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>Their Story,<br/><em>Brought to Life.</em></h2>
             <div style={{color:'var(--muted)',fontSize:15,maxWidth:700,margin:'0 auto',lineHeight:1.9}}>
               <p style={{marginBottom:24}}>
-                We&rsquo;ve built something different. 16 hand-tuned artistic styles. A limitless AI generation engine. The latest models, obsessively trained and prompted by a team that won&rsquo;t stop until it&rsquo;s gallery-worthy.
+                We&rsquo;ve built something different. 32 hand-tuned artistic styles, every one included in the price. A limitless AI generation engine. The latest models, obsessively trained and prompted by a team that won&rsquo;t stop until it&rsquo;s gallery-worthy.
               </p>
               <p style={{marginBottom:24}}>
                 The result? Pet portraits that actually look like <em>them</em> — not a generic dog in a costume, but YOUR dog, in THEIR world. Their favorite spot. Their tennis ball. The way they tilt their head.
