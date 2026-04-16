@@ -32,6 +32,7 @@ export default function CreatePage() {
   const [progress, setProgress] = useState(0)
   const [progressMsg, setProgressMsg] = useState('Preparing your portraits...')
   const [error, setError] = useState('')
+  const [imageLoaded, setImageLoaded] = useState(false)
   const [activeCategory, setActiveCategory] = useState('Canvas')
   const [cartExtras, setCartExtras] = useState<string[]>([])
   const [wantBundle, setWantBundle] = useState(false)
@@ -63,21 +64,58 @@ export default function CreatePage() {
   const [dragStart, setDragStart] = useState({x:0, y:0})
 
   const handleFile = (file: File) => {
-    if (file.size > 20 * 1024 * 1024) { setError('Image must be under 20MB'); return }
-    setUploadedFile(file)
     setError('')
+    setImageLoaded(false)
+
+    // Size check — clearer message with actual size
+    const sizeMB = file.size / (1024 * 1024)
+    if (file.size > 50 * 1024 * 1024) {
+      setError(`Your photo is ${sizeMB.toFixed(1)}MB. Max is 50MB. Try saving a smaller version.`)
+      setUploadedFile(null); setPreview('')
+      return
+    }
+
+    // HEIC / HEIF detection — Safari can render but Chrome/Firefox cannot.
+    // Rather than produce a silent broken preview, give clear guidance.
+    const fileName = (file.name || '').toLowerCase()
+    const isHeic = /\.(heic|heif)$/.test(fileName) || /heic|heif/.test(file.type)
+    if (isHeic) {
+      setError('HEIC/HEIF photos from iPhones aren\'t supported by all browsers. Fix: on iPhone, go to Settings → Camera → Formats → Most Compatible (uploads JPG instead). Or open the photo on your computer and save/export as JPG.')
+      setUploadedFile(null); setPreview('')
+      return
+    }
+
+    // General format check — only accept common web-renderable formats
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
+    const validExt = /\.(jpe?g|png|webp|gif)$/i
+    if (!validTypes.includes(file.type) && !validExt.test(fileName)) {
+      setError(`File type "${file.type || 'unknown'}" isn't supported. Please use JPG, PNG, or WEBP.`)
+      setUploadedFile(null); setPreview('')
+      return
+    }
+
+    setUploadedFile(file)
     setCropOffset({x:0, y:0})
     setCropZoom(1)
     setShowCrop(false)
     const r = new FileReader()
     r.onload = e => setPreview(e.target?.result as string)
+    r.onerror = () => {
+      setError('Could not read the file. It may be corrupted or in an unsupported format.')
+      setUploadedFile(null); setPreview('')
+    }
     r.readAsDataURL(file)
   }
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault(); setIsDragging(false)
     const f = e.dataTransfer.files[0]
-    if (f?.type.startsWith('image/')) handleFile(f)
+    if (!f) return
+    if (f.type && !f.type.startsWith('image/')) {
+      setError(`You dropped a "${f.type}" file. Please drop an image (JPG, PNG, or WEBP).`)
+      return
+    }
+    handleFile(f)
   }, [])
 
   const handleGenerateCustomStyle = async () => {
@@ -567,23 +605,39 @@ export default function CreatePage() {
               {preview?(
                 <div onClick={e=>e.stopPropagation()}>
                   <div style={{position:'relative',display:'inline-block'}}>
-                    <img src={preview} alt="Pet preview" style={{maxHeight:360,maxWidth:'100%',objectFit:'contain',display:'block',margin:'0 auto'}}/>
+                    <img
+                      src={preview}
+                      alt="Pet preview"
+                      style={{maxHeight:360,maxWidth:'100%',objectFit:'contain',display:'block',margin:'0 auto'}}
+                      onLoad={() => { setImageLoaded(true); setError('') }}
+                      onError={() => {
+                        setImageLoaded(false)
+                        setError('Your browser couldn\'t render this photo. This usually means the file is HEIC/HEIF (iPhone format), corrupted, or an unsupported format. Try JPG or PNG.')
+                        setPreview('')
+                        setUploadedFile(null)
+                      }}
+                    />
                   </div>
-                  <div style={{marginTop:16,fontSize:13,color:'var(--gold)'}}>✓ Looking great!</div>
+                  {imageLoaded ? (
+                    <div style={{marginTop:16,fontSize:13,color:'var(--gold)'}}>✓ Looking great!</div>
+                  ) : (
+                    <div style={{marginTop:16,fontSize:13,color:'var(--muted)'}}>Loading preview…</div>
+                  )}
                   <div style={{marginTop:12,display:'flex',gap:12,justifyContent:'center'}}>
-                    <button onClick={()=>setShowCrop(true)} style={{background:'none',border:'1px solid var(--gold)',color:'var(--gold)',cursor:'pointer',fontSize:11,letterSpacing:'.1em',textTransform:'uppercase',padding:'8px 16px',borderRadius:4}}>✂️ Crop / Adjust</button>
-                    <button onClick={()=>{setUploadedFile(null);setPreview('');setCropOffset({x:0,y:0});setCropZoom(1)}} style={{background:'none',border:'1px solid var(--border)',color:'var(--muted)',cursor:'pointer',fontSize:11,letterSpacing:'.1em',textTransform:'uppercase',padding:'8px 16px',borderRadius:4}}>Change Photo</button>
+                    <button onClick={()=>setShowCrop(true)} disabled={!imageLoaded} style={{background:'none',border:'1px solid var(--gold)',color:'var(--gold)',cursor:imageLoaded?'pointer':'not-allowed',fontSize:11,letterSpacing:'.1em',textTransform:'uppercase',padding:'8px 16px',borderRadius:4,opacity:imageLoaded?1:.4}}>✂️ Crop / Adjust</button>
+                    <button onClick={()=>{setUploadedFile(null);setPreview('');setCropOffset({x:0,y:0});setCropZoom(1);setImageLoaded(false);setError('')}} style={{background:'none',border:'1px solid var(--border)',color:'var(--muted)',cursor:'pointer',fontSize:11,letterSpacing:'.1em',textTransform:'uppercase',padding:'8px 16px',borderRadius:4}}>Change Photo</button>
                   </div>
                 </div>
               ):(
                 <div>
                   <div style={{fontSize:52,marginBottom:20}}>🐾</div>
                   <div style={{fontSize:18,marginBottom:8,fontWeight:500}}>Drop your photo here</div>
-                  <div style={{color:'var(--muted)',fontSize:13,marginBottom:20}}>or click to browse · JPG, PNG, WEBP · Max 20MB</div>
+                  <div style={{color:'var(--muted)',fontSize:13,marginBottom:20}}>or click to browse · JPG, PNG, WEBP · Max 50MB</div>
+                  <div style={{color:'var(--muted)',fontSize:11,marginBottom:20,opacity:.7}}>iPhone users: set Camera → Formats → Most Compatible for best results</div>
                   <div style={{display:'inline-block',border:'1px solid var(--gold)',color:'var(--gold)',padding:'10px 28px',fontSize:11,letterSpacing:'.15em',textTransform:'uppercase'}}>Browse Files</div>
                 </div>
               )}
-              <input ref={fileRef} type="file" accept="image/*" style={{display:'none'}} onChange={e=>e.target.files?.[0]&&handleFile(e.target.files[0])}/>
+              <input ref={fileRef} type="file" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif" style={{display:'none'}} onChange={e=>e.target.files?.[0]&&handleFile(e.target.files[0])}/>
             </div>
 
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,marginTop:24}}>
@@ -599,10 +653,15 @@ export default function CreatePage() {
               </div>
             </div>
 
-            {error&&<div style={{color:'#C4622D',fontSize:13,marginTop:16,padding:'12px 16px',background:'rgba(196,98,45,.08)',border:'1px solid rgba(196,98,45,.15)'}}>{error}</div>}
+            {error&&(
+              <div style={{color:'#ff9160',fontSize:14,marginTop:20,padding:'16px 20px',background:'rgba(196,98,45,.12)',border:'1px solid rgba(196,98,45,.4)',borderLeft:'4px solid #C4622D',borderRadius:4,lineHeight:1.6,display:'flex',alignItems:'flex-start',gap:12}}>
+                <span style={{fontSize:18,lineHeight:1}}>⚠️</span>
+                <span>{error}</span>
+              </div>
+            )}
 
             <div style={{marginTop:32}}>
-              <button className="btn-gold" disabled={!uploadedFile} onClick={()=>setStep('product')}>Choose Your Canvas Size →</button>
+              <button className="btn-gold" disabled={!uploadedFile || !imageLoaded} onClick={()=>setStep('product')}>Choose Your Canvas Size →</button>
             </div>
             <div style={{marginTop:16,display:'flex',gap:20,justifyContent:'center',flexWrap:'wrap'}}>
               {['✓ No account needed','✓ 30 AI portraits generated','✓ Free to preview','✓ Prints shipped in 5–7 days'].map(t=>(
@@ -678,7 +737,7 @@ export default function CreatePage() {
                 <div onClick={()=>setIsMemory(false)} style={{background:'#141414',border:`1px solid ${!isMemory?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'20px',cursor:'pointer',transition:'all .2s'}}>
                   <div style={{fontSize:20,marginBottom:8}}>🎨</div>
                   <div className="serif" style={{fontSize:17,marginBottom:4,fontWeight:400}}>Style Transfer</div>
-                  <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>Your photo reimagined in 8 artistic styles. Ready in ~60 seconds.</div>
+                  <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>Your photo reimagined in all 30 custom-built artistic styles. Ready in ~7 minutes.</div>
                   <div style={{fontSize:12,color:'var(--gold)',marginTop:8,fontWeight:600}}>Included</div>
                 </div>
                 <div onClick={()=>setIsMemory(true)} style={{background:'#141414',border:`1px solid ${isMemory?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'20px',cursor:'pointer',transition:'all .2s',position:'relative'}}>
