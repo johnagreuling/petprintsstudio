@@ -49,9 +49,10 @@ export default function StylesGallery() {
         ])
         const stylesData = await stylesRes.json()
         const picksData = await picksRes.json()
-        const picks: Record<string, string> = picksData.picks || {}
+        const picks: Record<string, any> = picksData.picks || {}
 
-        // Load sessions to resolve picked pet → URLs
+        // Load sessions (fallback: for old string-format picks, look up URL
+        // from the most recent session for that pet)
         const sessionsRes = await fetch('/api/admin/sessions?limit=30')
         const sessionsData = await sessionsRes.json()
         const sessions: Record<string, any> = {}
@@ -63,14 +64,26 @@ export default function StylesGallery() {
         }
 
         const styleList: Style[] = (stylesData.styles || []).map((s: any) => {
-          const pickedPet = picks[s.id]
+          const pickVal = picks[s.id]
           let showcaseUrl: string | null = null
-          if (pickedPet && sessions[pickedPet]) {
-            const match = sessions[pickedPet].images?.find(
-              (img: any) => img.style_id.replace(/_\d+$/, '') === s.id
-            )
-            showcaseUrl = match?.url || null
+          let pickedPet: string | null = null
+
+          // New format: { pet, url } — use URL directly
+          if (pickVal && typeof pickVal === 'object' && pickVal.url) {
+            showcaseUrl = pickVal.url
+            pickedPet = pickVal.pet || null
           }
+          // Old format: just the pet name — look up URL from session
+          else if (typeof pickVal === 'string') {
+            pickedPet = pickVal
+            if (sessions[pickVal]) {
+              const match = sessions[pickVal].images?.find(
+                (img: any) => img.style_id.replace(/_\d+$/, '') === s.id
+              )
+              showcaseUrl = match?.url || null
+            }
+          }
+
           if (!showcaseUrl) showcaseUrl = s.sampleImageUrl
           return {
             id: s.id,
@@ -79,7 +92,7 @@ export default function StylesGallery() {
             category: s.category,
             description: s.description,
             showcaseUrl,
-            showcasePet: pickedPet || null,
+            showcasePet: pickedPet,
           }
         })
         setStyles(styleList)

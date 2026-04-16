@@ -4,19 +4,13 @@ import { useState, useEffect } from 'react'
 // ═══════════════════════════════════════════════════════════════════════════
 // SHOWCASE CURATION TOOL
 //
-// Loads three reference pet sessions (Mason poodle, Sylas yorkie-poo,
-// Sasha Belgian malinois), shows all 30 styles side-by-side,
-// and lets admin pick the best version per style.
+// Loads all sessions for Mason, Sylas, and Sasha, then unions their
+// available images per style (latest session wins for each style).
+// Row list comes from the portrait engine's 30 canonical styles.
 //
 // Picks are stored in R2 at showcase/picks.json and read by the
 // public /styles page.
 // ═══════════════════════════════════════════════════════════════════════════
-
-const PET_SESSIONS = {
-  mason: 'sessions/7d94dc37-8ea0-4324-9188-9591a58ef2ea_mason',
-  sylas: 'sessions/4554a894-2828-4b84-ac49-d110e868b7ba_sylas',
-  sasha: 'sessions/09cc213b-76d7-4962-9da3-9124c72324a7_sasha',
-}
 
 const PET_LABELS: Record<string, string> = {
   mason: 'Mason · Standard Poodle',
@@ -25,11 +19,13 @@ const PET_LABELS: Record<string, string> = {
 }
 
 type StyleImg = { style_id: string; style_name: string; url: string; variant_index: number }
-type SessionData = { session_id: string; pet_name: string; images: StyleImg[] }
+type SessionData = { session_id: string; pet_name: string; images: StyleImg[]; created_at: string }
+type EngineStyle = { id: string; name: string; emoji: string; category: string; description: string }
 
 export default function CuratePage() {
   const [loading, setLoading] = useState(true)
-  const [sessions, setSessions] = useState<Record<string, SessionData>>({})
+  const [engineStyles, setEngineStyles] = useState<EngineStyle[]>([])
+  const [unionByPet, setUnionByPet] = useState<Record<string, Record<string, { url: string; styleName: string; session: string }>>>({})
   const [picks, setPicks] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
   const [saveMsg, setSaveMsg] = useState('')
@@ -37,23 +33,64 @@ export default function CuratePage() {
 
   useEffect(() => {
     (async () => {
-      // Fetch all recent sessions and filter for our three
-      const res = await fetch('/api/admin/sessions?limit=30')
-      const data = await res.json()
-      const found: Record<string, SessionData> = {}
-      for (const s of data.sessions || []) {
-        for (const [pet, sid] of Object.entries(PET_SESSIONS)) {
-          if (s.session_id === sid) found[pet] = s
+      // Fetch the portrait engine's canonical style list
+      const stylesRes = await fetch('/api/admin/styles')
+      const stylesData = await stylesRes.json()
+      const engine: EngineStyle[] = stylesData.styles || []
+      const engineIds = new Set(engine.map(s => s.id))
+      setEngineStyles(engine)
+
+      // Fetch ALL recent sessions
+      const sessRes = await fetch('/api/admin/sessions?limit=50')
+      const sessData = await sessRes.json()
+      const allSessions: SessionData[] = sessData.sessions || []
+
+      // Group sessions by pet, then build a union per pet: for each style,
+      // use the URL from the most-recent session that has it.
+      const sessionsByPet: Record<string, SessionData[]> = { mason: [], sylas: [], sasha: [] }
+      for (const s of allSessions) {
+        const pet = (s.pet_name || '').toLowerCase()
+        if (pet.includes('mason')) sessionsByPet.mason.push(s)
+        else if (pet.includes('sylas')) sessionsByPet.sylas.push(s)
+        else if (pet.includes('sasha')) sessionsByPet.sasha.push(s)
+      }
+
+      // Sort each pet's sessions by created_at DESC (most recent first)
+      // so the most recent image wins for each style.
+      const union: Record<string, Record<string, { url: string; styleName: string; session: string }>> = {
+        mason: {}, sylas: {}, sasha: {},
+      }
+      for (const pet of ['mason', 'sylas', 'sasha']) {
+        const sorted = sessionsByPet[pet].sort((a, b) => {
+          const ta = new Date(a.created_at || 0).getTime()
+          const tb = new Date(b.created_at || 0).getTime()
+          return tb - ta // descending
+        })
+        for (const s of sorted) {
+          for (const img of s.images || []) {
+            const sid = img.style_id.replace(/_\d+$/, '')
+            // Only include engine styles, and only fill each style once (most recent wins)
+            if (engineIds.has(sid) && !union[pet][sid]) {
+              union[pet][sid] = { url: img.url, styleName: img.style_name, session: s.session_id }
+            }
+          }
         }
       }
-      setSessions(found)
+      setUnionByPet(union)
 
-      // Load any existing picks from R2
+      // Load any existing picks from R2 (handle both old and new formats)
       try {
         const picksRes = await fetch('/api/admin/curate-picks')
         if (picksRes.ok) {
           const data = await picksRes.json()
-          if (data.picks) setPicks(data.picks)
+          if (data.picks) {
+            const normalized: Record<string, string> = {}
+            for (const [styleId, val] of Object.entries(data.picks as Record<string, any>)) {
+              if (typeof val === 'string') normalized[styleId] = val
+              else if (val?.pet) normalized[styleId] = val.pet
+            }
+            setPicks(normalized)
+          }
         }
       } catch (e) { /* no existing picks, ok */ }
 
@@ -61,33 +98,37 @@ export default function CuratePage() {
     })()
   }, [])
 
-  // Build matrix: style → { mason, sylas, sasha } with URLs + style name
-  const styleMatrix: Record<string, { styleName: string; urls: Record<string, string> }> = {}
-  for (const [pet, data] of Object.entries(sessions)) {
-    for (const img of data.images || []) {
-      const styleId = img.style_id.replace(/_\d+$/, '')
-      if (!styleMatrix[styleId]) {
-        styleMatrix[styleId] = { styleName: img.style_name, urls: {} }
-      }
-      if (!styleMatrix[styleId].urls[pet]) {
-        styleMatrix[styleId].urls[pet] = img.url
-      }
-    }
-  }
-
-  const sortedStyles = Object.keys(styleMatrix).sort()
+  // Build the ordered row list: one row per engine style, in engine order
+  const rows = engineStyles.map(style => ({
+    id: style.id,
+    name: style.name,
+    emoji: style.emoji,
+    category: style.category,
+    urls: {
+      mason: unionByPet.mason?.[style.id]?.url,
+      sylas: unionByPet.sylas?.[style.id]?.url,
+      sasha: unionByPet.sasha?.[style.id]?.url,
+    },
+  }))
 
   const savePicks = async () => {
     setSaving(true)
     setSaveMsg('')
     try {
+      // Upgrade: save picks with URL included so /styles page can resolve
+      // the image regardless of which session it's in.
+      const picksWithUrls: Record<string, { pet: string; url: string }> = {}
+      for (const [styleId, pet] of Object.entries(picks)) {
+        const url = unionByPet[pet]?.[styleId]?.url
+        if (url) picksWithUrls[styleId] = { pet, url }
+      }
       const res = await fetch('/api/admin/curate-picks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ picks }),
+        body: JSON.stringify({ picks: picksWithUrls }),
       })
       if (res.ok) {
-        setSaveMsg(`✓ Saved ${Object.keys(picks).length} picks`)
+        setSaveMsg(`✓ Saved ${Object.keys(picksWithUrls).length} picks`)
       } else {
         setSaveMsg('✗ Save failed')
       }
@@ -117,7 +158,7 @@ export default function CuratePage() {
           <div>
             <div style={{ fontSize: 20, fontWeight: 600 }}>Showcase Curator</div>
             <div style={{ fontSize: 12, color: '#888' }}>
-              {sortedStyles.length} styles · Picks: {Object.keys(picks).length} / {sortedStyles.length}
+              {rows.length} styles · Picks: {Object.keys(picks).length} / {rows.length}
             </div>
           </div>
           <div style={{ marginLeft: 'auto', display: 'flex', gap: 12, alignItems: 'center' }}>
@@ -156,8 +197,8 @@ export default function CuratePage() {
 
       {/* Style rows */}
       <main style={{ maxWidth: 1600, margin: '0 auto', padding: '24px' }}>
-        {sortedStyles.map(styleId => {
-          const row = styleMatrix[styleId]
+        {rows.map(row => {
+          const styleId = row.id
           const pickedPet = picks[styleId]
           return (
             <div
@@ -177,8 +218,9 @@ export default function CuratePage() {
             >
               {/* Style label */}
               <div>
-                <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>{row.styleName}</div>
+                <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>{row.emoji} {row.name}</div>
                 <div style={{ fontSize: 11, color: '#666', fontFamily: 'monospace' }}>{styleId}</div>
+                <div style={{ fontSize: 10, color: '#888', marginTop: 4, textTransform: 'uppercase', letterSpacing: '.08em' }}>{row.category.replace(/_/g, ' ')}</div>
                 {pickedPet && (
                   <div style={{ marginTop: 10, fontSize: 11, color: '#c9a84c', fontWeight: 600 }}>
                     ✓ {PET_LABELS[pickedPet].split(' · ')[0]}
@@ -187,7 +229,7 @@ export default function CuratePage() {
               </div>
 
               {/* Three images */}
-              {['mason', 'sylas', 'sasha'].map(pet => {
+              {(['mason', 'sylas', 'sasha'] as const).map(pet => {
                 const url = row.urls[pet]
                 const isPicked = pickedPet === pet
                 return (
@@ -210,7 +252,7 @@ export default function CuratePage() {
                       <>
                         <img
                           src={url}
-                          alt={`${pet} ${row.styleName}`}
+                          alt={`${pet} ${row.name}`}
                           style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                           loading="lazy"
                         />
@@ -234,7 +276,7 @@ export default function CuratePage() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
-                            setLightbox({ url, pet, style: row.styleName })
+                            setLightbox({ url, pet, style: row.name })
                           }}
                           style={{
                             position: 'absolute',
