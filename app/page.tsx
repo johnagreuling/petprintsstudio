@@ -21,14 +21,28 @@ export default function Home() {
         const { picks = {} } = await picksRes.json()
         const { styles = [] } = await stylesRes.json()
         const styleNameById: Record<string, string> = Object.fromEntries(styles.map((s: any) => [s.id, s.name]))
-        // Use engine order so the slider flows from classic → painterly → nature → lifestyle → pop
         const styleOrder: string[] = styles.map((s: any) => s.id)
         const full: HeroShowcase[] = []
         for (const id of styleOrder) {
           const pick = picks[id]
           if (pick?.url) full.push({ url: pick.url, style: styleNameById[id] || id, pet: pick.pet || '' })
         }
-        setHeroShowcase(full)
+        // Interleave so no two portraits from the same pet are adjacent
+        const interleaved: HeroShowcase[] = []
+        const remaining = [...full]
+        let lastPet = ''
+        while (remaining.length > 0) {
+          const idx = remaining.findIndex(s => s.pet !== lastPet)
+          if (idx >= 0) {
+            const [item] = remaining.splice(idx, 1)
+            interleaved.push(item)
+            lastPet = item.pet
+          } else {
+            interleaved.push(remaining.shift()!)
+            lastPet = interleaved[interleaved.length - 1].pet
+          }
+        }
+        setHeroShowcase(interleaved)
       } catch (e) { /* silent degrade */ }
     })()
   }, [])
@@ -42,6 +56,60 @@ export default function Home() {
       : 280
     el.scrollBy({ left: dir * cardWidth * 2, behavior: 'smooth' })
   }
+
+  // Triple the showcase for infinite scroll illusion
+  const infiniteShowcase = heroShowcase.length > 0
+    ? [...heroShowcase, ...heroShowcase, ...heroShowcase]
+    : []
+
+  // Random start + infinite loop: scroll to middle set on mount, reset on edge
+  useEffect(() => {
+    const el = sliderRef.current
+    if (!el || heroShowcase.length === 0) return
+    // Wait for images to render
+    const timer = setTimeout(() => {
+      const cardWidth = el.firstElementChild instanceof HTMLElement
+        ? el.firstElementChild.offsetWidth + 16
+        : 296
+      const setWidth = heroShowcase.length * cardWidth
+      // Start at a random position within the middle set
+      const randomOffset = Math.floor(Math.random() * heroShowcase.length) * cardWidth
+      el.scrollLeft = setWidth + randomOffset
+    }, 100)
+    return () => clearTimeout(timer)
+  }, [heroShowcase.length])
+
+  // Infinite scroll: when user scrolls near an edge, silently jump to the equivalent position in the middle set
+  useEffect(() => {
+    const el = sliderRef.current
+    if (!el || heroShowcase.length === 0) return
+    let ticking = false
+    const handleScroll = () => {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        const cardWidth = el.firstElementChild instanceof HTMLElement
+          ? el.firstElementChild.offsetWidth + 16
+          : 296
+        const setWidth = heroShowcase.length * cardWidth
+        // If scrolled into the first (clone) set, jump forward by one set
+        if (el.scrollLeft < setWidth * 0.25) {
+          el.style.scrollBehavior = 'auto'
+          el.scrollLeft += setWidth
+          el.style.scrollBehavior = 'smooth'
+        }
+        // If scrolled into the last (clone) set, jump back by one set
+        if (el.scrollLeft > setWidth * 2.25) {
+          el.style.scrollBehavior = 'auto'
+          el.scrollLeft -= setWidth
+          el.style.scrollBehavior = 'smooth'
+        }
+        ticking = false
+      })
+    }
+    el.addEventListener('scroll', handleScroll, { passive: true })
+    return () => el.removeEventListener('scroll', handleScroll)
+  }, [heroShowcase.length])
 
   return (
     <main style={{background:'#0A0A0A',color:'#F5F0E8',fontFamily:"'DM Sans',sans-serif",minHeight:'100vh'}}>
@@ -212,7 +280,6 @@ export default function Home() {
                 display:'flex',
                 gap:16,
                 overflowX:'auto',
-                scrollSnapType:'x mandatory',
                 WebkitOverflowScrolling:'touch',
                 scrollBehavior:'smooth',
                 padding:'8px 60px',
@@ -220,7 +287,7 @@ export default function Home() {
                 msOverflowStyle:'none',
               }}
             >
-              {heroShowcase.map((item, i) => (
+              {infiniteShowcase.map((item, i) => (
                 <Link
                   key={item.url + i}
                   href="/styles"
@@ -231,7 +298,6 @@ export default function Home() {
                     height:380,
                     borderRadius:10,
                     overflow:'hidden',
-                    scrollSnapAlign:'center',
                     position:'relative',
                     border:'1px solid rgba(245,240,232,.08)',
                     boxShadow:'0 8px 32px rgba(0,0,0,.5)',
