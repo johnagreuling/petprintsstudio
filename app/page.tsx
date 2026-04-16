@@ -143,15 +143,15 @@ export default function Home() {
         <div style={{position:'absolute',top:'70%',left:'20%',width:400,height:400,background:'radial-gradient(circle,rgba(196,98,45,.04) 0%,transparent 70%)',pointerEvents:'none'}} />
 
         <div className="fu fu1" style={{marginBottom:20,fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'var(--gold)',fontWeight:500}}>
-          The most meaningful gift for a pet lover
+          See Them &nbsp;·&nbsp; Hear Them &nbsp;·&nbsp; Feel Them
         </div>
 
         <h1 className="serif fu fu2" style={{fontSize:'clamp(44px,6.2vw,88px)',lineHeight:.98,marginBottom:28,fontWeight:400,maxWidth:960,letterSpacing:'-.02em'}}>
-          Turn Their Story Into<br/><em style={{color:'var(--gold)'}}>Something Unforgettable.</em>
+          A One-of-a-Kind Pet Experience<br/><em style={{color:'var(--gold)'}}>Made Just for You.</em>
         </h1>
 
-        <p className="fu fu3" style={{fontSize:17,lineHeight:1.7,color:'var(--muted)',maxWidth:540,marginBottom:36,fontWeight:300,letterSpacing:'.005em'}}>
-          A fully custom portrait that captures exactly who they are. An original song written just for them. Printed on gallery canvas, sherpa blankets, and more — real things you can hold.
+        <p className="fu fu3" style={{fontSize:17,lineHeight:1.7,color:'var(--muted)',maxWidth:560,marginBottom:36,fontWeight:300,letterSpacing:'.005em'}}>
+          Custom portraits that capture the magic of who they truly are. Original songs that bring their spirit to life. Beautifully made keepsakes — a hoodie, a soft blanket, a morning coffee mug — so your love for them is something you can see, hear, and hold.
         </p>
 
         <p className="fu fu3" style={{fontSize:11,color:'rgba(201,168,76,.7)',letterSpacing:'.22em',textTransform:'uppercase',marginBottom:36,fontWeight:600}}>Portrait &nbsp;·&nbsp; Song &nbsp;·&nbsp; Canvas &nbsp;·&nbsp; From $49</p>
@@ -490,12 +490,12 @@ export default function Home() {
 
       {/* CTA BAND */}
       <section style={{background:'var(--gold)',padding:'80px 60px',textAlign:'center'}}>
-        <div style={{fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'rgba(10,10,10,.5)',marginBottom:16}}>The most meaningful gift for a pet lover</div>
+        <div style={{fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'rgba(10,10,10,.5)',marginBottom:16}}>See Them &nbsp;·&nbsp; Hear Them &nbsp;·&nbsp; Feel Them</div>
         <h2 className="serif" style={{fontSize:'clamp(32px,5vw,68px)',color:'var(--ink)',fontWeight:400,marginBottom:16}}>
           Give a Gift<br/>They&rsquo;ll Never Forget.
         </h2>
-        <p style={{fontSize:17,color:'rgba(10,10,10,.6)',marginBottom:40,maxWidth:460,margin:'0 auto 40px',lineHeight:1.8}}>
-          A portrait. A song. A canvas on the wall. Everything you need to celebrate who they are — now and forever.
+        <p style={{fontSize:17,color:'rgba(10,10,10,.6)',marginBottom:40,maxWidth:480,margin:'0 auto 40px',lineHeight:1.8}}>
+          A portrait they&rsquo;ll stare at. A song they&rsquo;ll cry to. A blanket they&rsquo;ll never let go of.
         </p>
         <Link href="/create" style={{background:'var(--ink)',color:'var(--gold)',padding:'20px 52px',fontSize:12,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',textDecoration:'none',display:'inline-block'}}>
           🐾 Begin Their Story
