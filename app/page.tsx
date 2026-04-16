@@ -131,9 +131,7 @@ export default function Home() {
         </Link>
         <div className="mobile-hide" style={{display:'flex',gap:36,alignItems:'center'}}>
           <a href="#how-it-works">How It Works</a>
-          <a href="#the-experience">The Portrait</a>
           <Link href="/styles" style={{color:'var(--muted)',textDecoration:'none',fontSize:12,letterSpacing:'.12em',textTransform:'uppercase'}}>Styles</Link>
-          <a href="#the-story">Experience</a>
         </div>
         <Link href="/create" className="btn-gold" style={{padding:'10px 20px',fontSize:10}}>Begin Their Story</Link>
       </nav>
@@ -430,212 +428,125 @@ export default function Home() {
         </div>
       </section>
 
-      {/* MEMORY PORTRAIT FEATURE */}
-      <section id="the-experience" className="section-padding">
-        <div className="responsive-grid-2col" style={{maxWidth:1100,margin:'0 auto',gap:40,alignItems:'center'}}>
-          <div>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>Signature Portrait &mdash; Starting at $49</div>
-            <h2 className="serif" style={{fontSize:'clamp(32px,4vw,60px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>Their Story Is<br/><em>Worth Remembering.</em></h2>
-            <p style={{fontSize:15,lineHeight:1.9,color:'var(--muted)',marginBottom:32}}>
-              A pet is so much more than a picture. It&rsquo;s the morning walks. The rides with the windows down. The spot on the couch that&rsquo;s always theirs. The little moments that somehow become the big ones. We turn all of that into a portrait — and a song — that captures who they really are.
+      {/* ════════════════════════════════════════════════════════════
+           THE EXPERIENCE — one clean section, no redundancy
+           ════════════════════════════════════════════════════════════ */}
+      <section id="the-experience" className="section-padding" style={{background:'#0d0d0d'}}>
+        <div style={{maxWidth:1100,margin:'0 auto'}}>
+
+          {/* The philosophy — multi-sensory */}
+          <div style={{textAlign:'center',marginBottom:80}}>
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:20}}>The Philosophy</div>
+            <h2 className="serif" style={{fontSize:'clamp(30px,4.5vw,56px)',fontWeight:400,marginBottom:32,lineHeight:1.1,maxWidth:800,margin:'0 auto 32px'}}>
+              Our pets delight every sense.<br/><em style={{color:'var(--gold)'}}>So should how we celebrate them.</em>
+            </h2>
+            <p style={{fontSize:15,lineHeight:1.9,color:'var(--muted)',maxWidth:540,margin:'0 auto'}}>
+              Not a generic portrait of a dog. A portrait of <em>your</em> dog — the one who tilts her head when you say &ldquo;walk,&rdquo; who stole the couch cushion three years ago and never gave it back.
             </p>
-            <div style={{display:'flex',flexDirection:'column',gap:14,marginBottom:40}}>
-              {[
-                {icon:'🌅', text:'The beach where you spent every summer together'},
-                {icon:'🚗', text:'Ears out the window on your favorite drive'},
-                {icon:'🛋️', text:'Their spot on the couch, the one that\'s always theirs'},
-                {icon:'🎾', text:'That tennis ball they\'ve had since day one'},
-                {icon:'🏡', text:'The backyard, the park, the places that feel like home'},
-              ].map(({icon,text})=>(
-                <div key={text} style={{display:'flex',gap:14,alignItems:'flex-start'}}>
-                  <span style={{fontSize:18,flexShrink:0}}>{icon}</span>
-                  <span style={{fontSize:14,color:'var(--muted)',lineHeight:1.7}}>{text}</span>
-                </div>
-              ))}
-            </div>
-            <p style={{fontSize:14,color:'var(--cream)',marginBottom:24,lineHeight:1.8}}>Just tell us their story. We&rsquo;ll do the rest.</p>
-            <Link href="/create" className="btn-gold">🐾 Start Their Story</Link>
           </div>
 
-          {/* Portrait examples - full images */}
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
-            <div style={{borderRadius:6,overflow:'hidden',border:'1px solid var(--border)'}}>
-              <img src="/portrait-sasha.png" alt="Sasha - Signature Portrait" style={{width:'100%',display:'block'}}/>
-              <div style={{background:'var(--mid)',padding:'10px 12px',borderTop:'1px solid var(--border)'}}>
-                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500}}>Sasha</div>
-                <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>Sunset cruise in her BMW, name on the plate.</div>
-              </div>
-            </div>
-            <div style={{borderRadius:6,overflow:'hidden',border:'1px solid var(--border)'}}>
-              <img src="/portrait-maggie-mollie.png" alt="Sammy & Gracie - Signature Portrait" style={{width:'100%',display:'block'}}/>
-              <div style={{background:'var(--mid)',padding:'10px 12px',borderTop:'1px solid var(--border)'}}>
-                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500}}>Sammy &amp; Gracie</div>
-                <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>Golden hour at the family beach house on the Gulf.</div>
-              </div>
-            </div>
-            <div style={{borderRadius:6,overflow:'hidden',border:'1px solid var(--border)'}}>
-              <img src="/portrait-jack.png" alt="Jack - Signature Portrait" style={{width:'100%',display:'block'}}/>
-              <div style={{background:'var(--mid)',padding:'10px 12px',borderTop:'1px solid var(--border)'}}>
-                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500}}>Jack</div>
-                <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>Top down in the Porsche, cruising through Colorado.</div>
-              </div>
-            </div>
-            <div style={{borderRadius:6,overflow:'hidden',border:'1px solid var(--border)'}}>
-              <img src="/portrait-wyatt.png" alt="Wyatt - USA Hockey Fan" style={{width:'100%',display:'block'}}/>
-              <div style={{background:'var(--mid)',padding:'10px 12px',borderTop:'1px solid var(--border)'}}>
-                <div style={{fontSize:11,color:'var(--gold)',fontWeight:500}}>Wyatt</div>
-                <div style={{fontSize:10,color:'var(--muted)',marginTop:2}}>USA hockey fan on his favorite beach with his favorite red ball.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-      <div className="divider"/>
-
-      {/* THEIR STORY BROUGHT TO LIFE */}
-      <section id="the-story" className="section-padding">
-        <div style={{maxWidth:1000,margin:'0 auto'}}>
-          <div style={{textAlign:'center',marginBottom:40}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>The Experience</div>
-            <h2 className="serif" style={{fontSize:'clamp(32px,5vw,56px)',fontWeight:400,marginBottom:24,lineHeight:1.1}}>Their Story,<br/><em>Brought to Life.</em></h2>
-            <div style={{color:'var(--muted)',fontSize:15,maxWidth:700,margin:'0 auto',lineHeight:1.9}}>
-              <p style={{marginBottom:24}}>
-                We&rsquo;ve built something different. 32 hand-tuned artistic styles, every one included in the price. A limitless AI generation engine. The latest models, obsessively trained and prompted by a team that won&rsquo;t stop until it&rsquo;s gallery-worthy.
-              </p>
-              <p style={{marginBottom:24}}>
-                The result? Pet portraits that actually look like <em>them</em> — not a generic dog in a costume, but YOUR dog, in THEIR world. Their favorite spot. Their tennis ball. The way they tilt their head.
-              </p>
-              <p style={{color:'var(--cream)',fontWeight:500}}>
-                Then we write them a song. Original music, billboard-quality production, lyrics pulled straight from the story you tell us.
-              </p>
-            </div>
-          </div>
-
-          {/* Visual product cards */}
-          <div className="product-grid" style={{gap:16,marginBottom:48}}>
+          {/* Three sensory pillars — SEE / HEAR / FEEL */}
+          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:3,marginBottom:80}} className="responsive-grid-3col">
             {[
-              {image:'/portrait-lifestyle.png',title:'The Portrait',desc:'Their story — made visible.'},
-              {image:'/gallery-quality.png',title:'Gallery Prints',desc:'Canvas & archival prints.'},
-              {image:'/song-lifestyle.png',title:'Original Song',desc:'Their name in the lyrics.'},
-              {svg:'qr',title:'QR Code',desc:'Scan. Listen. Experience.'},
+              {
+                sense: 'See',
+                headline: 'A Portrait That Looks Like Them',
+                body: '32 hand-tuned artistic styles, from classical oil to neon pop. Every detail preserved — their eyes, their markings, the way they carry themselves. Not a filter. Fine art.',
+                accent: 'var(--gold)',
+              },
+              {
+                sense: 'Hear',
+                headline: 'A Song Written Just for Them',
+                body: 'Original music with their name in the lyrics and their story in every verse. Billboard-quality production. Scan the QR code on the portrait — it plays instantly.',
+                accent: '#A78BFA',
+              },
+              {
+                sense: 'Feel',
+                headline: 'A Print You Can Hold',
+                body: 'Gallery-wrapped canvas, archival fine art prints, sherpa blankets, mugs — real products shipped to your door. Not a digital file that lives in a folder.',
+                accent: '#C4622D',
+              },
             ].map(p=>(
-              <div key={p.title} className="card" style={{padding:0,overflow:'hidden',textAlign:'center'}}>
-                {(p as any).image ? (
-                  <div style={{maxHeight:260,overflow:'hidden'}}>
-                    <img src={(p as any).image} alt={p.title} style={{width:'100%',display:'block'}}/>
-                  </div>
-                ) : (p as any).svg === 'qr' ? (
-                  <div style={{height:260,background:'linear-gradient(135deg,#1a1a1a 0%,#0d0d0d 100%)',display:'flex',alignItems:'center',justifyContent:'center'}}>
-                    <div style={{width:100,height:100,background:'white',borderRadius:8,display:'grid',gridTemplateColumns:'repeat(7,1fr)',gridTemplateRows:'repeat(7,1fr)',gap:2,padding:8}}>
-                      {[1,1,1,0,1,1,1,1,0,1,0,1,0,1,1,1,1,0,0,1,1,0,0,0,1,1,0,0,1,1,1,0,1,1,1,1,0,1,0,1,0,1,1,1,1,0,1,1,1].map((fill,i)=>(
-                        <div key={i} style={{background:fill?'var(--ink)':'white',borderRadius:1}}/>
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
-                <div style={{padding:'20px 16px'}}>
-                  <div className="serif" style={{fontSize:18,marginBottom:6,fontWeight:400,color:'var(--cream)'}}>{p.title}</div>
-                  <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.5}}>{p.desc}</div>
-                </div>
+              <div key={p.sense} className="card" style={{padding:'40px 28px',textAlign:'center',borderTop:`2px solid ${p.accent}`}}>
+                <div style={{fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:p.accent,marginBottom:14,fontWeight:700}}>{p.sense}</div>
+                <h3 className="serif" style={{fontSize:20,fontWeight:400,color:'var(--cream)',marginBottom:14,lineHeight:1.3}}>{p.headline}</h3>
+                <p style={{fontSize:13,color:'var(--muted)',lineHeight:1.8}}>{p.body}</p>
               </div>
             ))}
           </div>
 
-          {/* Any Occasion - bookends */}
-          <div className="bookend-grid" style={{gap:24,marginBottom:24,alignItems:'center'}}>
-            <div>
-              <img src="/portrait-christmas.png" alt="Christmas pet portrait" style={{width:'100%',height:'auto',display:'block',borderRadius:8,border:'1px solid var(--border)'}}/>
-            </div>
-            <div style={{textAlign:'center',padding:'20px 16px'}}>
-              <h3 className="serif" style={{fontSize:'clamp(22px,4vw,28px)',marginBottom:16,fontWeight:400,color:'var(--cream)'}}>Perfect for Every Occasion</h3>
-              <p style={{fontSize:14,color:'var(--muted)',lineHeight:1.9}}>
-                Holidays, birthdays, memorials, gotcha days — we craft the scene to match the moment. Tell us the occasion, and we&rsquo;ll make it unforgettable.
-              </p>
-            </div>
-            <div>
-              <img src="/portrait-birthday.png" alt="Birthday pet portrait" style={{width:'100%',height:'auto',display:'block',borderRadius:8,border:'1px solid var(--border)'}}/>
-            </div>
-          </div>
-
-          {/* The Experience - lifestyle bookends around story */}
-          <div className="bookend-grid" style={{gap:24,marginBottom:48,alignItems:'center'}}>
-            <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
-              <img src="/blanket-lifestyle.png" alt="Pet blanket lifestyle" style={{width:'100%',display:'block'}}/>
-            </div>
-            <div style={{textAlign:'center',padding:'20px 16px'}}>
-              <h3 className="serif" style={{fontSize:'clamp(22px,4vw,28px)',marginBottom:20,fontWeight:400,color:'var(--cream)'}}>The Complete Experience</h3>
-              <p style={{fontSize:14,color:'var(--muted)',lineHeight:1.9,marginBottom:20}}>
-                Imagine putting on your headphones and hearing their song for the first time — their name in the lyrics, their story in every verse. Looking up at the portrait on the wall and seeing <em>them</em>, not just any dog, but YOUR dog in their world.
-              </p>
-              <p style={{fontSize:14,color:'var(--muted)',lineHeight:1.9,marginBottom:20}}>
-                Wrapping yourself in a soft sherpa blanket with their face. Wearing a hoodie that keeps them close. Scanning the QR code and watching guests light up as the music plays.
-              </p>
-              <p style={{fontSize:16,color:'var(--cream)',lineHeight:1.9,fontWeight:500}}>
-                One-of-a-kind, curated just for them. A magical package that tells their story — and lets everyone experience it.
-              </p>
-            </div>
-            <div style={{borderRadius:8,overflow:'hidden',border:'1px solid var(--border)'}}>
-              <img src="/lifestyle-friends.png" alt="Friends admiring portrait" style={{width:'100%',display:'block'}}/>
-            </div>
-          </div>
-
-          {/* Listen to Real Songs */}
-          <div style={{textAlign:'center',marginBottom:48,padding:'40px 20px',background:'var(--mid)',borderRadius:12,border:'1px solid var(--border)'}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Hear What We Create</div>
-            <h3 className="serif" style={{fontSize:28,marginBottom:8,fontWeight:400,color:'var(--cream)'}}>Real Songs for Real Pets</h3>
-            <p style={{fontSize:14,color:'var(--muted)',marginBottom:24,maxWidth:500,margin:'0 auto 24px'}}>Every song is written just for them — their name, their story, their spirit. Press play and hear for yourself.</p>
-            <div style={{display:'flex',flexWrap:'wrap',gap:12,justifyContent:'center'}}>
+          {/* Song player — deliver on the HEAR pillar immediately */}
+          <div style={{textAlign:'center',marginBottom:80,padding:'48px 28px',background:'linear-gradient(135deg,rgba(167,139,250,.04),rgba(10,10,10,.4))',border:'1px solid rgba(167,139,250,.15)',borderRadius:8}}>
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'#A78BFA',marginBottom:14}}>Press Play</div>
+            <h3 className="serif" style={{fontSize:'clamp(22px,4vw,32px)',marginBottom:12,fontWeight:400,color:'var(--cream)'}}>Hear What a Pet Song Sounds Like</h3>
+            <p style={{fontSize:14,color:'var(--muted)',marginBottom:28,maxWidth:460,margin:'0 auto 28px',lineHeight:1.8}}>
+              Real songs we composed for real pets. Their names. Their stories. Their personalities — in the music.
+            </p>
+            <div style={{display:'flex',flexWrap:'wrap',gap:10,justifyContent:'center'}}>
               {[
                 {name:'Sasha',song:'/songs/sasha-on-the-sandbar.mp3',desc:'On the Sandbar'},
                 {name:'Haze',song:'/songs/haze-on-the-harbor.mp3',desc:'On the Harbor'},
                 {name:'Jack',song:'/songs/jack-the-labradoodle.mp3',desc:'The Labradoodle'},
               ].map(({name,song,desc})=>(
-                <button key={name} onClick={()=>{const a=document.getElementById('song-player') as HTMLAudioElement;if(a){a.src=song;a.play()}}} style={{background:'var(--gold)',color:'var(--ink)',padding:'12px 24px',fontSize:11,fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',border:'none',borderRadius:6,cursor:'pointer',display:'flex',alignItems:'center',gap:8}}>
-                  <span style={{fontSize:16}}>▶</span> {name} — {desc}
+                <button key={name} onClick={()=>{const a=document.getElementById('song-player') as HTMLAudioElement;if(a){a.src=song;a.play()}}} style={{background:'rgba(167,139,250,.1)',color:'#A78BFA',padding:'11px 22px',fontSize:10,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',border:'1px solid rgba(167,139,250,.3)',borderRadius:4,cursor:'pointer',display:'flex',alignItems:'center',gap:8,transition:'all .2s'}}>
+                  <span style={{fontSize:14}}>▶</span> {name} — {desc}
                 </button>
               ))}
             </div>
             <audio id="song-player" style={{display:'none'}}/>
-            <p style={{fontSize:11,color:'var(--muted)',marginTop:16}}>🎧 Turn up your volume</p>
+            <p style={{fontSize:10,color:'var(--muted)',marginTop:16,letterSpacing:'.1em'}}>🎧 Turn up your volume</p>
           </div>
 
-          {/* Closing statement */}
-          <div style={{textAlign:'center',marginBottom:40}}>
-            <p style={{fontSize:15,color:'var(--muted)',lineHeight:2,maxWidth:600,margin:'0 auto 24px'}}>
-              This is for people who don&rsquo;t just have pets — they love them like family.<br/>
-              For people who understand the bond, and want something worthy of it.
-            </p>
-            <p className="serif" style={{fontSize:28,color:'var(--gold)',marginBottom:32}}>This is love, delivered.</p>
-            <Link href="/create" className="btn-gold">🐾 Start Their Story</Link>
-          </div>
-        </div>
-      </section>
-      <div className="divider"/>
-
-      {/* TESTIMONIALS */}
-      <section style={{padding:'100px 60px'}}>
-        <div style={{maxWidth:1200,margin:'0 auto'}}>
-          <div style={{textAlign:'center',marginBottom:56}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>From People Who Felt It</div>
-            <h2 className="serif" style={{fontSize:'clamp(36px,5vw,64px)',fontWeight:400}}>The Moment It<br/><em>Becomes Real.</em></h2>
-          </div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:2}}>
-            {[
-              {q:'My golden Rocky looks like actual royalty. I cried when I opened the box. Already ordered three more for the family.',name:'Sarah M.',role:'Golden Retriever owner, Denver CO'},
-              {q:'The Memory Portrait of my two cats is the most personal gift I have ever given anyone. My mom called it a masterpiece.',name:'James T.',role:'Cat parent, Austin TX'},
-              {q:'I told them Rocky loves the Broncos, rides in my Mustang, and his tennis ball. The portrait had all of it. I was speechless.',name:'Mike R.',role:'Lab mix owner, Boulder CO'},
-            ].map((t,i)=>(
-              <div key={i} className="card" style={{padding:'36px 32px'}}>
-                <div className="serif" style={{fontSize:52,color:'var(--gold)',opacity:.2,lineHeight:.7,marginBottom:20}}>&ldquo;</div>
-                <p style={{fontSize:15,lineHeight:1.9,fontStyle:'italic',color:'var(--cream)',marginBottom:28}}>{t.q}</p>
-                <div style={{borderTop:'1px solid var(--border)',paddingTop:20}}>
-                  <div style={{fontWeight:600,fontSize:13}}>{t.name}</div>
-                  <div style={{fontSize:11,color:'var(--gold)',marginTop:4}}>{t.role}</div>
+          {/* Portrait examples — the SEE pillar brought to life */}
+          <div style={{marginBottom:80}}>
+            <div style={{textAlign:'center',marginBottom:28}}>
+              <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:10}}>Real Portraits, Real Pets</div>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,maxWidth:800,margin:'0 auto'}}>
+              {[
+                {img:'/portrait-sasha.png', name:'Sasha', desc:'Sunset cruise, name on the plate'},
+                {img:'/portrait-maggie-mollie.png', name:'Sammy & Gracie', desc:'Golden hour at the family beach house'},
+                {img:'/portrait-jack.png', name:'Jack', desc:'Top down in the Porsche, cruising Colorado'},
+                {img:'/portrait-wyatt.png', name:'Wyatt', desc:'USA hockey fan on his favorite beach'},
+              ].map(p=>(
+                <div key={p.name} style={{borderRadius:6,overflow:'hidden',border:'1px solid var(--border)',transition:'transform .3s'}}>
+                  <img src={p.img} alt={`${p.name} portrait`} style={{width:'100%',display:'block',aspectRatio:'3/4',objectFit:'cover'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}}/>
+                  <div style={{background:'#141414',padding:'12px 14px',borderTop:'1px solid var(--border)'}}>
+                    <div style={{fontSize:12,color:'var(--gold)',fontWeight:600,marginBottom:2}}>{p.name}</div>
+                    <div style={{fontSize:11,color:'var(--muted)'}}>{p.desc}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          </div>
+
+          {/* Testimonials */}
+          <div style={{marginBottom:48}}>
+            <div style={{textAlign:'center',marginBottom:36}}>
+              <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>Real Stories</div>
+            </div>
+            <div className="responsive-grid-3col" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:3}}>
+              {[
+                {q:'My golden Rocky looks like actual royalty. I cried when I opened the box. Already ordered three more for the family.',name:'Sarah M.',role:'Golden Retriever mom, Denver'},
+                {q:'The Memory Portrait of my two cats is the most personal gift I have ever given anyone. My mom called it a masterpiece.',name:'James T.',role:'Cat parent, Austin'},
+                {q:'I told them Rocky loves the Broncos, rides in my Mustang, and his tennis ball. The portrait had all of it. I was speechless.',name:'Mike R.',role:'Lab mix owner, Boulder'},
+              ].map((t,i)=>(
+                <div key={i} className="card" style={{padding:'32px 28px'}}>
+                  <div className="serif" style={{fontSize:48,color:'var(--gold)',opacity:.15,lineHeight:.7,marginBottom:18}}>&ldquo;</div>
+                  <p style={{fontSize:14,lineHeight:1.85,fontStyle:'italic',color:'rgba(245,240,232,.85)',marginBottom:24}}>{t.q}</p>
+                  <div style={{borderTop:'1px solid var(--border)',paddingTop:16}}>
+                    <div style={{fontWeight:600,fontSize:12}}>{t.name}</div>
+                    <div style={{fontSize:10,color:'var(--gold)',marginTop:3}}>{t.role}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Closing */}
+          <div style={{textAlign:'center'}}>
+            <p className="serif" style={{fontSize:'clamp(20px,3vw,28px)',color:'var(--gold)',marginBottom:28,fontStyle:'italic'}}>Every sense. Every detail. Every bit of who they are.</p>
+            <Link href="/create" className="btn-gold">🐾 Start Their Story</Link>
           </div>
         </div>
       </section>
