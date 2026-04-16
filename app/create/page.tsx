@@ -1015,14 +1015,14 @@ export default function CreatePage() {
             {/* ── DIGITAL ADD-ONS SECTION ── */}
             <div style={{fontSize:10,letterSpacing:'.25em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>⚡ Digital Add-Ons — Instant Delivery, Zero Shipping</div>
 
-            {/* All 36 portraits */}
+            {/* All 32 portraits */}
             <div onClick={()=>setWantAllImages(b=>!b)} style={{background:'#141414',border:`1px solid ${wantAllImages?'var(--gold)':'rgba(245,240,232,.08)'}`,padding:'24px',marginBottom:3,cursor:'pointer',transition:'all .2s',position:'relative'}}>
               {wantAllImages&&<div style={{position:'absolute',top:16,right:16,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:24,height:24,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:12}}>✓</div>}
               <div style={{display:'flex',alignItems:'center',gap:20}}>
                 <div style={{fontSize:36}}>🖼️</div>
                 <div style={{flex:1}}>
                   <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:6}}>
-                    <div className="serif" style={{fontSize:20,fontWeight:400}}>All 36 Portrait Files</div>
+                    <div className="serif" style={{fontSize:20,fontWeight:400}}>All 32 Portrait Files</div>
                     <div style={{background:'rgba(201,168,76,.15)',color:'var(--gold)',fontSize:9,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase',padding:'3px 8px'}}>Best Value</div>
                   </div>
                   <div style={{fontSize:13,color:'var(--muted)',lineHeight:1.7}}>Every portrait in full resolution — all styles, all variants. Print anywhere, share with family, use as wallpaper. Yours forever.</div>
@@ -1105,7 +1105,7 @@ export default function CreatePage() {
                 <span style={{fontSize:14}}>${primaryProduct?.price}</span>
               </div>
               {isMemory&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>✨ Memory Portrait upgrade</span><span style={{fontSize:14}}>${MEMORY_UPGRADE_PRICE.toFixed(2)}</span></div>}
-              {wantAllImages&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>🖼️ All 36 Portrait Files</span><span style={{fontSize:14}}>$29.99</span></div>}
+              {wantAllImages&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>🖼️ All 32 Portrait Files</span><span style={{fontSize:14}}>$29.99</span></div>}
               {wantSong&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>🎵 Custom Pet Song</span><span style={{fontSize:14}}>$19.00</span></div>}
               {wantBundle&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>💾 Portrait Digital File</span><span style={{fontSize:14}}>${DIGITAL_BUNDLE_PRICE}</span></div>}
               {cartExtras.map(id=>{const p=PRODUCTS.find(x=>x.id===id)!;return <div key={id} style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:14}}>{p.emoji} {p.name} {p.size}</span><span style={{fontSize:14}}>${p.price}</span></div>})}

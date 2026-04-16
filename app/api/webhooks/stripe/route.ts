@@ -5,6 +5,7 @@ import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { PRODUCTS } from '@/lib/config'
 import { createOrder, updateOrderStatus } from '@/lib/db'
+import { upscaleForPrint } from '@/lib/upscale'
 
 function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) throw new Error('STRIPE_SECRET_KEY is not configured')
@@ -118,6 +119,24 @@ async function fulfillOrder(session: any, stripe: Stripe) {
     } catch (err) {
       console.error('Failed to presign image URL:', err)
     }
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // PRINT UPSCALE (fal.ai Clarity)
+  // Upscale the selected portrait to print-grade resolution before
+  // handing it to Printify. Fails gracefully: if upscale errors, we
+  // continue with the original URL so the order never blocks.
+  // ─────────────────────────────────────────────────────────────────
+  try {
+    const upscaleResult = await upscaleForPrint(accessibleImageUrl)
+    if (upscaleResult.upscaled) {
+      accessibleImageUrl = upscaleResult.url
+      console.log(`🖼️  Print upscale succeeded in ${upscaleResult.durationMs}ms`)
+    } else {
+      console.warn(`⚠️  Print upscale failed — proceeding with original. ${upscaleResult.error}`)
+    }
+  } catch (err) {
+    console.error('Upscale block error (continuing with original):', err)
   }
 
   // Build Printify line items

@@ -57,19 +57,19 @@ export async function POST(req: NextRequest) {
       lineItems.push({
         price_data: {
           currency: 'usd',
-          product_data: { name: 'All 12 Digital Portrait Files', description: 'High-resolution digital files of all 12 generated portraits' },
+          product_data: { name: 'All 32 Digital Portrait Files', description: 'High-resolution digital files of all 32 generated portraits' },
           unit_amount: Math.round(DIGITAL_BUNDLE_PRICE * 100),
         },
         quantity: 1,
       })
     }
 
-    // All 36 portrait digital files
+    // All 32 portrait digital files
     if (wantAllImages) {
       lineItems.push({
         price_data: {
           currency: 'usd',
-          product_data: { name: `All 36 Portrait Files — ${petLabel} Session`, description: 'Every portrait from all 3 AI models (GPT, FLUX, Astria) in full resolution. Delivered digitally.' },
+          product_data: { name: `All 32 Portrait Files — ${petLabel} Session`, description: 'Every one of the 32 AI-generated portraits in full resolution. Delivered digitally.' },
           unit_amount: 2999,
         },
         quantity: 1,

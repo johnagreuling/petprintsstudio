@@ -1,3 +1,110 @@
+/* ════════════════════════════════════════════════════════════════
+   Global Base
+   ════════════════════════════════════════════════════════════════ */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body { background: #0A0A0A; color: #F5F0E8; font-family: 'DM Sans', sans-serif; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { background: #0A0A0A; color: #F5F0E8; font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+/* ════════════════════════════════════════════════════════════════
+   Mobile Responsive — applies site-wide
+   Covers /create, /styles, /song, /order, /admin pages that don't
+   have their own @media rules. Targets common inline-style patterns.
+   ════════════════════════════════════════════════════════════════ */
+
+/* TABLET (max 900px) */
+@media (max-width: 900px) {
+  main, section { padding-left: 20px !important; padding-right: 20px !important; }
+  h1 { font-size: clamp(32px, 7vw, 56px) !important; }
+  h2 { font-size: clamp(24px, 5vw, 44px) !important; }
+}
+
+/* PHONE (max 640px) */
+@media (max-width: 640px) {
+  /* Nav: tighten padding, wrap links */
+  nav {
+    padding: 14px 16px !important;
+    gap: 8px !important;
+  }
+  nav > div:nth-child(2) {
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+  }
+  nav a[href="/#how-it-works"],
+  nav a[href="/#the-experience"] {
+    display: none !important;
+  }
+
+  /* Two-column grids → single column */
+  [style*="gridTemplateColumns: '1fr 1fr'"],
+  [style*="grid-template-columns: 1fr 1fr"],
+  [style*="gridTemplateColumns:'1fr 1fr'"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* /styles card grid */
+  [style*="gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))'"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* /admin/curate rows */
+  [style*="gridTemplateColumns: '200px 1fr 1fr 1fr'"],
+  [style*="gridTemplateColumns:'200px 1fr 1fr 1fr'"] {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Tighten side padding on content sections */
+  main, section {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Hero typography */
+  h1 {
+    font-size: clamp(28px, 9vw, 48px) !important;
+    line-height: 1.1 !important;
+  }
+  h2 { font-size: clamp(22px, 6vw, 36px) !important; }
+  p  { font-size: 15px !important; line-height: 1.7 !important; }
+
+  /* Buttons */
+  .btn-gold, .btn-out {
+    padding: 14px 24px !important;
+    font-size: 11px !important;
+  }
+
+  /* /create drop zone */
+  .drop {
+    padding: 32px 16px !important;
+    min-height: 240px !important;
+  }
+
+  /* Prevent horizontal overflow */
+  main { overflow-x: hidden; }
+
+  /* Reduce aggressive top padding on hero sections */
+  section[style*="paddingTop: 140"],
+  section[style*="paddingTop:140"],
+  section[style*="padding: '140px"] {
+    padding-top: 100px !important;
+  }
+
+  /* Flex rows with large gaps should wrap */
+  [style*="gap: 32"],
+  [style*="gap:32"],
+  [style*="gap: 36"],
+  [style*="gap:36"] {
+    gap: 16px !important;
+    flex-wrap: wrap !important;
+  }
+
+  /* Lightbox nav buttons (prev/next) shouldn't overflow on phones */
+  [style*="left: -64"] { left: 4px !important; }
+  [style*="right: -64"] { right: 4px !important; }
+}
+
+/* PHONE — very small (< 380px, iPhone SE / mini) */
+@media (max-width: 380px) {
+  h1 { font-size: 26px !important; }
+  main, section { padding-left: 12px !important; padding-right: 12px !important; }
+}
