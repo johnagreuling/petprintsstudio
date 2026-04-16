@@ -489,6 +489,9 @@ export default function CreatePage() {
         .step-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;display:inline-block}
         @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}.pulse{animation:pulse 1.8s ease infinite}
         @keyframes spin{to{transform:rotate(360deg)}}.spin{animation:spin 1s linear infinite;display:inline-block}
+        @keyframes fadeInScale{0%{opacity:0;transform:scale(.92) translateY(8px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+        @keyframes ping{0%{opacity:.6;transform:scale(1)}75%,100%{opacity:0;transform:scale(1.5)}}
+        @keyframes fadeInUp{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
 
         /* Mobile polish — iPhone-first */
         @media(max-width:640px){
@@ -918,22 +921,36 @@ export default function CreatePage() {
 
         {/* ── STEP 4: GENERATING ── */}
         {step==='generating'&&(
-          <div style={{textAlign:'center',padding:'60px 0'}}>
-            <div style={{fontSize:64,marginBottom:28}} className="pulse">🎨</div>
+          <div style={{textAlign:'center',padding:'60px 0',position:'relative'}}>
+            {/* Concentric pulsing rings — more premium than a single emoji */}
+            <div style={{position:'relative',width:140,height:140,margin:'0 auto 28px'}}>
+              <div style={{position:'absolute',inset:-30,borderRadius:'50%',border:'1px solid rgba(201,168,76,.12)',animation:'ping 2.4s ease-out infinite'}}/>
+              <div style={{position:'absolute',inset:-14,borderRadius:'50%',border:'1px solid rgba(201,168,76,.22)',animation:'ping 2.4s ease-out .3s infinite'}}/>
+              <div style={{position:'absolute',inset:0,borderRadius:'50%',background:'radial-gradient(circle,rgba(201,168,76,.18),transparent)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:56}} className="pulse">🎨</div>
+            </div>
             <h2 className="serif" style={{fontSize:'clamp(28px,5vw,48px)',fontWeight:400,marginBottom:16}}>
               Creating {answers.petName?`${answers.petName}'s`:''} Portraits
             </h2>
-            <p style={{color:'var(--muted)',fontSize:15,marginBottom:48,lineHeight:1.8}}>{progressMsg}</p>
-            <div style={{maxWidth:440,margin:'0 auto 32px'}}>
+            <p style={{color:'var(--gold)',fontSize:14,marginBottom:8,letterSpacing:'.04em',fontStyle:'italic',minHeight:22,transition:'opacity .4s'}} key={progressMsg}>
+              {progressMsg}
+            </p>
+            <p style={{color:'var(--muted)',fontSize:13,marginBottom:48,lineHeight:1.8}}>
+              Takes about 4–5 minutes · keep this tab open
+            </p>
+            <div style={{maxWidth:440,margin:'0 auto 40px'}}>
               <div className="progress-bar"><div className="progress-fill" style={{width:`${progress}%`}}/></div>
-              <div style={{fontSize:11,color:'var(--muted)',marginTop:8}}>{progress}% complete</div>
+              <div style={{display:'flex',justifyContent:'space-between',marginTop:8}}>
+                <span style={{fontSize:11,color:'var(--muted)'}}>{progress}% complete</span>
+                <span style={{fontSize:11,color:'var(--gold)'}}>{generated.length} of 32 ready</span>
+              </div>
             </div>
             {generated.length>0&&(
               <div>
-                <div style={{fontSize:12,color:'var(--gold)',marginBottom:16}}>{generated.length} portrait{generated.length!==1?'s':''} ready...</div>
                 <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:4,maxWidth:480,margin:'0 auto'}}>
                   {generated.map((img,i)=>(
-                    <WatermarkedImage src={img.url} alt={img.styleName} width={200} height={300} displayRatio="2/3" style={{opacity:.85}}/>
+                    <div key={img.url} style={{animation:`fadeInScale .6s ease-out ${Math.min(i,12)*40}ms both`}}>
+                      <WatermarkedImage src={img.url} alt={img.styleName} width={200} height={300} displayRatio="2/3" style={{opacity:.95}}/>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -944,10 +961,17 @@ export default function CreatePage() {
         {/* ── STEP 5: GALLERY — pick your favorite ── */}
         {step==='gallery'&&(
           <div style={{paddingBottom:140}}>
-            <div style={{textAlign:'center',marginBottom:48}}>
+            <div style={{textAlign:'center',marginBottom:56,animation:'fadeInUp .6s ease-out both'}}>
               <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Step 4 of 5</div>
-              <h1 className="serif" style={{fontSize:'clamp(28px,5vw,48px)',fontWeight:400,marginBottom:12}}>Pick Your Favorite</h1>
-              <p style={{color:'var(--muted)',fontSize:15,lineHeight:1.8}}>{generated.length} portraits generated — click to select your favorite</p>
+              <h1 className="serif" style={{fontSize:'clamp(32px,5vw,56px)',fontWeight:400,marginBottom:14,letterSpacing:'-.01em'}}>
+                {picked ? <>This is the <em style={{color:'var(--gold)'}}>one</em>.</> : <>Find the <em style={{color:'var(--gold)'}}>one</em>.</>}
+              </h1>
+              <p style={{color:'var(--muted)',fontSize:15,lineHeight:1.8,maxWidth:520,margin:'0 auto'}}>
+                {picked
+                  ? `You chose ${picked.styleName}. Ready when you are.`
+                  : `${generated.length} portraits ready — tap the one that feels most like them.`
+                }
+              </p>
             </div>
 
             {(()=>{
@@ -958,28 +982,50 @@ export default function CreatePage() {
                 if (!groups[key]) groups[key] = []
                 groups[key].push(img)
               })
-              return Object.entries(groups).map(([name, imgs]) => {
+              let globalIdx = 0
+              return Object.entries(groups).map(([name, imgs], groupIdx) => {
                 const style = ART_STYLES.find(s => s.id === imgs[0]?.styleId)
                 const emoji = style?.emoji || '🎨'
                 return (
-                  <div key={name} style={{marginBottom:48}}>
-                    <div style={{fontSize:10,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16,display:'flex',alignItems:'center',gap:12}}>
-                      <span>{emoji} {name}</span>
-                      <span style={{flex:1,height:1,background:'rgba(245,240,232,.06)'}}/>
+                  <div key={name} style={{marginBottom:56,animation:`fadeInUp .6s ease-out ${Math.min(groupIdx,10)*60}ms both`}}>
+                    <div style={{fontSize:10,letterSpacing:'.24em',textTransform:'uppercase',color:'var(--gold)',marginBottom:18,display:'flex',alignItems:'center',gap:14}}>
+                      <span style={{fontSize:16,filter:'grayscale(.2)'}}>{emoji}</span>
+                      <span style={{fontWeight:600}}>{name}</span>
+                      <span style={{flex:1,height:1,background:'linear-gradient(to right,rgba(201,168,76,.25),rgba(245,240,232,.04))'}}/>
                     </div>
-                    <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:4}}>
-                      {imgs.map((img,i)=>(
-                        <div key={i} style={{position:'relative',cursor:'pointer'}} onClick={()=>setLightboxImg({url:img.url,styleName:img.styleName})}>
-                          <WatermarkedImage src={img.url} alt={`${name} ${i+1}`} width={400} height={600} displayRatio="2/3" className={`img-card${picked?.url===img.url?' picked':''}`}/>
-                          {picked?.url===img.url&&<div style={{position:'absolute',top:10,right:10,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:13,pointerEvents:'none'}}>✓</div>}
-                          {/* Quick-select button (doesn't open lightbox) */}
-                          <button
-                            onClick={(e)=>{e.stopPropagation();setPicked(img)}}
-                            style={{position:'absolute',bottom:10,right:10,background:picked?.url===img.url?'var(--gold)':'rgba(0,0,0,.7)',border:'none',color:picked?.url===img.url?'var(--ink)':'#fff',padding:'6px 12px',borderRadius:3,cursor:'pointer',fontSize:10,fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',opacity:0.9}}
-                            title="Select this portrait"
-                          >{picked?.url===img.url?'✓ Selected':'Select'}</button>
-                        </div>
-                      ))}
+                    <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:6}}>
+                      {imgs.map((img,i)=>{
+                        const isPicked = picked?.url===img.url
+                        const delay = Math.min(globalIdx++, 14) * 40
+                        return (
+                          <div
+                            key={i}
+                            style={{
+                              position:'relative',
+                              cursor:'pointer',
+                              animation:`fadeInScale .55s cubic-bezier(.2,.8,.2,1) ${delay}ms both`,
+                              transform: isPicked ? 'scale(1.01)' : undefined,
+                              transition:'transform .3s',
+                              zIndex: isPicked ? 2 : 1,
+                            }}
+                            onClick={()=>setLightboxImg({url:img.url,styleName:img.styleName})}
+                          >
+                            <WatermarkedImage src={img.url} alt={`${name} ${i+1}`} width={400} height={600} displayRatio="2/3" className={`img-card${isPicked?' picked':''}`}/>
+                            {isPicked && (
+                              <>
+                                <div style={{position:'absolute',top:10,right:10,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:32,height:32,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:14,pointerEvents:'none',boxShadow:'0 4px 16px rgba(201,168,76,.4)'}}>✓</div>
+                                <div style={{position:'absolute',top:12,left:12,background:'rgba(10,10,10,.85)',color:'var(--gold)',padding:'6px 10px',fontSize:9,letterSpacing:'.2em',textTransform:'uppercase',fontWeight:700,pointerEvents:'none',backdropFilter:'blur(4px)'}}>The One</div>
+                              </>
+                            )}
+                            {/* Quick-select button (doesn't open lightbox) */}
+                            <button
+                              onClick={(e)=>{e.stopPropagation();setPicked(img)}}
+                              style={{position:'absolute',bottom:10,right:10,background:isPicked?'var(--gold)':'rgba(0,0,0,.7)',border:'none',color:isPicked?'var(--ink)':'#fff',padding:'7px 14px',borderRadius:3,cursor:'pointer',fontSize:10,fontWeight:600,letterSpacing:'.12em',textTransform:'uppercase',opacity:0.92,transition:'all .2s',backdropFilter:'blur(4px)'}}
+                              title="Select this portrait"
+                            >{isPicked?'✓ Selected':'Select'}</button>
+                          </div>
+                        )
+                      })}
                     </div>
                     {/* Get more variations button + progress */}
                     {expandingStyle === imgs[0]?.styleId ? (
@@ -1001,7 +1047,7 @@ export default function CreatePage() {
                       <button
                         onClick={()=>handleExpandStyle(imgs[0]?.styleId, name)}
                         disabled={!!expandingStyle}
-                        style={{marginTop:12,background:'transparent',border:'1px solid rgba(201,168,76,.3)',color:'var(--gold)',padding:'8px 20px',fontSize:10,letterSpacing:'.18em',textTransform:'uppercase',cursor:expandingStyle?'default':'pointer',opacity:expandingStyle?0.4:1,display:'flex',alignItems:'center',gap:8}}
+                        style={{marginTop:14,background:'transparent',border:'1px solid rgba(201,168,76,.3)',color:'var(--gold)',padding:'9px 22px',fontSize:10,letterSpacing:'.18em',textTransform:'uppercase',cursor:expandingStyle?'default':'pointer',opacity:expandingStyle?0.4:1,display:'flex',alignItems:'center',gap:8,transition:'all .2s'}}
                       >
                         + Get 2 More Variations
                       </button>
@@ -1010,19 +1056,20 @@ export default function CreatePage() {
               })
             })()}
 
-            <div style={{position:'fixed',bottom:0,left:0,right:0,zIndex:100,background:'rgba(10,10,10,.96)',padding:'16px 24px',borderTop:'1px solid rgba(245,240,232,.08)',backdropFilter:'blur(12px)'}}>
+            <div style={{position:'fixed',bottom:0,left:0,right:0,zIndex:100,background:picked?'linear-gradient(to top,rgba(201,168,76,.08),rgba(10,10,10,.96))':'rgba(10,10,10,.96)',padding:'18px 24px',borderTop:picked?'1px solid rgba(201,168,76,.35)':'1px solid rgba(245,240,232,.08)',backdropFilter:'blur(16px)',transition:'all .4s ease'}}>
               {picked&&(
-                <div style={{display:'flex',gap:16,alignItems:'center',marginBottom:16}}>
-                  {picked && primaryProduct ? <SizeCropPreview imageUrl={picked.url} sizeKey={primaryProduct.size?.replace(/['"]/g,'').replace(/ /,'')||'8x10'} displayWidth={56} /> : picked ? <img src={picked.url} alt="Selected" style={{width:56,height:56,objectFit:'cover'}}/> : null}
-                  <div>
-                    <div style={{fontSize:13,fontWeight:600}}>Selected: {picked.styleName}</div>
-                    <div style={{fontSize:11,color:'var(--gold)'}}>✓ This will be printed on your {primaryProduct?.name}</div>
+                <div style={{display:'flex',gap:16,alignItems:'center',marginBottom:14,animation:'fadeInUp .4s ease-out both'}}>
+                  {picked && primaryProduct ? <SizeCropPreview imageUrl={picked.url} sizeKey={primaryProduct.size?.replace(/['"]/g,'').replace(/ /,'')||'8x10'} displayWidth={56} /> : picked ? <img src={picked.url} alt="Selected" style={{width:56,height:56,objectFit:'cover',boxShadow:'0 2px 12px rgba(0,0,0,.5)'}}/> : null}
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:10,color:'var(--gold)',letterSpacing:'.2em',textTransform:'uppercase',marginBottom:3,fontWeight:600}}>You picked</div>
+                    <div style={{fontSize:14,fontWeight:600,marginBottom:2}}>{picked.styleName}</div>
+                    <div style={{fontSize:11,color:'var(--muted)'}}>Printing on {primaryProduct?.name} {primaryProduct?.size}</div>
                   </div>
                 </div>
               )}
               <div style={{display:'grid',gridTemplateColumns:'1fr 2fr',gap:8}}>
                 <button className="btn-out" style={{padding:'14px'}} onClick={()=>{ setGenerated([]); setPicked(null); setStep('product') }}>← Regenerate</button>
-                <button className="btn-gold" disabled={!picked} onClick={()=>setStep('upsell')}>Continue to Checkout →</button>
+                <button className="btn-gold" disabled={!picked} onClick={()=>setStep('upsell')}>{picked ? 'Make It Real →' : 'Pick Your Favorite'}</button>
               </div>
             </div>
           </div>

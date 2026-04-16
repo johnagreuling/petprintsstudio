@@ -85,6 +85,10 @@ export default function Home() {
         .hero-slide:hover{transform:translateY(-4px);box-shadow:0 20px 60px rgba(201,168,76,.2)}
         .slider-arrow:hover{background:rgba(201,168,76,.2)!important;border-color:var(--gold)!important}
 
+        /* Upload portal — shimmer and hover */
+        @keyframes shimmerSweep{0%{left:-100%}50%,100%{left:100%}}
+        .hero-upload-portal:hover{border-color:var(--gold)!important;background:linear-gradient(135deg,rgba(201,168,76,.1) 0%,rgba(196,98,45,.06) 100%)!important;transform:translateY(-2px);box-shadow:0 12px 48px rgba(201,168,76,.15)}
+
         /* Mobile Responsive */
         @media(max-width:768px){
           .divider{margin:0 20px}
@@ -144,23 +148,37 @@ export default function Home() {
           The most meaningful gift for a pet lover
         </div>
 
-        <h1 className="serif fu fu2" style={{fontSize:'clamp(52px,7vw,104px)',lineHeight:1,marginBottom:24,fontWeight:400,maxWidth:1000}}>
+        <h1 className="serif fu fu2" style={{fontSize:'clamp(44px,6.2vw,88px)',lineHeight:.98,marginBottom:28,fontWeight:400,maxWidth:960,letterSpacing:'-.02em'}}>
           Turn Their Story Into<br/><em style={{color:'var(--gold)'}}>Something Unforgettable.</em>
         </h1>
 
-        <p className="fu fu3" style={{fontSize:18,lineHeight:1.9,color:'var(--muted)',maxWidth:560,marginBottom:52,fontWeight:300}}>
+        <p className="fu fu3" style={{fontSize:17,lineHeight:1.7,color:'var(--muted)',maxWidth:520,marginBottom:36,fontWeight:300,letterSpacing:'.005em'}}>
           A custom portrait that captures who they are. An original song written just for them. A QR code that plays it every time you look at the wall.
         </p>
 
-        <p className="fu fu3" style={{fontSize:13,color:'rgba(201,168,76,.8)',letterSpacing:'.04em',lineHeight:2,marginBottom:24}}>Portrait + Song + QR Code &nbsp;&middot;&nbsp; Delivered in 24 hours &nbsp;&middot;&nbsp; Starting at $49</p>
+        <p className="fu fu3" style={{fontSize:11,color:'rgba(201,168,76,.7)',letterSpacing:'.22em',textTransform:'uppercase',marginBottom:36,fontWeight:600}}>Portrait &nbsp;·&nbsp; Song &nbsp;·&nbsp; QR Code &nbsp;·&nbsp; From $49</p>
         
         {/* Upload Dropbox - Right on homepage */}
-        <div className="fu fu4" style={{marginBottom:40,maxWidth:500,margin:'0 auto 40px'}}>
-          <Link href="/create" style={{display:'block',border:'2px dashed rgba(201,168,76,.5)',borderRadius:12,padding:'40px 32px',textAlign:'center',textDecoration:'none',background:'rgba(201,168,76,.05)',transition:'all .2s'}}>
-            <div style={{fontSize:32,marginBottom:12}}>🐾</div>
-            <div style={{fontSize:18,color:'var(--cream)',fontWeight:500,marginBottom:8}}>Drop your pet&apos;s photo here</div>
-            <div style={{fontSize:13,color:'var(--muted)',marginBottom:16}}>or click to browse &nbsp;·&nbsp; JPG, PNG, WEBP</div>
-            <div style={{display:'inline-block',background:'var(--gold)',color:'var(--ink)',padding:'12px 32px',fontSize:12,fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',borderRadius:6}}>Upload Photo & Start</div>
+        <div className="fu fu4" style={{marginBottom:32,maxWidth:480,margin:'0 auto 32px',width:'100%'}}>
+          <Link href="/create" className="hero-upload-portal" style={{
+            display:'block',
+            position:'relative',
+            padding:'36px 28px',
+            textAlign:'center',
+            textDecoration:'none',
+            background:'linear-gradient(135deg, rgba(201,168,76,.06) 0%, rgba(196,98,45,.03) 100%)',
+            border:'1px solid rgba(201,168,76,.25)',
+            overflow:'hidden',
+            transition:'all .3s cubic-bezier(.2,.8,.2,1)',
+          }}>
+            {/* Subtle shimmer sweep */}
+            <div style={{position:'absolute',top:0,left:'-100%',width:'100%',height:'100%',background:'linear-gradient(90deg,transparent,rgba(201,168,76,.08),transparent)',animation:'shimmerSweep 3.5s ease-in-out infinite'}}/>
+            <div style={{position:'relative',zIndex:1}}>
+              <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14,fontWeight:600}}>Begin</div>
+              <div style={{fontSize:20,color:'var(--cream)',fontWeight:400,fontFamily:"'Cormorant Garamond',serif",marginBottom:8,letterSpacing:'-.01em'}}>Upload your pet&rsquo;s photo</div>
+              <div style={{fontSize:12,color:'var(--muted)',marginBottom:22,letterSpacing:'.02em'}}>JPG, PNG, or WEBP · Max 50MB</div>
+              <div style={{display:'inline-block',background:'var(--gold)',color:'var(--ink)',padding:'13px 32px',fontSize:11,fontWeight:700,letterSpacing:'.18em',textTransform:'uppercase'}}>Start Their Story →</div>
+            </div>
           </Link>
         </div>
 
