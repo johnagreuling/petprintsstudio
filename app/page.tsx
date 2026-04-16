@@ -285,29 +285,66 @@ export default function Home() {
         </div>
       </section>
 
-      {/* HOW IT WORKS — 3 steps, not 7 */}
+      {/* ── SONG PLAYER — right at the top so visitors can play while browsing ── */}
+      <section style={{padding:'56px 60px',background:'#0A0A0A'}} className="section-padding">
+        <div style={{maxWidth:800,margin:'0 auto',textAlign:'center',padding:'48px 32px',background:'linear-gradient(135deg,rgba(167,139,250,.05),rgba(10,10,10,.4))',border:'1px solid rgba(167,139,250,.15)',borderRadius:10}}>
+          <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'#A78BFA',marginBottom:14}}>Every Pet Gets a Song</div>
+          <h3 className="serif" style={{fontSize:'clamp(24px,4vw,36px)',marginBottom:12,fontWeight:400,color:'var(--cream)',lineHeight:1.15}}>Press Play. Hear the Difference.</h3>
+          <p style={{fontSize:14,color:'var(--muted)',marginBottom:28,maxWidth:440,margin:'0 auto 28px',lineHeight:1.8}}>
+            Real songs we composed for real pets. Their names in the lyrics. Their stories in every verse.
+          </p>
+          <div style={{display:'flex',flexWrap:'wrap',gap:10,justifyContent:'center'}}>
+            {[
+              {name:'Sasha',song:'/songs/sasha-on-the-sandbar.mp3',desc:'On the Sandbar'},
+              {name:'Haze',song:'/songs/haze-on-the-harbor.mp3',desc:'On the Harbor'},
+              {name:'Jack',song:'/songs/jack-the-labradoodle.mp3',desc:'The Labradoodle'},
+            ].map(({name,song,desc})=>(
+              <button key={name} onClick={()=>{const a=document.getElementById('song-player') as HTMLAudioElement;if(a){a.src=song;a.play()}}} style={{background:'rgba(167,139,250,.12)',color:'#A78BFA',padding:'12px 24px',fontSize:10,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',border:'1px solid rgba(167,139,250,.3)',borderRadius:4,cursor:'pointer',display:'flex',alignItems:'center',gap:8,transition:'all .2s'}}>
+                <span style={{fontSize:14}}>▶</span> {name} — {desc}
+              </button>
+            ))}
+          </div>
+          <audio id="song-player" style={{display:'none'}}/>
+          <p style={{fontSize:10,color:'var(--muted)',marginTop:16,letterSpacing:'.1em'}}>🎧 Turn up your volume</p>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS — 4 steps */}
       <section id="how-it-works" style={{padding:'80px 60px',background:'#0d0d0d'}} className="section-padding">
-        <div style={{maxWidth:1100,margin:'0 auto'}}>
+        <div style={{maxWidth:1200,margin:'0 auto'}}>
           <div style={{textAlign:'center',marginBottom:56}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>Three Steps</div>
-            <h2 className="serif" style={{fontSize:'clamp(32px,5vw,60px)',fontWeight:400,lineHeight:1.05}}>Upload. Pick. <em style={{color:'var(--gold)'}}>Done.</em></h2>
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14}}>How It Works</div>
+            <h2 className="serif" style={{fontSize:'clamp(32px,5vw,60px)',fontWeight:400,lineHeight:1.05}}>Upload. Tell. Pick. <em style={{color:'var(--gold)'}}>Done.</em></h2>
           </div>
 
-          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:3}} className="responsive-grid-3col">
-            {/* Step 1 */}
+          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:3}} className="responsive-grid-4col">
+            {/* Step 1 — Upload */}
             <div className="card" style={{padding:0,overflow:'hidden'}}>
               <div style={{aspectRatio:'4/3',overflow:'hidden',background:'#1a1412',position:'relative'}}>
                 <img src="/process-upload.jpg" alt="Upload your pet's photo" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
                 <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.7) 0%,transparent 50%)'}} />
                 <div style={{position:'absolute',bottom:16,left:16,fontSize:36,fontWeight:900,color:'var(--gold)',fontFamily:"'DM Sans',sans-serif",lineHeight:1}}>1</div>
               </div>
-              <div style={{padding:'24px 20px 28px'}}>
-                <h3 className="serif" style={{fontSize:22,marginBottom:8,fontWeight:400}}>Upload a Photo</h3>
-                <p style={{fontSize:13,color:'var(--muted)',lineHeight:1.8}}>One clear, well-lit photo. Front-facing works best. Tell us their name and what makes them <em>them</em>.</p>
+              <div style={{padding:'20px 18px 24px'}}>
+                <h3 className="serif" style={{fontSize:20,marginBottom:6,fontWeight:400}}>Upload a Photo</h3>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>One clear, well-lit photo. Front-facing works best.</p>
               </div>
             </div>
 
-            {/* Step 2 */}
+            {/* Step 2 — Tell Their Story */}
+            <div className="card" style={{padding:0,overflow:'hidden'}}>
+              <div style={{aspectRatio:'4/3',overflow:'hidden',background:'#111',position:'relative'}}>
+                <img src="/step2-wyatt.jpg" alt="Wyatt's personalized portrait from his story" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
+                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.7) 0%,transparent 50%)'}} />
+                <div style={{position:'absolute',bottom:16,left:16,fontSize:36,fontWeight:900,color:'var(--gold)',fontFamily:"'DM Sans',sans-serif",lineHeight:1}}>2</div>
+              </div>
+              <div style={{padding:'20px 18px 24px'}}>
+                <h3 className="serif" style={{fontSize:20,marginBottom:6,fontWeight:400}}>Tell Us Their Story</h3>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>A few quick questions — name, personality, favorite things. This is what makes the portrait and song <em>theirs</em>.</p>
+              </div>
+            </div>
+
+            {/* Step 3 — Pick Your Style */}
             <div className="card" style={{padding:0,overflow:'hidden'}}>
               <div style={{aspectRatio:'4/3',overflow:'hidden',background:'#111',position:'relative'}}>
                 <div style={{width:'100%',height:'100%',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:2,padding:2}}>
@@ -317,29 +354,38 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-                <div style={{position:'absolute',bottom:16,left:16,fontSize:36,fontWeight:900,color:'var(--gold)',fontFamily:"'DM Sans',sans-serif",lineHeight:1}}>2</div>
+                <div style={{position:'absolute',bottom:16,left:16,fontSize:36,fontWeight:900,color:'var(--gold)',fontFamily:"'DM Sans',sans-serif",lineHeight:1}}>3</div>
               </div>
-              <div style={{padding:'24px 20px 28px'}}>
-                <h3 className="serif" style={{fontSize:22,marginBottom:8,fontWeight:400}}>Pick Your Style</h3>
-                <p style={{fontSize:13,color:'var(--muted)',lineHeight:1.8}}>We generate 32 custom portraits — from classical oil to neon pop. You pick the one that feels most like them.</p>
+              <div style={{padding:'20px 18px 24px'}}>
+                <h3 className="serif" style={{fontSize:20,marginBottom:6,fontWeight:400}}>Pick Your Favorite</h3>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>We generate 32 custom portraits. You pick the one that feels most like them.</p>
               </div>
             </div>
 
-            {/* Step 3 */}
+            {/* Step 4 — We Handle the Rest */}
             <div className="card" style={{padding:0,overflow:'hidden'}}>
               <div style={{aspectRatio:'4/3',overflow:'hidden',background:'#1a1412',position:'relative'}}>
-                <img src="/step2-wyatt.jpg" alt="Portrait printed and delivered" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}}/>
+                <img src="/portrait-sasha.png" alt="Finished portrait ready to ship" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}}/>
                 <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.7) 0%,transparent 50%)'}} />
-                <div style={{position:'absolute',bottom:16,left:16,fontSize:36,fontWeight:900,color:'var(--gold)',fontFamily:"'DM Sans',sans-serif",lineHeight:1}}>3</div>
+                <div style={{position:'absolute',bottom:16,left:16,fontSize:36,fontWeight:900,color:'var(--gold)',fontFamily:"'DM Sans',sans-serif",lineHeight:1}}>4</div>
               </div>
-              <div style={{padding:'24px 20px 28px'}}>
-                <h3 className="serif" style={{fontSize:22,marginBottom:8,fontWeight:400}}>We Handle the Rest</h3>
-                <p style={{fontSize:13,color:'var(--muted)',lineHeight:1.8}}>Portrait printed on gallery canvas. Song composed with their name in the lyrics. QR code links it all. Shipped to your door.</p>
+              <div style={{padding:'20px 18px 24px'}}>
+                <h3 className="serif" style={{fontSize:20,marginBottom:6,fontWeight:400}}>We Handle the Rest</h3>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>Portrait printed on gallery canvas. Song composed. QR code links it all. Shipped to your door.</p>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Cinematic product shot — the portrait in a real home */}
+      <div style={{position:'relative',width:'100%',height:'clamp(300px,50vw,560px)',overflow:'hidden'}}>
+        <img src="/portrait-on-wall.jpg" alt="Pet portrait hanging in a beautiful home" style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 40%',display:'block'}} />
+        <div style={{position:'absolute',inset:0,background:'linear-gradient(to bottom, rgba(10,10,10,.4) 0%, transparent 30%, transparent 70%, rgba(10,10,10,.8) 100%)'}} />
+        <div style={{position:'absolute',bottom:28,left:0,right:0,textAlign:'center'}}>
+          <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600}}>Gallery-Quality · Shipped to Your Door · From $49</div>
+        </div>
+      </div>
 
       {/* ════════════════════════════════════════════════════════════
            THE EXPERIENCE — one clean section, no redundancy
@@ -375,39 +421,17 @@ export default function Home() {
               },
               {
                 sense: 'Feel',
-                headline: 'A Print You Can Hold',
-                body: 'Gallery-wrapped canvas, archival fine art prints, sherpa blankets, mugs — real products shipped to your door. Not a digital file that lives in a folder.',
+                headline: 'Products You Can Actually Hold',
+                body: 'A soft sherpa blanket with their face. A warm hoodie that keeps them close. A coffee mug for every morning. Gallery-wrapped canvas for the wall. Real things, shipped to your door.',
                 accent: '#C4622D',
               },
             ].map(p=>(
-              <div key={p.sense} className="card" style={{padding:'40px 28px',textAlign:'center',borderTop:`2px solid ${p.accent}`}}>
-                <div style={{fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:p.accent,marginBottom:14,fontWeight:700}}>{p.sense}</div>
-                <h3 className="serif" style={{fontSize:20,fontWeight:400,color:'var(--cream)',marginBottom:14,lineHeight:1.3}}>{p.headline}</h3>
-                <p style={{fontSize:13,color:'var(--muted)',lineHeight:1.8}}>{p.body}</p>
+              <div key={p.sense} className="card" style={{padding:'48px 32px',textAlign:'center',borderTop:`3px solid ${p.accent}`}}>
+                <div style={{fontSize:14,letterSpacing:'.4em',textTransform:'uppercase',color:p.accent,marginBottom:18,fontWeight:800}}>{p.sense}</div>
+                <h3 className="serif" style={{fontSize:24,fontWeight:400,color:'var(--cream)',marginBottom:16,lineHeight:1.25}}>{p.headline}</h3>
+                <p style={{fontSize:13,color:'var(--muted)',lineHeight:1.85}}>{p.body}</p>
               </div>
             ))}
-          </div>
-
-          {/* Song player — deliver on the HEAR pillar immediately */}
-          <div style={{textAlign:'center',marginBottom:80,padding:'48px 28px',background:'linear-gradient(135deg,rgba(167,139,250,.04),rgba(10,10,10,.4))',border:'1px solid rgba(167,139,250,.15)',borderRadius:8}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'#A78BFA',marginBottom:14}}>Press Play</div>
-            <h3 className="serif" style={{fontSize:'clamp(22px,4vw,32px)',marginBottom:12,fontWeight:400,color:'var(--cream)'}}>Hear What a Pet Song Sounds Like</h3>
-            <p style={{fontSize:14,color:'var(--muted)',marginBottom:28,maxWidth:460,margin:'0 auto 28px',lineHeight:1.8}}>
-              Real songs we composed for real pets. Their names. Their stories. Their personalities — in the music.
-            </p>
-            <div style={{display:'flex',flexWrap:'wrap',gap:10,justifyContent:'center'}}>
-              {[
-                {name:'Sasha',song:'/songs/sasha-on-the-sandbar.mp3',desc:'On the Sandbar'},
-                {name:'Haze',song:'/songs/haze-on-the-harbor.mp3',desc:'On the Harbor'},
-                {name:'Jack',song:'/songs/jack-the-labradoodle.mp3',desc:'The Labradoodle'},
-              ].map(({name,song,desc})=>(
-                <button key={name} onClick={()=>{const a=document.getElementById('song-player') as HTMLAudioElement;if(a){a.src=song;a.play()}}} style={{background:'rgba(167,139,250,.1)',color:'#A78BFA',padding:'11px 22px',fontSize:10,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',border:'1px solid rgba(167,139,250,.3)',borderRadius:4,cursor:'pointer',display:'flex',alignItems:'center',gap:8,transition:'all .2s'}}>
-                  <span style={{fontSize:14}}>▶</span> {name} — {desc}
-                </button>
-              ))}
-            </div>
-            <audio id="song-player" style={{display:'none'}}/>
-            <p style={{fontSize:10,color:'var(--muted)',marginTop:16,letterSpacing:'.1em'}}>🎧 Turn up your volume</p>
           </div>
 
           {/* Portrait examples — the SEE pillar brought to life */}
