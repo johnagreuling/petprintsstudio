@@ -317,61 +317,61 @@ export default function Home() {
             <h2 className="serif" style={{fontSize:'clamp(32px,5vw,60px)',fontWeight:400,lineHeight:1.05}}>Upload. Tell. Pick. <em style={{color:'var(--gold)'}}>Done.</em></h2>
           </div>
 
-          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:3}} className="responsive-grid-4col">
+          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16}} className="responsive-grid-4col">
             {/* Step 1 — Upload */}
             <div className="card" style={{padding:0,overflow:'hidden'}}>
-              <div style={{aspectRatio:'4/3',overflow:'hidden',background:'#1a1412',position:'relative'}}>
+              <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#1a1412',position:'relative'}}>
                 <img src="/process-upload.jpg" alt="Upload your pet's photo" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
-                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.7) 0%,transparent 50%)'}} />
-                <div style={{position:'absolute',bottom:16,left:16,fontSize:36,fontWeight:900,color:'var(--gold)',fontFamily:"'DM Sans',sans-serif",lineHeight:1}}>1</div>
+                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.5) 0%,transparent 40%)'}} />
               </div>
               <div style={{padding:'20px 18px 24px'}}>
+                <div style={{fontSize:10,color:'var(--gold)',letterSpacing:'.2em',textTransform:'uppercase',marginBottom:8,fontWeight:700}}>Step 1</div>
                 <h3 className="serif" style={{fontSize:20,marginBottom:6,fontWeight:400}}>Upload a Photo</h3>
-                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>One clear, well-lit photo. Front-facing works best.</p>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.75}}>One clear, well-lit photo. Front-facing works best.</p>
               </div>
             </div>
 
             {/* Step 2 — Tell Their Story */}
             <div className="card" style={{padding:0,overflow:'hidden'}}>
-              <div style={{aspectRatio:'4/3',overflow:'hidden',background:'#111',position:'relative'}}>
-                <img src="/step2-wyatt.jpg" alt="Wyatt's personalized portrait from his story" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
-                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.7) 0%,transparent 50%)'}} />
-                <div style={{position:'absolute',bottom:16,left:16,fontSize:36,fontWeight:900,color:'var(--gold)',fontFamily:"'DM Sans',sans-serif",lineHeight:1}}>2</div>
+              <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#111',position:'relative'}}>
+                <img src="/step2-wyatt.jpg" alt="Wyatt's personalized portrait" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
+                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.5) 0%,transparent 40%)'}} />
               </div>
               <div style={{padding:'20px 18px 24px'}}>
+                <div style={{fontSize:10,color:'var(--gold)',letterSpacing:'.2em',textTransform:'uppercase',marginBottom:8,fontWeight:700}}>Step 2</div>
                 <h3 className="serif" style={{fontSize:20,marginBottom:6,fontWeight:400}}>Tell Us Their Story</h3>
-                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>A few quick questions — name, personality, favorite things. This is what makes the portrait and song <em>theirs</em>.</p>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.75}}>Name, personality, favorite things. This is what makes it <em>theirs</em>.</p>
               </div>
             </div>
 
-            {/* Step 3 — Pick Your Style */}
+            {/* Step 3 — Pick Your Favorite */}
             <div className="card" style={{padding:0,overflow:'hidden'}}>
-              <div style={{aspectRatio:'4/3',overflow:'hidden',background:'#111',position:'relative'}}>
-                <div style={{width:'100%',height:'100%',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:2,padding:2}}>
+              <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#0d0d0d',position:'relative'}}>
+                <div style={{width:'100%',height:'100%',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gridTemplateRows:'repeat(3,1fr)',gap:4,padding:6}}>
                   {heroShowcase.slice(0, 9).map((s, i)=>(
-                    <div key={i} style={{overflow:'hidden'}}>
+                    <div key={i} style={{overflow:'hidden',borderRadius:3}}>
                       <img src={s.url} alt={s.style} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} loading="lazy"/>
                     </div>
                   ))}
                 </div>
-                <div style={{position:'absolute',bottom:16,left:16,fontSize:36,fontWeight:900,color:'var(--gold)',fontFamily:"'DM Sans',sans-serif",lineHeight:1}}>3</div>
               </div>
               <div style={{padding:'20px 18px 24px'}}>
+                <div style={{fontSize:10,color:'var(--gold)',letterSpacing:'.2em',textTransform:'uppercase',marginBottom:8,fontWeight:700}}>Step 3</div>
                 <h3 className="serif" style={{fontSize:20,marginBottom:6,fontWeight:400}}>Pick Your Favorite</h3>
-                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>We generate 32 custom portraits. You pick the one that feels most like them.</p>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.75}}>We generate 32 custom portraits. You pick the one that feels right.</p>
               </div>
             </div>
 
             {/* Step 4 — We Handle the Rest */}
             <div className="card" style={{padding:0,overflow:'hidden'}}>
-              <div style={{aspectRatio:'4/3',overflow:'hidden',background:'#1a1412',position:'relative'}}>
+              <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#1a1412',position:'relative'}}>
                 <img src="/step4-delivered.png" alt="Canvas portrait being unboxed" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}}/>
-                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.7) 0%,transparent 50%)'}} />
-                <div style={{position:'absolute',bottom:16,left:16,fontSize:36,fontWeight:900,color:'var(--gold)',fontFamily:"'DM Sans',sans-serif",lineHeight:1}}>4</div>
+                <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.5) 0%,transparent 40%)'}} />
               </div>
               <div style={{padding:'20px 18px 24px'}}>
+                <div style={{fontSize:10,color:'var(--gold)',letterSpacing:'.2em',textTransform:'uppercase',marginBottom:8,fontWeight:700}}>Step 4</div>
                 <h3 className="serif" style={{fontSize:20,marginBottom:6,fontWeight:400}}>We Handle the Rest</h3>
-                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.8}}>Portrait printed on gallery canvas. Song composed. QR code links it all. Shipped to your door.</p>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.75}}>Portrait printed on gallery canvas. Song composed. Shipped to your door.</p>
               </div>
             </div>
           </div>
