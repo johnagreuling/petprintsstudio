@@ -63,7 +63,7 @@ export default function CreatePage() {
   const [dragStart, setDragStart] = useState({x:0, y:0})
 
   const handleFile = (file: File) => {
-    if (file.size > 50 * 1024 * 1024) { setError('Image must be under 50MB'); return }
+    if (file.size > 20 * 1024 * 1024) { setError('Image must be under 20MB'); return }
     setUploadedFile(file)
     setError('')
     setCropOffset({x:0, y:0})
@@ -579,7 +579,7 @@ export default function CreatePage() {
                 <div>
                   <div style={{fontSize:52,marginBottom:20}}>🐾</div>
                   <div style={{fontSize:18,marginBottom:8,fontWeight:500}}>Drop your photo here</div>
-                  <div style={{color:'var(--muted)',fontSize:13,marginBottom:20}}>or click to browse · JPG, PNG, HEIC, WEBP · Max 50MB</div>
+                  <div style={{color:'var(--muted)',fontSize:13,marginBottom:20}}>or click to browse · JPG, PNG, WEBP · Max 20MB</div>
                   <div style={{display:'inline-block',border:'1px solid var(--gold)',color:'var(--gold)',padding:'10px 28px',fontSize:11,letterSpacing:'.15em',textTransform:'uppercase'}}>Browse Files</div>
                 </div>
               )}
