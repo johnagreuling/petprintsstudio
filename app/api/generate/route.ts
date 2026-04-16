@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { v4 as uuidv4 } from 'uuid'
-import { saveSession, SessionImage, logApiUsage } from '@/lib/db'
+import { saveSession, SessionImage, logApiUsage, addImagesToSession } from '@/lib/db'
 import {
   analyzePetSubject,
   buildPrompt,
@@ -191,6 +191,40 @@ export async function POST(req: NextRequest) {
         const sessionFolder = `sessions/${sessionId || uuidv4()}_${petSlug}`
         const sessionStart = new Date().toISOString()
 
+        // ══════════════════════════════════════════════════════════════
+        //  SAVE SESSION EARLY — survives timeouts, updates incrementally
+        //  This way we always have a record even if generation fails partway.
+        // ══════════════════════════════════════════════════════════════
+        try {
+          await saveSession({
+            sessionId: sessionFolder,
+            customerEmail: answers?.email || '',
+            customerLastName: answers?.lastName || answers?.ownerName?.split(' ').pop() || '',
+            petName: petName || answers?.petName || '',
+            petType: petType || 'dog',
+            images: [],  // Start empty — we'll append as we generate
+            questionnaire: answers || {},
+          })
+          console.log(`Session pre-saved: ${sessionFolder}`)
+        } catch (e) {
+          console.error('Pre-save session failed (non-fatal):', e)
+        }
+
+        // Helper to incrementally save images to the session as they arrive
+        async function saveImageToSession(img: GenerationResult, idx: number) {
+          try {
+            const dbImg: SessionImage = {
+              style_id: img.styleId || 'unknown',
+              style_name: img.styleName || 'Unknown',
+              url: img.url,
+              variant_index: idx,
+            }
+            await addImagesToSession(sessionFolder, [dbImg])
+          } catch (e) {
+            console.error('Incremental session save failed:', e)
+          }
+        }
+
         if (!isMemory) {
           // ══════════════════════════════════════════════════════════
           //  STYLE TRANSFER GENERATION
@@ -206,13 +240,31 @@ export async function POST(req: NextRequest) {
           // ══════════════════════════════════════════════════════════
 
           // Determine which styles to generate
+          // Default set: 8 curated styles (keeps generation under 5 min)
+          // Full 30 can be triggered with targetStyleId='all'
+          const DEFAULT_STYLE_IDS = [
+            'museum_black',         // Classic Portraits
+            'rembrandt_master',     // Classic Portraits
+            'classical_oil',       // Painterly Fine Art
+            'watercolor_fine',     // Painterly Fine Art
+            'coastal_golden',      // Golden Hour & Nature
+            'cozy_home',           // Lifestyle & Story
+            'retro_pop_grid',      // Pop & Modern
+            'neon_glow',           // Pop & Modern
+          ]
+
           let stylesToRun: StyleTemplate[]
-          if (targetStyleId) {
+          if (targetStyleId === 'all') {
+            stylesToRun = getActiveStyles()
+          } else if (targetStyleId) {
             const resolvedId = resolveStyleId(targetStyleId)
             const style = getStyleById(resolvedId)
             stylesToRun = style ? [style] : getActiveStyles().slice(0, 1)
           } else {
-            stylesToRun = getActiveStyles()
+            // Default: curated set of 8 for fast generation
+            stylesToRun = DEFAULT_STYLE_IDS
+              .map(id => getStyleById(id))
+              .filter((s): s is StyleTemplate => s !== undefined)
           }
 
           const variantsPerStyle = variantCount || 1
@@ -273,6 +325,8 @@ export async function POST(req: NextRequest) {
                     }
                     allImages.push(img)
                     send({ type: 'image', image: img })
+                    // Save to session immediately so it survives timeouts
+                    await saveImageToSession(img, allImages.length - 1)
                   }
                 } else {
                   const errText = await res.text()
@@ -293,8 +347,8 @@ export async function POST(req: NextRequest) {
           // Run in batches of 3 with 20s gap
           // quality:high + 1024x1536 is slower than quality:medium + 1024x1024
           // 3 concurrent stays safely under the 5 images/min rate limit
-          const BATCH_SIZE = 3
-          const BATCH_DELAY_MS = 20000
+          const BATCH_SIZE = 4
+          const BATCH_DELAY_MS = 15000
           for (let i = 0; i < allTasks.length; i += BATCH_SIZE) {
             if (i > 0) {
               console.log(`Batch delay: waiting ${BATCH_DELAY_MS / 1000}s before next batch...`)
@@ -371,6 +425,7 @@ export async function POST(req: NextRequest) {
                   }
                   allImages.push(img)
                   send({ type: 'image', image: img })
+                  await saveImageToSession(img, allImages.length - 1)
                 }
               } else {
                 console.error(`Memory GPT error [${scene.id}]:`, res.status, (await res.text()).slice(0, 200))
@@ -417,24 +472,8 @@ export async function POST(req: NextRequest) {
           sunoPrompt: brief?.suno_prompt_full || null,
         })
 
-        // Save to Postgres
+        // Save to Postgres — only log API usage now (session was saved incrementally)
         try {
-          const dbImages: SessionImage[] = allImages.map((img, idx) => ({
-            style_id: img.styleId || 'unknown',
-            style_name: img.styleName || 'Unknown Style',
-            url: img.url,
-            variant_index: idx,
-          }))
-          await saveSession({
-            sessionId: sessionFolder,
-            customerEmail: answers?.email || '',
-            customerLastName: answers?.lastName || answers?.ownerName?.split(' ').pop() || '',
-            petName: petName || answers?.petName || '',
-            petType: petType || 'dog',
-            images: dbImages,
-            questionnaire: answers || {},
-          })
-
           // Log API usage
           const gptCount = allImages.filter(x => x.model === 'gpt').length
           if (gptCount > 0) {

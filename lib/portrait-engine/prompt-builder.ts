@@ -75,6 +75,20 @@ function buildIdentityBlock(subject: SubjectProfile): string {
     lines.push('DO NOT: Substitute a generic breed example. DO NOT invent markings.')
     lines.push('DO NOT change colors, age, body type, or expression.')
     lines.push('This must clearly read as the SAME specific animal from the reference photo.')
+    lines.push('')
+    // STRONG anti-clothing rule — placed near identity (not in constraints) to maximize weight
+    const sourceAccessories = subject.traits.accessories || ''
+    const hasSourceAccessories = sourceAccessories && sourceAccessories !== 'none visible' && sourceAccessories.length > 5
+    lines.push('CLOTHING & COSTUME LOCK — ABSOLUTELY CRITICAL:')
+    if (hasSourceAccessories) {
+      lines.push(`The animal in the reference photo wears: ${sourceAccessories}`)
+      lines.push('Preserve ONLY these accessories. Do not add any additional clothing, costumes, jewelry, hats, scarves, ties, or accessories.')
+    } else {
+      lines.push('The animal in the reference photo wears NOTHING — no collar, no clothing, no accessories.')
+      lines.push('The output animal must wear NOTHING. No costumes, crowns, jewelry, scarves, bandanas, ties, hats, vests, capes, robes, or any clothing whatsoever.')
+      lines.push('No royal regalia, no holiday outfits, no themed costumes, no decorative items on the body.')
+    }
+    lines.push('Decorative elements from the style (velvet, gold, crowns, jewels) belong in the BACKGROUND ONLY — never on the animal.')
   } else {
     // Fallback for non-pet subjects (future use)
     lines.push('SUBJECT IDENTITY — PRESERVE EXACTLY:')
@@ -230,7 +244,9 @@ function buildConstraintsBlock(
   const petConstraints = subject.subjectType === 'pet' ? [
     'Do not alter markings, coat color, or pattern',
     'Do not change eye color or expression',
-    'Do not add clothing unless specified',
+    'NO clothing on the animal — no costumes, crowns, hats, scarves, bandanas, ties, vests, capes, robes',
+    'NO jewelry on the animal — no necklaces, earrings, decorative collars not in source photo',
+    'Style decorative elements (velvet, gold, jewels) must stay in BACKGROUND only',
   ] : []
 
   // Style-specific forbidden traits
