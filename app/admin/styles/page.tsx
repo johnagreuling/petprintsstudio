@@ -5,23 +5,54 @@ interface StyleData {
   id: string;
   name: string;
   emoji: string;
+  category: string;
   description: string;
+  version: number;
   gptPrompt: string;
+  technique: string;
+  background: string;
+  lighting: string;
+  colorPalette: string;
+  mood: string;
+  paintSurface: string;
+  preferredFraming: string;
+  forbiddenTraits: string[];
+  styleConstraints: string[];
+  blocks: {
+    identity: string;
+    composition: string;
+    style: string;
+    environment: string;
+    output: string;
+    constraints: string;
+  };
   sampleImageUrl: string | null;
+}
+
+interface CategoryData {
+  id: string;
+  name: string;
+  description: string;
+  emoji: string;
+  styleCount: number;
 }
 
 export default function AdminStyles() {
   const [styles, setStyles] = useState<StyleData[]>([]);
+  const [categories, setCategories] = useState<CategoryData[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedStyle, setSelectedStyle] = useState<StyleData | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [searchFilter, setSearchFilter] = useState('');
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeBlock, setActiveBlock] = useState<string>('full');
 
   useEffect(() => {
     fetch('/api/admin/styles')
       .then(res => res.json())
       .then(data => {
         setStyles(data.styles || []);
+        setCategories(data.categories || []);
         setLoading(false);
       })
       .catch(err => {
@@ -30,17 +61,28 @@ export default function AdminStyles() {
       });
   }, []);
 
-  const copyToClipboard = (text: string, styleId: string) => {
+  const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
-    setCopiedId(styleId);
+    setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const filteredStyles = styles.filter(s => 
-    s.name.toLowerCase().includes(searchFilter.toLowerCase()) ||
-    s.id.toLowerCase().includes(searchFilter.toLowerCase()) ||
-    s.description.toLowerCase().includes(searchFilter.toLowerCase())
-  );
+  const filteredStyles = styles.filter(s => {
+    const matchesSearch = !searchFilter ||
+      s.name.toLowerCase().includes(searchFilter.toLowerCase()) ||
+      s.id.toLowerCase().includes(searchFilter.toLowerCase()) ||
+      s.description.toLowerCase().includes(searchFilter.toLowerCase());
+    const matchesCategory = !activeCategory || s.category === activeCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const CATEGORY_COLORS: Record<string, string> = {
+    classic_portraits: '#c9a84c',
+    painterly_fine_art: '#a855f7',
+    golden_hour_nature: '#f59e0b',
+    lifestyle_story: '#3b82f6',
+    pop_modern: '#ef4444',
+  };
 
   return (
     <div style={{
@@ -123,9 +165,8 @@ export default function AdminStyles() {
           white-space: pre-wrap;
           word-break: break-word;
           color: #a0a0a0;
-          max-height: 400px;
+          max-height: 500px;
           overflow-y: auto;
-          position: relative;
         }
         .prompt-box .section-header {
           color: #c9a84c;
@@ -133,14 +174,36 @@ export default function AdminStyles() {
         }
         .tag {
           display: inline-block;
-          background: #1a1a1a;
-          color: #c9a84c;
           padding: 4px 10px;
           border-radius: 4px;
           font-size: 11px;
           text-transform: uppercase;
           letter-spacing: 0.05em;
         }
+        .cat-pill {
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-size: 13px;
+          cursor: pointer;
+          border: 1px solid #333;
+          background: #141414;
+          color: #888;
+          transition: all 0.15s;
+        }
+        .cat-pill:hover { border-color: #555; color: #f5f0e8; }
+        .cat-pill.active { border-color: currentColor; color: #f5f0e8; }
+        .block-tab {
+          padding: 6px 14px;
+          border-radius: 4px;
+          font-size: 12px;
+          cursor: pointer;
+          border: 1px solid transparent;
+          background: transparent;
+          color: #666;
+          transition: all 0.15s;
+        }
+        .block-tab:hover { color: #f5f0e8; }
+        .block-tab.active { background: #222; border-color: #333; color: #c9a84c; }
         a { color: #c9a84c; text-decoration: none; }
         a:hover { text-decoration: underline; }
       `}</style>
@@ -156,10 +219,12 @@ export default function AdminStyles() {
       }}>
         <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 24 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ fontSize: 28 }}>🎨</span>
+            <span style={{ fontSize: 28 }}>ð¨</span>
             <div>
-              <div style={{ fontSize: 20, fontWeight: 600 }}>Style Manager</div>
-              <div style={{ fontSize: 12, color: '#666' }}>{styles.length} styles configured</div>
+              <div style={{ fontSize: 20, fontWeight: 600 }}>Portrait Engine v2.0</div>
+              <div style={{ fontSize: 12, color: '#666' }}>
+                {styles.length} styles &middot; {categories.length} categories &middot; 1024&times;1536 &middot; quality:high
+              </div>
             </div>
           </div>
 
@@ -173,40 +238,62 @@ export default function AdminStyles() {
           />
 
           <div style={{ marginLeft: 'auto', display: 'flex', gap: 12 }}>
-            <a href="/admin" className="btn">← Dashboard</a>
+            <a href="/admin" className="btn">&larr; Dashboard</a>
             <a href="/admin/sessions" className="btn">Sessions</a>
           </div>
         </div>
       </header>
 
+      {/* Category Pills */}
+      <div style={{ maxWidth: 1400, margin: '0 auto', padding: '16px 24px 0', display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+        <button
+          className={`cat-pill ${!activeCategory ? 'active' : ''}`}
+          onClick={() => setActiveCategory(null)}
+          style={!activeCategory ? { borderColor: '#c9a84c', color: '#f5f0e8' } : {}}
+        >
+          All ({styles.length})
+        </button>
+        {categories.map(cat => (
+          <button
+            key={cat.id}
+            className={`cat-pill ${activeCategory === cat.id ? 'active' : ''}`}
+            onClick={() => setActiveCategory(activeCategory === cat.id ? null : cat.id)}
+            style={activeCategory === cat.id ? { borderColor: CATEGORY_COLORS[cat.id] || '#c9a84c', color: '#f5f0e8' } : {}}
+          >
+            {cat.emoji} {cat.name} ({cat.styleCount})
+          </button>
+        ))}
+      </div>
+
       {/* Main Grid */}
       <main style={{ maxWidth: 1400, margin: '0 auto', padding: 24 }}>
         {loading ? (
           <div style={{ textAlign: 'center', padding: 80, color: '#666' }}>
-            <div style={{ fontSize: 40, marginBottom: 16 }}>⏳</div>
+            <div style={{ fontSize: 40, marginBottom: 16 }}>&#9203;</div>
             Loading styles...
           </div>
         ) : (
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
             gap: 20,
           }}>
             {filteredStyles.map(style => (
               <div
                 key={style.id}
                 className={`style-card ${selectedStyle?.id === style.id ? 'selected' : ''}`}
-                onClick={() => setSelectedStyle(style)}
+                onClick={() => { setSelectedStyle(style); setActiveBlock('full'); }}
               >
                 {/* Sample Image */}
                 <div style={{
-                  aspectRatio: '1',
+                  aspectRatio: '2/3',
                   background: '#1a1a1a',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   position: 'relative',
                   overflow: 'hidden',
+                  maxHeight: 280,
                 }}>
                   {style.sampleImageUrl ? (
                     <img
@@ -216,17 +303,34 @@ export default function AdminStyles() {
                       loading="lazy"
                     />
                   ) : (
-                    <div style={{ textAlign: 'center', color: '#444' }}>
-                      <div style={{ fontSize: 48, marginBottom: 8 }}>{style.emoji}</div>
-                      <div style={{ fontSize: 12 }}>No sample yet</div>
+                    <div style={{ textAlign: 'center', color: '#333' }}>
+                      <div style={{ fontSize: 56 }}>{style.emoji}</div>
+                      <div style={{ fontSize: 11, marginTop: 8, color: '#444' }}>No sample yet</div>
                     </div>
                   )}
+                  {/* Category badge */}
                   <div style={{
                     position: 'absolute',
-                    top: 12,
-                    left: 12,
+                    top: 10,
+                    left: 10,
+                    background: 'rgba(0,0,0,0.75)',
+                    padding: '4px 10px',
+                    borderRadius: 4,
+                    fontSize: 10,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    color: CATEGORY_COLORS[style.category] || '#888',
+                    borderLeft: `2px solid ${CATEGORY_COLORS[style.category] || '#444'}`,
+                  }}>
+                    {style.category.replace(/_/g, ' ')}
+                  </div>
+                  {/* Emoji badge */}
+                  <div style={{
+                    position: 'absolute',
+                    top: 10,
+                    right: 10,
                     background: 'rgba(0,0,0,0.7)',
-                    padding: '6px 10px',
+                    padding: '4px 8px',
                     borderRadius: 6,
                     fontSize: 20,
                   }}>
@@ -235,19 +339,19 @@ export default function AdminStyles() {
                 </div>
 
                 {/* Info */}
-                <div style={{ padding: '16px 18px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                    <h3 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>{style.name}</h3>
-                    <span className="tag">{style.id}</span>
+                <div style={{ padding: '14px 16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                    <h3 style={{ fontSize: 16, fontWeight: 600, margin: 0 }}>{style.name}</h3>
+                    <span className="tag" style={{ background: '#1a1a1a', color: '#888', fontSize: 10 }}>{style.id}</span>
                   </div>
-                  <p style={{ fontSize: 13, color: '#888', lineHeight: 1.5, margin: 0 }}>
+                  <p style={{ fontSize: 12, color: '#777', lineHeight: 1.5, margin: 0 }}>
                     {style.description}
                   </p>
                 </div>
 
                 {/* Quick Actions */}
                 <div style={{
-                  padding: '12px 18px',
+                  padding: '10px 16px',
                   borderTop: '1px solid #222',
                   display: 'flex',
                   gap: 8,
@@ -258,18 +362,20 @@ export default function AdminStyles() {
                       e.stopPropagation();
                       copyToClipboard(style.gptPrompt, style.id);
                     }}
-                    style={{ flex: 1 }}
+                    style={{ flex: 1, fontSize: 12, padding: '8px 12px' }}
                   >
-                    {copiedId === style.id ? '✓ Copied!' : '📋 Copy Prompt'}
+                    {copiedId === style.id ? '&#10003; Copied!' : '&#128203; Copy Prompt'}
                   </button>
                   <button
                     className="btn btn-gold"
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedStyle(style);
+                      setActiveBlock('full');
                     }}
+                    style={{ fontSize: 12, padding: '8px 12px' }}
                   >
-                    View →
+                    View &rarr;
                   </button>
                 </div>
               </div>
@@ -279,8 +385,8 @@ export default function AdminStyles() {
 
         {!loading && filteredStyles.length === 0 && (
           <div style={{ textAlign: 'center', padding: 60, color: '#666' }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
-            <div>No styles match "{searchFilter}"</div>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>&#128269;</div>
+            <div>No styles match &quot;{searchFilter}&quot;</div>
           </div>
         )}
       </main>
@@ -294,7 +400,7 @@ export default function AdminStyles() {
               background: '#111',
               border: '1px solid #2a2a2a',
               borderRadius: 16,
-              maxWidth: 900,
+              maxWidth: 1000,
               width: '100%',
               marginTop: 20,
               marginBottom: 40,
@@ -311,8 +417,18 @@ export default function AdminStyles() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <span style={{ fontSize: 32 }}>{selectedStyle.emoji}</span>
                 <div>
-                  <h2 style={{ fontSize: 24, fontWeight: 600, margin: 0 }}>{selectedStyle.name}</h2>
-                  <span className="tag" style={{ marginTop: 6 }}>{selectedStyle.id}</span>
+                  <h2 style={{ fontSize: 22, fontWeight: 600, margin: 0 }}>{selectedStyle.name}</h2>
+                  <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
+                    <span className="tag" style={{ background: '#1a1a1a', color: CATEGORY_COLORS[selectedStyle.category] || '#888' }}>
+                      {selectedStyle.category.replace(/_/g, ' ')}
+                    </span>
+                    <span className="tag" style={{ background: '#1a1a1a', color: '#666' }}>
+                      v{selectedStyle.version}
+                    </span>
+                    <span className="tag" style={{ background: '#1a1a1a', color: '#666' }}>
+                      {selectedStyle.preferredFraming}
+                    </span>
+                  </div>
                 </div>
               </div>
               <button
@@ -320,19 +436,16 @@ export default function AdminStyles() {
                 onClick={() => setSelectedStyle(null)}
                 style={{ fontSize: 18, padding: '8px 14px' }}
               >
-                ✕
+                &#10005;
               </button>
             </div>
 
             {/* Modal Body */}
-            <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: 0 }}>
-              {/* Left: Image */}
-              <div style={{
-                borderRight: '1px solid #222',
-                padding: 20,
-              }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 0 }}>
+              {/* Left: Image + Meta */}
+              <div style={{ borderRight: '1px solid #222', padding: 20 }}>
                 <div style={{
-                  aspectRatio: '1',
+                  aspectRatio: '2/3',
                   background: '#0a0a0a',
                   borderRadius: 8,
                   overflow: 'hidden',
@@ -353,84 +466,100 @@ export default function AdminStyles() {
                     </div>
                   )}
                 </div>
+
                 <p style={{ fontSize: 13, color: '#888', lineHeight: 1.6, marginTop: 16 }}>
                   {selectedStyle.description}
                 </p>
+
+                {/* Style metadata */}
+                <div style={{ marginTop: 16, fontSize: 12, color: '#666', lineHeight: 2 }}>
+                  <div><strong style={{ color: '#888' }}>Mood:</strong> {selectedStyle.mood}</div>
+                  <div><strong style={{ color: '#888' }}>Framing:</strong> {selectedStyle.preferredFraming}</div>
+                  <div><strong style={{ color: '#888' }}>Forbidden:</strong> {selectedStyle.forbiddenTraits.slice(0, 3).join(', ')}{selectedStyle.forbiddenTraits.length > 3 ? ` +${selectedStyle.forbiddenTraits.length - 3}` : ''}</div>
+                </div>
+
                 {selectedStyle.sampleImageUrl && (
                   <a
                     href={selectedStyle.sampleImageUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn"
-                    style={{ marginTop: 12, width: '100%', justifyContent: 'center' }}
+                    style={{ marginTop: 12, width: '100%', justifyContent: 'center', fontSize: 12 }}
                   >
-                    Open Full Image ↗
+                    Open Full Image &#8599;
                   </a>
                 )}
               </div>
 
-              {/* Right: Prompt */}
+              {/* Right: Prompt blocks */}
               <div style={{ padding: 20 }}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: 12,
-                }}>
-                  <h4 style={{ fontSize: 14, fontWeight: 600, color: '#c9a84c', margin: 0, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                    GPT Image Prompt
-                  </h4>
+                {/* Block tabs */}
+                <div style={{ display: 'flex', gap: 4, marginBottom: 12, flexWrap: 'wrap' }}>
+                  {[
+                    { key: 'full', label: 'Full Prompt' },
+                    { key: 'identity', label: 'Identity' },
+                    { key: 'composition', label: 'Composition' },
+                    { key: 'style', label: 'Style' },
+                    { key: 'environment', label: 'Environment' },
+                    { key: 'output', label: 'Output' },
+                    { key: 'constraints', label: 'Constraints' },
+                  ].map(tab => (
+                    <button
+                      key={tab.key}
+                      className={`block-tab ${activeBlock === tab.key ? 'active' : ''}`}
+                      onClick={() => setActiveBlock(tab.key)}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Copy button */}
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
                   <button
                     className={`btn ${copiedId === selectedStyle.id + '-modal' ? 'btn-success' : 'btn-gold'}`}
-                    onClick={() => copyToClipboard(selectedStyle.gptPrompt, selectedStyle.id + '-modal')}
+                    onClick={() => {
+                      const text = activeBlock === 'full'
+                        ? selectedStyle.gptPrompt
+                        : selectedStyle.blocks[activeBlock as keyof typeof selectedStyle.blocks] || '';
+                      copyToClipboard(text, selectedStyle.id + '-modal');
+                    }}
+                    style={{ fontSize: 12, padding: '8px 14px' }}
                   >
-                    {copiedId === selectedStyle.id + '-modal' ? '✓ Copied!' : '📋 Copy Full Prompt'}
+                    {copiedId === selectedStyle.id + '-modal' ? '&#10003; Copied!' : `&#128203; Copy ${activeBlock === 'full' ? 'Full Prompt' : activeBlock}`}
                   </button>
                 </div>
 
+                {/* Prompt display */}
                 <div className="prompt-box">
-                  {selectedStyle.gptPrompt.split('\n').map((line, i) => {
-                    // Highlight section headers
-                    if (line.match(/^[A-Z][A-Z\s]+$/) || line.match(/^(STYLE|COMPOSITION|BACKGROUND|PAINT SURFACE|SETTING|COLOR PALETTE|CONSTRAINTS|SUBJECT IDENTITY|PROFESSIONAL PORTRAIT FRAMING)/)) {
+                  {(activeBlock === 'full'
+                    ? selectedStyle.gptPrompt
+                    : selectedStyle.blocks[activeBlock as keyof typeof selectedStyle.blocks] || ''
+                  ).split('\n').map((line, i) => {
+                    if (line.match(/^[A-Z][A-Z\s\u2014\u2713]+[:â]/) || line.match(/^(SUBJECT|COMPOSITION|STYLE|ENVIRONMENT|OUTPUT|HARD CONSTRAINTS|CRITICAL|DO NOT)/)) {
                       return <div key={i} className="section-header">{line}</div>;
                     }
-                    // Highlight constraint bullets
-                    if (line.startsWith('- ')) {
-                      return <div key={i} style={{ color: '#ef4444' }}>{line}</div>;
+                    if (line.startsWith('- ') || line.startsWith('\u2713')) {
+                      return <div key={i} style={{ color: line.startsWith('- No') || line.startsWith('- Do not') ? '#ef4444' : '#22c55e' }}>{line}</div>;
                     }
-                    return <div key={i}>{line || '\n'}</div>;
+                    return <div key={i}>{line || '\u00A0'}</div>;
                   })}
                 </div>
 
                 <div style={{
-                  marginTop: 16,
-                  padding: 12,
+                  marginTop: 12,
+                  padding: 10,
                   background: '#0a0a0a',
                   borderRadius: 6,
-                  fontSize: 12,
-                  color: '#666',
+                  fontSize: 11,
+                  color: '#555',
+                  display: 'flex',
+                  gap: 16,
                 }}>
-                  <strong style={{ color: '#888' }}>Prompt length:</strong> {selectedStyle.gptPrompt.length.toLocaleString()} characters
-                  &nbsp;&nbsp;|&nbsp;&nbsp;
-                  <strong style={{ color: '#888' }}>~Tokens:</strong> {Math.round(selectedStyle.gptPrompt.length / 4).toLocaleString()}
-                </div>
-
-                <div style={{
-                  marginTop: 20,
-                  padding: 16,
-                  background: 'rgba(201,168,76,0.1)',
-                  border: '1px solid rgba(201,168,76,0.2)',
-                  borderRadius: 8,
-                }}>
-                  <h5 style={{ fontSize: 12, fontWeight: 600, color: '#c9a84c', margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                    💡 To Refine This Prompt
-                  </h5>
-                  <ol style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: '#888', lineHeight: 1.7 }}>
-                    <li>Click "Copy Full Prompt" above</li>
-                    <li>Paste into ChatGPT or Claude to iterate</li>
-                    <li>Test in OpenAI Playground with an image</li>
-                    <li>Update in <code style={{ background: '#222', padding: '2px 6px', borderRadius: 3 }}>/api/generate/route.ts</code></li>
-                  </ol>
+                  <span><strong style={{ color: '#777' }}>Chars:</strong> {selectedStyle.gptPrompt.length.toLocaleString()}</span>
+                  <span><strong style={{ color: '#777' }}>~Tokens:</strong> {Math.round(selectedStyle.gptPrompt.length / 4).toLocaleString()}</span>
+                  <span><strong style={{ color: '#777' }}>Style ID:</strong> {selectedStyle.id}</span>
+                  <span><strong style={{ color: '#777' }}>Version:</strong> {selectedStyle.version}</span>
                 </div>
               </div>
             </div>
