@@ -528,6 +528,19 @@ export default function CreatePage() {
         @keyframes ping{0%{opacity:.6;transform:scale(1)}75%,100%{opacity:0;transform:scale(1.5)}}
         @keyframes fadeInUp{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
 
+        /* Walking paws loader — 4 paws stamp up the screen in zigzag tracks, loops */
+        @keyframes pawStep{
+          0%, 8%   { opacity:0; transform:scale(.55) translateY(14px) rotate(var(--r,0deg)); }
+          18%, 70% { opacity:.9; transform:scale(1) translateY(0) rotate(var(--r,0deg)); }
+          85%,100% { opacity:0; transform:scale(1.06) translateY(-8px) rotate(var(--r,0deg)); }
+        }
+        .paw-track{position:relative;width:180px;height:260px;margin:0 auto 28px}
+        .paw-track .paw{position:absolute;width:48px;height:48px;color:var(--gold);opacity:0;animation:pawStep 3.2s ease-in-out infinite;filter:drop-shadow(0 2px 8px rgba(201,168,76,.3))}
+        .paw-track .paw-1{bottom:0;   left:24%;  --r:-14deg; animation-delay:0s}
+        .paw-track .paw-2{bottom:64px;right:24%; --r:14deg;  animation-delay:.55s}
+        .paw-track .paw-3{bottom:128px;left:24%; --r:-14deg; animation-delay:1.1s}
+        .paw-track .paw-4{bottom:192px;right:24%;--r:14deg;  animation-delay:1.65s}
+
         /* Mobile polish */
         @media(max-width:640px){
           nav{padding:14px 16px !important;gap:8px !important}
@@ -823,10 +836,18 @@ export default function CreatePage() {
         {/* ── GENERATING ── */}
         {step==='generating'&&(
           <div style={{textAlign:'center',padding:'60px 0',position:'relative'}}>
-            <div style={{position:'relative',width:140,height:140,margin:'0 auto 28px'}}>
-              <div style={{position:'absolute',inset:-30,borderRadius:'50%',border:'1px solid rgba(201,168,76,.12)',animation:'ping 2.4s ease-out infinite'}}/>
-              <div style={{position:'absolute',inset:-14,borderRadius:'50%',border:'1px solid rgba(201,168,76,.22)',animation:'ping 2.4s ease-out .3s infinite'}}/>
-              <div style={{position:'absolute',inset:0,borderRadius:'50%',background:'radial-gradient(circle,rgba(201,168,76,.18),transparent)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:56}} className="pulse">🎨</div>
+            <div className="paw-track" aria-label="Creating portraits">
+              {[1,2,3,4].map(n => (
+                <svg key={n} className={`paw paw-${n}`} viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true">
+                  {/* Main heel pad */}
+                  <ellipse cx="25" cy="36" rx="10.5" ry="8.5"/>
+                  {/* 4 toe pads in an arc */}
+                  <ellipse cx="9"  cy="22" rx="4" ry="5.5"/>
+                  <ellipse cx="19" cy="12" rx="4" ry="5.8"/>
+                  <ellipse cx="31" cy="12" rx="4" ry="5.8"/>
+                  <ellipse cx="41" cy="22" rx="4" ry="5.5"/>
+                </svg>
+              ))}
             </div>
             <h2 className="serif" style={{fontSize:'clamp(28px,5vw,48px)',fontWeight:400,marginBottom:16}}>
               Creating {answers.petName?`${answers.petName}'s`:''} Portraits
