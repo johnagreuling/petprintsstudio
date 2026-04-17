@@ -34,6 +34,8 @@ export const PRODUCTS = [
   // ── APPAREL ─────────────────────────────────────────────────────────────
   { id: 'tshirt',  name: 'Premium Tee',     size: 'S–4XL', category: 'Apparel', price: 39, printifyBlueprintId: 12,  printifyProviderId: 99, printifyVariantId: 18101, popular: false, emoji: '👕', description: 'Bella+Canvas 3001 — the shirt premium brands use. 100% Airlume combed ring-spun cotton, modern retail fit, pre-shrunk. Feels like a $50 tee because it is one.', sizes: ['S','M','L','XL','2XL','3XL'], colors: ['Black','White'] },
   { id: 'hoodie',  name: 'Premium Hoodie',  size: 'S–2XL', category: 'Apparel', price: 59, printifyBlueprintId: 458, printifyProviderId: 26, printifyVariantId: 63759, popular: true,  emoji: '🧥', description: 'Heavyweight pullover with double-lined hood and front pouch pocket. Full portrait printed across the chest in vivid color. The kind of hoodie you reach for every time.', sizes: ['S','M','L','XL','2XL'], colors: ['Black','White'] },
+  { id: 'kids_tee',    name: 'Kids Tee',     size: 'S–L', category: 'Apparel', price: 29, printifyBlueprintId: 420, printifyProviderId: 3,  printifyVariantId: 61516, popular: false, emoji: '👶', description: 'Bella+Canvas 3001Y — the same premium Airlume cotton as our adult tee, sized for kids. Soft, lightweight, modern fit with tear-away label. Ages 6–14.', sizes: ['S','M','L'], colors: ['Black','White'] },
+  { id: 'kids_hoodie', name: 'Kids Hoodie',  size: 'XS–XL', category: 'Apparel', price: 49, printifyBlueprintId: 314, printifyProviderId: 217, printifyVariantId: 43880, popular: false, emoji: '🧒', description: 'Gildan 18500B Youth Heavy Blend — heavyweight fleece with double-lined hood. The same quality as our adult hoodie, built for kids who love their pets. Ages 6–14.', sizes: ['XS','S','M','L','XL'], colors: ['Black','White'] },
 
   // ── ACCESSORIES ─────────────────────────────────────────────────────────
   { id: 'tote',       name: 'Canvas Tote Bag', size: 'One size',   category: 'Accessories', price: 24, printifyBlueprintId: 553,  printifyProviderId: 34, printifyVariantId: 70603,  popular: false, emoji: '👜', description: 'Heavy-duty 12oz cotton canvas with reinforced stitching. Not a promotional giveaway tote — a real bag you\'ll carry to the farmer\'s market, the gym, the office.' },
@@ -58,6 +60,16 @@ export const TEE_VARIANTS: Record<string, number> = {
 export const HOODIE_VARIANTS: Record<string, number> = {
   'Black / S': 63759, 'Black / M': 63764, 'Black / L': 63769, 'Black / XL': 63774, 'Black / 2XL': 63779,
   'White / S': 63762, 'White / M': 63767, 'White / L': 63772, 'White / XL': 63777, 'White / 2XL': 63782,
+}
+
+export const KIDS_TEE_VARIANTS: Record<string, number> = {
+  'Black / S': 61515, 'Black / M': 61517,
+  'White / S': 61516, 'White / M': 61518, 'White / L': 61520,
+}
+
+export const KIDS_HOODIE_VARIANTS: Record<string, number> = {
+  'Black / XS': 64304, 'Black / S': 43880, 'Black / M': 43899, 'Black / L': 43918, 'Black / XL': 43937,
+  'White / XS': 64302, 'White / S': 43879, 'White / M': 43898, 'White / L': 43917, 'White / XL': 43936,
 }
 
 export const PRODUCT_CATEGORIES = ['Canvas', 'Prints', 'Home', 'Apparel', 'Accessories']
