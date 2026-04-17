@@ -47,7 +47,7 @@ export default function Home() {
     })()
   }, [])
 
-  // Arrow scroll helpers â scroll by ~one card width with smooth animation
+  // Arrow scroll helpers — scroll by ~one card width with smooth animation
   const scrollBy = (dir: 1 | -1) => {
     const el = sliderRef.current
     if (!el) return
@@ -153,7 +153,7 @@ export default function Home() {
         .hero-slide:hover{transform:translateY(-4px);box-shadow:0 20px 60px rgba(201,168,76,.2)}
         .slider-arrow:hover{background:rgba(201,168,76,.2)!important;border-color:var(--gold)!important}
 
-        /* Upload portal â shimmer and hover */
+        /* Upload portal — shimmer and hover */
         @keyframes shimmerSweep{0%{left:-100%}50%,100%{left:100%}}
         .hero-upload-portal:hover{border-color:var(--gold)!important;background:linear-gradient(135deg,rgba(201,168,76,.1) 0%,rgba(196,98,45,.06) 100%)!important;transform:translateY(-2px);box-shadow:0 12px 48px rgba(201,168,76,.15)}
 
@@ -210,19 +210,15 @@ export default function Home() {
         <div style={{position:'absolute',top:'35%',left:'50%',transform:'translate(-50%,-50%)',width:800,height:800,background:'radial-gradient(circle,rgba(201,168,76,.06) 0%,transparent 70%)',pointerEvents:'none'}} />
         <div style={{position:'absolute',top:'70%',left:'20%',width:400,height:400,background:'radial-gradient(circle,rgba(196,98,45,.04) 0%,transparent 70%)',pointerEvents:'none'}} />
 
-        <div className="fu fu1" style={{marginBottom:20,fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'var(--gold)',fontWeight:500}}>
-          See Them &nbsp;Â·&nbsp; Hear Them &nbsp;Â·&nbsp; Feel Them
-        </div>
-
-        <h1 className="serif fu fu2" style={{fontSize:'clamp(44px,6.2vw,88px)',lineHeight:.98,marginBottom:28,fontWeight:400,maxWidth:960,letterSpacing:'-.02em'}}>
-          A One-of-a-Kind Pet Experience<br/><em style={{color:'var(--gold)'}}>Made Just for You.</em>
+        <h1 className="serif fu fu2" style={{fontSize:'clamp(52px,8vw,108px)',lineHeight:.96,marginBottom:28,fontWeight:400,maxWidth:1040,letterSpacing:'-.02em'}}>
+          See Them. <em style={{color:'var(--gold)'}}>Hear</em> Them.<br/><em style={{color:'var(--gold)'}}>Feel</em> Them.
         </h1>
 
-        <p className="fu fu3" style={{fontSize:17,lineHeight:1.7,color:'var(--muted)',maxWidth:560,marginBottom:36,fontWeight:300,letterSpacing:'.005em'}}>
-          Custom portraits that capture the magic of who they truly are. Original songs that bring their spirit to life. Beautifully made keepsakes â a hoodie, a soft blanket, a morning coffee mug â so your love for them is something you can see, hear, and hold.
+        <p className="fu fu3" style={{fontSize:18,lineHeight:1.75,color:'var(--muted)',maxWidth:600,marginBottom:36,fontWeight:300,letterSpacing:'.005em'}}>
+          Custom portraits that capture their magic. Original songs that bring their spirit to life. Beautiful top-quality individualized items you can touch and feel.
         </p>
 
-        <p className="fu fu3" style={{fontSize:11,color:'rgba(201,168,76,.7)',letterSpacing:'.22em',textTransform:'uppercase',marginBottom:36,fontWeight:600}}>Portrait &nbsp;Â·&nbsp; Song &nbsp;Â·&nbsp; Treasure &nbsp;Â·&nbsp; Starting at $49</p>
+        <p className="fu fu3" style={{fontSize:11,color:'rgba(201,168,76,.7)',letterSpacing:'.22em',textTransform:'uppercase',marginBottom:36,fontWeight:600}}>Portrait &nbsp;·&nbsp; Song &nbsp;·&nbsp; Treasure &nbsp;·&nbsp; Starting at $49</p>
         
         {/* Upload Dropbox - Right on homepage */}
         <div className="fu fu4" style={{marginBottom:32,maxWidth:480,margin:'0 auto 32px',width:'100%'}}>
@@ -242,7 +238,7 @@ export default function Home() {
             <div style={{position:'relative',zIndex:1}}>
               <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14,fontWeight:600}}>Begin</div>
               <div style={{fontSize:20,color:'var(--cream)',fontWeight:400,fontFamily:"'Cormorant Garamond',serif",marginBottom:8,letterSpacing:'-.01em'}}>Upload your pet&rsquo;s photo</div>
-              <div style={{fontSize:12,color:'var(--muted)',marginBottom:22,letterSpacing:'.02em'}}>JPG, PNG, or WEBP Â· Max 50MB</div>
+              <div style={{fontSize:12,color:'var(--muted)',marginBottom:22,letterSpacing:'.02em'}}>JPG, PNG, or WEBP · Max 50MB</div>
               <div style={{display:'inline-block',background:'var(--gold)',color:'var(--ink)',padding:'13px 32px',fontSize:11,fontWeight:700,letterSpacing:'.18em',textTransform:'uppercase'}}>Start Their Story â</div>
             </div>
           </Link>
@@ -306,7 +302,7 @@ export default function Home() {
                     display:'block',
                   }}
                 >
-                  <img src={item.url} alt={`${item.pet} â ${item.style}`} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} loading="lazy" />
+                  <img src={item.url} alt={`${item.pet} — ${item.style}`} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} loading="lazy" />
                   <div style={{
                     position:'absolute',
                     bottom:0,
@@ -323,7 +319,7 @@ export default function Home() {
 
             {/* Helper hint below slider */}
             <div style={{textAlign:'center',marginTop:14,fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'rgba(245,240,232,.3)'}}>
-              Swipe Â· {heroShowcase.length} curated styles
+              Swipe · {heroShowcase.length} curated styles
             </div>
           </div>
         )}
@@ -350,7 +346,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ââ SONG PLAYER â right at the top so visitors can play while browsing ââ */}
+      {/* ââ SONG PLAYER — right at the top so visitors can play while browsing ââ */}
       <section style={{padding:'56px 60px',background:'#0A0A0A'}} className="section-padding">
         <div style={{maxWidth:800,margin:'0 auto',textAlign:'center',padding:'48px 32px',background:'linear-gradient(135deg,rgba(167,139,250,.05),rgba(10,10,10,.4))',border:'1px solid rgba(167,139,250,.15)',borderRadius:10}}>
           <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'#A78BFA',marginBottom:14}}>Every Pet Gets a Song</div>
@@ -365,7 +361,7 @@ export default function Home() {
               {name:'Jack',song:'/songs/jack-the-labradoodle.mp3',desc:'The Labradoodle'},
             ].map(({name,song,desc})=>(
               <button key={name} onClick={()=>{const a=document.getElementById('song-player') as HTMLAudioElement;if(a){a.src=song;a.play()}}} style={{background:'rgba(167,139,250,.12)',color:'#A78BFA',padding:'12px 24px',fontSize:10,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',border:'1px solid rgba(167,139,250,.3)',borderRadius:4,cursor:'pointer',display:'flex',alignItems:'center',gap:8,transition:'all .2s'}}>
-                <span style={{fontSize:14}}>â¶</span> {name} â {desc}
+                <span style={{fontSize:14}}>â¶</span> {name} — {desc}
               </button>
             ))}
           </div>
@@ -374,7 +370,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* HOW IT WORKS â 4 steps */}
+      {/* HOW IT WORKS — 4 steps */}
       <section id="how-it-works" style={{padding:'80px 60px',background:'#0d0d0d'}} className="section-padding">
         <div style={{maxWidth:1200,margin:'0 auto'}}>
           <div style={{textAlign:'center',marginBottom:56}}>
@@ -383,7 +379,7 @@ export default function Home() {
           </div>
 
           <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16}} className="responsive-grid-4col">
-            {/* Step 1 â Upload */}
+            {/* Step 1 — Upload */}
             <div className="card" style={{padding:0,overflow:'hidden'}}>
               <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#1a1412',position:'relative'}}>
                 <img src="/process-upload.jpg" alt="Upload your pet's photo" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
@@ -396,7 +392,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Step 2 â Tell Their Story */}
+            {/* Step 2 — Tell Their Story */}
             <div className="card" style={{padding:0,overflow:'hidden'}}>
               <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#111',position:'relative'}}>
                 <img src="/step2-wyatt.jpg" alt="Wyatt's personalized portrait" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
@@ -409,7 +405,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Step 3 â Pick Your Favorite */}
+            {/* Step 3 — Pick Your Favorite */}
             <div className="card" style={{padding:0,overflow:'hidden'}}>
               <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#0d0d0d',position:'relative'}}>
                 <div style={{width:'100%',height:'100%',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gridTemplateRows:'repeat(3,1fr)',gap:4,padding:6}}>
@@ -427,7 +423,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Step 4 â We Handle the Rest */}
+            {/* Step 4 — We Handle the Rest */}
             <div className="card" style={{padding:0,overflow:'hidden'}}>
               <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#1a1412',position:'relative'}}>
                 <img src="/step4-delivered.png" alt="Canvas portrait being unboxed" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}}/>
@@ -443,45 +439,45 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Cinematic product shot â the portrait in a real home */}
+      {/* Cinematic product shot — the portrait in a real home */}
       <div style={{position:'relative',width:'100%',height:'clamp(300px,50vw,560px)',overflow:'hidden'}}>
         <img src="/portrait-on-wall.png" alt="Pet portrait hanging in a beautiful home" style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 35%',display:'block'}} />
         <div style={{position:'absolute',inset:0,background:'linear-gradient(to bottom, rgba(10,10,10,.4) 0%, transparent 30%, transparent 70%, rgba(10,10,10,.8) 100%)'}} />
         <div style={{position:'absolute',bottom:28,left:0,right:0,textAlign:'center'}}>
-          <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600}}>Gallery-Quality Â· Shipped to Your Door Â· Starting at $49</div>
+          <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600}}>Gallery-Quality · Shipped to Your Door · Starting at $49</div>
         </div>
       </div>
 
       {/* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-           THE EXPERIENCE â one clean section, no redundancy
+           THE EXPERIENCE — one clean section, no redundancy
            ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */}
       <section id="the-experience" style={{padding:'80px 60px',background:'#0A0A0A'}} className="section-padding">
         <div style={{maxWidth:1100,margin:'0 auto'}}>
 
-          {/* The philosophy â multi-sensory */}
+          {/* The philosophy — multi-sensory */}
           <div style={{textAlign:'center',marginBottom:80}}>
             <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:20}}>The Philosophy</div>
             <h2 className="serif" style={{fontSize:'clamp(30px,4.5vw,56px)',fontWeight:400,marginBottom:32,lineHeight:1.1,maxWidth:800,margin:'0 auto 32px'}}>
               Our pets delight every sense.<br/><em style={{color:'var(--gold)'}}>So should how we celebrate them.</em>
             </h2>
             <p style={{fontSize:15,lineHeight:1.9,color:'var(--muted)',maxWidth:540,margin:'0 auto'}}>
-              Not a generic portrait of a dog. A portrait of <em>your</em> dog â the one who tilts her head when you say &ldquo;walk,&rdquo; who stole the couch cushion three years ago and never gave it back.
+              Not a generic portrait of a dog. A portrait of <em>your</em> dog — the one who tilts her head when you say &ldquo;walk,&rdquo; who stole the couch cushion three years ago and never gave it back.
             </p>
           </div>
 
-          {/* Three sensory pillars â SEE / HEAR / FEEL */}
+          {/* Three sensory pillars — SEE / HEAR / FEEL */}
           <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:3,marginBottom:80}} className="responsive-grid-3col">
             {[
               {
                 sense: 'See',
                 headline: 'A Portrait That Looks Like Them',
-                body: '32 hand-tuned artistic styles, from classical oil to neon pop. Every detail preserved â their eyes, their markings, the way they carry themselves. Not a filter. Fine art.',
+                body: '32 hand-tuned artistic styles, from classical oil to neon pop. Every detail preserved — their eyes, their markings, the way they carry themselves. Not a filter. Fine art.',
                 accent: 'var(--gold)',
               },
               {
                 sense: 'Hear',
                 headline: 'A Song Written Just for Them',
-                body: 'Original music with their name in the lyrics and their story in every verse. Professionally produced, studio-quality sound. Scan the QR code on the portrait â it plays instantly.',
+                body: 'Original music with their name in the lyrics and their story in every verse. Professionally produced, studio-quality sound. Scan the QR code on the portrait — it plays instantly.',
                 accent: '#A78BFA',
               },
               {
@@ -499,7 +495,7 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Portrait examples â the SEE pillar brought to life */}
+          {/* Portrait examples — the SEE pillar brought to life */}
           <div style={{marginBottom:80}}>
             <div style={{textAlign:'center',marginBottom:28}}>
               <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:10}}>Real Portraits, Real Pets</div>
@@ -555,7 +551,7 @@ export default function Home() {
 
       {/* CTA BAND */}
       <section style={{background:'var(--gold)',padding:'80px 60px',textAlign:'center'}}>
-        <div style={{fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'rgba(10,10,10,.5)',marginBottom:16}}>See Them &nbsp;Â·&nbsp; Hear Them &nbsp;Â·&nbsp; Feel Them</div>
+        <div style={{fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'rgba(10,10,10,.5)',marginBottom:16}}>See Them &nbsp;·&nbsp; Hear Them &nbsp;·&nbsp; Feel Them</div>
         <h2 className="serif" style={{fontSize:'clamp(32px,5vw,68px)',color:'var(--ink)',fontWeight:400,marginBottom:16}}>
           Give a Gift<br/>They&rsquo;ll Never Forget.
         </h2>
@@ -573,7 +569,7 @@ export default function Home() {
           <span>ð¾</span>
           <span className="serif" style={{fontSize:18}}>Pet Prints Studio</span>
         </div>
-        <div style={{fontSize:11,color:'var(--muted)'}}>Â© 2025 Pet Prints Studio Â· Wilmington, NC</div>
+        <div style={{fontSize:11,color:'var(--muted)'}}>Â© 2025 Pet Prints Studio · Wilmington, NC</div>
         <div style={{display:'flex',gap:24}}>
           {[
             {l:'FAQ',h:'/faq'},
