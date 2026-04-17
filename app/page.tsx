@@ -445,7 +445,7 @@ export default function Home() {
 
       {/* Cinematic product shot — the portrait in a real home */}
       <div style={{position:'relative',width:'100%',height:'clamp(300px,50vw,560px)',overflow:'hidden'}}>
-        <img src="/portrait-on-wall.png" alt="Pet portrait hanging in a beautiful home" style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 40%',display:'block'}} />
+        <img src="/portrait-on-wall.png" alt="Pet portrait hanging in a beautiful home" style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 35%',display:'block'}} />
         <div style={{position:'absolute',inset:0,background:'linear-gradient(to bottom, rgba(10,10,10,.4) 0%, transparent 30%, transparent 70%, rgba(10,10,10,.8) 100%)'}} />
         <div style={{position:'absolute',bottom:28,left:0,right:0,textAlign:'center'}}>
           <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600}}>Gallery-Quality · Shipped to Your Door · From $49</div>
