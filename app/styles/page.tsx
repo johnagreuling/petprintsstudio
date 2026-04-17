@@ -23,6 +23,7 @@ const PET_LABELS: Record<string, string> = {
   mason: 'Mason · Poodle',
   sylas: 'Sylas · Yorkie Poo',
   sasha: 'Sasha · Belgian Malinois',
+  biggie: 'Biggie · English Bulldog',
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -117,7 +118,31 @@ export default function StylesGallery() {
     setLightbox({ style: visible[i], idx: i })
   }
 
-  const visibleStyles = activeCategory ? styles.filter(s => s.category === activeCategory) : styles
+  // Interleave styles so no two portraits from the same pet are adjacent
+  // Only applies to "All" view (when no category filter is active)
+  function interleaveByPet(arr: Style[]): Style[] {
+    if (arr.length < 3) return arr
+    const result: Style[] = []
+    const remaining = [...arr]
+    let lastPet = ''
+    while (remaining.length > 0) {
+      // Find the first item whose pet differs from the last placed
+      const idx = remaining.findIndex(s => s.showcasePet !== lastPet)
+      if (idx >= 0) {
+        const [item] = remaining.splice(idx, 1)
+        result.push(item)
+        lastPet = item.showcasePet || ''
+      } else {
+        // No different pet available — just take the next one
+        result.push(remaining.shift()!)
+        lastPet = result[result.length - 1].showcasePet || ''
+      }
+    }
+    return result
+  }
+
+  const filteredStyles = activeCategory ? styles.filter(s => s.category === activeCategory) : styles
+  const visibleStyles = activeCategory ? filteredStyles : interleaveByPet(filteredStyles)
 
   return (
     <main style={{ background: '#0A0A0A', color: '#F5F0E8', minHeight: '100vh', fontFamily: "'DM Sans',sans-serif" }}>
@@ -126,7 +151,7 @@ export default function StylesGallery() {
         .serif { font-family: 'Cormorant Garamond', serif; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         :root { --gold: #C9A84C; --cream: #F5F0E8; --ink: #0A0A0A; --muted: rgba(245,240,232,.5); --border: rgba(245,240,232,.08); }
-        .style-card { cursor: pointer; transition: transform .2s, box-shadow .2s; position: relative; overflow: hidden; }
+        .style-card { cursor: pointer; transition: transform .2s, box-shadow .2s; position: relative; overflow: hidden; border-radius: 8px; border: 1px solid rgba(245,240,232,.06); }
         .style-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,.6); }
         .style-card:hover .card-overlay { opacity: 1; }
         .card-overlay { opacity: 0; transition: opacity .2s; }
@@ -213,7 +238,7 @@ export default function StylesGallery() {
         {loading ? (
           <div style={{ textAlign: 'center', padding: 80, color: '#666' }}>Loading styles...</div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 3 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 12 }}>
             {visibleStyles.map((style, idx) => (
               <div
                 key={style.id}
