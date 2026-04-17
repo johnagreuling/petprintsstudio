@@ -26,6 +26,8 @@ export async function GET() {
     { bp: 522, name: 'Velveteen Plush Blanket' },
     { bp: 1126, name: 'Jumbo Mug 20oz' },
     { bp: 12, name: 'Bella Canvas 3001 Tee' },
+    { bp: 420, name: 'Youth Tee (Bella Canvas 3001Y)' },
+    { bp: 314, name: 'Youth Hoodie (Gildan 18500B)' },
     { bp: 562, name: 'Pet Bandana' },
     { bp: 1097, name: 'Pet Collar' },
     { bp: 585, name: 'Baby Swaddle Blanket' },
