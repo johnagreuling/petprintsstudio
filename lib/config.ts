@@ -1,10 +1,10 @@
 // ─────────────────────────────────────────────────────────────────
 //  PET PRINTS STUDIO — Central Configuration
-//  Real Printify blueprint, provider & variant IDs verified 2026-04-04
+//  All variant IDs verified via Printify API 2026-04-17
 // ─────────────────────────────────────────────────────────────────
 
 export const PRODUCTS = [
-  // ── CANVAS — Gallery-wrapped, ready to hang ─────────────────────────────
+  // ── CANVAS — Gallery-wrapped on 1.5" stretcher bars, ready to hang ──────
   { id: 'canvas_8x10',   name: 'Canvas Print', size: '8×10"',  category: 'Canvas', price: 79,  printifyBlueprintId: 1238, printifyProviderId: 48, printifyVariantId: 93928,  popular: false, emoji: '🖼️', description: 'Gallery-wrapped on 1.5" stretcher bars, ready to hang' },
   { id: 'canvas_11x14',  name: 'Canvas Print', size: '11×14"', category: 'Canvas', price: 99,  printifyBlueprintId: 1238, printifyProviderId: 48, printifyVariantId: 155629, popular: false, emoji: '🖼️', description: 'Gallery-wrapped on 1.5" stretcher bars, ready to hang' },
   { id: 'canvas_12x16',  name: 'Canvas Print', size: '12×16"', category: 'Canvas', price: 109, printifyBlueprintId: 1238, printifyProviderId: 48, printifyVariantId: 93931,  popular: false, emoji: '🖼️', description: 'Gallery-wrapped on 1.5" stretcher bars, ready to hang' },
@@ -21,17 +21,27 @@ export const PRODUCTS = [
   { id: 'print_18x24',  name: 'Fine Art Print', size: '18×24"', category: 'Prints', price: 79,  printifyBlueprintId: 804, printifyProviderId: 72, printifyVariantId: 100938, popular: false, emoji: '📄', description: 'Archival matte paper, professional grade' },
   { id: 'print_24x36',  name: 'Fine Art Print', size: '24×36"', category: 'Prints', price: 99,  printifyBlueprintId: 804, printifyProviderId: 72, printifyVariantId: 75296,  popular: false, emoji: '📄', description: 'Large format archival print' },
 
+  // ── BLANKETS — Premium soft goods ───────────────────────────────────────
+  { id: 'blanket_50x60', name: 'Velveteen Plush Blanket', size: '50×60"', category: 'Home', price: 69, printifyBlueprintId: 522, printifyProviderId: 99, printifyVariantId: 68323, popular: true,  emoji: '🛋️', description: 'Ultra-soft velveteen plush — crispest print, silky to the touch' },
+  { id: 'blanket_60x80', name: 'Velveteen Plush Blanket', size: '60×80"', category: 'Home', price: 89, printifyBlueprintId: 522, printifyProviderId: 99, printifyVariantId: 68324, popular: false, emoji: '🛋️', description: 'King-size velveteen plush — their portrait as your coziest blanket' },
+  { id: 'baby_blanket',  name: 'Baby Blanket', size: '30×40"', category: 'Home', price: 39, printifyBlueprintId: 585, printifyProviderId: 70, printifyVariantId: 71950, popular: false, emoji: '👶', description: 'Ultra-soft fleece baby blanket — the perfect gift for new families with pets' },
+  { id: 'beach_towel',   name: 'Beach Towel',  size: '36×72"', category: 'Home', price: 49, printifyBlueprintId: 352, printifyProviderId: 99, printifyVariantId: 44445, popular: false, emoji: '🏖️', description: 'Oversized beach towel — take their portrait to the beach' },
+
   // ── HOME — Premium keepsakes ────────────────────────────────────────────
-  { id: 'mug_15oz',  name: 'Ceramic Mug',    size: '15oz',    category: 'Home', price: 28, printifyBlueprintId: 425,  printifyProviderId: 1,  printifyVariantId: 62014, popular: false, emoji: '☕', description: 'Large 15oz ceramic, dishwasher safe, vibrant wrap-around print' },
-  { id: 'blanket',   name: 'Sherpa Blanket', size: '50×60"',  category: 'Home', price: 69, printifyBlueprintId: 1120, printifyProviderId: 92, printifyVariantId: 148535, popular: true,  emoji: '🛋️', description: 'Ultra-soft sherpa fleece — their portrait on one side, cozy warmth on the other' },
+  { id: 'mug_20oz',  name: 'Jumbo Mug',     size: '20oz',    category: 'Home', price: 34, printifyBlueprintId: 1126, printifyProviderId: 59, printifyVariantId: 84117,  popular: true,  emoji: '☕', description: 'Jumbo 20oz ceramic, glossy finish, wrap-around portrait print' },
   { id: 'pillow',    name: 'Throw Pillow',   size: '18×18"',  category: 'Home', price: 44, printifyBlueprintId: 1572, printifyProviderId: 10, printifyVariantId: 110270, popular: false, emoji: '🛏️', description: 'Premium insert included — their portrait on your couch' },
 
-  // ── APPAREL — Premium wearable ──────────────────────────────────────────
-  { id: 'hoodie', name: 'Premium Hoodie', size: 'S–2XL', category: 'Apparel', price: 59, printifyBlueprintId: 458, printifyProviderId: 26, printifyVariantId: 63759, popular: true, emoji: '🧥', description: 'Heavyweight pullover hoodie — their portrait printed on the front', sizes: ['S','M','L','XL','2XL'] },
+  // ── APPAREL ─────────────────────────────────────────────────────────────
+  { id: 'tshirt',  name: 'Premium Tee',     size: 'S–4XL', category: 'Apparel', price: 39, printifyBlueprintId: 12,  printifyProviderId: 99, printifyVariantId: 18101, popular: false, emoji: '👕', description: 'Bella+Canvas 3001 — ultra-soft combed ring-spun cotton, modern fit', sizes: ['S','M','L','XL','2XL','3XL'] },
+  { id: 'hoodie',  name: 'Premium Hoodie',  size: 'S–2XL', category: 'Apparel', price: 59, printifyBlueprintId: 458, printifyProviderId: 26, printifyVariantId: 63759, popular: true,  emoji: '🧥', description: 'Heavyweight pullover hoodie — their portrait printed on the front', sizes: ['S','M','L','XL','2XL'] },
 
   // ── ACCESSORIES ─────────────────────────────────────────────────────────
   { id: 'tote',       name: 'Canvas Tote Bag', size: 'One size',   category: 'Accessories', price: 24, printifyBlueprintId: 553,  printifyProviderId: 34, printifyVariantId: 70603,  popular: false, emoji: '👜', description: 'Heavy-duty cotton canvas — carry their portrait everywhere' },
   { id: 'phone_case', name: 'Phone Case',      size: 'All models', category: 'Accessories', price: 29, printifyBlueprintId: 269,  printifyProviderId: 1,  printifyVariantId: 103562, popular: false, emoji: '📱', description: 'Tough impact-resistant case — iPhone & Samsung, all models' },
+
+  // ── PET ─────────────────────────────────────────────────────────────────
+  { id: 'pet_bandana', name: 'Pet Bandana', size: 'S/L',   category: 'Pets', price: 29, printifyBlueprintId: 562,  printifyProviderId: 70, printifyVariantId: 101404, popular: true,  emoji: '🐶', description: 'Custom printed bandana — their portrait around their neck' },
+  { id: 'pet_collar',  name: 'Pet Collar',  size: 'S–2XL', category: 'Pets', price: 29, printifyBlueprintId: 1097, printifyProviderId: 83, printifyVariantId: 84657,  popular: false, emoji: '🦺', description: 'Custom printed collar — their portrait on their collar' },
 ]
 
 export const PHONE_CASE_VARIANTS: Record<string, number> = {
@@ -40,29 +50,38 @@ export const PHONE_CASE_VARIANTS: Record<string, number> = {
   'iPhone 13': 76611, 'iPhone 13 Mini': 76612, 'iPhone 13 Pro': 76613, 'iPhone 13 Pro Max': 76614,
   'iPhone 14': 93905, 'iPhone 14 Pro': 93906, 'iPhone 14 Pro Max': 93907, 'iPhone 14 Plus': 93908,
   'iPhone 15': 103561, 'iPhone 15 Pro': 103562, 'iPhone 15 Plus': 103563, 'iPhone 15 Pro Max': 103564,
-  'iPhone 16': 112814, 'iPhone 16 Pro': 112812, 'iPhone 16 Pro Max': 112813, 'iPhone 16 Plus': 112815,
-  'iPhone 17': 130115, 'iPhone 17 Pro': 130116, 'iPhone 17 Pro Max': 130117, 'iPhone 17 Air': 130118,
-  'Samsung Galaxy S21': 105530, 'Samsung Galaxy S22': 105529, 'Samsung Galaxy S23': 105528,
-  'Samsung Galaxy S24': 105527, 'Samsung Galaxy S25': 125531,
+  'Samsung Galaxy S24': 105527,
 }
 
-export const TSHIRT_VARIANTS: Record<string, Record<string, number>> = {
-  'White': { S: 38163, M: 38177, L: 38191, XL: 38205, '2XL': 38219 },
-  'Black': { S: 38164, M: 38178, L: 38192, XL: 38206, '2XL': 38220 },
+export const TEE_VARIANTS: Record<string, number> = {
+  'Black / S': 18100, 'Black / M': 18101, 'Black / L': 18102, 'Black / XL': 18103, 'Black / 2XL': 18104, 'Black / 3XL': 18105,
 }
 
 export const HOODIE_VARIANTS: Record<string, number> = {
-  XS: 63754, S: 63759, M: 63764, L: 63769, XL: 63774, '2XL': 63779, '3XL': 63784, '4XL': 63789,
+  'Black / S': 63759, 'Black / M': 63764, 'Black / L': 63769, 'Black / XL': 63774, 'Black / 2XL': 63779,
 }
 
-export const BLANKET_VARIANTS: Record<string, number> = {
-  '30×40" White': 148534, '50×60" White': 148535, '60×80" White': 148536,
-  '30×40" Grey':  82967,  '50×60" Grey':  82969,  '60×80" Grey':  82971,
+export const PET_BANDANA_VARIANTS: Record<string, number> = {
+  'Small (20×10")': 101403, 'Large (27×13")': 101404,
 }
 
-export const PRODUCT_CATEGORIES = ['Canvas', 'Prints', 'Home', 'Apparel', 'Accessories']
+export const PET_COLLAR_VARIANTS: Record<string, number> = {
+  'XS': 84655, 'S': 84656, 'M': 84657, 'L': 84658, 'XL': 84659,
+}
 
-const R2 = 'https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/generated'
+export const PRODUCT_CATEGORIES = ['Canvas', 'Prints', 'Home', 'Apparel', 'Accessories', 'Pets']
+
+export const DIGITAL_BUNDLE_PRICE = 19.99
+export const MEMORY_UPGRADE_PRICE = 20.00
+export const ALL_IMAGES_PRICE     = 29.99
+export const PET_SONG_PRICE       = 0  // included free with every order
+
+export const VARIATIONS_PER_STYLE = 3
+export const DEFAULT_STYLES = ['oil_painting', 'watercolor', 'impasto', 'pop_art', 'renaissance', 'impressionist', 'cartoon', 'vintage_poster', 'vintage_pop_art', 'vintage_poster_v2', 'neon_glow', 'storybook']
+
+export const ASTRIA_API = 'https://api.astria.ai'
+export const ASTRIA_BASE_MODEL_ID = 690204
+
 
 export const ART_STYLES = [
   { id: 'oil_painting',    generateStyleId: 'ethereal',          name: 'Ethereal Painterly',  emoji: '🎨', styleImage: 'https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/14213989-5ed0-4d83-95ad-665855f994d4_pet/69508879-38da-4363-8550-bfa2b0de317a.png', description: 'Soft, dreamlike brushwork with luminous depth. Your pet rendered in a timeless painterly style worthy of any gallery wall.' },
@@ -108,16 +127,8 @@ export const QUESTIONNAIRE = [
 
 ]
 
-export const DIGITAL_BUNDLE_PRICE = 19.99
-export const MEMORY_UPGRADE_PRICE = 20.00
-export const ALL_IMAGES_PRICE     = 29.99
-export const PET_SONG_PRICE       = 19.00
 
-export const VARIATIONS_PER_STYLE = 3
-export const DEFAULT_STYLES = ['oil_painting', 'watercolor', 'impasto', 'pop_art', 'renaissance', 'impressionist', 'cartoon', 'vintage_poster', 'vintage_pop_art', 'vintage_poster_v2', 'neon_glow', 'storybook']
 
-export const ASTRIA_API = 'https://api.astria.ai'
-export const ASTRIA_BASE_MODEL_ID = 690204
 
 export function buildMemoryPrompt(answers: Record<string, string>, style: typeof ART_STYLES[0]): string {
   const parts: string[] = []
@@ -139,3 +150,4 @@ export function buildMemoryPrompt(answers: Record<string, string>, style: typeof
   if (answers.perfectDay) parts.push(`Scene: ${answers.perfectDay}`)
   return parts.join(', ')
 }
+
