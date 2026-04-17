@@ -269,7 +269,7 @@ async function sendAdminNotification(data: {
   printifyOrderId: string | null
 }) {
   const RESEND_KEY = process.env.RESEND_API_KEY
-  const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'johnagreuling@icloud.com'
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'support@petprintsstudio.com'
   
   if (!RESEND_KEY) {
     console.log('No RESEND_API_KEY — skipping admin notification')

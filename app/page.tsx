@@ -222,7 +222,7 @@ export default function Home() {
           Custom portraits that capture the magic of who they truly are. Original songs that bring their spirit to life. Beautifully made keepsakes — a hoodie, a soft blanket, a morning coffee mug — so your love for them is something you can see, hear, and hold.
         </p>
 
-        <p className="fu fu3" style={{fontSize:11,color:'rgba(201,168,76,.7)',letterSpacing:'.22em',textTransform:'uppercase',marginBottom:36,fontWeight:600}}>Portrait &nbsp;·&nbsp; Song &nbsp;·&nbsp; Canvas &nbsp;·&nbsp; Starting at $39</p>
+        <p className="fu fu3" style={{fontSize:11,color:'rgba(201,168,76,.7)',letterSpacing:'.22em',textTransform:'uppercase',marginBottom:36,fontWeight:600}}>Portrait &nbsp;·&nbsp; Song &nbsp;·&nbsp; Treasure &nbsp;·&nbsp; Starting at $49</p>
         
         {/* Upload Dropbox - Right on homepage */}
         <div className="fu fu4" style={{marginBottom:32,maxWidth:480,margin:'0 auto 32px',width:'100%'}}>
@@ -448,7 +448,7 @@ export default function Home() {
         <img src="/portrait-on-wall.png" alt="Pet portrait hanging in a beautiful home" style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 35%',display:'block'}} />
         <div style={{position:'absolute',inset:0,background:'linear-gradient(to bottom, rgba(10,10,10,.4) 0%, transparent 30%, transparent 70%, rgba(10,10,10,.8) 100%)'}} />
         <div style={{position:'absolute',bottom:28,left:0,right:0,textAlign:'center'}}>
-          <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600}}>Gallery-Quality · Shipped to Your Door · Starting at $39</div>
+          <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600}}>Gallery-Quality · Shipped to Your Door · Starting at $49</div>
         </div>
       </div>
 
