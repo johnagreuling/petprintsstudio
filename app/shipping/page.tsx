@@ -71,7 +71,7 @@ export default function Shipping() {
 
         <section>
           <h2 className="serif">Contact Us</h2>
-          <p>For any shipping, returns, or order questions, email us at <a href="mailto:hello@petprintsstudio.com" style={{color:'var(--gold)',textDecoration:'none'}}>hello@petprintsstudio.com</a>. We respond within 24 hours.</p>
+          <p>For any shipping, returns, or order questions, email us at <a href="mailto:support@petprintsstudio.com" style={{color:'var(--gold)',textDecoration:'none'}}>support@petprintsstudio.com</a>. We respond within 24 hours.</p>
         </section>
       </div>
 
@@ -79,7 +79,7 @@ export default function Shipping() {
         <div style={{display:'flex',alignItems:'center',gap:10}}><span>🐾</span><span className="serif" style={{fontSize:18}}>Pet Prints Studio</span></div>
         <div style={{fontSize:11,color:'var(--muted)'}}>© 2025 Pet Prints Studio</div>
         <div style={{display:'flex',gap:24}}>
-          {[{l:'FAQ',h:'/faq'},{l:'Shipping & Returns',h:'/shipping'},{l:'About',h:'/about'},{l:'Contact',h:'mailto:hello@petprintsstudio.com'}].map(({l,h})=>(
+          {[{l:'FAQ',h:'/faq'},{l:'Shipping & Returns',h:'/shipping'},{l:'About',h:'/about'},{l:'Contact',h:'mailto:support@petprintsstudio.com'}].map(({l,h})=>(
             <Link key={l} href={h} style={{fontSize:10,letterSpacing:'.15em',textTransform:'uppercase',color:'var(--muted)',textDecoration:'none'}}>{l}</Link>
           ))}
         </div>

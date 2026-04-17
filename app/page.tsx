@@ -580,7 +580,7 @@ export default function Home() {
             {l:'Shipping & Returns',h:'/shipping'},
             {l:'About',h:'/about'},
             {l:'Styles',h:'/styles'},
-            {l:'Contact',h:'mailto:hello@petprintsstudio.com'},
+            {l:'Contact',h:'mailto:support@petprintsstudio.com'},
           ].map(({l,h})=>(
             <Link key={l} href={h} style={{fontSize:10,letterSpacing:'.15em',textTransform:'uppercase',color:'var(--muted)',textDecoration:'none'}}>{l}</Link>
           ))}
