@@ -24,6 +24,7 @@ const PET_LABELS: Record<string, string> = {
   sylas: 'Sylas · Yorkie Poo',
   sasha: 'Sasha · Belgian Malinois',
   biggie: 'Biggie · English Bulldog',
+  rocky: 'Rocky · Golden Retriever',
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -263,11 +264,6 @@ export default function StylesGallery() {
                   <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '24px 20px' }}>
                     <div style={{ fontSize: 11, letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 6 }}>{style.emoji} {style.name}</div>
                     <p style={{ fontSize: 13, color: 'rgba(245,240,232,.85)', lineHeight: 1.6 }}>{style.description}</p>
-                    {style.showcasePet && (
-                      <div style={{ marginTop: 10, fontSize: 10, color: 'rgba(245,240,232,.5)', fontStyle: 'italic' }}>
-                        Shown: {PET_LABELS[style.showcasePet]}
-                      </div>
-                    )}
                     <div style={{ marginTop: 14, fontSize: 10, letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--gold)', borderBottom: '1px solid var(--gold)', paddingBottom: 2, display: 'inline-block' }}>View Full Size →</div>
                   </div>
                 </div>
@@ -294,11 +290,6 @@ export default function StylesGallery() {
               <div style={{ fontSize: 10, letterSpacing: '.3em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 8 }}>{lightbox.style.emoji} Style {lightbox.idx + 1} of {visibleStyles.length}</div>
               <h2 className="serif" style={{ fontSize: 36, fontWeight: 400, marginBottom: 8 }}>{lightbox.style.name}</h2>
               <p style={{ color: 'var(--muted)', fontSize: 14, lineHeight: 1.8, maxWidth: 480, margin: '0 auto 24px' }}>{lightbox.style.description}</p>
-              {lightbox.style.showcasePet && (
-                <div style={{ fontSize: 11, color: 'rgba(245,240,232,.4)', fontStyle: 'italic', marginBottom: 20 }}>
-                  Shown: {PET_LABELS[lightbox.style.showcasePet]}
-                </div>
-              )}
               <Link href="/create" style={{ background: 'var(--gold)', color: 'var(--ink)', padding: '14px 36px', fontSize: 11, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', textDecoration: 'none', display: 'inline-block' }} onClick={() => setLightbox(null)}>🐾 Generate This Style — $49</Link>
             </div>
           </div>

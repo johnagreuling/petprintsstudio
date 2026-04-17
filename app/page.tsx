@@ -205,7 +205,7 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <section style={{minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'140px 24px 80px',position:'relative',overflow:'hidden'}}>
+      <section className="hero-section" style={{minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'140px 24px 80px',position:'relative',overflow:'hidden'}}>
         {/* Ambient glow */}
         <div style={{position:'absolute',top:'35%',left:'50%',transform:'translate(-50%,-50%)',width:800,height:800,background:'radial-gradient(circle,rgba(201,168,76,.06) 0%,transparent 70%)',pointerEvents:'none'}} />
         <div style={{position:'absolute',top:'70%',left:'20%',width:400,height:400,background:'radial-gradient(circle,rgba(196,98,45,.04) 0%,transparent 70%)',pointerEvents:'none'}} />
@@ -315,8 +315,7 @@ export default function Home() {
                     padding:'40px 16px 14px',
                     background:'linear-gradient(to top, rgba(10,10,10,.92) 0%, transparent 100%)',
                   }}>
-                    <div style={{fontSize:10,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600,marginBottom:3}}>{item.style}</div>
-                    <div style={{fontSize:11,color:'rgba(245,240,232,.6)',textTransform:'capitalize'}}>{item.pet}</div>
+                    <div style={{fontSize:10,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600}}>{item.style}</div>
                   </div>
                 </Link>
               ))}
