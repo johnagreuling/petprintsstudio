@@ -1028,128 +1028,113 @@ export default function CreatePage() {
         {/* ── STEP 6: UPSELL ── */}
         {step==='upsell'&&picked&&(
           <div>
-            <div style={{textAlign:'center',marginBottom:56}}>
-              <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Step 5 of 5</div>
-              <h1 className="serif" style={{fontSize:'clamp(28px,5vw,48px)',fontWeight:400,marginBottom:14,letterSpacing:'-.01em'}}>Make It <em style={{color:'var(--gold)'}}>Complete</em>.</h1>
-              <p style={{color:'var(--muted)',fontSize:14,lineHeight:1.8,maxWidth:520,margin:'0 auto'}}>Every product below was hand-selected for quality — thicker canvas, softer blankets, heavier shirts. Not novelty gifts. Real things you would choose for yourself.</p>
+            <div style={{textAlign:'center',marginBottom:32}}>
+              <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Your Experience</div>
+              <h1 className="serif" style={{fontSize:'clamp(28px,5vw,44px)',fontWeight:400,letterSpacing:'-.01em'}}>See Them · Hear Them · <em style={{color:'var(--gold)'}}>Feel Them</em></h1>
             </div>
 
-            {/* Selected portrait — celebration card */}
-            <div style={{display:'flex',gap:24,alignItems:'center',padding:'24px 28px',background:'linear-gradient(135deg,rgba(201,168,76,.08),rgba(10,10,10,.4))',border:'1px solid rgba(201,168,76,.3)',marginBottom:12}}>
-              <div style={{width:100,height:140,borderRadius:4,overflow:'hidden',flexShrink:0,border:'2px solid rgba(201,168,76,.4)',boxShadow:'0 8px 32px rgba(201,168,76,.15)'}}>
+            {/* ── SEE THEM — Portrait ── */}
+            <div style={{fontSize:9,letterSpacing:'.28em',textTransform:'uppercase',color:'var(--gold)',marginBottom:10,fontWeight:600}}>👁️ See Them</div>
+            <div style={{display:'flex',gap:20,alignItems:'center',padding:'20px 24px',background:'#141414',border:'1px solid rgba(201,168,76,.2)',marginBottom:4}}>
+              <div style={{width:80,height:112,borderRadius:4,overflow:'hidden',flexShrink:0,border:'2px solid rgba(201,168,76,.3)'}}>
                 <img src={picked.url} alt="Your portrait" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
               </div>
               <div style={{flex:1}}>
-                <div style={{fontSize:9,color:'var(--gold)',letterSpacing:'.25em',textTransform:'uppercase',fontWeight:700,marginBottom:6}}>Your Portrait</div>
-                <div className="serif" style={{fontSize:20,fontWeight:400,marginBottom:4}}>{picked.styleName}</div>
+                <div className="serif" style={{fontSize:18,fontWeight:400,marginBottom:4}}>{picked.styleName}</div>
                 <div style={{fontSize:12,color:'var(--muted)'}}>Printing on {primaryProduct?.name} {primaryProduct?.size}</div>
               </div>
-              <div style={{textAlign:'right',flexShrink:0}}>
-                <div className="serif" style={{fontSize:28,color:'var(--gold)'}}>${primaryProduct?.price}</div>
-              </div>
+              <div className="serif" style={{fontSize:24,color:'var(--gold)',flexShrink:0}}>${primaryProduct?.price}</div>
             </div>
             {isMemory&&(
-              <div style={{padding:'12px 28px',background:'rgba(201,168,76,.04)',border:'1px solid rgba(201,168,76,.12)',borderTop:'none',marginBottom:0,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                <span style={{fontSize:12,color:'var(--muted)'}}>✨ Memory Portrait upgrade</span>
-                <span style={{fontSize:12,color:'var(--gold)',fontWeight:600}}>+${MEMORY_UPGRADE_PRICE.toFixed(2)}</span>
+              <div style={{padding:'10px 24px',background:'rgba(201,168,76,.04)',border:'1px solid rgba(201,168,76,.12)',borderTop:'none',marginBottom:0,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <span style={{fontSize:11,color:'var(--muted)'}}>✨ Memory Portrait</span>
+                <span style={{fontSize:11,color:'var(--gold)',fontWeight:600}}>+${MEMORY_UPGRADE_PRICE.toFixed(2)}</span>
               </div>
             )}
-            <div style={{marginBottom:44}}/>
 
-            {/* ── YOUR EXPERIENCE INCLUDES ── */}
-            <div style={{display:'flex',gap:16,alignItems:'center',padding:'20px 28px',background:'rgba(139,92,246,.06)',border:'1px solid rgba(139,92,246,.15)',marginBottom:44}}>
-              <div style={{fontSize:28,flexShrink:0}}>🎵</div>
+            {/* ── HEAR THEM — Song ── */}
+            <div style={{fontSize:9,letterSpacing:'.28em',textTransform:'uppercase',color:'#A78BFA',marginBottom:10,marginTop:20,fontWeight:600}}>🎵 Hear Them</div>
+            <div style={{display:'flex',gap:16,alignItems:'center',padding:'16px 24px',background:'rgba(139,92,246,.04)',border:'1px solid rgba(139,92,246,.12)',marginBottom:20}}>
               <div style={{flex:1}}>
-                <div className="serif" style={{fontSize:17,fontWeight:400,marginBottom:4}}>Your Custom Pet Song</div>
-                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>An original song composed for your pet — their name in the lyrics, their personality in every note. A QR code on the portrait links to the song. Part of every Pet Prints Studio experience.</div>
+                <div className="serif" style={{fontSize:16,fontWeight:400,marginBottom:2}}>Custom Pet Song</div>
+                <div style={{fontSize:11,color:'var(--muted)',lineHeight:1.6}}>Their name in the lyrics. Their personality in every note. QR code on the portrait links to the song.</div>
               </div>
+              <div style={{fontSize:11,color:'#A78BFA',fontWeight:600,flexShrink:0}}>Included</div>
             </div>
 
-            {/* ── ADD MORE PRODUCTS ── */}
-            <div style={{fontSize:9,letterSpacing:'.28em',textTransform:'uppercase',color:'var(--gold)',marginBottom:18,fontWeight:600}}>🛍️ Premium Products — Curated for Quality</div>
-            {['Home','Apparel','Accessories'].map(cat=>{
-              const items = PRODUCTS.filter(p=>p.category===cat&&p.id!==primaryProduct?.id)
-              if(!items.length) return null
-              const catLabels: Record<string,string> = { Home:'Home & Gifts', Apparel:'Apparel', Accessories:'Accessories' }
-              return (
-                <div key={cat} style={{marginBottom:32}}>
-                  <div style={{fontSize:9,letterSpacing:'.22em',textTransform:'uppercase',color:'rgba(245,240,232,.35)',marginBottom:14}}>{catLabels[cat]||cat}</div>
-                  <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))',gap:3}}>
-                    {items.map(p=>{
-                      const isOn = cartExtras.includes(p.id)
-                      const hasSizes = !!(p as any).sizes?.length
-                      return (
-                        <div key={p.id} style={{position:'relative'}}>
-                          <div className={`product-card${isOn?' on':''}`} onClick={()=>{
-                            if (hasSizes && !isOn) {
-                              // Adding a sized product — default to M
-                              setCartExtraSizes(prev=>({...prev, [p.id]: 'M'}))
-                              setCartExtras(prev=>[...prev, p.id])
-                            } else {
-                              setCartExtras(prev=>prev.includes(p.id)?prev.filter(x=>x!==p.id):[...prev,p.id])
-                            }
-                          }} style={{padding:0,overflow:'hidden'}}>
-                            {isOn&&<div style={{position:'absolute',top:8,left:8,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:18,height:18,display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,zIndex:2}}>✓</div>}
-                            {PRODUCT_IMAGES[p.id] && <div onClick={(e)=>{e.stopPropagation();setProductDetail(p)}} style={{position:'absolute',top:8,right:8,background:'rgba(0,0,0,.6)',color:'#fff',borderRadius:'50%',width:22,height:22,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,zIndex:2,cursor:'pointer',backdropFilter:'blur(4px)'}}>ⓘ</div>}
-                            <ProductMockup productId={p.id} category={p.category} size={p.size} previewUrl={preview} isSelected={isOn} />
-                            <div style={{padding:'0 12px 14px'}}>
-                              <div className="serif" style={{fontSize:14,marginBottom:2,fontWeight:400}}>{p.name}</div>
-                              <div style={{fontSize:10,color:'var(--muted)',marginBottom:8}}>{p.size} — {p.description}</div>
-                              <div className="serif" style={{fontSize:18,color:'var(--gold)'}}>${p.price}</div>
-                            </div>
-                          </div>
-                          {isOn && hasSizes && (
-                            <div style={{padding:'8px 4px'}}>
-                              {/* Color swatches */}
-                              {(p as any).colors?.length > 0 && (
-                                <div style={{display:'flex',gap:6,marginBottom:8,alignItems:'center'}}>
-                                  <span style={{fontSize:9,color:'var(--muted)',letterSpacing:'.1em',textTransform:'uppercase',marginRight:4}}>Color</span>
-                                  {((p as any).colors as string[]).map(c=>(
-                                    <button key={c} onClick={()=>setCartExtraColors(prev=>({...prev,[p.id]:c}))} style={{
-                                      width:24,height:24,borderRadius:'50%',cursor:'pointer',transition:'all .15s',
-                                      background: c === 'Black' ? '#1a1a1a' : '#f5f0e8',
-                                      border: `2px solid ${(cartExtraColors[p.id]||'Black')===c ? 'var(--gold)' : 'rgba(245,240,232,.2)'}`,
-                                      boxShadow: (cartExtraColors[p.id]||'Black')===c ? '0 0 0 1px var(--gold)' : 'none',
-                                    }} title={c} />
-                                  ))}
-                                  <span style={{fontSize:10,color:'var(--muted)',marginLeft:4}}>{cartExtraColors[p.id]||'Black'}</span>
-                                </div>
-                              )}
-                              {/* Size pills */}
-                              <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
-                                {((p as any).sizes as string[]).map(s=>(
-                                  <button key={s} onClick={()=>setCartExtraSizes(prev=>({...prev,[p.id]:s}))} style={{
-                                    padding:'6px 12px',fontSize:10,fontWeight:600,letterSpacing:'.08em',
-                                    background: cartExtraSizes[p.id]===s ? 'var(--gold)' : '#1a1a1a',
-                                    color: cartExtraSizes[p.id]===s ? 'var(--ink)' : 'var(--muted)',
-                                    border: `1px solid ${cartExtraSizes[p.id]===s ? 'var(--gold)' : 'rgba(245,240,232,.12)'}`,
-                                    cursor:'pointer',transition:'all .15s',
-                                  }}>{s}</button>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )
-            })}
+            {/* ── FEEL THEM — Products ── */}
+            <div style={{fontSize:9,letterSpacing:'.28em',textTransform:'uppercase',color:'var(--gold)',marginBottom:10,fontWeight:600}}>🤲 Feel Them — Premium Keepsakes</div>
+            <div style={{fontSize:12,color:'var(--muted)',marginBottom:16,lineHeight:1.7}}>Every product hand-selected for quality. Thicker canvas, softer blankets, heavier shirts. Not novelty gifts — real things you would choose for yourself.</div>
 
-            {/* ── PREMIUM RECEIPT ── */}
-            <div style={{background:'linear-gradient(180deg,#161616,#111)',border:'1px solid rgba(201,168,76,.25)',padding:'28px 32px',marginBottom:28,marginTop:8}}>
-              <div style={{fontSize:9,letterSpacing:'.28em',textTransform:'uppercase',color:'var(--gold)',marginBottom:18,fontWeight:600}}>Your Experience</div>
-              <div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}>
-                <span style={{fontSize:14}}>{primaryProduct?.name} {primaryProduct?.size}</span>
-                <span style={{fontSize:14}}>${primaryProduct?.price}</span>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(150px,1fr))',gap:6,marginBottom:24}}>
+              {PRODUCTS.filter(p=>!['Canvas','Prints'].includes(p.category)&&p.id!==primaryProduct?.id).map(p=>{
+                const isOn = cartExtras.includes(p.id)
+                const hasSizes = !!(p as any).sizes?.length
+                return (
+                  <div key={p.id} style={{position:'relative'}}>
+                    <div className={`product-card${isOn?' on':''}`} onClick={()=>{
+                      if (hasSizes && !isOn) {
+                        setCartExtraSizes(prev=>({...prev, [p.id]: (p as any).sizes?.[1] || (p as any).sizes?.[0] || 'M'}))
+                        setCartExtraColors(prev=>({...prev, [p.id]: 'Black'}))
+                        setCartExtras(prev=>[...prev, p.id])
+                      } else {
+                        setCartExtras(prev=>prev.includes(p.id)?prev.filter(x=>x!==p.id):[...prev,p.id])
+                      }
+                    }} style={{padding:0,overflow:'hidden'}}>
+                      {isOn&&<div style={{position:'absolute',top:6,left:6,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:18,height:18,display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,zIndex:2}}>✓</div>}
+                      {PRODUCT_IMAGES[p.id] && <div onClick={(e)=>{e.stopPropagation();setProductDetail(p)}} style={{position:'absolute',top:6,right:6,background:'rgba(0,0,0,.6)',color:'#fff',borderRadius:'50%',width:20,height:20,display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,zIndex:2,cursor:'pointer'}}>ⓘ</div>}
+                      <ProductMockup productId={p.id} category={p.category} size={p.size} previewUrl={preview} isSelected={isOn} />
+                      <div style={{padding:'6px 10px 10px'}}>
+                        <div className="serif" style={{fontSize:13,marginBottom:1,fontWeight:400}}>{p.name}</div>
+                        <div style={{fontSize:9,color:'var(--muted)',marginBottom:4}}>{p.size}</div>
+                        <div className="serif" style={{fontSize:16,color:'var(--gold)'}}>${p.price}</div>
+                      </div>
+                    </div>
+                    {isOn && hasSizes && (
+                      <div style={{padding:'6px 4px'}}>
+                        {(p as any).colors?.length > 0 && (
+                          <div style={{display:'flex',gap:4,marginBottom:6,alignItems:'center'}}>
+                            {((p as any).colors as string[]).map(c=>(
+                              <button key={c} onClick={()=>setCartExtraColors(prev=>({...prev,[p.id]:c}))} style={{
+                                width:20,height:20,borderRadius:'50%',cursor:'pointer',
+                                background: c === 'Black' ? '#1a1a1a' : '#f5f0e8',
+                                border: `2px solid ${(cartExtraColors[p.id]||'Black')===c ? 'var(--gold)' : 'rgba(245,240,232,.15)'}`,
+                              }} title={c} />
+                            ))}
+                            <span style={{fontSize:9,color:'var(--muted)',marginLeft:2}}>{cartExtraColors[p.id]||'Black'}</span>
+                          </div>
+                        )}
+                        <div style={{display:'flex',gap:3,flexWrap:'wrap'}}>
+                          {((p as any).sizes as string[]).map(s=>(
+                            <button key={s} onClick={()=>setCartExtraSizes(prev=>({...prev,[p.id]:s}))} style={{
+                              padding:'4px 10px',fontSize:9,fontWeight:600,
+                              background: cartExtraSizes[p.id]===s ? 'var(--gold)' : '#1a1a1a',
+                              color: cartExtraSizes[p.id]===s ? 'var(--ink)' : 'var(--muted)',
+                              border: `1px solid ${cartExtraSizes[p.id]===s ? 'var(--gold)' : 'rgba(245,240,232,.1)'}`,
+                              cursor:'pointer',
+                            }}>{s}</button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* ── YOUR EXPERIENCE — Receipt ── */}
+            <div style={{background:'#141414',border:'1px solid rgba(201,168,76,.2)',padding:'24px 28px',marginBottom:24}}>
+              <div style={{fontSize:9,letterSpacing:'.28em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14,fontWeight:600}}>Your Experience</div>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:8,alignItems:'baseline'}}>
+                <span style={{fontSize:13}}>👁️ {primaryProduct?.name} {primaryProduct?.size}</span>
+                <span style={{fontSize:13}}>${primaryProduct?.price}</span>
               </div>
-              {isMemory&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14}}>✨ Memory Portrait</span><span style={{fontSize:14}}>${MEMORY_UPGRADE_PRICE.toFixed(2)}</span></div>}
-              <div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14,color:'#A78BFA'}}>🎵 Custom Pet Song</span><span style={{fontSize:14,color:'#A78BFA'}}>Included</span></div>
-              {cartExtras.map(id=>{const p=PRODUCTS.find(x=>x.id===id)!;const sz=cartExtraSizes[id];const cl=cartExtraColors[id];const detail=[cl,sz].filter(Boolean).join(' / ');return <div key={id} style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14}}>{p.emoji} {p.name} {detail ? `(${detail})` : p.size}</span><span style={{fontSize:14}}>${p.price}</span></div>})}
-              <div style={{borderTop:'1px solid rgba(201,168,76,.2)',paddingTop:16,marginTop:12,display:'flex',justifyContent:'space-between',alignItems:'baseline'}}>
-                <span style={{fontSize:12,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase'}}>Total</span>
-                <span className="serif" style={{fontSize:32,color:'var(--gold)'}}>
+              {isMemory&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:8,alignItems:'baseline'}}><span style={{fontSize:13}}>✨ Memory Portrait</span><span style={{fontSize:13}}>${MEMORY_UPGRADE_PRICE.toFixed(2)}</span></div>}
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:8,alignItems:'baseline'}}><span style={{fontSize:13,color:'#A78BFA'}}>🎵 Custom Pet Song</span><span style={{fontSize:13,color:'#A78BFA'}}>Included</span></div>
+              {cartExtras.map(id=>{const p=PRODUCTS.find(x=>x.id===id)!;const sz=cartExtraSizes[id];const cl=cartExtraColors[id];const detail=[cl,sz].filter(Boolean).join(' / ');return <div key={id} style={{display:'flex',justifyContent:'space-between',marginBottom:8,alignItems:'baseline'}}><span style={{fontSize:13}}>🤲 {p.name} {detail ? `(${detail})` : ''}</span><span style={{fontSize:13}}>${p.price}</span></div>})}
+              <div style={{borderTop:'1px solid rgba(201,168,76,.15)',paddingTop:14,marginTop:10,display:'flex',justifyContent:'space-between',alignItems:'baseline'}}>
+                <span style={{fontSize:11,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase'}}>Total</span>
+                <span className="serif" style={{fontSize:28,color:'var(--gold)'}}>
                   ${((primaryProduct?.price||0)+(isMemory?MEMORY_UPGRADE_PRICE:0)+cartExtras.reduce((sum,id)=>sum+(PRODUCTS.find(p=>p.id===id)?.price||0),0)).toFixed(2)}
                 </span>
               </div>
