@@ -54,7 +54,7 @@ export default function Shipping() {
 
         <section>
           <h2 className="serif">Print Quality</h2>
-          <p style={{marginBottom:12}}>Every portrait is upscaled to print-grade resolution before production. Our canvas prints are gallery-wrapped on 1.5&rdquo; stretcher bars, ready to hang. Fine art prints use archival matte paper with museum-quality inks rated to last 100+ years.</p>
+          <p style={{marginBottom:12}}>Every portrait is upscaled to print-grade resolution before production. Our canvas prints are gallery-wrapped on 1.5&rdquo; stretcher bars, ready to hang. Fine art prints use archival matte paper with professional-grade inks designed for lasting color.</p>
           <p>All products are professionally printed by our manufacturing partners and undergo quality checks before shipping.</p>
         </section>
 
@@ -71,7 +71,7 @@ export default function Shipping() {
 
         <section>
           <h2 className="serif">Contact Us</h2>
-          <p>For any shipping, returns, or order questions, email us at <a href="mailto:johnagreuling@icloud.com" style={{color:'var(--gold)',textDecoration:'none'}}>johnagreuling@icloud.com</a>. We respond within 24 hours.</p>
+          <p>For any shipping, returns, or order questions, email us at <a href="mailto:hello@petprintsstudio.com" style={{color:'var(--gold)',textDecoration:'none'}}>hello@petprintsstudio.com</a>. We respond within 24 hours.</p>
         </section>
       </div>
 
@@ -79,7 +79,7 @@ export default function Shipping() {
         <div style={{display:'flex',alignItems:'center',gap:10}}><span>🐾</span><span className="serif" style={{fontSize:18}}>Pet Prints Studio</span></div>
         <div style={{fontSize:11,color:'var(--muted)'}}>© 2025 Pet Prints Studio</div>
         <div style={{display:'flex',gap:24}}>
-          {[{l:'FAQ',h:'/faq'},{l:'Shipping & Returns',h:'/shipping'},{l:'About',h:'/about'},{l:'Contact',h:'mailto:johnagreuling@icloud.com'}].map(({l,h})=>(
+          {[{l:'FAQ',h:'/faq'},{l:'Shipping & Returns',h:'/shipping'},{l:'About',h:'/about'},{l:'Contact',h:'mailto:hello@petprintsstudio.com'}].map(({l,h})=>(
             <Link key={l} href={h} style={{fontSize:10,letterSpacing:'.15em',textTransform:'uppercase',color:'var(--muted)',textDecoration:'none'}}>{l}</Link>
           ))}
         </div>

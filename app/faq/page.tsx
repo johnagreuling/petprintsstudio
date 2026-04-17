@@ -94,7 +94,7 @@ export default function FAQ() {
 
         <div style={{textAlign:'center',marginTop:64,padding:'40px',background:'#141414',border:'1px solid var(--border)',borderRadius:8}}>
           <p style={{fontSize:14,color:'var(--muted)',marginBottom:16}}>Still have questions?</p>
-          <a href="mailto:johnagreuling@icloud.com" style={{color:'var(--gold)',fontSize:13,textDecoration:'none',letterSpacing:'.05em'}}>Contact us → johnagreuling@icloud.com</a>
+          <a href="mailto:hello@petprintsstudio.com" style={{color:'var(--gold)',fontSize:13,textDecoration:'none',letterSpacing:'.05em'}}>Contact us → hello@petprintsstudio.com</a>
         </div>
       </div>
 
@@ -103,7 +103,7 @@ export default function FAQ() {
         <div style={{display:'flex',alignItems:'center',gap:10}}><span>🐾</span><span className="serif" style={{fontSize:18}}>Pet Prints Studio</span></div>
         <div style={{fontSize:11,color:'var(--muted)'}}>© 2025 Pet Prints Studio</div>
         <div style={{display:'flex',gap:24}}>
-          {[{l:'FAQ',h:'/faq'},{l:'Shipping & Returns',h:'/shipping'},{l:'About',h:'/about'},{l:'Contact',h:'mailto:johnagreuling@icloud.com'}].map(({l,h})=>(
+          {[{l:'FAQ',h:'/faq'},{l:'Shipping & Returns',h:'/shipping'},{l:'About',h:'/about'},{l:'Contact',h:'mailto:hello@petprintsstudio.com'}].map(({l,h})=>(
             <Link key={l} href={h} style={{fontSize:10,letterSpacing:'.15em',textTransform:'uppercase',color:'var(--muted)',textDecoration:'none'}}>{l}</Link>
           ))}
         </div>
