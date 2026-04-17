@@ -32,8 +32,8 @@ export const PRODUCTS = [
   { id: 'pillow',    name: 'Throw Pillow',   size: '18×18"',  category: 'Home', price: 44, printifyBlueprintId: 1572, printifyProviderId: 10, printifyVariantId: 110270, popular: false, emoji: '🛏️', description: 'Premium polyester cover with the insert already included — not a pillowcase that ships empty. Vivid double-sided printing with a soft, huggable feel. A portrait you can hold.' },
 
   // ── APPAREL ─────────────────────────────────────────────────────────────
-  { id: 'tshirt',  name: 'Premium Tee',     size: 'S–4XL', category: 'Apparel', price: 39, printifyBlueprintId: 12,  printifyProviderId: 99, printifyVariantId: 18101, popular: false, emoji: '👕', description: 'Bella+Canvas 3001 — the shirt premium brands use. 100% Airlume combed ring-spun cotton, modern retail fit, pre-shrunk. Feels like a $50 tee because it is one.', sizes: ['S','M','L','XL','2XL','3XL'] },
-  { id: 'hoodie',  name: 'Premium Hoodie',  size: 'S–2XL', category: 'Apparel', price: 59, printifyBlueprintId: 458, printifyProviderId: 26, printifyVariantId: 63759, popular: true,  emoji: '🧥', description: 'Heavyweight pullover with double-lined hood and front pouch pocket. Full portrait printed across the chest in vivid color. The kind of hoodie you reach for every time.', sizes: ['S','M','L','XL','2XL'] },
+  { id: 'tshirt',  name: 'Premium Tee',     size: 'S–4XL', category: 'Apparel', price: 39, printifyBlueprintId: 12,  printifyProviderId: 99, printifyVariantId: 18101, popular: false, emoji: '👕', description: 'Bella+Canvas 3001 — the shirt premium brands use. 100% Airlume combed ring-spun cotton, modern retail fit, pre-shrunk. Feels like a $50 tee because it is one.', sizes: ['S','M','L','XL','2XL','3XL'], colors: ['Black','White'] },
+  { id: 'hoodie',  name: 'Premium Hoodie',  size: 'S–2XL', category: 'Apparel', price: 59, printifyBlueprintId: 458, printifyProviderId: 26, printifyVariantId: 63759, popular: true,  emoji: '🧥', description: 'Heavyweight pullover with double-lined hood and front pouch pocket. Full portrait printed across the chest in vivid color. The kind of hoodie you reach for every time.', sizes: ['S','M','L','XL','2XL'], colors: ['Black','White'] },
 
   // ── ACCESSORIES ─────────────────────────────────────────────────────────
   { id: 'tote',       name: 'Canvas Tote Bag', size: 'One size',   category: 'Accessories', price: 24, printifyBlueprintId: 553,  printifyProviderId: 34, printifyVariantId: 70603,  popular: false, emoji: '👜', description: 'Heavy-duty 12oz cotton canvas with reinforced stitching. Not a promotional giveaway tote — a real bag you\'ll carry to the farmer\'s market, the gym, the office.' },
@@ -52,10 +52,12 @@ export const PHONE_CASE_VARIANTS: Record<string, number> = {
 
 export const TEE_VARIANTS: Record<string, number> = {
   'Black / S': 18100, 'Black / M': 18101, 'Black / L': 18102, 'Black / XL': 18103, 'Black / 2XL': 18104, 'Black / 3XL': 18105,
+  'White / S': 18540, 'White / M': 18541, 'White / L': 18542, 'White / XL': 18543, 'White / 2XL': 18544, 'White / 3XL': 18545,
 }
 
 export const HOODIE_VARIANTS: Record<string, number> = {
   'Black / S': 63759, 'Black / M': 63764, 'Black / L': 63769, 'Black / XL': 63774, 'Black / 2XL': 63779,
+  'White / S': 63762, 'White / M': 63767, 'White / L': 63772, 'White / XL': 63777, 'White / 2XL': 63782,
 }
 
 export const PRODUCT_CATEGORIES = ['Canvas', 'Prints', 'Home', 'Apparel', 'Accessories']

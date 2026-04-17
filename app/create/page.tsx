@@ -35,6 +35,8 @@ export default function CreatePage() {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [activeCategory, setActiveCategory] = useState('Canvas')
   const [cartExtras, setCartExtras] = useState<string[]>([])
+  const [cartExtraSizes, setCartExtraSizes] = useState<Record<string, string>>({})
+  const [cartExtraColors, setCartExtraColors] = useState<Record<string, string>>({})
   const [wantBundle, setWantBundle] = useState(false)
   const [wantAllImages, setWantAllImages] = useState(false)
   const [wantSong, setWantSong] = useState(false)
@@ -255,6 +257,8 @@ export default function CreatePage() {
           primaryProduct,
           primarySize,
           extras,
+          extraSizes: cartExtraSizes,
+          extraColors: cartExtraColors,
           wantBundle: false,
           wantSong: true,  // always included free
           styleName: picked.styleName,
@@ -1073,16 +1077,58 @@ export default function CreatePage() {
                   <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))',gap:3}}>
                     {items.map(p=>{
                       const isOn = cartExtras.includes(p.id)
+                      const hasSizes = !!(p as any).sizes?.length
                       return (
-                        <div key={p.id} className={`product-card${isOn?' on':''}`} onClick={()=>setCartExtras(prev=>prev.includes(p.id)?prev.filter(x=>x!==p.id):[...prev,p.id])} style={{padding:0,overflow:'hidden'}}>
-                          {isOn&&<div style={{position:'absolute',top:8,left:8,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:18,height:18,display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,zIndex:2}}>✓</div>}
-                          {PRODUCT_IMAGES[p.id] && <div onClick={(e)=>{e.stopPropagation();setProductDetail(p)}} style={{position:'absolute',top:8,right:8,background:'rgba(0,0,0,.6)',color:'#fff',borderRadius:'50%',width:22,height:22,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,zIndex:2,cursor:'pointer',backdropFilter:'blur(4px)'}}>ⓘ</div>}
-                          <ProductMockup productId={p.id} category={p.category} size={p.size} previewUrl={preview} isSelected={isOn} />
-                          <div style={{padding:'0 12px 14px'}}>
-                            <div className="serif" style={{fontSize:14,marginBottom:2,fontWeight:400}}>{p.name}</div>
-                            <div style={{fontSize:10,color:'var(--muted)',marginBottom:8}}>{p.size} — {p.description}</div>
-                            <div className="serif" style={{fontSize:18,color:'var(--gold)'}}>${p.price}</div>
+                        <div key={p.id} style={{position:'relative'}}>
+                          <div className={`product-card${isOn?' on':''}`} onClick={()=>{
+                            if (hasSizes && !isOn) {
+                              // Adding a sized product — default to M
+                              setCartExtraSizes(prev=>({...prev, [p.id]: 'M'}))
+                              setCartExtras(prev=>[...prev, p.id])
+                            } else {
+                              setCartExtras(prev=>prev.includes(p.id)?prev.filter(x=>x!==p.id):[...prev,p.id])
+                            }
+                          }} style={{padding:0,overflow:'hidden'}}>
+                            {isOn&&<div style={{position:'absolute',top:8,left:8,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:18,height:18,display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,zIndex:2}}>✓</div>}
+                            {PRODUCT_IMAGES[p.id] && <div onClick={(e)=>{e.stopPropagation();setProductDetail(p)}} style={{position:'absolute',top:8,right:8,background:'rgba(0,0,0,.6)',color:'#fff',borderRadius:'50%',width:22,height:22,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,zIndex:2,cursor:'pointer',backdropFilter:'blur(4px)'}}>ⓘ</div>}
+                            <ProductMockup productId={p.id} category={p.category} size={p.size} previewUrl={preview} isSelected={isOn} />
+                            <div style={{padding:'0 12px 14px'}}>
+                              <div className="serif" style={{fontSize:14,marginBottom:2,fontWeight:400}}>{p.name}</div>
+                              <div style={{fontSize:10,color:'var(--muted)',marginBottom:8}}>{p.size} — {p.description}</div>
+                              <div className="serif" style={{fontSize:18,color:'var(--gold)'}}>${p.price}</div>
+                            </div>
                           </div>
+                          {isOn && hasSizes && (
+                            <div style={{padding:'8px 4px'}}>
+                              {/* Color swatches */}
+                              {(p as any).colors?.length > 0 && (
+                                <div style={{display:'flex',gap:6,marginBottom:8,alignItems:'center'}}>
+                                  <span style={{fontSize:9,color:'var(--muted)',letterSpacing:'.1em',textTransform:'uppercase',marginRight:4}}>Color</span>
+                                  {((p as any).colors as string[]).map(c=>(
+                                    <button key={c} onClick={()=>setCartExtraColors(prev=>({...prev,[p.id]:c}))} style={{
+                                      width:24,height:24,borderRadius:'50%',cursor:'pointer',transition:'all .15s',
+                                      background: c === 'Black' ? '#1a1a1a' : '#f5f0e8',
+                                      border: `2px solid ${(cartExtraColors[p.id]||'Black')===c ? 'var(--gold)' : 'rgba(245,240,232,.2)'}`,
+                                      boxShadow: (cartExtraColors[p.id]||'Black')===c ? '0 0 0 1px var(--gold)' : 'none',
+                                    }} title={c} />
+                                  ))}
+                                  <span style={{fontSize:10,color:'var(--muted)',marginLeft:4}}>{cartExtraColors[p.id]||'Black'}</span>
+                                </div>
+                              )}
+                              {/* Size pills */}
+                              <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
+                                {((p as any).sizes as string[]).map(s=>(
+                                  <button key={s} onClick={()=>setCartExtraSizes(prev=>({...prev,[p.id]:s}))} style={{
+                                    padding:'6px 12px',fontSize:10,fontWeight:600,letterSpacing:'.08em',
+                                    background: cartExtraSizes[p.id]===s ? 'var(--gold)' : '#1a1a1a',
+                                    color: cartExtraSizes[p.id]===s ? 'var(--ink)' : 'var(--muted)',
+                                    border: `1px solid ${cartExtraSizes[p.id]===s ? 'var(--gold)' : 'rgba(245,240,232,.12)'}`,
+                                    cursor:'pointer',transition:'all .15s',
+                                  }}>{s}</button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )
                     })}
@@ -1100,7 +1146,7 @@ export default function CreatePage() {
               </div>
               {isMemory&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14}}>✨ Memory Portrait</span><span style={{fontSize:14}}>${MEMORY_UPGRADE_PRICE.toFixed(2)}</span></div>}
               <div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14,color:'#A78BFA'}}>🎵 Custom Pet Song</span><span style={{fontSize:14,color:'#A78BFA'}}>Included</span></div>
-              {cartExtras.map(id=>{const p=PRODUCTS.find(x=>x.id===id)!;return <div key={id} style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14}}>{p.emoji} {p.name} {p.size}</span><span style={{fontSize:14}}>${p.price}</span></div>})}
+              {cartExtras.map(id=>{const p=PRODUCTS.find(x=>x.id===id)!;const sz=cartExtraSizes[id];const cl=cartExtraColors[id];const detail=[cl,sz].filter(Boolean).join(' / ');return <div key={id} style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14}}>{p.emoji} {p.name} {detail ? `(${detail})` : p.size}</span><span style={{fontSize:14}}>${p.price}</span></div>})}
               <div style={{borderTop:'1px solid rgba(201,168,76,.2)',paddingTop:16,marginTop:12,display:'flex',justifyContent:'space-between',alignItems:'baseline'}}>
                 <span style={{fontSize:12,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase'}}>Total</span>
                 <span className="serif" style={{fontSize:32,color:'var(--gold)'}}>
