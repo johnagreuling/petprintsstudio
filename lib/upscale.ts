@@ -91,15 +91,19 @@ async function callClarityUpscaler(imageUrl: string): Promise<string> {
 }
 
 /**
- * Download an image from a URL and re-upload it to R2 under print/.
- * This guarantees the image URL stays stable (fal.ai URLs can expire).
+ * Download an image from a URL and re-upload it to R2.
+ * If sessionFolder is provided, stores in the session folder (admin-accessible).
+ * Otherwise falls back to print/ prefix.
  */
-async function mirrorToR2(sourceUrl: string): Promise<string> {
+async function mirrorToR2(sourceUrl: string, sessionFolder?: string): Promise<string> {
   const res = await fetch(sourceUrl)
   if (!res.ok) throw new Error(`Mirror fetch failed: ${res.status}`)
   const buffer = Buffer.from(await res.arrayBuffer())
   const ext = sourceUrl.toLowerCase().includes('.jpg') || sourceUrl.toLowerCase().includes('.jpeg') ? 'jpg' : 'png'
-  const key = `print/${uuidv4()}.${ext}`
+  const filename = `upscaled-${uuidv4()}.${ext}`
+  const key = sessionFolder
+    ? `${sessionFolder.replace(/\/$/, '')}/${filename}`
+    : `print/${filename}`
   await r2.send(new PutObjectCommand({
     Bucket: process.env.R2_BUCKET_NAME!,
     Key: key,
@@ -114,8 +118,11 @@ async function mirrorToR2(sourceUrl: string): Promise<string> {
  * Main entrypoint: upscale an image for print.
  * Returns a stable R2 URL of the upscaled image.
  * On ANY error, returns the original URL — never blocks orders.
+ * 
+ * @param sessionFolder - Optional R2 folder path (e.g. "sessions/abc_biggie") 
+ *                        to store the upscaled file alongside the originals.
  */
-export async function upscaleForPrint(sourceUrl: string): Promise<{
+export async function upscaleForPrint(sourceUrl: string, sessionFolder?: string): Promise<{
   url: string
   upscaled: boolean
   error?: string
@@ -125,7 +132,7 @@ export async function upscaleForPrint(sourceUrl: string): Promise<{
   try {
     console.log(`🔍 Upscaling for print: ${sourceUrl.slice(0, 80)}...`)
     const upscaledRemoteUrl = await callClarityUpscaler(sourceUrl)
-    const r2Url = await mirrorToR2(upscaledRemoteUrl)
+    const r2Url = await mirrorToR2(upscaledRemoteUrl, sessionFolder)
     const durationMs = Date.now() - start
     console.log(`✅ Upscaled in ${durationMs}ms → ${r2Url}`)
     return { url: r2Url, upscaled: true, durationMs }

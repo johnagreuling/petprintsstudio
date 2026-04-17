@@ -14,11 +14,11 @@ export const maxDuration = 120   // Upscaling can take up to 90s
  */
 export async function POST(req: NextRequest) {
   try {
-    const { imageUrl } = await req.json()
+    const { imageUrl, sessionFolder } = await req.json()
     if (!imageUrl || typeof imageUrl !== 'string') {
       return NextResponse.json({ error: 'imageUrl required' }, { status: 400 })
     }
-    const result = await upscaleForPrint(imageUrl)
+    const result = await upscaleForPrint(imageUrl, sessionFolder)
     return NextResponse.json({
       originalUrl: imageUrl,
       upscaledUrl: result.url,

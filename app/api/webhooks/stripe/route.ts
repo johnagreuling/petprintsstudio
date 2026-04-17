@@ -128,7 +128,7 @@ async function fulfillOrder(session: any, stripe: Stripe) {
   // continue with the original URL so the order never blocks.
   // ─────────────────────────────────────────────────────────────────
   try {
-    const upscaleResult = await upscaleForPrint(accessibleImageUrl)
+    const upscaleResult = await upscaleForPrint(accessibleImageUrl, meta.sessionFolder)
     if (upscaleResult.upscaled) {
       accessibleImageUrl = upscaleResult.url
       console.log(`🖼️  Print upscale succeeded in ${upscaleResult.durationMs}ms`)
