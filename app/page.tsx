@@ -422,8 +422,8 @@ export default function Home() {
               </div>
               <div style={{padding:'20px 18px 24px'}}>
                 <div style={{fontSize:10,color:'var(--gold)',letterSpacing:'.2em',textTransform:'uppercase',marginBottom:8,fontWeight:700}}>Step 3</div>
-                <h3 className="serif" style={{fontSize:20,marginBottom:6,fontWeight:400}}>Pick Your Favorite</h3>
-                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.75}}>We generate 32 custom portraits. You pick the one that feels right.</p>
+                <h3 className="serif" style={{fontSize:20,marginBottom:6,fontWeight:400}}>Make Your Selections</h3>
+                <p style={{fontSize:12,color:'var(--muted)',lineHeight:1.75}}>Pick your favorite custom portraits, choose your canvas size, and add beautiful individualized gifts from our curated collection.</p>
               </div>
             </div>
 
