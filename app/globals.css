@@ -6,105 +6,140 @@ html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body { background: #0A0A0A; color: #F5F0E8; font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
 
 /* ════════════════════════════════════════════════════════════════
-   Mobile Responsive — applies site-wide
-   Covers /create, /styles, /song, /order, /admin pages that don't
-   have their own @media rules. Targets common inline-style patterns.
+   Mobile Responsive — class-based rules that work with React
    ════════════════════════════════════════════════════════════════ */
 
 /* TABLET (max 900px) */
 @media (max-width: 900px) {
-  main, section { padding-left: 20px !important; padding-right: 20px !important; }
-  h1 { font-size: clamp(32px, 7vw, 56px) !important; }
-  h2 { font-size: clamp(24px, 5vw, 44px) !important; }
+  .section-padding {
+    padding-left: 28px !important;
+    padding-right: 28px !important;
+    padding-top: 60px !important;
+    padding-bottom: 60px !important;
+  }
+  .responsive-grid-4col {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
 }
 
 /* PHONE (max 640px) */
 @media (max-width: 640px) {
-  /* Nav: tighten padding, wrap links */
+  /* ── Nav ── */
   nav {
-    padding: 14px 16px !important;
+    padding: 12px 16px !important;
     gap: 8px !important;
   }
-  nav > div:nth-child(2) {
-    gap: 12px !important;
-    flex-wrap: wrap !important;
-  }
-  nav a[href="/#how-it-works"],
-  nav a[href="/#the-experience"] {
+  .mobile-hide {
     display: none !important;
   }
 
-  /* Two-column grids → single column */
-  [style*="gridTemplateColumns: '1fr 1fr'"],
-  [style*="grid-template-columns: 1fr 1fr"],
-  [style*="gridTemplateColumns:'1fr 1fr'"] {
-    grid-template-columns: 1fr !important;
+  /* ── Section padding ── */
+  .section-padding {
+    padding: 48px 16px !important;
   }
 
-  /* /styles card grid */
-  [style*="gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))'"] {
-    grid-template-columns: 1fr !important;
+  /* ── Grid collapses ── */
+  .responsive-grid-4col {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
   }
-
-  /* /admin/curate rows */
-  [style*="gridTemplateColumns: '200px 1fr 1fr 1fr'"],
-  [style*="gridTemplateColumns:'200px 1fr 1fr 1fr'"] {
+  .responsive-grid-3col {
     grid-template-columns: 1fr !important;
     gap: 12px !important;
   }
-
-  /* Tighten side padding on content sections */
-  main, section {
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+  .responsive-grid-2col {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
   }
 
-  /* Hero typography */
+  /* ── Typography ── */
   h1 {
     font-size: clamp(28px, 9vw, 48px) !important;
-    line-height: 1.1 !important;
+    line-height: 1.08 !important;
   }
-  h2 { font-size: clamp(22px, 6vw, 36px) !important; }
-  p  { font-size: 15px !important; line-height: 1.7 !important; }
+  h2 {
+    font-size: clamp(24px, 7vw, 36px) !important;
+  }
 
-  /* Buttons */
+  /* ── Buttons ── */
   .btn-gold, .btn-out {
     padding: 14px 24px !important;
     font-size: 11px !important;
+    width: 100% !important;
   }
 
-  /* /create drop zone */
+  /* ── Hero upload portal ── */
+  .hero-upload-portal {
+    margin-left: 8px !important;
+    margin-right: 8px !important;
+  }
+
+  /* ── Hero slider cards ── */
+  .hero-slide {
+    width: 220px !important;
+    height: 300px !important;
+  }
+
+  /* ── Step cards text ── */
+  .card h3 {
+    font-size: 17px !important;
+  }
+  .card p {
+    font-size: 12px !important;
+  }
+
+  /* ── Footer stacks vertically ── */
+  footer {
+    padding: 32px 16px !important;
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 16px !important;
+  }
+  footer > div:last-child {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 16px !important;
+  }
+
+  /* ── Inputs: prevent iOS zoom ── */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  /* ── /create drop zone ── */
   .drop {
     padding: 32px 16px !important;
     min-height: 240px !important;
   }
 
-  /* Prevent horizontal overflow */
+  /* ── Prevent horizontal overflow ── */
   main { overflow-x: hidden; }
 
-  /* Reduce aggressive top padding on hero sections */
-  section[style*="paddingTop: 140"],
-  section[style*="paddingTop:140"],
-  section[style*="padding: '140px"] {
-    padding-top: 100px !important;
+  /* ── Stats bar → 2x2 ── */
+  .stats-bar {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    padding: 32px 16px !important;
   }
 
-  /* Flex rows with large gaps should wrap */
-  [style*="gap: 32"],
-  [style*="gap:32"],
-  [style*="gap: 36"],
-  [style*="gap:36"] {
-    gap: 16px !important;
-    flex-wrap: wrap !important;
+  /* ── CTA band ── */
+  .cta-band {
+    padding: 48px 20px !important;
   }
-
-  /* Lightbox nav buttons (prev/next) shouldn't overflow on phones */
-  [style*="left: -64"] { left: 4px !important; }
-  [style*="right: -64"] { right: 4px !important; }
 }
 
 /* PHONE — very small (< 380px, iPhone SE / mini) */
 @media (max-width: 380px) {
-  h1 { font-size: 26px !important; }
-  main, section { padding-left: 12px !important; padding-right: 12px !important; }
+  h1 { font-size: 24px !important; }
+  .section-padding {
+    padding: 40px 12px !important;
+  }
+  .hero-slide {
+    width: 180px !important;
+    height: 250px !important;
+  }
+  .responsive-grid-4col {
+    grid-template-columns: 1fr !important;
+  }
 }

@@ -173,8 +173,8 @@ export default function StylesGallery() {
           h2 { font-size: clamp(24px, 7vw, 36px) !important; }
 
           /* Gallery: 2-up on phone, proper aspect ratio */
-          [style*="gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))'"] {
-            grid-template-columns: 1fr 1fr !important; gap: 6px !important;
+          .styles-grid {
+            grid-template-columns: 1fr 1fr !important; gap: 8px !important;
           }
 
           /* Category filter pills — horizontal scroll on phone */
@@ -237,13 +237,13 @@ export default function StylesGallery() {
 
       <section style={{ padding: '20px 48px 80px', maxWidth: 1400, margin: '0 auto' }}>
         {loading ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 12 }}>
+          <div className="styles-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 12 }}>
             {Array.from({ length: 9 }).map((_, i) => (
               <div key={i} style={{ aspectRatio: '3/4', borderRadius: 8, background: 'linear-gradient(110deg, #141414 30%, #1a1a1a 50%, #141414 70%)', backgroundSize: '200% 100%', animation: 'shimmer 1.5s ease-in-out infinite', border: '1px solid rgba(245,240,232,.04)' }} />
             ))}
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 12 }}>
+          <div className="styles-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 12 }}>
             {visibleStyles.map((style, idx) => (
               <div
                 key={style.id}
