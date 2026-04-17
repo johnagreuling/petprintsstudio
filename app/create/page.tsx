@@ -10,6 +10,28 @@ import {
 
 type Step = 'upload' | 'styles' | 'generating' | 'gallery' | 'checkout'
 
+// Normalized style shape used by the picker — loaded from /api/admin/styles
+// with fallback to hardcoded ART_STYLES from config if the API fails
+type PickerStyle = {
+  id: string
+  name: string
+  emoji: string
+  description?: string
+  styleImage?: string
+  category?: string
+  styleBg?: string
+  styleAccent?: string
+}
+
+// Display labels for the 5 category filters (keys match category slugs from the API)
+const CATEGORY_LABELS: Record<string, { label: string; emoji: string }> = {
+  classic_portraits:   { label: 'Classic Portraits',   emoji: '🏛️' },
+  painterly_fine_art:  { label: 'Painterly Fine Art',  emoji: '🎨' },
+  golden_hour_nature:  { label: 'Golden Hour & Nature', emoji: '🌅' },
+  lifestyle_story:     { label: 'Lifestyle & Story',   emoji: '📖' },
+  pop_modern:          { label: 'Pop & Modern',        emoji: '⚡' },
+}
+
 export default function CreatePage() {
   const [step, setStep] = useState<Step>('upload')
 
@@ -30,6 +52,9 @@ export default function CreatePage() {
 
   // ── Style selection (NEW) ──
   const [selectedStyles, setSelectedStyles] = useState<string[]>([])
+  const [dynamicStyles, setDynamicStyles] = useState<PickerStyle[]>([])
+  const [stylesLoading, setStylesLoading] = useState(true)
+  const [activeStyleCategory, setActiveStyleCategory] = useState<string>('all')
 
   // ── Generation state ──
   const [generated, setGenerated] = useState<Array<{url:string;styleId:string;styleName:string;model:string}>>([])
@@ -74,6 +99,51 @@ export default function CreatePage() {
         }
       }
     } catch(e) {}
+  }, [])
+
+  // ── Load the live style catalog from /api/admin/styles ──
+  // These are the same 32 curated styles shown on /styles. Falls back to
+  // hardcoded ART_STYLES if the endpoint fails so the picker still works.
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const res = await fetch('/api/admin/styles')
+        if (!res.ok) throw new Error(`styles api ${res.status}`)
+        const data = await res.json()
+        const arr = Array.isArray(data) ? data : (data.styles || [])
+        if (cancelled) return
+        const normalized: PickerStyle[] = arr.map((s: any) => ({
+          id: s.id,
+          name: s.name,
+          emoji: s.emoji || '🎨',
+          description: s.description,
+          styleImage: s.sampleImageUrl || s.styleImage,
+          category: s.category,
+        }))
+        if (normalized.length > 0) {
+          setDynamicStyles(normalized)
+        } else {
+          // API returned empty — fall back to config
+          setDynamicStyles(ART_STYLES.map(s => ({
+            id: s.id, name: s.name, emoji: s.emoji,
+            description: s.description, styleImage: s.styleImage,
+            styleBg: (s as any).styleBg, styleAccent: (s as any).styleAccent,
+          })))
+        }
+      } catch (e) {
+        console.warn('Failed to load dynamic styles, using config fallback:', e)
+        if (cancelled) return
+        setDynamicStyles(ART_STYLES.map(s => ({
+          id: s.id, name: s.name, emoji: s.emoji,
+          description: s.description, styleImage: s.styleImage,
+          styleBg: (s as any).styleBg, styleAccent: (s as any).styleAccent,
+        })))
+      } finally {
+        if (!cancelled) setStylesLoading(false)
+      }
+    })()
+    return () => { cancelled = true }
   }, [])
 
   // ── Derived state: counts per style + total ──
@@ -394,11 +464,25 @@ export default function CreatePage() {
 
   // ── Available styles for "Try a new style" modal (not already used) ──
   const usedStyleNames = new Set(generated.map(img => img.styleName || ''))
-  const availableNewStyles = ART_STYLES.filter(s => {
-    // Match by emoji + name (generate returns "emoji name")
+  const availableNewStyles = dynamicStyles.filter(s => {
     const key = `${s.emoji} ${s.name}`
     return !usedStyleNames.has(key) && !usedStyleNames.has(s.name)
   })
+
+  // ── Category filter for the style picker grid ──
+  // Category keys present in the loaded dynamicStyles (dedupe + preserve order)
+  const availableCategories = useMemo(() => {
+    const seen: string[] = []
+    for (const s of dynamicStyles) {
+      if (s.category && !seen.includes(s.category)) seen.push(s.category)
+    }
+    return seen
+  }, [dynamicStyles])
+
+  const filteredStyles = useMemo(() => {
+    if (activeStyleCategory === 'all') return dynamicStyles
+    return dynamicStyles.filter(s => s.category === activeStyleCategory)
+  }, [dynamicStyles, activeStyleCategory])
 
   return (
     <div style={{background:'#0A0A0A',color:'#F5F0E8',minHeight:'100vh',fontFamily:"'DM Sans',sans-serif"}}>
@@ -543,12 +627,14 @@ export default function CreatePage() {
                     src={preview}
                     alt="Crop preview"
                     draggable={false}
-                    style={{position:'absolute',left:'50%',top:'50%',transform:`translate(calc(-50% + ${cropOffset.x}px), calc(-50% + ${cropOffset.y}px)) scale(${cropZoom})`,minWidth:'100%',minHeight:'100%',objectFit:'cover',pointerEvents:'none',userSelect:'none'}}
+                    style={{position:'absolute',left:'50%',top:'50%',transform:`translate(calc(-50% + ${cropOffset.x}px), calc(-50% + ${cropOffset.y}px)) scale(${cropZoom})`,maxWidth:'100%',maxHeight:'100%',pointerEvents:'none',userSelect:'none'}}
                   />
                 </div>
-                <div style={{marginTop:20,display:'flex',alignItems:'center',gap:16}}>
-                  <span style={{fontSize:12,color:'var(--muted)'}}>Zoom</span>
-                  <input type="range" min="1" max="3" step="0.1" value={cropZoom} onChange={e=>setCropZoom(parseFloat(e.target.value))} style={{width:150,accentColor:'var(--gold)'}}/>
+                <div style={{marginTop:20,display:'flex',alignItems:'center',gap:12,flexWrap:'wrap',justifyContent:'center'}}>
+                  <span style={{fontSize:11,color:'var(--muted)',letterSpacing:'.12em',textTransform:'uppercase'}}>Zoom Out</span>
+                  <input type="range" min="0.5" max="4" step="0.05" value={cropZoom} onChange={e=>setCropZoom(parseFloat(e.target.value))} style={{width:180,accentColor:'var(--gold)'}}/>
+                  <span style={{fontSize:11,color:'var(--muted)',letterSpacing:'.12em',textTransform:'uppercase'}}>Zoom In</span>
+                  <span style={{fontSize:11,color:'var(--gold)',minWidth:48,textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{cropZoom.toFixed(2)}×</span>
                 </div>
                 <div style={{marginTop:24,display:'flex',gap:16}}>
                   <button onClick={()=>{setCropOffset({x:0,y:0});setCropZoom(1)}} className="btn-out">Reset</button>
@@ -649,9 +735,45 @@ export default function CreatePage() {
               </div>
             )}
 
+            {/* Category filter pills */}
+            {availableCategories.length > 1 && (
+              <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:18}}>
+                <button
+                  onClick={()=>setActiveStyleCategory('all')}
+                  style={{
+                    padding:'8px 16px',fontSize:11,letterSpacing:'.1em',textTransform:'uppercase',
+                    background: activeStyleCategory==='all' ? 'rgba(201,168,76,.08)' : '#141414',
+                    border:`1px solid ${activeStyleCategory==='all' ? 'var(--gold)' : 'rgba(245,240,232,.1)'}`,
+                    color: activeStyleCategory==='all' ? 'var(--gold)' : 'var(--muted)',
+                    cursor:'pointer',fontWeight: activeStyleCategory==='all' ? 700 : 500,
+                    fontFamily:"'DM Sans',sans-serif",
+                  }}
+                >All ({dynamicStyles.length})</button>
+                {availableCategories.map(cat => {
+                  const info = CATEGORY_LABELS[cat] || { label: cat, emoji: '🎨' }
+                  const count = dynamicStyles.filter(s => s.category === cat).length
+                  const isOn = activeStyleCategory === cat
+                  return (
+                    <button key={cat} onClick={()=>setActiveStyleCategory(cat)}
+                      style={{
+                        padding:'8px 16px',fontSize:11,letterSpacing:'.1em',textTransform:'uppercase',
+                        background: isOn ? 'rgba(201,168,76,.08)' : '#141414',
+                        border:`1px solid ${isOn ? 'var(--gold)' : 'rgba(245,240,232,.1)'}`,
+                        color: isOn ? 'var(--gold)' : 'var(--muted)',
+                        cursor:'pointer',fontWeight: isOn ? 700 : 500,
+                        fontFamily:"'DM Sans',sans-serif",
+                      }}
+                    >{info.emoji} {info.label} ({count})</button>
+                  )
+                })}
+              </div>
+            )}
+
             {/* Selection counter */}
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
-              <div style={{fontSize:11,letterSpacing:'.18em',textTransform:'uppercase',color:'var(--muted)'}}>Art Styles</div>
+              <div style={{fontSize:11,letterSpacing:'.18em',textTransform:'uppercase',color:'var(--muted)'}}>
+                {stylesLoading ? 'Loading styles...' : `${filteredStyles.length} styles`}
+              </div>
               <div style={{fontSize:11,color:selectedStyles.length>0?'var(--gold)':'var(--muted)',fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase'}}>
                 {selectedStyles.length} of {GEN_LIMITS.MAX_STYLES_INITIAL} selected
               </div>
@@ -659,7 +781,7 @@ export default function CreatePage() {
 
             {/* Style grid */}
             <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:2,marginBottom:40}}>
-              {ART_STYLES.map(s=>{
+              {filteredStyles.map(s=>{
                 const isOn = selectedStyles.includes(s.id)
                 const atCap = selectedStyles.length >= GEN_LIMITS.MAX_STYLES_INITIAL && !isOn
                 return (
@@ -675,10 +797,10 @@ export default function CreatePage() {
                     <div style={{width:'100%',aspectRatio:'2/3',overflow:'hidden',marginBottom:8}}>
                       {s.styleImage
                         ? <img src={s.styleImage} alt={s.name} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
-                        : <div style={{width:'100%',height:'100%',background:(s as any).styleBg||'#1a1a1a',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:8}}><div style={{fontSize:28}}>{s.emoji}</div><div style={{fontSize:9,letterSpacing:'.2em',textTransform:'uppercase',color:(s as any).styleAccent||'rgba(255,255,255,.4)',textAlign:'center',padding:'0 8px'}}>{s.name}</div></div>
+                        : <div style={{width:'100%',height:'100%',background:s.styleBg||'#1a1a1a',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:8}}><div style={{fontSize:28}}>{s.emoji}</div><div style={{fontSize:9,letterSpacing:'.2em',textTransform:'uppercase',color:s.styleAccent||'rgba(255,255,255,.4)',textAlign:'center',padding:'0 8px'}}>{s.name}</div></div>
                       }
                     </div>
-                    <div className="serif" style={{fontSize:12,fontWeight:400,padding:'0 8px 8px',textAlign:'center'}}>{s.name}</div>
+                    <div className="serif" style={{fontSize:12,fontWeight:400,padding:'0 8px 8px',textAlign:'center'}}>{s.emoji} {s.name}</div>
                   </button>
                 )
               })}
@@ -763,7 +885,8 @@ export default function CreatePage() {
               let globalIdx = 0
               return Object.entries(groups).map(([name, imgs], groupIdx) => {
                 const styleFromImg = imgs[0]?.styleId?.replace(/_\d+$/, '')
-                const style = ART_STYLES.find(s => s.id === styleFromImg || s.generateStyleId === styleFromImg)
+                const style = dynamicStyles.find(s => s.id === styleFromImg)
+                           || ART_STYLES.find(s => s.id === styleFromImg || s.generateStyleId === styleFromImg)
                 const emoji = style?.emoji || imgs[0]?.styleName?.split(' ')[0] || '🎨'
                 const countForStyle = imageCountByStyle[name] || 0
                 const canAdd = canAddMoreToStyle(name)
@@ -1102,10 +1225,10 @@ export default function CreatePage() {
                   <div style={{width:'100%',aspectRatio:'2/3',overflow:'hidden'}}>
                     {s.styleImage
                       ? <img src={s.styleImage} alt={s.name} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
-                      : <div style={{width:'100%',height:'100%',background:(s as any).styleBg||'#1a1a1a',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:8}}><div style={{fontSize:28}}>{s.emoji}</div></div>
+                      : <div style={{width:'100%',height:'100%',background:s.styleBg||'#1a1a1a',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:8}}><div style={{fontSize:28}}>{s.emoji}</div></div>
                     }
                   </div>
-                  <div className="serif" style={{fontSize:12,fontWeight:400,padding:'6px 8px 8px',textAlign:'center'}}>{s.name}</div>
+                  <div className="serif" style={{fontSize:12,fontWeight:400,padding:'6px 8px 8px',textAlign:'center'}}>{s.emoji} {s.name}</div>
                 </button>
               ))}
             </div>

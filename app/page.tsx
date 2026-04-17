@@ -194,7 +194,7 @@ export default function Home() {
       {/* NAV */}
       <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:100,padding:'16px 20px',display:'flex',alignItems:'center',justifyContent:'space-between',background:'rgba(10,10,10,.95)',backdropFilter:'blur(16px)',borderBottom:'1px solid var(--border)'}}>
         <Link href="/" style={{display:'flex',alignItems:'center',gap:8,textDecoration:'none'}}>
-          <span style={{fontSize:20}}>ð¾</span>
+          <span style={{fontSize:20}}>🐾</span>
           <span className="serif" style={{fontSize:18,letterSpacing:'.06em',color:'var(--cream)'}}>Pet Prints Studio</span>
         </Link>
         <div className="mobile-hide" style={{display:'flex',gap:36,alignItems:'center'}}>
@@ -239,15 +239,15 @@ export default function Home() {
               <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:14,fontWeight:600}}>Begin</div>
               <div style={{fontSize:20,color:'var(--cream)',fontWeight:400,fontFamily:"'Cormorant Garamond',serif",marginBottom:8,letterSpacing:'-.01em'}}>Upload your pet&rsquo;s photo</div>
               <div style={{fontSize:12,color:'var(--muted)',marginBottom:22,letterSpacing:'.02em'}}>JPG, PNG, or WEBP · Max 50MB</div>
-              <div style={{display:'inline-block',background:'var(--gold)',color:'var(--ink)',padding:'13px 32px',fontSize:11,fontWeight:700,letterSpacing:'.18em',textTransform:'uppercase'}}>Start Their Story â</div>
+              <div style={{display:'inline-block',background:'var(--gold)',color:'var(--ink)',padding:'13px 32px',fontSize:11,fontWeight:700,letterSpacing:'.18em',textTransform:'uppercase'}}>Start Their Story →</div>
             </div>
           </Link>
         </div>
 
-        {/* ââ Hero Portrait Slider âââââââââââââââââââââââââââââââââ
+        {/* ── Hero Portrait Slider ─────────────────────────────────
             Horizontal scroll slider with all 32 curated portraits.
             Left/right arrows on desktop, native momentum thumb-flick on iOS.
-            scroll-snap centers each card as it comes into view. ââ */}
+            scroll-snap centers each card as it comes into view. ── */}
         {heroShowcase.length > 0 && (
           <div className="fu fu4" style={{position:'relative',width:'100%',maxWidth:1200,margin:'0 auto 48px'}}>
             {/* Edge fade masks */}
@@ -260,13 +260,13 @@ export default function Home() {
               onClick={()=>scrollBy(-1)}
               className="slider-arrow slider-arrow-left"
               style={{position:'absolute',left:16,top:'50%',transform:'translateY(-50%)',zIndex:3,width:44,height:44,borderRadius:'50%',background:'rgba(10,10,10,.8)',border:'1px solid rgba(201,168,76,.4)',color:'var(--gold)',fontSize:18,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',backdropFilter:'blur(8px)',transition:'all .2s'}}
-            >â¹</button>
+            >‹</button>
             <button
               aria-label="Next styles"
               onClick={()=>scrollBy(1)}
               className="slider-arrow slider-arrow-right"
               style={{position:'absolute',right:16,top:'50%',transform:'translateY(-50%)',zIndex:3,width:44,height:44,borderRadius:'50%',background:'rgba(10,10,10,.8)',border:'1px solid rgba(201,168,76,.4)',color:'var(--gold)',fontSize:18,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',backdropFilter:'blur(8px)',transition:'all .2s'}}
-            >âº</button>
+            >›</button>
 
             {/* Scroll container */}
             <div
@@ -331,13 +331,13 @@ export default function Home() {
         {/* Style hint */}
         <div className="fu fu4" style={{marginBottom:64,textAlign:'center'}}>
           <p style={{fontSize:12,color:'rgba(201,168,76,.6)',letterSpacing:'.08em'}}>
-            32 custom-tuned styles &nbsp;&middot;&nbsp; Every one included &nbsp;&middot;&nbsp; <Link href="/styles" style={{color:'var(--gold)',textDecoration:'none',borderBottom:'1px solid rgba(201,168,76,.4)'}}>Explore styles â</Link>
+            32 custom-tuned styles &nbsp;&middot;&nbsp; Every one included &nbsp;&middot;&nbsp; <Link href="/styles" style={{color:'var(--gold)',textDecoration:'none',borderBottom:'1px solid rgba(201,168,76,.4)'}}>Explore styles →</Link>
           </p>
         </div>
 
         {/* Stats */}
         <div className="fu fu4 stats-bar" style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:40,justifyContent:'center'}}>
-          {[['32','Portraits Per Story'],['1,000+','Pet Stories Told'],['âª','Beautiful Original Music'],['4.9â','Customer Average']].map(([n,l1])=>(
+          {[['32','Portraits Per Story'],['1,000+','Pet Stories Told'],['♪','Beautiful Original Music'],['4.9★','Customer Average']].map(([n,l1])=>(
             <div key={l1} style={{textAlign:'center'}}>
               <div className="serif" style={{fontSize:36,color:'var(--gold)',lineHeight:1,marginBottom:4}}>{n}</div>
               <div style={{fontSize:9,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--muted)',marginTop:6,lineHeight:1.6}}>{l1}</div>
@@ -346,7 +346,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ââ SONG PLAYER — right at the top so visitors can play while browsing ââ */}
+      {/* ── SONG PLAYER — right at the top so visitors can play while browsing ── */}
       <section style={{padding:'56px 60px',background:'#0A0A0A'}} className="section-padding">
         <div style={{maxWidth:800,margin:'0 auto',textAlign:'center',padding:'48px 32px',background:'linear-gradient(135deg,rgba(167,139,250,.05),rgba(10,10,10,.4))',border:'1px solid rgba(167,139,250,.15)',borderRadius:10}}>
           <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'#A78BFA',marginBottom:14}}>Every Pet Gets a Song</div>
@@ -361,12 +361,12 @@ export default function Home() {
               {name:'Jack',song:'/songs/jack-the-labradoodle.mp3',desc:'The Labradoodle'},
             ].map(({name,song,desc})=>(
               <button key={name} onClick={()=>{const a=document.getElementById('song-player') as HTMLAudioElement;if(a){a.src=song;a.play()}}} style={{background:'rgba(167,139,250,.12)',color:'#A78BFA',padding:'12px 24px',fontSize:10,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',border:'1px solid rgba(167,139,250,.3)',borderRadius:4,cursor:'pointer',display:'flex',alignItems:'center',gap:8,transition:'all .2s'}}>
-                <span style={{fontSize:14}}>â¶</span> {name} — {desc}
+                <span style={{fontSize:14}}>▶</span> {name} — {desc}
               </button>
             ))}
           </div>
           <audio id="song-player" style={{display:'none'}}/>
-          <p style={{fontSize:10,color:'var(--muted)',marginTop:16,letterSpacing:'.1em'}}>ð§ Turn up your volume</p>
+          <p style={{fontSize:10,color:'var(--muted)',marginTop:16,letterSpacing:'.1em'}}>🎧 Turn up your volume</p>
         </div>
       </section>
 
@@ -448,9 +448,9 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+      {/* ════════════════════════════════════════════════════════════
            THE EXPERIENCE — one clean section, no redundancy
-           ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */}
+           ════════════════════════════════════════════════════════════ */}
       <section id="the-experience" style={{padding:'80px 60px',background:'#0A0A0A'}} className="section-padding">
         <div style={{maxWidth:1100,margin:'0 auto'}}>
 
@@ -544,7 +544,7 @@ export default function Home() {
           {/* Closing */}
           <div style={{textAlign:'center'}}>
             <p className="serif" style={{fontSize:'clamp(20px,3vw,28px)',color:'var(--gold)',marginBottom:28,fontStyle:'italic'}}>Every sense. Every detail. Every bit of who they are.</p>
-            <Link href="/create" className="btn-gold">ð¾ Start Their Story</Link>
+            <Link href="/create" className="btn-gold">🐾 Start Their Story</Link>
           </div>
         </div>
       </section>
@@ -559,17 +559,17 @@ export default function Home() {
           A portrait they&rsquo;ll stare at. A song they&rsquo;ll cry to. A blanket they&rsquo;ll never let go of.
         </p>
         <Link href="/create" style={{background:'var(--ink)',color:'var(--gold)',padding:'20px 52px',fontSize:12,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',textDecoration:'none',display:'inline-block'}}>
-          ð¾ Begin Their Story
+          🐾 Begin Their Story
         </Link>
       </section>
 
       {/* FOOTER */}
       <footer style={{background:'var(--soft)',padding:'44px 60px',display:'flex',justifyContent:'space-between',alignItems:'center',borderTop:'1px solid var(--border)',flexWrap:'wrap',gap:20}}>
         <div style={{display:'flex',alignItems:'center',gap:10}}>
-          <span>ð¾</span>
+          <span>🐾</span>
           <span className="serif" style={{fontSize:18}}>Pet Prints Studio</span>
         </div>
-        <div style={{fontSize:11,color:'var(--muted)'}}>Â© 2025 Pet Prints Studio · Wilmington, NC</div>
+        <div style={{fontSize:11,color:'var(--muted)'}}>© 2025 Pet Prints Studio · Wilmington, NC</div>
         <div style={{display:'flex',gap:24}}>
           {[
             {l:'FAQ',h:'/faq'},
