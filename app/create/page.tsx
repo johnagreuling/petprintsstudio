@@ -273,11 +273,39 @@ export default function CreatePage() {
   }
 
   // ── PRODUCT MOCKUP RENDERER ─────────────────────────────────
+  // Product image mapping
+  const PRODUCT_IMAGES: Record<string, string> = {
+    mug_20oz: '/products/mug.png',
+    blanket_50x60: '/products/blanket.png',
+    blanket_60x80: '/products/blanket.png',
+    baby_blanket: '/products/baby-blanket.png',
+    beach_towel: '/products/beach-towel.png',
+    pillow: '/products/pillow.png',
+    tshirt: '/products/tee.png',
+    hoodie: '/products/hoodie.png',
+    tote: '/products/tote.png',
+    phone_case: '/products/phone.png',
+  }
+
+  const [productDetail, setProductDetail] = useState<typeof PRODUCTS[0] | null>(null)
+
   const ProductMockup = ({ productId, category, size, previewUrl, isSelected }: {
     productId: string; category: string; size: string; previewUrl: string; isSelected: boolean
   }) => {
     const img = previewUrl
     const sel = isSelected
+    const productPhoto = PRODUCT_IMAGES[productId]
+
+    // For non-canvas/print products, show real product photography
+    if (productPhoto && category !== 'Canvas' && category !== 'Prints') {
+      return (
+        <div style={{position:'relative',width:'100%',paddingBottom:'100%',background:'#0d0d0d',overflow:'hidden'}}>
+          <img src={productPhoto} alt={productId} style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center'}} />
+          {sel && <div style={{position:'absolute',inset:0,border:'2px solid var(--gold)',pointerEvents:'none'}} />}
+        </div>
+      )
+    }
+
     if (category === 'Canvas') return (
       <div style={{position:'relative',width:'100%',paddingBottom:'85%',background:'#0d0d0d'}}>
         <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',padding:'16px 20px 8px'}}>
@@ -297,93 +325,6 @@ export default function CreatePage() {
             <div style={{position:'absolute',inset:10,border:'1px solid rgba(0,0,0,.1)',display:'flex',alignItems:'center',justifyContent:'center'}}>
               <div style={{position:'absolute',inset:4,backgroundImage:img?`url(${img})`:'none',backgroundColor:img?'transparent':'#8b6914',backgroundSize:'cover',backgroundPosition:'center'}}/>
             </div>
-            <div style={{position:'absolute',inset:0,background:'repeating-linear-gradient(45deg,transparent,transparent 2px,rgba(0,0,0,.01) 2px,rgba(0,0,0,.01) 4px)',pointerEvents:'none'}}/>
-          </div>
-        </div>
-      </div>
-    )
-    if (productId.includes('mug')) return (
-      <div style={{position:'relative',width:'100%',paddingBottom:'85%',background:'#0d0d0d'}}>
-        <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center'}}>
-          <div style={{position:'relative',width:80,height:70,filter:'drop-shadow(0 4px 12px rgba(0,0,0,.5))'}}>
-            <div style={{width:74,height:64,background:'#fff',borderRadius:'3px 3px 7px 7px',overflow:'hidden',position:'relative',boxShadow:'inset 0 0 0 1px rgba(0,0,0,.08)'}}>
-              <div style={{position:'absolute',inset:'10px 8px',backgroundImage:img?`url(${img})`:'none',backgroundSize:'cover',backgroundPosition:'center',borderRadius:2}}/>
-            </div>
-            <div style={{position:'absolute',right:-13,top:10,width:14,height:28,border:'3px solid #ccc',borderLeft:'none',borderRadius:'0 8px 8px 0'}}/>
-          </div>
-        </div>
-      </div>
-    )
-    if (productId.includes('blanket')) return (
-      <div style={{position:'relative',width:'100%',paddingBottom:'85%',background:'#0d0d0d'}}>
-        <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',padding:'14px'}}>
-          <div style={{width:'100%',height:'100%',position:'relative',borderRadius:4,overflow:'hidden',boxShadow:'0 4px 16px rgba(0,0,0,.5)',background:'#e8e0d4'}}>
-            <div style={{position:'absolute',inset:'12px',backgroundImage:img?`url(${img})`:'none',backgroundSize:'cover',backgroundPosition:'center',borderRadius:3}}/>
-            <div style={{position:'absolute',inset:0,background:'repeating-linear-gradient(0deg,transparent,transparent 8px,rgba(255,255,255,.04) 8px,rgba(255,255,255,.04) 9px)',pointerEvents:'none'}}/>
-          </div>
-        </div>
-      </div>
-    )
-    if (productId.includes('pillow')) return (
-      <div style={{position:'relative',width:'100%',paddingBottom:'85%',background:'#0d0d0d'}}>
-        <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',padding:'10px'}}>
-          <div style={{width:'85%',height:'85%',position:'relative',borderRadius:'6px',boxShadow:'0 6px 20px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.06)',background:'#e0d8cc',overflow:'hidden'}}>
-            <div style={{position:'absolute',inset:'10px',backgroundImage:img?`url(${img})`:'none',backgroundSize:'cover',backgroundPosition:'center',borderRadius:4}}/>
-            <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.15) 100%)',pointerEvents:'none'}}/>
-          </div>
-        </div>
-      </div>
-    )
-    if (productId.includes('tshirt') || productId.includes('hoodie')) return (
-      <div style={{position:'relative',width:'100%',paddingBottom:'85%',background:'#0d0d0d'}}>
-        <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center'}}>
-          <div style={{position:'relative',width:'78%',height:'82%'}}>
-            <svg viewBox="0 0 100 100" style={{width:'100%',height:'100%',filter:'drop-shadow(0 4px 12px rgba(0,0,0,.5))'}}>
-              <defs><clipPath id={`sc-${productId}`}><path d={productId.includes('hoodie')?"M28,8 L18,15 L10,28 L22,30 L22,90 L78,90 L78,30 L90,28 L82,15 L72,8 C68,12 55,15 50,15 C45,15 32,12 28,8 Z":"M30,5 L18,12 L10,28 L24,30 L24,92 L76,92 L76,30 L90,28 L82,12 L70,5 C66,10 55,13 50,13 C45,13 34,10 30,5 Z"}/></clipPath></defs>
-              <path d={productId.includes('hoodie')?"M28,8 L18,15 L10,28 L22,30 L22,90 L78,90 L78,30 L90,28 L82,15 L72,8 C68,12 55,15 50,15 C45,15 32,12 28,8 Z":"M30,5 L18,12 L10,28 L24,30 L24,92 L76,92 L76,30 L90,28 L82,12 L70,5 C66,10 55,13 50,13 C45,13 34,10 30,5 Z"} fill="#1a1a1a" stroke="rgba(255,255,255,.08)" strokeWidth="0.5"/>
-              {img&&<image href={img} x="30" y="30" width="40" height="38" clipPath={`url(#sc-${productId})`} preserveAspectRatio="xMidYMid slice"/>}
-            </svg>
-          </div>
-        </div>
-      </div>
-    )
-    if (productId.includes('tote')) return (
-      <div style={{position:'relative',width:'100%',paddingBottom:'85%',background:'#0d0d0d'}}>
-        <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center'}}>
-          <div style={{position:'relative',width:'70%',height:'82%',filter:'drop-shadow(0 4px 14px rgba(0,0,0,.5))'}}>
-            <svg viewBox="0 0 100 110" style={{width:'100%',height:'100%'}}>
-              <defs><clipPath id={`tc-${productId}`}><rect x="10" y="22" width="80" height="80" rx="2"/></clipPath></defs>
-              <path d="M32,22 Q28,4 38,4 Q48,4 50,10 Q52,4 62,4 Q72,4 68,22" fill="none" stroke="#c8b99a" strokeWidth="5" strokeLinecap="round"/>
-              <rect x="10" y="22" width="80" height="80" rx="2" fill="#c8b99a"/>
-              {img&&<image href={img} x="22" y="32" width="56" height="56" clipPath={`url(#tc-${productId})`} preserveAspectRatio="xMidYMid slice"/>}
-            </svg>
-          </div>
-        </div>
-      </div>
-    )
-    if (productId.includes('phone')) return (
-      <div style={{position:'relative',width:'100%',paddingBottom:'85%',background:'#0d0d0d'}}>
-        <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center'}}>
-          <div style={{position:'relative',width:'45%',height:'88%',filter:'drop-shadow(0 4px 14px rgba(0,0,0,.5))'}}>
-            <div style={{width:'100%',height:'100%',background:'#1a1a1a',borderRadius:16,border:'2px solid rgba(255,255,255,.08)',overflow:'hidden',display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
-              <div style={{width:'88%',height:'78%',backgroundImage:img?`url(${img})`:'none',backgroundSize:'cover',backgroundPosition:'center',borderRadius:8}}/>
-              <div style={{position:'absolute',top:8,left:'50%',transform:'translateX(-50%)',width:18,height:5,background:'#0a0a0a',borderRadius:3}}/>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-    if (productId.includes('hat')) return (
-      <div style={{position:'relative',width:'100%',paddingBottom:'85%',background:'#0d0d0d'}}>
-        <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center'}}>
-          <div style={{position:'relative',width:'80%',height:'70%',filter:'drop-shadow(0 4px 14px rgba(0,0,0,.5))'}}>
-            <svg viewBox="0 0 120 80" style={{width:'100%',height:'100%'}}>
-              <defs><clipPath id={`hc-${productId}`}><ellipse cx="60" cy="38" rx="46" ry="30"/></clipPath></defs>
-              <ellipse cx="60" cy="62" rx="58" ry="10" fill="#1a1a1a"/>
-              <ellipse cx="60" cy="38" rx="46" ry="30" fill="#1a1a1a" stroke="rgba(255,255,255,.06)" strokeWidth="1"/>
-              {img&&<image href={img} x="42" y="24" width="36" height="28" clipPath={`url(#hc-${productId})`} preserveAspectRatio="xMidYMid slice" opacity="0.85"/>}
-              <path d="M14,40 Q60,10 106,40" fill="none" stroke="rgba(255,255,255,.08)" strokeWidth="0.8"/>
-            </svg>
           </div>
         </div>
       </div>
@@ -1086,7 +1027,7 @@ export default function CreatePage() {
             <div style={{textAlign:'center',marginBottom:56}}>
               <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Step 5 of 5</div>
               <h1 className="serif" style={{fontSize:'clamp(28px,5vw,48px)',fontWeight:400,marginBottom:14,letterSpacing:'-.01em'}}>Make It <em style={{color:'var(--gold)'}}>Complete</em>.</h1>
-              <p style={{color:'var(--muted)',fontSize:14,lineHeight:1.8,maxWidth:480,margin:'0 auto'}}>Your portrait is gallery-ready. Add extras to make it unforgettable.</p>
+              <p style={{color:'var(--muted)',fontSize:14,lineHeight:1.8,maxWidth:520,margin:'0 auto'}}>Every product below was hand-selected for quality — thicker canvas, softer blankets, heavier shirts. Not novelty gifts. Real things you would choose for yourself.</p>
             </div>
 
             {/* Selected portrait — celebration card */}
@@ -1111,24 +1052,21 @@ export default function CreatePage() {
             )}
             <div style={{marginBottom:44}}/>
 
-            {/* ── SONG INCLUDED FREE ── */}
-            <div style={{display:'flex',gap:16,alignItems:'center',padding:'20px 28px',background:'rgba(139,92,246,.06)',border:'1px solid rgba(139,92,246,.2)',marginBottom:44}}>
-              <div style={{fontSize:32,flexShrink:0}}>🎵</div>
+            {/* ── YOUR EXPERIENCE INCLUDES ── */}
+            <div style={{display:'flex',gap:16,alignItems:'center',padding:'20px 28px',background:'rgba(139,92,246,.06)',border:'1px solid rgba(139,92,246,.15)',marginBottom:44}}>
+              <div style={{fontSize:28,flexShrink:0}}>🎵</div>
               <div style={{flex:1}}>
-                <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:4}}>
-                  <div className="serif" style={{fontSize:18,fontWeight:400}}>Custom Pet Song</div>
-                  <div style={{background:'rgba(139,92,246,.25)',color:'#A78BFA',fontSize:8,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',padding:'3px 9px'}}>Included Free</div>
-                </div>
-                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>An original song composed for your pet — their name in the lyrics, their story in the melody. Delivered as MP3 with QR code on the portrait.</div>
+                <div className="serif" style={{fontSize:17,fontWeight:400,marginBottom:4}}>Your Custom Pet Song</div>
+                <div style={{fontSize:12,color:'var(--muted)',lineHeight:1.7}}>An original song composed for your pet — their name in the lyrics, their personality in every note. A QR code on the portrait links to the song. Part of every Pet Prints Studio experience.</div>
               </div>
             </div>
 
             {/* ── ADD MORE PRODUCTS ── */}
-            <div style={{fontSize:9,letterSpacing:'.28em',textTransform:'uppercase',color:'var(--gold)',marginBottom:18,fontWeight:600}}>🛍️ Add Beautiful Keepsakes</div>
-            {['Home','Apparel','Accessories','Pets'].map(cat=>{
+            <div style={{fontSize:9,letterSpacing:'.28em',textTransform:'uppercase',color:'var(--gold)',marginBottom:18,fontWeight:600}}>🛍️ Premium Products — Curated for Quality</div>
+            {['Home','Apparel','Accessories'].map(cat=>{
               const items = PRODUCTS.filter(p=>p.category===cat&&p.id!==primaryProduct?.id)
               if(!items.length) return null
-              const catLabels: Record<string,string> = { Home:'Home & Gifts', Apparel:'Apparel', Accessories:'Accessories', Pets:'For Your Pet' }
+              const catLabels: Record<string,string> = { Home:'Home & Gifts', Apparel:'Apparel', Accessories:'Accessories' }
               return (
                 <div key={cat} style={{marginBottom:32}}>
                   <div style={{fontSize:9,letterSpacing:'.22em',textTransform:'uppercase',color:'rgba(245,240,232,.35)',marginBottom:14}}>{catLabels[cat]||cat}</div>
@@ -1138,6 +1076,7 @@ export default function CreatePage() {
                       return (
                         <div key={p.id} className={`product-card${isOn?' on':''}`} onClick={()=>setCartExtras(prev=>prev.includes(p.id)?prev.filter(x=>x!==p.id):[...prev,p.id])} style={{padding:0,overflow:'hidden'}}>
                           {isOn&&<div style={{position:'absolute',top:8,left:8,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:18,height:18,display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,zIndex:2}}>✓</div>}
+                          {PRODUCT_IMAGES[p.id] && <div onClick={(e)=>{e.stopPropagation();setProductDetail(p)}} style={{position:'absolute',top:8,right:8,background:'rgba(0,0,0,.6)',color:'#fff',borderRadius:'50%',width:22,height:22,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,zIndex:2,cursor:'pointer',backdropFilter:'blur(4px)'}}>ⓘ</div>}
                           <ProductMockup productId={p.id} category={p.category} size={p.size} previewUrl={preview} isSelected={isOn} />
                           <div style={{padding:'0 12px 14px'}}>
                             <div className="serif" style={{fontSize:14,marginBottom:2,fontWeight:400}}>{p.name}</div>
@@ -1154,13 +1093,13 @@ export default function CreatePage() {
 
             {/* ── PREMIUM RECEIPT ── */}
             <div style={{background:'linear-gradient(180deg,#161616,#111)',border:'1px solid rgba(201,168,76,.25)',padding:'28px 32px',marginBottom:28,marginTop:8}}>
-              <div style={{fontSize:9,letterSpacing:'.28em',textTransform:'uppercase',color:'var(--gold)',marginBottom:18,fontWeight:600}}>Order Summary</div>
+              <div style={{fontSize:9,letterSpacing:'.28em',textTransform:'uppercase',color:'var(--gold)',marginBottom:18,fontWeight:600}}>Your Experience</div>
               <div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}>
                 <span style={{fontSize:14}}>{primaryProduct?.name} {primaryProduct?.size}</span>
                 <span style={{fontSize:14}}>${primaryProduct?.price}</span>
               </div>
               {isMemory&&<div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14}}>✨ Memory Portrait</span><span style={{fontSize:14}}>${MEMORY_UPGRADE_PRICE.toFixed(2)}</span></div>}
-              <div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14,color:'#A78BFA'}}>🎵 Custom Pet Song</span><span style={{fontSize:14,color:'#A78BFA'}}>FREE</span></div>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14,color:'#A78BFA'}}>🎵 Custom Pet Song</span><span style={{fontSize:14,color:'#A78BFA'}}>Included</span></div>
               {cartExtras.map(id=>{const p=PRODUCTS.find(x=>x.id===id)!;return <div key={id} style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}><span style={{fontSize:14}}>{p.emoji} {p.name} {p.size}</span><span style={{fontSize:14}}>${p.price}</span></div>})}
               <div style={{borderTop:'1px solid rgba(201,168,76,.2)',paddingTop:16,marginTop:12,display:'flex',justifyContent:'space-between',alignItems:'baseline'}}>
                 <span style={{fontSize:12,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase'}}>Total</span>
@@ -1284,6 +1223,35 @@ export default function CreatePage() {
           >Select This Portrait</button>
           
           <div style={{marginTop:12,fontSize:11,color:'rgba(255,255,255,.4)'}}>Click anywhere to close</div>
+        </div>
+      )}
+
+      {/* Product Detail Modal */}
+      {productDetail && (
+        <div onClick={()=>setProductDetail(null)} style={{position:'fixed',inset:0,background:'rgba(0,0,0,.85)',backdropFilter:'blur(12px)',zIndex:200,display:'flex',alignItems:'center',justifyContent:'center',padding:20,cursor:'pointer'}}>
+          <div onClick={e=>e.stopPropagation()} style={{background:'#141414',border:'1px solid rgba(201,168,76,.2)',maxWidth:480,width:'100%',overflow:'hidden',cursor:'default'}}>
+            {PRODUCT_IMAGES[productDetail.id] && (
+              <img src={PRODUCT_IMAGES[productDetail.id]} alt={productDetail.name} style={{width:'100%',aspectRatio:'1',objectFit:'cover',display:'block'}} />
+            )}
+            <div style={{padding:'24px 28px'}}>
+              <div style={{fontSize:9,letterSpacing:'.25em',textTransform:'uppercase',color:'var(--gold)',marginBottom:8}}>{productDetail.category}</div>
+              <h3 className="serif" style={{fontSize:24,fontWeight:400,marginBottom:4}}>{productDetail.name}</h3>
+              <div style={{fontSize:13,color:'var(--muted)',marginBottom:12}}>{productDetail.size}</div>
+              <p style={{fontSize:14,color:'var(--muted)',lineHeight:1.8,marginBottom:20}}>{productDetail.description}</p>
+              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                <span className="serif" style={{fontSize:28,color:'var(--gold)'}}>${productDetail.price}</span>
+                <button
+                  onClick={()=>{
+                    setCartExtras(prev=>prev.includes(productDetail.id)?prev:[ ...prev, productDetail.id])
+                    setProductDetail(null)
+                  }}
+                  style={{background:'var(--gold)',color:'var(--ink)',padding:'12px 28px',fontSize:10,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',border:'none',cursor:'pointer'}}
+                >
+                  {cartExtras.includes(productDetail.id) ? '✓ Added' : 'Add to Order'}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
