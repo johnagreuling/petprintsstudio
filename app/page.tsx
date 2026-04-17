@@ -574,10 +574,16 @@ export default function Home() {
           <span>🐾</span>
           <span className="serif" style={{fontSize:18}}>Pet Prints Studio</span>
         </div>
-        <div style={{fontSize:11,color:'var(--muted)'}}>© 2025 Pet Prints Studio · A Living Memory, Printed & Shipped</div>
+        <div style={{fontSize:11,color:'var(--muted)'}}>© 2025 Pet Prints Studio · Wilmington, NC</div>
         <div style={{display:'flex',gap:24}}>
-          {['Privacy','Terms','Contact'].map(l=>(
-            <a key={l} href="#" style={{fontSize:10,letterSpacing:'.15em',textTransform:'uppercase',color:'var(--muted)',textDecoration:'none'}}>{l}</a>
+          {[
+            {l:'FAQ',h:'/faq'},
+            {l:'Shipping & Returns',h:'/shipping'},
+            {l:'About',h:'/about'},
+            {l:'Styles',h:'/styles'},
+            {l:'Contact',h:'mailto:johnagreuling@icloud.com'},
+          ].map(({l,h})=>(
+            <Link key={l} href={h} style={{fontSize:10,letterSpacing:'.15em',textTransform:'uppercase',color:'var(--muted)',textDecoration:'none'}}>{l}</Link>
           ))}
         </div>
       </footer>

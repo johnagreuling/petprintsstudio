@@ -158,6 +158,7 @@ export default function StylesGallery() {
         .cat-pill { padding: 10px 18px; border-radius: 24px; font-size: 12px; cursor: pointer; border: 1px solid #333; background: transparent; color: #888; transition: all .15s; letter-spacing: .08em; text-transform: uppercase; }
         .cat-pill:hover { border-color: #555; color: var(--cream); }
         .cat-pill.on { color: var(--cream); }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
         /* Mobile polish */
         @media (max-width: 640px) {
@@ -236,7 +237,11 @@ export default function StylesGallery() {
 
       <section style={{ padding: '20px 48px 80px', maxWidth: 1400, margin: '0 auto' }}>
         {loading ? (
-          <div style={{ textAlign: 'center', padding: 80, color: '#666' }}>Loading styles...</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 12 }}>
+            {Array.from({ length: 9 }).map((_, i) => (
+              <div key={i} style={{ aspectRatio: '3/4', borderRadius: 8, background: 'linear-gradient(110deg, #141414 30%, #1a1a1a 50%, #141414 70%)', backgroundSize: '200% 100%', animation: 'shimmer 1.5s ease-in-out infinite', border: '1px solid rgba(245,240,232,.04)' }} />
+            ))}
+          </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 12 }}>
             {visibleStyles.map((style, idx) => (
