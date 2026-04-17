@@ -324,26 +324,6 @@ export default function Home() {
           </div>
         )}
 
-        <div className="fu fu4" style={{display:'flex',gap:16,flexWrap:'wrap',justifyContent:'center',marginBottom:72}}>
-          <a href="#how-it-works" className="btn-out">See How It Works</a>
-        </div>
-
-        {/* Style hint */}
-        <div className="fu fu4" style={{marginBottom:64,textAlign:'center'}}>
-          <p style={{fontSize:12,color:'rgba(201,168,76,.6)',letterSpacing:'.08em'}}>
-            32 custom-tuned styles &nbsp;&middot;&nbsp; Every one included &nbsp;&middot;&nbsp; <Link href="/styles" style={{color:'var(--gold)',textDecoration:'none',borderBottom:'1px solid rgba(201,168,76,.4)'}}>Explore styles →</Link>
-          </p>
-        </div>
-
-        {/* Stats */}
-        <div className="fu fu4 stats-bar" style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:40,justifyContent:'center'}}>
-          {[['32','Portraits Per Story'],['1,000+','Pet Stories Told'],['♪','Beautiful Original Music'],['4.9★','Customer Average']].map(([n,l1])=>(
-            <div key={l1} style={{textAlign:'center'}}>
-              <div className="serif" style={{fontSize:36,color:'var(--gold)',lineHeight:1,marginBottom:4}}>{n}</div>
-              <div style={{fontSize:9,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--muted)',marginTop:6,lineHeight:1.6}}>{l1}</div>
-            </div>
-          ))}
-        </div>
       </section>
 
       {/* ── SONG PLAYER — right at the top so visitors can play while browsing ── */}
@@ -545,6 +525,23 @@ export default function Home() {
           <div style={{textAlign:'center'}}>
             <p className="serif" style={{fontSize:'clamp(20px,3vw,28px)',color:'var(--gold)',marginBottom:28,fontStyle:'italic'}}>Every sense. Every detail. Every bit of who they are.</p>
             <Link href="/create" className="btn-gold">🐾 Start Their Story</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* STATS + STYLES LINK (moved from hero) */}
+      <section style={{padding:'80px 60px',background:'#0A0A0A',borderTop:'1px solid var(--border)'}} className="section-padding">
+        <div style={{maxWidth:1100,margin:'0 auto',textAlign:'center'}}>
+          <p style={{fontSize:12,color:'rgba(201,168,76,.6)',letterSpacing:'.08em',marginBottom:48}}>
+            32 custom-tuned styles &nbsp;&middot;&nbsp; Every one included &nbsp;&middot;&nbsp; <Link href="/styles" style={{color:'var(--gold)',textDecoration:'none',borderBottom:'1px solid rgba(201,168,76,.4)'}}>Explore styles →</Link>
+          </p>
+          <div className="stats-bar" style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:40,justifyContent:'center'}}>
+            {[['32','Portraits Per Story'],['1,000+','Pet Stories Told'],['♪','Beautiful Original Music'],['4.9★','Customer Average']].map(([n,l1])=>(
+              <div key={l1} style={{textAlign:'center'}}>
+                <div className="serif" style={{fontSize:36,color:'var(--gold)',lineHeight:1,marginBottom:4}}>{n}</div>
+                <div style={{fontSize:9,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--muted)',marginTop:6,lineHeight:1.6}}>{l1}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
