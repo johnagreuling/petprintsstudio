@@ -20,7 +20,7 @@ const FAQS = [
   },
   {
     q: 'What products do you offer?',
-    a: 'Gallery-wrapped canvas prints (8×10" to 24×36"), archival fine art prints, ceramic mugs (11oz and 15oz), sherpa blankets (50×60"), throw pillows, hoodies, t-shirts, tote bags, phone cases, and dad hats. All printed with your chosen portrait.',
+    a: 'Gallery-wrapped canvas prints (8×10" to 24×36"), archival fine art prints, a 15oz ceramic mug, a sherpa blanket (50×60"), a throw pillow, a premium hoodie, a canvas tote bag, and a phone case. All printed with your chosen portrait.',
   },
   {
     q: 'What is the Custom Pet Song?',
