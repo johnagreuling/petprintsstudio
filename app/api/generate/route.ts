@@ -3,6 +3,7 @@ import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { v4 as uuidv4 } from 'uuid'
 import { saveSession, SessionImage, logApiUsage, addImagesToSession } from '@/lib/db'
+import { ART_STYLES } from '@/lib/config'
 import {
   analyzePetSubject,
   buildPrompt,
@@ -17,7 +18,7 @@ import {
 } from '@/lib/portrait-engine'
 
 // ── Config ───────────────────────────────────────────────────────────────
-export const maxDuration = 600   // 10 minutes — 32 styles at quality:high
+export const maxDuration = 600   // 10 minutes
 export const dynamic = 'force-dynamic'
 
 // ── R2 Client ────────────────────────────────────────────────────────────
@@ -56,8 +57,6 @@ async function saveSessionMetadata(sessionFolder: string, meta: object) {
 }
 
 // ── Style ID Mapping ─────────────────────────────────────────────────────
-// Maps old style IDs from config.ts ART_STYLES → new portrait-engine IDs
-// This keeps the frontend working without changes
 const LEGACY_STYLE_MAP: Record<string, string> = {
   'ethereal': 'ethereal_dream',
   'watercolor': 'watercolor_fine',
@@ -77,6 +76,10 @@ const LEGACY_STYLE_MAP: Record<string, string> = {
   'fine_art_sketch': 'minimal_studio',
   'chateau_pop': 'heavy_impasto',
   'editorial_acrylic': 'color_block',
+  // Also map config ART_STYLES ids directly (config uses friendly ids)
+  'oil_painting': 'ethereal_dream',
+  'pop_art': 'color_block',
+  'renaissance': 'classical_oil',
 }
 
 function resolveStyleId(id: string): string {
@@ -114,6 +117,7 @@ export async function POST(req: NextRequest) {
     brief,
     imagePromptCore,
     targetStyleId,
+    styleIds,           // ← NEW: array of style IDs for multi-style generation
     variantCount,
   } = await req.json()
 
@@ -148,27 +152,15 @@ export async function POST(req: NextRequest) {
         // ══════════════════════════════════════════════════════════════
         let petImageBuffer: Buffer | null = null
         try {
-          console.log('\n========== FETCHING SOURCE IMAGE ==========')
-          console.log('Source URL:', accessibleImageUrl.slice(0, 100) + '...')
           const imgRes = await fetch(accessibleImageUrl, {
             headers: { 'User-Agent': 'PetPrintsStudio/2.0' },
             signal: AbortSignal.timeout(30000),
           })
-          if (imgRes.ok) {
-            petImageBuffer = Buffer.from(await imgRes.arrayBuffer())
-            console.log('Image fetched:', petImageBuffer.length, 'bytes')
-          } else {
-            console.error('Pet image fetch failed:', imgRes.status)
-          }
+          if (imgRes.ok) petImageBuffer = Buffer.from(await imgRes.arrayBuffer())
         } catch (e) { console.error('Fetch error:', e) }
 
         // ══════════════════════════════════════════════════════════════
         //  STEP 2: Subject Identity Extraction
-        //
-        //  The foundation of everything. GPT-4o (full) with high detail
-        //  extracts 13 structured identity fields.
-        //  Cost: ~$0.01 per analysis
-        //  Value: prevents $1-5+ in failed generations
         // ══════════════════════════════════════════════════════════════
         send({ type: 'progress', value: 5, message: 'Building identity profile...' })
 
@@ -179,22 +171,13 @@ export async function POST(req: NextRequest) {
           petName,
         )
 
-        console.log('\n========== SUBJECT PROFILE ==========')
-        console.log('Summary:', subjectProfile.summary)
-        console.log('Traits:', JSON.stringify(subjectProfile.traits, null, 2))
-        console.log('Must preserve:', subjectProfile.mustPreserve)
-        console.log('=====================================\n')
-
         send({ type: 'progress', value: 10, message: 'Identity locked — starting portraits...' })
 
         const petSlug = (petName || petType || 'pet').toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 20)
         const sessionFolder = `sessions/${sessionId || uuidv4()}_${petSlug}`
         const sessionStart = new Date().toISOString()
 
-        // ══════════════════════════════════════════════════════════════
-        //  SAVE SESSION EARLY — survives timeouts, updates incrementally
-        //  This way we always have a record even if generation fails partway.
-        // ══════════════════════════════════════════════════════════════
+        // Save session early for survival
         try {
           await saveSession({
             sessionId: sessionFolder,
@@ -202,15 +185,11 @@ export async function POST(req: NextRequest) {
             customerLastName: answers?.lastName || answers?.ownerName?.split(' ').pop() || '',
             petName: petName || answers?.petName || '',
             petType: petType || 'dog',
-            images: [],  // Start empty — we'll append as we generate
+            images: [],
             questionnaire: answers || {},
           })
-          console.log(`Session pre-saved: ${sessionFolder}`)
-        } catch (e) {
-          console.error('Pre-save session failed (non-fatal):', e)
-        }
+        } catch (e) { console.error('Pre-save session failed (non-fatal):', e) }
 
-        // Helper to incrementally save images to the session as they arrive
         async function saveImageToSession(img: GenerationResult, idx: number) {
           try {
             const dbImg: SessionImage = {
@@ -220,35 +199,44 @@ export async function POST(req: NextRequest) {
               variant_index: idx,
             }
             await addImagesToSession(sessionFolder, [dbImg])
-          } catch (e) {
-            console.error('Incremental session save failed:', e)
-          }
+          } catch (e) { console.error('Incremental session save failed:', e) }
         }
 
         if (!isMemory) {
           // ══════════════════════════════════════════════════════════
           //  STYLE TRANSFER GENERATION
-          //
-          //  Each style: build modular prompt → call OpenAI /images/edits
-          //  Model: gpt-image-1
-          //  Size: 1024x1536 (2:3 portrait)
-          //  Quality: high
-          //  Input fidelity: high (preserves source identity)
-          //
-          //  Batch: 3 concurrent with 20s gap between batches
-          //  (quality:high is slower — give the API breathing room)
+          //  New flow order:
+          //    1. styleIds[] provided → run those specific styles (multi-style picker)
+          //    2. targetStyleId provided → run that one style (+1 more button)
+          //    3. neither → fallback to all active styles (legacy)
           // ══════════════════════════════════════════════════════════
 
-          // Determine which styles to generate
-          // Default: ALL 32 styles (full gallery)
-          // Override with targetStyleId to run a single style by ID
           let stylesToRun: StyleTemplate[]
-          if (targetStyleId === 'all' || !targetStyleId) {
-            stylesToRun = getActiveStyles()
-          } else {
+          // Track which engine style came from which config id (so we can return
+          // the user-facing config name + id in the result, matching the picker UI)
+          const engineIdToConfigId = new Map<string, string>()
+
+          if (Array.isArray(styleIds) && styleIds.length > 0) {
+            stylesToRun = []
+            for (const id of styleIds) {
+              const engineStyle = getStyleById(resolveStyleId(id))
+              if (engineStyle) {
+                stylesToRun.push(engineStyle)
+                engineIdToConfigId.set(engineStyle.id, id)
+              }
+            }
+            if (stylesToRun.length === 0) {
+              console.warn('No valid styles resolved from styleIds, falling back to first active style')
+              stylesToRun = getActiveStyles().slice(0, 1)
+            }
+          } else if (targetStyleId && targetStyleId !== 'all') {
             const resolvedId = resolveStyleId(targetStyleId)
             const style = getStyleById(resolvedId)
             stylesToRun = style ? [style] : getActiveStyles().slice(0, 1)
+            // Also preserve targetStyleId → engineStyle mapping for consistency
+            if (style) engineIdToConfigId.set(style.id, targetStyleId)
+          } else {
+            stylesToRun = getActiveStyles()
           }
 
           const variantsPerStyle = variantCount || 1
@@ -256,33 +244,16 @@ export async function POST(req: NextRequest) {
           let completedImages = 0
 
           console.log(`\n========== GENERATION PLAN ==========`)
-          console.log(`Styles: ${stylesToRun.length}`)
+          console.log(`Styles: ${stylesToRun.length} (${stylesToRun.map(s => s.id).join(', ')})`)
           console.log(`Variants per style: ${variantsPerStyle}`)
           console.log(`Total images: ${totalImages}`)
-          console.log(`Model: gpt-image-1`)
-          console.log(`Size: 1024x1536`)
-          console.log(`Quality: high`)
-          console.log(`Input fidelity: high`)
           console.log(`======================================\n`)
 
-          // Build all generation tasks
           const allTasks = stylesToRun.flatMap(style =>
             Array.from({ length: variantsPerStyle }, (_, variantIdx) => async () => {
               try {
-                if (!petImageBuffer) { console.error('No image buffer'); completedImages++; return }
-
-                // Build modular prompt using the engine
+                if (!petImageBuffer) { completedImages++; return }
                 const promptPackage = buildPrompt(subjectProfile, style, DEFAULT_COMPOSITION)
-
-                console.log(`\n===== GENERATING: ${style.name} (v${variantIdx}) =====`)
-                console.log(`Style ID: ${style.id}`)
-                console.log(`Prompt length: ${promptPackage.fullPrompt.length} chars`)
-                console.log(`First 300 chars: ${promptPackage.fullPrompt.slice(0, 300)}`)
-                console.log(`==========================================\n`)
-
-                // Call OpenAI /images/edits
-                // Quality tier: style.qualityTier === 'high' → high ($0.25/img)
-                //               otherwise medium ($0.063/img, default for 28 of 32 styles)
                 const quality = style.qualityTier === 'high' ? 'high' : 'medium'
                 const fd = new FormData()
                 fd.append('model', 'gpt-image-1')
@@ -304,15 +275,23 @@ export async function POST(req: NextRequest) {
                   const b64 = d.data?.[0]?.b64_json
                   if (b64) {
                     const url = await uploadB64ToR2(b64, 'png', sessionFolder)
+                    // If this engine style was mapped from a config style, use the
+                    // config display name + id so the gallery groups consistently
+                    // with what the user picked in the UI
+                    const configId = engineIdToConfigId.get(style.id)
+                    const configStyle = configId ? ART_STYLES.find(s => s.id === configId) : null
+                    const returnStyleId = configId || style.id
+                    const returnStyleName = configStyle
+                      ? `${configStyle.emoji} ${configStyle.name}`
+                      : `${style.emoji} ${style.name}`
                     const img: GenerationResult = {
                       url,
-                      styleId: `${style.id}_${variantIdx}`,
-                      styleName: `${style.emoji} ${style.name}`,
+                      styleId: `${returnStyleId}_${variantIdx}`,
+                      styleName: returnStyleName,
                       model: 'gpt',
                     }
                     allImages.push(img)
                     send({ type: 'image', image: img })
-                    // Save to session immediately so it survives timeouts
                     await saveImageToSession(img, allImages.length - 1)
                   }
                 } else {
@@ -331,30 +310,20 @@ export async function POST(req: NextRequest) {
             })
           )
 
-          // Run in batches of 3 with 20s gap
-          // quality:high + 1024x1536 is slower than quality:medium + 1024x1024
-          // 3 concurrent stays safely under the 5 images/min rate limit
           const BATCH_SIZE = 4
-          const BATCH_DELAY_MS = 10000  // 10s — tuned to fit 32 styles within 10min maxDuration
+          const BATCH_DELAY_MS = 10000
           for (let i = 0; i < allTasks.length; i += BATCH_SIZE) {
-            if (i > 0) {
-              console.log(`Batch delay: waiting ${BATCH_DELAY_MS / 1000}s before next batch...`)
-              await new Promise(r => setTimeout(r, BATCH_DELAY_MS))
-            }
+            if (i > 0) await new Promise(r => setTimeout(r, BATCH_DELAY_MS))
             const batch = allTasks.slice(i, i + BATCH_SIZE)
-            console.log(`Running batch ${Math.floor(i / BATCH_SIZE) + 1}: ${batch.length} images`)
             await Promise.all(batch.map(t => t()))
           }
 
         } else {
           // ══════════════════════════════════════════════════════════
-          //  MEMORY PORTRAIT GENERATION
-          //  Scene-based portraits using personal questionnaire answers
+          //  MEMORY PORTRAIT GENERATION (unchanged)
           // ══════════════════════════════════════════════════════════
-
           const name = answers?.petName || petName || 'the pet'
           const place = answers?.favPlace || answers?.favOutdoorSpot || 'a beautiful setting'
-
           const extras = [
             answers?.favCar ? `posed with or in a ${answers.favCar}` : '',
             answers?.favTeam ? `wearing a ${answers.favTeam} collar or bandana` : '',
@@ -365,25 +334,11 @@ export async function POST(req: NextRequest) {
           const memTasks = MEMORY_SCENES.map(scene => async () => {
             try {
               if (!petImageBuffer) return
-
               const style = getStyleById(scene.defaultStyleId) || ALL_STYLES[0]
               const sceneDesc = scene.id === 'mem_perfect_day' && answers?.perfectDay
                 ? answers.perfectDay
                 : scene.template(name, place)
-
-              const promptPackage = buildMemoryScenePrompt(
-                subjectProfile,
-                style,
-                sceneDesc,
-                extras,
-                DEFAULT_COMPOSITION,
-              )
-
-              console.log(`\n===== MEMORY SCENE: ${scene.name} =====`)
-              console.log(`Style: ${style.name}`)
-              console.log(`Prompt length: ${promptPackage.fullPrompt.length} chars`)
-              console.log(`==========================================\n`)
-
+              const promptPackage = buildMemoryScenePrompt(subjectProfile, style, sceneDesc, extras, DEFAULT_COMPOSITION)
               const quality = style.qualityTier === 'high' ? 'high' : 'medium'
               const fd = new FormData()
               fd.append('model', 'gpt-image-1')
@@ -415,8 +370,6 @@ export async function POST(req: NextRequest) {
                   send({ type: 'image', image: img })
                   await saveImageToSession(img, allImages.length - 1)
                 }
-              } else {
-                console.error(`Memory GPT error [${scene.id}]:`, res.status, (await res.text()).slice(0, 200))
               }
             } catch (e) { console.error('Memory scene error:', e) }
           })
@@ -434,9 +387,8 @@ export async function POST(req: NextRequest) {
         }
 
         // ══════════════════════════════════════════════════════════════
-        //  POST-GENERATION: Save metadata, log usage, notify admin
+        //  POST-GENERATION: Save metadata
         // ══════════════════════════════════════════════════════════════
-
         await saveSessionMetadata(sessionFolder, {
           sessionId: sessionId || sessionFolder,
           petName: petName || petType || 'Unknown',
@@ -450,7 +402,7 @@ export async function POST(req: NextRequest) {
           generationParams: {
             model: 'gpt-image-1',
             size: '1024x1536',
-            quality: 'tiered (high for photorealistic styles, medium for painterly/stylized)',
+            quality: 'tiered',
             inputFidelity: 'high',
           },
           styles: [...new Set(allImages.map(i => i.styleName))],
@@ -460,9 +412,7 @@ export async function POST(req: NextRequest) {
           sunoPrompt: brief?.suno_prompt_full || null,
         })
 
-        // Save to Postgres — only log API usage now (session was saved incrementally)
         try {
-          // Log API usage
           const gptCount = allImages.filter(x => x.model === 'gpt').length
           if (gptCount > 0) {
             await logApiUsage({
@@ -481,11 +431,8 @@ export async function POST(req: NextRequest) {
             tokensInput: 2000,
             tokensOutput: 500,
           })
-        } catch (dbErr) {
-          console.error('Database save failed (non-fatal):', dbErr)
-        }
+        } catch (dbErr) { console.error('Database save failed (non-fatal):', dbErr) }
 
-        // Song notification email
         if (brief?.suno_prompt_full && process.env.RESEND_API_KEY) {
           sendSongNotificationEmail({
             petName: petName || petType || 'Unknown',

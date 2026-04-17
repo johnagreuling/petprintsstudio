@@ -40,7 +40,6 @@ export const PRODUCTS = [
   // ── ACCESSORIES ─────────────────────────────────────────────────────────
   { id: 'tote',       name: 'Canvas Tote Bag', size: 'One size',   category: 'Accessories', price: 24, printifyBlueprintId: 553,  printifyProviderId: 34, printifyVariantId: 70603,  popular: false, emoji: '👜', description: 'Heavy-duty 12oz cotton canvas with reinforced stitching. Not a promotional giveaway tote — a real bag you\'ll carry to the farmer\'s market, the gym, the office.' },
   { id: 'phone_case', name: 'Phone Case',      size: 'All models', category: 'Accessories', price: 29, printifyBlueprintId: 269,  printifyProviderId: 1,  printifyVariantId: 103562, popular: false, emoji: '📱', description: 'Impact-resistant dual-layer tough case. Raised bezels protect the screen and camera. Their portrait in your pocket, on the thing you touch 200 times a day.' },
-
 ]
 
 export const PHONE_CASE_VARIANTS: Record<string, number> = {
@@ -74,11 +73,23 @@ export const KIDS_HOODIE_VARIANTS: Record<string, number> = {
 
 export const PRODUCT_CATEGORIES = ['Canvas', 'Prints', 'Home', 'Apparel', 'Accessories']
 
+// ─────────────────────────────────────────────────────────────────
+//  GENERATION LIMITS — new flow (4/17 refactor)
+// ─────────────────────────────────────────────────────────────────
+export const GEN_LIMITS = {
+  MAX_STYLES_INITIAL: 4,   // max styles user can pick on initial round
+  INITIAL_PER_STYLE: 2,    // images generated per style on initial round
+  MAX_PER_STYLE: 3,        // total max per style across the whole session
+  MAX_TOTAL: 16,           // hard session cap across all styles
+} as const
+
+// ─────────────────────────────────────────────────────────────────
+//  LEGACY PRICING (kept for backward-compat; not used in new flow)
+// ─────────────────────────────────────────────────────────────────
 export const DIGITAL_BUNDLE_PRICE = 19.99
 export const MEMORY_UPGRADE_PRICE = 20.00
 export const ALL_IMAGES_PRICE     = 29.99
-export const PET_SONG_PRICE       = 0  // included free with every order
-
+export const PET_SONG_PRICE       = 0
 export const VARIATIONS_PER_STYLE = 3
 export const DEFAULT_STYLES = ['oil_painting', 'watercolor', 'impasto', 'pop_art', 'renaissance', 'impressionist', 'cartoon', 'vintage_poster', 'vintage_pop_art', 'vintage_poster_v2', 'neon_glow', 'storybook']
 
@@ -86,6 +97,10 @@ export const ASTRIA_API = 'https://api.astria.ai'
 export const ASTRIA_BASE_MODEL_ID = 690204
 
 
+// ─────────────────────────────────────────────────────────────────
+//  ART STYLES — the 18 styles users can pick from in the style picker
+//  (fixed: moved 'vintage_pop_art_v2' out of the old QUESTIONNAIRE array)
+// ─────────────────────────────────────────────────────────────────
 export const ART_STYLES = [
   { id: 'oil_painting',    generateStyleId: 'ethereal',          name: 'Ethereal Painterly',  emoji: '🎨', styleImage: 'https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/14213989-5ed0-4d83-95ad-665855f994d4_pet/69508879-38da-4363-8550-bfa2b0de317a.png', description: 'Soft, dreamlike brushwork with luminous depth. Your pet rendered in a timeless painterly style worthy of any gallery wall.' },
   { id: 'watercolor',      generateStyleId: 'watercolor',        name: 'Watercolor',          emoji: '💧', styleImage: 'https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/1fec89ea-4a9d-4d4d-9cf9-fbdb3b41ea2f_pet/05ae39e1-c440-4d7a-a376-b91e038af83f.png',     description: 'Delicate washes and soft edges. A luminous, flowing watercolor portrait with the feel of fine art on paper.' },
@@ -102,36 +117,53 @@ export const ART_STYLES = [
   { id: 'retro_pop',       generateStyleId: 'retro_pop',         name: 'Retro Pop',           emoji: '🟥', styleImage: 'https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/bb0b4cd0-815f-4f41-b45a-78b8c845edc4_pet/f247f626-fef9-4632-bdd2-31aba2eb6261.png',     description: 'Classic Warhol-style 4-panel grid. Same portrait repeated in four bold, vibrant color palettes. Retro, iconic, collectible.' },
   { id: 'fairytale',       generateStyleId: 'fairytale',         name: 'Fairytale',           emoji: '✨', styleImage: 'https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/9ed0f1d3-d107-411f-b9de-d42a3f149e10_pet/4cbae4ca-1c8c-4e67-83fc-e3b5ccaaadda.png', styleBg: 'linear-gradient(135deg,#1a0a2e 0%,#2d1b4e 40%,#1a2a1a 70%,#0d1a0d 100%)', styleAccent: '#f0c060', description: 'Soft magical storybook portrait with warm golden light, soulful eyes, floating sparkles, and a cozy whimsical scene.' },
   { id: 'comic_animation', generateStyleId: 'comic_animation',   name: 'Premium Comic',       emoji: '💥', styleImage: 'https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/1fec89ea-4a9d-4d4d-9cf9-fbdb3b41ea2f_pet/3f911b27-983e-4679-af55-702a6cf2aa7d.png', styleBg: 'linear-gradient(135deg,#1a0505 0%,#2d0a0a 40%,#1a1a2e 70%,#0a0a1a 100%)', styleAccent: '#ff4444', description: 'Bold comic book portrait with clean inked linework, cel shading, cinematic lighting, and vivid animated character energy.' },
-  { id: 'fine_art_sketch',  generateStyleId: 'fine_art_sketch',  name: 'Fine Art Sketch',     emoji: '🖊️', styleImage: 'https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/9ed0f1d3-d107-411f-b9de-d42a3f149e10_pet/6a8d45a3-3b8b-4cb9-a4a1-e7a9ae442e25.png', styleBg: 'linear-gradient(135deg,#1a1a14 0%,#2a2a1e 40%,#1e1e18 70%,#141410 100%)', styleAccent: '#c8b89a', description: 'Museum-quality charcoal and graphite portrait on textured paper. Elegant linework, soft crosshatching, and deeply emotional presence.' },
+  { id: 'fine_art_sketch', generateStyleId: 'fine_art_sketch',   name: 'Fine Art Sketch',     emoji: '🖊️', styleImage: 'https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/9ed0f1d3-d107-411f-b9de-d42a3f149e10_pet/6a8d45a3-3b8b-4cb9-a4a1-e7a9ae442e25.png', styleBg: 'linear-gradient(135deg,#1a1a14 0%,#2a2a1e 40%,#1e1e18 70%,#141410 100%)', styleAccent: '#c8b89a', description: 'Museum-quality charcoal and graphite portrait on textured paper. Elegant linework, soft crosshatching, and deeply emotional presence.' },
   { id: 'chateau_pop',     generateStyleId: 'chateau_pop',       name: 'Chateau Pop',         emoji: '🪩', styleImage: '/styles/chateau-pop.png', styleBg: 'linear-gradient(135deg,#2a1a2e 0%,#1a2a2a 50%,#2a1a1a 100%)', styleAccent: '#e088a0', description: 'Surreal French interior with disco ball, wingback chair, and painterly birds. Bold impasto texture meets editorial elegance.' },
+  { id: 'vintage_pop_art_v2', generateStyleId: 'vintage_pop_art', name: 'Vintage Pop Art', emoji: '⚡', styleImage: 'https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/98370965-f2b3-4893-bf53-aab867e832a1_pet/ae5c7a8d-ebc5-4dc1-b996-43a3629c119c.png', description: 'Bold, graphic, and instantly iconic. High contrast color blocking and vibrant retro palette that turns your pet into gallery-worthy pop-inspired wall art.' },
 ]
 
-export const QUESTIONNAIRE = [
-  { id: 'petName',        label: "What is your pet's name?",                    type: 'text',         required: true,  placeholder: 'e.g. Rocky, Luna, Biscuit...' },
-  { id: 'petBreed',       label: 'Breed or type',                               type: 'text',         required: true,  placeholder: 'e.g. Golden Retriever, tabby cat...' },
-  { id: 'petPersonality', label: 'Describe their personality in 3 words',       type: 'text',         required: true,  placeholder: 'e.g. goofy, loyal, dramatic...' },
-  { id: 'petFeature',     label: "Their most distinctive physical feature",      type: 'text',         required: true,  placeholder: 'e.g. one floppy ear, white chest patch, giant paws...' },
-  { id: 'favPlace',       label: 'Favorite city or place with the most memories',type: 'text',         required: false, placeholder: 'e.g. Boulder CO, the Jersey Shore, our backyard...' },
-  { id: 'favOutdoorSpot', label: 'Favorite outdoor spot',                        type: 'text',         required: false, placeholder: 'e.g. Piedmont Park, the beach, mountain trail...' },
-  { id: 'timeAndSeason',  label: 'Time of day and season',                       type: 'select',       required: false, options: ['Golden hour, summer', 'Golden hour, fall', 'Sunny afternoon, spring', 'Snowy winter morning', 'Overcast moody day', 'Sunset on the beach', 'Night, city lights'] },
-  { id: 'favTeam',        label: 'Favorite sports team',                         type: 'text',         required: false, placeholder: 'e.g. Denver Broncos, Cubs, Lakers...' },
-  { id: 'favCar',         label: 'Favorite car to ride in (make, model, color)', type: 'text',         required: false, placeholder: 'e.g. red 1967 Ford Mustang convertible...' },
-  { id: 'favFood',        label: 'Favorite human food they beg for',             type: 'text',         required: false, placeholder: 'e.g. pizza, hot dogs, bacon...' },
-  { id: 'favToy',         label: 'Favorite toy or object',                       type: 'text',         required: false, placeholder: 'e.g. yellow tennis ball, stuffed duck, old sock...' },
-  { id: 'favRestaurant',  label: 'Favorite restaurant or local spot',            type: 'text',         required: false, placeholder: 'e.g. In-N-Out, our local dog park café...' },
-  { id: 'perfectDay',     label: 'If your pet could live one perfect day, describe it in 1–2 sentences', type: 'textarea', required: false, placeholder: 'This is the soul of the portrait — the more detail the better...' },
-  { id: 'musicStyle',     label: '🎵 What music style fits their vibe?',          type: 'select',       required: false, options: ['Country / Americana', 'Emotional pop', 'Indie folk / acoustic', 'Hip hop', 'Jazz / blues', 'Rock / alternative', 'R&B / soul', 'Classical / orchestral'] },
-  { id: 'specialPeople',  label: '👥 People who matter most to them',              type: 'text',         required: false, placeholder: 'e.g. John (dad), Sarah (best friend)...' },
-    { id: 'artStyle',       label: 'Preferred art style',                          type: 'style-picker', required: true },
-  { id: 'mood',           label: 'Mood and color palette',                       type: 'select',       required: false, options: ['Warm & golden', 'Dramatic & bold', 'Soft & dreamy', 'Vivid & bright', 'Dark & moody', 'Classic & timeless'] },
-  { id: 'vintage_pop_art_v2', name: 'Vintage Pop Art', emoji: '⚡',
-    styleImage: 'https://pub-3b7e4ef250914cb9adac3dd43ed84fca.r2.dev/sessions/98370965-f2b3-4893-bf53-aab867e832a1_pet/ae5c7a8d-ebc5-4dc1-b996-43a3629c119c.png',
-    description: 'Bold, graphic, and instantly iconic. High contrast color blocking and vibrant retro palette that turns your pet into gallery-worthy pop-inspired wall art.' },
-
+// ─────────────────────────────────────────────────────────────────
+//  SONG QUESTIONS — shown on the checkout screen (Hear Them section)
+//  All optional except genre. Fed into Suno prompt via creative-brief.
+// ─────────────────────────────────────────────────────────────────
+export const SONG_QUESTIONS: Array<{
+  id: string
+  label: string
+  type: 'text' | 'textarea'
+  placeholder: string
+}> = [
+  { id: 'favToy',               label: 'Favorite toy',                        type: 'text',     placeholder: 'Squeaky duck, tennis ball, rope knot...' },
+  { id: 'favGame',              label: 'Favorite game to play',               type: 'text',     placeholder: 'Fetch, tug-of-war, hide and seek...' },
+  { id: 'favOutdoor',           label: 'Favorite place to play or walk',      type: 'text',     placeholder: 'The beach, Piedmont Park, our backyard...' },
+  { id: 'favSpot',              label: 'Favorite spot to sit or sleep',       type: 'text',     placeholder: 'The couch, sunny window, foot of the bed...' },
+  { id: 'town',                 label: 'Town they live in',                   type: 'text',     placeholder: 'Wilmington, NC...' },
+  { id: 'whatMakesThemSpecial', label: 'What makes them special?',            type: 'textarea', placeholder: 'Their quirks, habits, how they make you feel — the little things that make them uniquely them.' },
+  { id: 'anythingElse',         label: 'Anything else for their song?',       type: 'textarea', placeholder: 'A memory, a phrase, a feeling — anything you want woven into their song.' },
 ]
 
+// ─────────────────────────────────────────────────────────────────
+//  SONG GENRES — 20 options for the genre picker
+// ─────────────────────────────────────────────────────────────────
+export const SONG_GENRES = [
+  'Pop', 'Country', 'Rock', 'R&B', 'Hip Hop',
+  'Jazz', 'Classical', 'Folk', 'Indie', 'Electronic',
+  'Reggae', 'Blues', 'Soul', 'Funk', 'Latin',
+  'Acoustic', 'Lullaby', 'Punk', 'Americana', 'Gospel',
+] as const
 
+export type SongGenre = typeof SONG_GENRES[number]
 
+// ─────────────────────────────────────────────────────────────────
+//  HELPER — look up a product by category (Canvas/Prints) + size
+// ─────────────────────────────────────────────────────────────────
+export function findPrimaryProduct(category: 'Canvas' | 'Prints', size: string) {
+  return PRODUCTS.find(p => p.category === category && p.size === size)
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  LEGACY — kept for backward-compat with any code still importing
+// ─────────────────────────────────────────────────────────────────
+export const QUESTIONNAIRE: any[] = []
 
 export function buildMemoryPrompt(answers: Record<string, string>, style: typeof ART_STYLES[0]): string {
   const parts: string[] = []
@@ -153,4 +185,3 @@ export function buildMemoryPrompt(answers: Record<string, string>, style: typeof
   if (answers.perfectDay) parts.push(`Scene: ${answers.perfectDay}`)
   return parts.join(', ')
 }
-
