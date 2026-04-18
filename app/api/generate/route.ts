@@ -123,6 +123,14 @@ export async function POST(req: NextRequest) {
 
   // ── Resolve accessible image URL ────────────────────────────────────
   const r2PublicBase = process.env.R2_PUBLIC_URL?.replace(/\/$/, '') || ''
+  // Guard: imageUrl is required. If missing, return clear error instead of crashing.
+  if (!imageUrl || typeof imageUrl !== 'string') {
+    console.error('🚨 /api/generate called with missing/invalid imageUrl:', imageUrl)
+    return new Response(JSON.stringify({ error: 'imageUrl is required. Please re-upload your photo and try again.' }), {
+      status: 400, headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
   const imageKey = imageUrl.startsWith(r2PublicBase)
     ? imageUrl.slice(r2PublicBase.length + 1)
     : imageUrl.split('/uploads/').pop() ? `uploads/${imageUrl.split('/uploads/').pop()}` : null
