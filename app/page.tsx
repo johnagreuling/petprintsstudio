@@ -214,18 +214,18 @@ export default function Home() {
           See Them. <em style={{color:'var(--gold)'}}>Hear</em> Them.<br/><em style={{color:'var(--gold)'}}>Feel</em> Them.
         </h1>
 
-        <div className="fu fu3" style={{marginBottom:36,display:'flex',flexDirection:'column',gap:16,alignItems:'center'}}>
+        <div className="fu fu3" style={{marginBottom:36,display:'flex',flexDirection:'column',gap:20,alignItems:'center',maxWidth:820,margin:'0 auto 36px'}}>
           {[
             {label:'See', text:'Your beautiful custom portrait.', accent:'var(--gold)'},
             {label:'Hear', text:'A song you help write, just for your pet.', accent:'#A78BFA'},
             {label:'Feel', text:'Their love — every time you touch our luxury goods made in their likeness.', accent:'#C4622D'},
           ].map(({label,text,accent})=>(
-            <div key={label} style={{display:'flex',alignItems:'baseline',gap:16,fontSize:'clamp(18px,2vw,24px)',color:'var(--cream)',lineHeight:1.4,fontWeight:300,maxWidth:720,textAlign:'left'}}>
-              <span style={{color:accent,fontWeight:700,letterSpacing:'.28em',textTransform:'uppercase',fontSize:'clamp(12px,1.2vw,14px)',minWidth:58,flexShrink:0,paddingTop:4}}>{label}</span>
-              <span>{text}</span>
+            <div key={label} style={{fontSize:'clamp(18px,2vw,24px)',color:'var(--cream)',lineHeight:1.5,fontWeight:300,textAlign:'center',letterSpacing:'.005em'}}>
+              <span style={{color:accent,fontWeight:700,letterSpacing:'.28em',textTransform:'uppercase',fontSize:'clamp(12px,1.2vw,14px)',marginRight:14,verticalAlign:'middle'}}>{label}</span>
+              <span style={{verticalAlign:'middle'}}>{text}</span>
             </div>
           ))}
-          <div style={{marginTop:12,fontSize:11,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600}}>From $49</div>
+          <div style={{marginTop:14,fontSize:11,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600}}>From $49</div>
         </div>
         
         {/* Upload Dropbox - Right on homepage */}
