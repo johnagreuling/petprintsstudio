@@ -1444,7 +1444,7 @@ export default function CreatePage() {
                   ${((primaryProduct?.price||0)+cartExtras.reduce((sum,id)=>sum+(PRODUCTS.find(p=>p.id===id)?.price||0),0)).toFixed(2)}
                 </span>
               </div>
-            </div>
+            )}
 
             {error&&<div style={{color:'#C4622D',fontSize:13,marginBottom:16,padding:'12px 16px',background:'rgba(196,98,45,.08)',border:'1px solid rgba(196,98,45,.2)'}}>{error}</div>}
 
