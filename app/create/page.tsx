@@ -506,10 +506,22 @@ export default function CreatePage() {
         .drop.over{border-color:var(--gold);background:rgba(201,168,76,.03)}
         .product-card{background:#141414;border:1px solid rgba(245,240,232,.08);padding:20px;cursor:pointer;transition:all .2s;position:relative}
         .product-card:hover,.product-card.on{border-color:var(--gold)}
-        .style-toggle{border:1px solid rgba(245,240,232,.08);background:transparent;padding:0;cursor:pointer;transition:all .2s;text-align:left;position:relative;overflow:hidden}
+        .style-toggle{border:1px solid rgba(245,240,232,.08);background:transparent;padding:0;cursor:pointer;transition:all .2s;text-align:left;position:relative;overflow:hidden;display:block}
+        .style-toggle:hover{border-color:rgba(201,168,76,.5)}
         .style-toggle.on{border-color:var(--gold);background:rgba(201,168,76,.04)}
         .style-toggle.disabled{opacity:.35;cursor:not-allowed}
         .style-toggle.disabled:hover{border-color:rgba(245,240,232,.08)}
+        .style-toggle .style-img-wrap img{transition:transform .5s ease}
+        .style-toggle:hover .style-img-wrap img{transform:scale(1.04)}
+
+        /* Caption overlay — name + description ALWAYS visible at bottom of image,
+           mirrors the /styles page look. Description truncates to 2 lines by default,
+           expands fully on hover or when selected. */
+        .style-caption{position:absolute;left:0;right:0;bottom:0;padding:64px 14px 14px;background:linear-gradient(to top,rgba(10,10,10,.98) 0%,rgba(10,10,10,.88) 45%,rgba(10,10,10,.4) 78%,transparent 100%);color:var(--cream);text-align:center;pointer-events:none;z-index:1;transition:padding-bottom .3s ease}
+        .style-caption-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:400;line-height:1.2;letter-spacing:.005em;margin-bottom:6px}
+        .style-caption-desc{font-size:11px;color:rgba(245,240,232,.78);line-height:1.5;letter-spacing:.01em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:-webkit-line-clamp .3s ease}
+        .style-toggle:hover .style-caption-desc,.style-toggle.on .style-caption-desc{-webkit-line-clamp:4;color:rgba(245,240,232,.92)}
+        .style-toggle.on .style-caption{background:linear-gradient(to top,rgba(201,168,76,.2) 0%,rgba(10,10,10,.95) 35%,rgba(10,10,10,.5) 75%,transparent 100%)}
         .img-card{aspect-ratio:1;object-fit:cover;width:100%;cursor:pointer;transition:all .3s;border:2px solid transparent;display:block}
         .img-card:hover{transform:scale(1.02)}.img-card.picked{border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,168,76,.15)}
         .progress-bar{height:3px;background:rgba(245,240,232,.06);border-radius:999px;overflow:hidden}
@@ -804,16 +816,24 @@ export default function CreatePage() {
                     onClick={()=>!atCap && toggleStyle(s.id)}
                     disabled={atCap}
                   >
+                    {/* Selection indicator (top-right) */}
                     <div style={{position:'absolute',top:8,right:8,width:18,height:18,border:`1px solid ${isOn?'var(--gold)':'rgba(245,240,232,.2)'}`,borderRadius:'50%',background:isOn?'var(--gold)':'rgba(0,0,0,.5)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,color:'var(--ink)',fontWeight:700,zIndex:2}}>
                       {isOn&&'✓'}
                     </div>
-                    <div style={{width:'100%',aspectRatio:'2/3',overflow:'hidden',marginBottom:8}}>
+
+                    {/* Image — caption overlays bottom half */}
+                    <div className="style-img-wrap" style={{width:'100%',aspectRatio:'2/3',overflow:'hidden',position:'relative'}}>
                       {s.styleImage
                         ? <img src={s.styleImage} alt={s.name} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
-                        : <div style={{width:'100%',height:'100%',background:s.styleBg||'#1a1a1a',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:8}}><div style={{fontSize:28}}>{s.emoji}</div><div style={{fontSize:9,letterSpacing:'.2em',textTransform:'uppercase',color:s.styleAccent||'rgba(255,255,255,.4)',textAlign:'center',padding:'0 8px'}}>{s.name}</div></div>
+                        : <div style={{width:'100%',height:'100%',background:s.styleBg||'#1a1a1a',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:8}}><div style={{fontSize:34}}>{s.emoji}</div></div>
                       }
+
+                      {/* Hover overlay caption — name always peeks, description reveals on hover/selected */}
+                      <div className="style-caption">
+                        <div className="style-caption-name">{s.emoji} {s.name}</div>
+                        {s.description && <div className="style-caption-desc">{s.description}</div>}
+                      </div>
                     </div>
-                    <div className="serif" style={{fontSize:12,fontWeight:400,padding:'0 8px 8px',textAlign:'center'}}>{s.emoji} {s.name}</div>
                   </button>
                 )
               })}
@@ -1242,14 +1262,17 @@ export default function CreatePage() {
             <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:6}}>
               {availableNewStyles.map(s => (
                 <button key={s.id} onClick={()=>{ setShowStylePicker(false); handleExpandStyle(s.id, `${s.emoji} ${s.name}`) }}
-                  className="style-toggle" style={{border:'1px solid rgba(245,240,232,.08)',padding:0,overflow:'hidden',cursor:'pointer'}}>
-                  <div style={{width:'100%',aspectRatio:'2/3',overflow:'hidden'}}>
+                  className="style-toggle" style={{padding:0,cursor:'pointer'}}>
+                  <div className="style-img-wrap" style={{width:'100%',aspectRatio:'2/3',overflow:'hidden',position:'relative'}}>
                     {s.styleImage
                       ? <img src={s.styleImage} alt={s.name} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>
-                      : <div style={{width:'100%',height:'100%',background:s.styleBg||'#1a1a1a',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:8}}><div style={{fontSize:28}}>{s.emoji}</div></div>
+                      : <div style={{width:'100%',height:'100%',background:s.styleBg||'#1a1a1a',display:'flex',alignItems:'center',justifyContent:'center',fontSize:34}}>{s.emoji}</div>
                     }
+                    <div className="style-caption">
+                      <div className="style-caption-name">{s.emoji} {s.name}</div>
+                      {s.description && <div className="style-caption-desc">{s.description}</div>}
+                    </div>
                   </div>
-                  <div className="serif" style={{fontSize:12,fontWeight:400,padding:'6px 8px 8px',textAlign:'center'}}>{s.emoji} {s.name}</div>
                 </button>
               ))}
             </div>
