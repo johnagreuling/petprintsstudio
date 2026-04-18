@@ -24,8 +24,21 @@ export async function POST(req: NextRequest) {
       songGenre,
       songAnswers,
       sessionFolder,
-      cart,                        // NEW (Commit 3 of cart refactor): CartItem[] from new UI
-    } = await req.json()
+      cart,
+    } = await req.json() as {
+      imageUrl?: string
+      primaryProductId?: string
+      extras?: any[]
+      extraSizes?: Record<string,string>
+      extraColors?: Record<string,string>
+      styleName?: string
+      petName?: string
+      petType?: string
+      songGenre?: string
+      songAnswers?: Record<string,string>
+      sessionFolder?: string
+      cart?: any[]
+    }
 
     // ── NEW PATH (Commit 3 of cart refactor): if `cart` is present, use it. ──
     //   Otherwise fall through to the LEGACY path below. Both paths build the
@@ -188,8 +201,8 @@ export async function POST(req: NextRequest) {
         extraProductIds: isNewCartPath ? '' : (extras || []).map((e: any) => e.id).join(','),
         // NEW PATH markers — webhook uses these to reconstruct the order
         cartPath: isNewCartPath ? 'v2' : 'legacy',
-        cartLineCount: isNewCartPath ? String(cart.length) : '0',
-        cartTotal: isNewCartPath
+        cartLineCount: isNewCartPath && cart ? String(cart.length) : '0',
+        cartTotal: isNewCartPath && cart
           ? String(cart.reduce((s: number, i: any) => s + (Number(i.unitPrice) || 0) * (Number(i.quantity) || 1), 0))
           : '0',
       },
