@@ -33,6 +33,97 @@ const CATEGORY_LABELS: Record<string, { label: string; emoji: string }> = {
   pop_modern:          { label: 'Pop & Modern',        emoji: '⚡' },
 }
 
+
+// ── ProductVariantPicker (Commit 5a) — inline variant + qty selector per product tile ──
+function ProductVariantPicker({ product, hasSizes, hasColors, sizes, colors, picked, onAddToCart }: {
+  product: any
+  hasSizes: boolean
+  hasColors: boolean
+  sizes: string[]
+  colors: string[]
+  picked: any
+  onAddToCart: (variantKey: string, quantity: number) => void
+}) {
+  const [selectedSize, setSelectedSize] = useState<string>(sizes[0] || '')
+  const [selectedColor, setSelectedColor] = useState<string>(colors[0] || '')
+  const [quantity, setQuantity] = useState<number>(1)
+
+  const canAdd = !!picked && (hasSizes ? !!selectedSize : true) && (hasColors ? !!selectedColor : true)
+  const variantKey = [selectedColor, selectedSize].filter(Boolean).join(' / ')
+
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:6,marginTop:'auto'}}>
+      {hasColors && (
+        <div style={{display:'flex',alignItems:'center',gap:6,flexWrap:'wrap'}}>
+          <span style={{fontSize:9,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.1em',minWidth:40}}>Color</span>
+          {colors.map(c => (
+            <button
+              key={c}
+              onClick={() => setSelectedColor(c)}
+              style={{
+                width:18,height:18,borderRadius:'50%',cursor:'pointer',
+                background: c.toLowerCase() === 'black' ? '#0a0a0a' : c.toLowerCase() === 'white' ? '#f5f0e8' : c.toLowerCase(),
+                border: selectedColor === c ? '2px solid var(--gold)' : '1px solid rgba(245,240,232,.2)',
+                padding:0,
+              }}
+              aria-label={c}
+            />
+          ))}
+        </div>
+      )}
+      {hasSizes && (
+        <div style={{display:'flex',alignItems:'center',gap:3,flexWrap:'wrap'}}>
+          <span style={{fontSize:9,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.1em',minWidth:40}}>Size</span>
+          {sizes.map(s => (
+            <button
+              key={s}
+              onClick={() => setSelectedSize(s)}
+              style={{
+                padding:'3px 7px',fontSize:9,fontWeight:600,cursor:'pointer',
+                background: selectedSize === s ? 'var(--gold)' : 'transparent',
+                color: selectedSize === s ? 'var(--ink)' : 'var(--cream)',
+                border: selectedSize === s ? '1px solid var(--gold)' : '1px solid rgba(245,240,232,.15)',
+              }}
+            >{s}</button>
+          ))}
+        </div>
+      )}
+      <div style={{display:'flex',alignItems:'center',gap:8,marginTop:4}}>
+        <span style={{fontSize:9,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'.1em',minWidth:40}}>Qty</span>
+        <button
+          onClick={() => setQuantity(q => Math.max(1, q - 1))}
+          style={{width:22,height:22,fontSize:14,background:'transparent',border:'1px solid rgba(245,240,232,.15)',color:'var(--cream)',cursor:'pointer'}}
+          disabled={quantity <= 1}
+          aria-label="Decrease"
+        >−</button>
+        <span style={{fontSize:12,minWidth:18,textAlign:'center'}}>{quantity}</span>
+        <button
+          onClick={() => setQuantity(q => Math.min(10, q + 1))}
+          style={{width:22,height:22,fontSize:14,background:'transparent',border:'1px solid rgba(245,240,232,.15)',color:'var(--cream)',cursor:'pointer'}}
+          disabled={quantity >= 10}
+          aria-label="Increase"
+        >+</button>
+      </div>
+      <button
+        disabled={!canAdd}
+        onClick={() => {
+          onAddToCart(variantKey, quantity)
+          setQuantity(1)
+        }}
+        style={{
+          marginTop:6,padding:'6px 10px',fontSize:10,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',
+          background: canAdd ? 'rgba(201,168,76,.15)' : 'transparent',
+          border: canAdd ? '1px solid var(--gold)' : '1px solid rgba(245,240,232,.1)',
+          color: canAdd ? 'var(--gold)' : 'var(--muted)',
+          cursor: canAdd ? 'pointer' : 'not-allowed',
+        }}
+      >
+        + Add to Cart
+      </button>
+    </div>
+  )
+}
+
 export default function CreatePage() {
   const [step, setStep] = useState<Step>('upload')
 
@@ -1244,57 +1335,92 @@ export default function CreatePage() {
                 Thicker canvas. Softer blankets. Heavier shirts. Every product hand-selected for quality — not a novelty gift.
               </p>
 
-              <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(150px,1fr))',gap:6}}>
+              <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))',gap:10}}>
                 {PRODUCTS.filter(p=>!['Canvas','Prints'].includes(p.category)).map(p=>{
-                  const isOn = cartExtras.includes(p.id)
                   const hasSizes = !!(p as any).sizes?.length
+                  const hasColors = !!(p as any).colors?.length
+                  const pSizes: string[] = (p as any).sizes || []
+                  const pColors: string[] = (p as any).colors || []
+                  // Lines in the main cart that belong to this product
+                  const linesForProduct = cart.filter(ci => ci.productId === p.id)
                   return (
-                    <div key={p.id} style={{position:'relative'}}>
-                      <div className={`product-card${isOn?' on':''}`} onClick={()=>{
-                        if (hasSizes && !isOn) {
-                          setCartExtraSizes(prev=>({...prev, [p.id]: (p as any).sizes?.[1] || (p as any).sizes?.[0] || 'M'}))
-                          setCartExtraColors(prev=>({...prev, [p.id]: 'Black'}))
-                          setCartExtras(prev=>[...prev, p.id])
-                        } else {
-                          setCartExtras(prev=>prev.includes(p.id)?prev.filter(x=>x!==p.id):[...prev,p.id])
-                        }
-                      }} style={{padding:0,overflow:'hidden'}}>
-                        {isOn&&<div style={{position:'absolute',top:6,left:6,background:'var(--gold)',color:'var(--ink)',borderRadius:'50%',width:18,height:18,display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,zIndex:2}}>✓</div>}
-                        {PRODUCT_IMAGES[p.id] && <div onClick={(e)=>{e.stopPropagation();setProductDetail(p)}} style={{position:'absolute',top:6,right:6,background:'rgba(0,0,0,.6)',color:'#fff',borderRadius:'50%',width:20,height:20,display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,zIndex:2,cursor:'pointer'}}>ⓘ</div>}
-                        <ProductMockup productId={p.id} category={p.category} previewUrl={preview} isSelected={isOn} />
-                        <div style={{padding:'6px 10px 10px'}}>
-                          <div className="serif" style={{fontSize:13,marginBottom:1,fontWeight:400}}>{p.name}</div>
-                          <div style={{fontSize:9,color:'var(--muted)',marginBottom:4}}>{p.size}</div>
-                          <div className="serif" style={{fontSize:16,color:'var(--gold)'}}>${p.price}</div>
+                    <div key={p.id} className="card" style={{padding:0,overflow:'hidden',display:'flex',flexDirection:'column'}}>
+                      <ProductMockup productId={p.id} category={p.category} previewUrl={preview} isSelected={linesForProduct.length>0} />
+                      <div style={{padding:'10px 12px',flex:1,display:'flex',flexDirection:'column'}}>
+                        <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:2}}>
+                          <div className="serif" style={{fontSize:14,fontWeight:400}}>{p.name}</div>
+                          <div className="serif" style={{fontSize:15,color:'var(--gold)'}}>${p.price}</div>
                         </div>
-                      </div>
-                      {isOn && hasSizes && (
-                        <div style={{padding:'6px 4px'}}>
-                          {(p as any).colors?.length > 0 && (
-                            <div style={{display:'flex',gap:4,marginBottom:6,alignItems:'center'}}>
-                              {((p as any).colors as string[]).map(c=>(
-                                <button key={c} onClick={()=>setCartExtraColors(prev=>({...prev,[p.id]:c}))} style={{width:20,height:20,borderRadius:'50%',cursor:'pointer',background: c === 'Black' ? '#1a1a1a' : '#f5f0e8',border: `2px solid ${(cartExtraColors[p.id]||'Black')===c ? 'var(--gold)' : 'rgba(245,240,232,.15)'}`}} title={c} />
-                              ))}
-                              <span style={{fontSize:9,color:'var(--muted)',marginLeft:2}}>{cartExtraColors[p.id]||'Black'}</span>
-                            </div>
-                          )}
-                          <div style={{display:'flex',gap:3,flexWrap:'wrap'}}>
-                            {((p as any).sizes as string[]).map(s=>(
-                              <button key={s} onClick={()=>setCartExtraSizes(prev=>({...prev,[p.id]:s}))} style={{padding:'4px 10px',fontSize:9,fontWeight:600,background: cartExtraSizes[p.id]===s ? 'var(--gold)' : '#1a1a1a',color: cartExtraSizes[p.id]===s ? 'var(--ink)' : 'var(--muted)',border: `1px solid ${cartExtraSizes[p.id]===s ? 'var(--gold)' : 'rgba(245,240,232,.1)'}`,cursor:'pointer'}}>{s}</button>
+                        <div style={{fontSize:10,color:'var(--muted)',marginBottom:10}}>{p.size}</div>
+
+                        <ProductVariantPicker
+                          product={p}
+                          hasSizes={hasSizes}
+                          hasColors={hasColors}
+                          sizes={pSizes}
+                          colors={pColors}
+                          picked={picked}
+                          onAddToCart={(variantKey, quantity) => {
+                            if (!picked || !primaryProduct) return
+                            setCart(prev => {
+                              const lineId = buildLineId(p.id, variantKey, picked.url, picked.styleName)
+                              const existing = prev.findIndex(x => x.lineId === lineId)
+                              if (existing >= 0) {
+                                const copy = [...prev]
+                                copy[existing] = { ...copy[existing], quantity: copy[existing].quantity + quantity }
+                                return copy
+                              }
+                              return [...prev, {
+                                lineId,
+                                productId: p.id,
+                                productName: p.name,
+                                variantKey,
+                                variantId: (p as any).printifyVariantId,
+                                blueprintId: (p as any).printifyBlueprintId,
+                                quantity,
+                                unitPrice: p.price,
+                                portraitUrl: picked.url,
+                                styleName: picked.styleName,
+                                category: p.category,
+                                addedAt: Date.now(),
+                              }]
+                            })
+                            // Also keep legacy state alive for backward compat
+                            if (!cartExtras.includes(p.id)) setCartExtras(prev => [...prev, p.id])
+                          }}
+                        />
+
+                        {linesForProduct.length > 0 && (
+                          <div style={{marginTop:10,paddingTop:10,borderTop:'1px solid var(--border)'}}>
+                            {linesForProduct.map(line => (
+                              <div key={line.lineId} style={{display:'flex',justifyContent:'space-between',alignItems:'center',fontSize:11,padding:'3px 0'}}>
+                                <span style={{color:'var(--cream)'}}>
+                                  {line.variantKey || 'Default'} × {line.quantity}
+                                </span>
+                                <button
+                                  onClick={() => {
+                                    setCart(prev => prev.filter(x => x.lineId !== line.lineId))
+                                    // If no more lines for this product, drop from legacy cartExtras too
+                                    const remaining = cart.filter(x => x.lineId !== line.lineId && x.productId === p.id)
+                                    if (remaining.length === 0) {
+                                      setCartExtras(prev => prev.filter(x => x !== p.id))
+                                    }
+                                  }}
+                                  style={{background:'transparent',border:'none',color:'var(--muted)',cursor:'pointer',fontSize:14,padding:'0 4px'}}
+                                  aria-label="Remove"
+                                >×</button>
+                              </div>
                             ))}
                           </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   )
                 })}
               </div>
             </div>
 
-            {/* ═══════════ RECEIPT ═══════════ */}
-            <div style={{background:'#141414',border:'1px solid rgba(201,168,76,.2)',padding:'26px 28px',marginBottom:24}}>
-              <div style={{fontSize:10,letterSpacing:'.28em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16,fontWeight:700}}>Your Experience</div>
-              {primaryProduct && (
+            {primaryProduct && (
                 <div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}>
                   <span style={{fontSize:14}}>👁️ {primaryProduct.name} {primaryProduct.size}</span>
                   <span style={{fontSize:14}}>${primaryProduct.price}</span>
