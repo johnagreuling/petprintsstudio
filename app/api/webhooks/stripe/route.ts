@@ -41,7 +41,19 @@ export async function POST(req: NextRequest) {
 
 async function fulfillOrder(session: any, stripe: Stripe) {
   const meta = session.metadata!
-  const shipping = session.shipping_details
+  // Stripe API surface for shipping changed mid-2024. Try the modern path first,
+  // then the legacy field, then synthesize from customer_details as a last resort.
+  const shipping: any =
+    (session as any).collected_information?.shipping_details ||
+    (session as any).shipping_details ||
+    ((session as any).customer_details?.address ? {
+      name: (session as any).customer_details?.name,
+      address: (session as any).customer_details?.address,
+    } : null)
+  console.log('🔍 DEBUG shipping resolved from:',
+    (session as any).collected_information?.shipping_details ? 'collected_information' :
+    (session as any).shipping_details ? 'shipping_details (legacy)' :
+    (session as any).customer_details?.address ? 'customer_details fallback' : 'NONE FOUND')
   const customer = session.customer_details!
 
   console.log(`\n════════════════════════════════════════`)
