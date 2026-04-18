@@ -494,19 +494,19 @@ export default function Home() {
               {
                 sense: 'See',
                 headline: 'A Portrait That Looks Like Them',
-                body: 'Hand-tuned artistic styles, from classical oil to neon pop. Every detail preserved — their eyes, their markings, the way they carry themselves. Not a filter. Fine art.',
+                body: 'Your beautiful custom portrait.',
                 accent: 'var(--gold)',
               },
               {
                 sense: 'Hear',
                 headline: 'A Song Written Just for Them',
-                body: 'Original music with their name in the lyrics and their story in every verse. Professionally produced, studio-quality sound. Scan the QR code on the portrait — it plays instantly.',
+                body: 'A beautiful song you help write, just for your pet.',
                 accent: '#A78BFA',
               },
               {
                 sense: 'Feel',
                 headline: 'Products You Can Actually Hold',
-                body: 'A soft sherpa blanket with their face. A warm hoodie that keeps them close. A coffee mug for every morning. Gallery-wrapped canvas for the wall. Real things, shipped to your door.',
+                body: 'Their love, every time you touch our top-quality luxury goods made in their likeness.',
                 accent: '#C4622D',
               },
             ].map(p=>(
