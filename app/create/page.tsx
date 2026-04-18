@@ -101,30 +101,74 @@ export default function CreatePage() {
     } catch(e) {}
   }, [])
 
-  // ── Load the live style catalog from /api/admin/styles ──
-  // These are the same 32 curated styles shown on /styles. Falls back to
-  // hardcoded ART_STYLES if the endpoint fails so the picker still works.
+  // ── Load the live style catalog ──
+  // Uses the EXACT SAME resolution logic as /styles page so curated images
+  // appear in both places: (1) /api/admin/styles for base list,
+  // (2) /api/admin/curate-picks for your hand-picked best,
+  // (3) /api/admin/sessions for pet-matched fallback,
+  // (4) sampleImageUrl as last resort, (5) ART_STYLES config as final fallback.
   useEffect(() => {
     let cancelled = false
     ;(async () => {
       try {
-        const res = await fetch('/api/admin/styles')
-        if (!res.ok) throw new Error(`styles api ${res.status}`)
-        const data = await res.json()
-        const arr = Array.isArray(data) ? data : (data.styles || [])
+        const [stylesRes, picksRes] = await Promise.all([
+          fetch('/api/admin/styles'),
+          fetch('/api/admin/curate-picks'),
+        ])
+        if (!stylesRes.ok) throw new Error(`styles api ${stylesRes.status}`)
+        const stylesData = await stylesRes.json()
+        const picksData = picksRes.ok ? await picksRes.json() : { picks: {} }
+        const picks: Record<string, any> = picksData.picks || {}
+
+        // Load sessions for old-format picks (pet name → find matching session image)
+        let sessions: Record<string, any> = {}
+        try {
+          const sessionsRes = await fetch('/api/admin/sessions?limit=30')
+          if (sessionsRes.ok) {
+            const sessionsData = await sessionsRes.json()
+            for (const s of sessionsData.sessions || []) {
+              const pet = (s.pet_name || '').toLowerCase()
+              if (pet.includes('mason')) sessions.mason = s
+              else if (pet.includes('sylas')) sessions.sylas = s
+              else if (pet.includes('sasha')) sessions.sasha = s
+            }
+          }
+        } catch {}
+
         if (cancelled) return
-        const normalized: PickerStyle[] = arr.map((s: any) => ({
-          id: s.id,
-          name: s.name,
-          emoji: s.emoji || '🎨',
-          description: s.description,
-          styleImage: s.sampleImageUrl || s.styleImage,
-          category: s.category,
-        }))
+
+        const normalized: PickerStyle[] = (stylesData.styles || []).map((s: any) => {
+          const pickVal = picks[s.id]
+          let showcaseUrl: string | null = null
+          // New format: { pet, url }
+          if (pickVal && typeof pickVal === 'object' && pickVal.url) {
+            showcaseUrl = pickVal.url
+          }
+          // Old format: just pet name — look up URL from their session
+          else if (typeof pickVal === 'string') {
+            if (sessions[pickVal]) {
+              const match = sessions[pickVal].images?.find(
+                (img: any) => img.style_id.replace(/_\d+$/, '') === s.id
+              )
+              showcaseUrl = match?.url || null
+            }
+          }
+          // Last resort: the canonical sampleImageUrl
+          if (!showcaseUrl) showcaseUrl = s.sampleImageUrl
+
+          return {
+            id: s.id,
+            name: s.name,
+            emoji: s.emoji || '🎨',
+            description: s.description,
+            styleImage: showcaseUrl || undefined,
+            category: s.category,
+          }
+        })
+
         if (normalized.length > 0) {
           setDynamicStyles(normalized)
         } else {
-          // API returned empty — fall back to config
           setDynamicStyles(ART_STYLES.map(s => ({
             id: s.id, name: s.name, emoji: s.emoji,
             description: s.description, styleImage: s.styleImage,
