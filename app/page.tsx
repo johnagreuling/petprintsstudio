@@ -218,7 +218,19 @@ export default function Home() {
           Custom portraits that capture their magic. Original songs that bring their spirit to life. Beautiful top-quality individualized items you can touch and feel.
         </p>
 
-        <p className="fu fu3" style={{fontSize:11,color:'rgba(201,168,76,.7)',letterSpacing:'.22em',textTransform:'uppercase',marginBottom:36,fontWeight:600}}>Portrait &nbsp;·&nbsp; Song &nbsp;·&nbsp; Treasure &nbsp;·&nbsp; Starting at $49</p>
+                <div className="fu fu3" style={{marginBottom:36,display:'flex',flexDirection:'column',gap:10,alignItems:'center'}}>
+          {[
+            {n:'1', text:'Start with a custom portrait.'},
+            {n:'2', text:'Add an original song.'},
+            {n:'3', text:'Choose your keepsake.'},
+          ].map(({n,text})=>(
+            <div key={n} style={{display:'flex',alignItems:'baseline',gap:14,fontSize:'clamp(16px,1.6vw,20px)',color:'var(--cream)',lineHeight:1.4,fontWeight:300}}>
+              <span style={{fontFamily:'Cormorant Garamond,serif',fontSize:'clamp(20px,2vw,26px)',color:'var(--gold)',fontWeight:500,fontStyle:'italic'}}>{n}.</span>
+              <span>{text}</span>
+            </div>
+          ))}
+          <div style={{marginTop:8,fontSize:11,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600}}>From $49</div>
+        </div>
         
         {/* Upload Dropbox - Right on homepage */}
         <div className="fu fu4" style={{marginBottom:32,maxWidth:480,margin:'0 auto 32px',width:'100%'}}>
@@ -351,6 +363,37 @@ export default function Home() {
       </section>
 
       {/* HOW IT WORKS — 4 steps */}
+      {/* ── PROOF BLOCK: source -> portrait -> finished product ── */}
+      <section style={{padding:'56px 60px 72px',background:'#0A0A0A',borderTop:'1px solid rgba(245,240,232,.04)'}} className="section-padding">
+        <div style={{maxWidth:1200,margin:'0 auto'}}>
+          <div style={{textAlign:'center',marginBottom:40}}>
+            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12,fontWeight:600}}>See It Come to Life</div>
+            <h2 className="serif" style={{fontSize:'clamp(28px,4.5vw,48px)',fontWeight:400,color:'var(--cream)',lineHeight:1.15,margin:0}}>From their photo to your wall.</h2>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr auto 1fr auto 1fr',gap:'clamp(8px,2vw,24px)',alignItems:'center'}} className="proof-grid">
+            {/* Source photo */}
+            <div style={{aspectRatio:'1/1',overflow:'hidden',background:'#1a1412',border:'1px solid rgba(245,240,232,.08)',position:'relative'}}>
+              <img src="/proof-source.jpg" alt="Your pet photo" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'; const parent=(e.target as HTMLImageElement).parentElement; if(parent) parent.innerHTML='<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(245,240,232,.3);font-size:12px;letter-spacing:.15em;text-transform:uppercase">Source Photo</div>';}}/>
+              <div style={{position:'absolute',bottom:10,left:10,fontSize:9,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)',background:'rgba(0,0,0,.7)',padding:'4px 8px'}}>1. Upload</div>
+            </div>
+            {/* Arrow */}
+            <div style={{color:'var(--gold)',fontSize:'clamp(18px,2.5vw,28px)',fontFamily:'serif',opacity:.6}}>→</div>
+            {/* Generated portrait */}
+            <div style={{aspectRatio:'1/1',overflow:'hidden',background:'#1a1412',border:'1px solid rgba(201,168,76,.2)',position:'relative'}}>
+              <img src="/proof-portrait.jpg" alt="AI-generated portrait" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'; const parent=(e.target as HTMLImageElement).parentElement; if(parent) parent.innerHTML='<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(245,240,232,.3);font-size:12px;letter-spacing:.15em;text-transform:uppercase">Portrait</div>';}}/>
+              <div style={{position:'absolute',bottom:10,left:10,fontSize:9,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)',background:'rgba(0,0,0,.7)',padding:'4px 8px'}}>2. Generate</div>
+            </div>
+            {/* Arrow */}
+            <div style={{color:'var(--gold)',fontSize:'clamp(18px,2.5vw,28px)',fontFamily:'serif',opacity:.6}}>→</div>
+            {/* Finished product in home */}
+            <div style={{aspectRatio:'1/1',overflow:'hidden',background:'#1a1412',border:'1px solid rgba(245,240,232,.08)',position:'relative'}}>
+              <img src="/proof-product.jpg" alt="Finished canvas on wall" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'; const parent=(e.target as HTMLImageElement).parentElement; if(parent) parent.innerHTML='<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(245,240,232,.3);font-size:12px;letter-spacing:.15em;text-transform:uppercase">On Your Wall</div>';}}/>
+              <div style={{position:'absolute',bottom:10,left:10,fontSize:9,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)',background:'rgba(0,0,0,.7)',padding:'4px 8px'}}>3. Delivered</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="how-it-works" style={{padding:'80px 60px',background:'#0d0d0d'}} className="section-padding">
         <div style={{maxWidth:1200,margin:'0 auto'}}>
           <div style={{textAlign:'center',marginBottom:56}}>
