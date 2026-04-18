@@ -218,7 +218,7 @@ export default function Home() {
           {[
             {label:'See', text:'Your beautiful custom portrait.', accent:'var(--gold)'},
             {label:'Hear', text:'A song you help write, just for your pet.', accent:'#A78BFA'},
-            {label:'Feel', text:'Their love — every time you touch our luxury goods made in their likeness.', accent:'#C4622D'},
+            {label:'Feel', text:'Their love — every time you touch our luxury goods customized with their likeness.', accent:'#C4622D'},
           ].map(({label,text,accent})=>(
             <div key={label} style={{fontSize:'clamp(18px,2vw,24px)',color:'var(--cream)',lineHeight:1.5,fontWeight:300,textAlign:'center',letterSpacing:'.005em'}}>
               <span style={{color:accent,fontWeight:700,letterSpacing:'.28em',textTransform:'uppercase',fontSize:'clamp(12px,1.2vw,14px)',marginRight:14,verticalAlign:'middle'}}>{label}</span>
