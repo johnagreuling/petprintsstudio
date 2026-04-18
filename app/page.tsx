@@ -473,29 +473,6 @@ export default function Home() {
       <section id="the-experience" style={{padding:'80px 60px',background:'#0A0A0A'}} className="section-padding">
         <div style={{maxWidth:1100,margin:'0 auto'}}>
 
-          {/* Portrait examples — the SEE pillar brought to life */}
-          <div style={{marginBottom:80}}>
-            <div style={{textAlign:'center',marginBottom:28}}>
-              <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:10}}>Real Portraits, Real Pets</div>
-            </div>
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,maxWidth:800,margin:'0 auto'}}>
-              {[
-                {img:'/portrait-sasha.png', name:'Sasha', desc:'Sunset cruise, name on the plate'},
-                {img:'/portrait-maggie-mollie.png', name:'Sammy & Gracie', desc:'Golden hour at the family beach house'},
-                {img:'/portrait-jack.png', name:'Jack', desc:'Top down in the Porsche, cruising Colorado'},
-                {img:'/portrait-wyatt.png', name:'Wyatt', desc:'USA hockey fan on his favorite beach'},
-              ].map(p=>(
-                <div key={p.name} style={{borderRadius:6,overflow:'hidden',border:'1px solid var(--border)',transition:'transform .3s'}}>
-                  <img src={p.img} alt={`${p.name} portrait`} style={{width:'100%',display:'block',aspectRatio:'3/4',objectFit:'cover'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}}/>
-                  <div style={{background:'#141414',padding:'12px 14px',borderTop:'1px solid var(--border)'}}>
-                    <div style={{fontSize:12,color:'var(--gold)',fontWeight:600,marginBottom:2}}>{p.name}</div>
-                    <div style={{fontSize:11,color:'var(--muted)'}}>{p.desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Testimonials */}
           <div style={{marginBottom:48}}>
             <div style={{textAlign:'center',marginBottom:36}}>
