@@ -214,31 +214,18 @@ export default function Home() {
           See Them. <em style={{color:'var(--gold)'}}>Hear</em> Them.<br/><em style={{color:'var(--gold)'}}>Feel</em> Them.
         </h1>
 
-        <div className="fu fu3" style={{maxWidth:640,marginBottom:36,display:'flex',flexDirection:'column',gap:10}}>
+        <div className="fu fu3" style={{marginBottom:36,display:'flex',flexDirection:'column',gap:16,alignItems:'center'}}>
           {[
-            {label:'See',text:'Your beautiful custom portrait.'},
-            {label:'Hear',text:'A song you help write, just for your pet.'},
-            {label:'Feel',text:'Their love — every time you touch our luxury goods made in their likeness.'},
-          ].map(({label,text})=>(
-            <div key={label} style={{display:'flex',alignItems:'baseline',gap:12,fontSize:'clamp(14px,1.4vw,17px)',color:'var(--muted)',lineHeight:1.55,fontWeight:300,letterSpacing:'.005em',textAlign:'left'}}>
-              <span style={{color:'var(--gold)',fontWeight:600,letterSpacing:'.2em',textTransform:'uppercase',fontSize:'clamp(10px,1vw,11px)',minWidth:38,flexShrink:0}}>{label}</span>
+            {label:'See', text:'Your beautiful custom portrait.', accent:'var(--gold)'},
+            {label:'Hear', text:'A song you help write, just for your pet.', accent:'#A78BFA'},
+            {label:'Feel', text:'Their love — every time you touch our luxury goods made in their likeness.', accent:'#C4622D'},
+          ].map(({label,text,accent})=>(
+            <div key={label} style={{display:'flex',alignItems:'baseline',gap:16,fontSize:'clamp(18px,2vw,24px)',color:'var(--cream)',lineHeight:1.4,fontWeight:300,maxWidth:720,textAlign:'left'}}>
+              <span style={{color:accent,fontWeight:700,letterSpacing:'.28em',textTransform:'uppercase',fontSize:'clamp(12px,1.2vw,14px)',minWidth:58,flexShrink:0,paddingTop:4}}>{label}</span>
               <span>{text}</span>
             </div>
           ))}
-        </div>
-
-                <div className="fu fu3" style={{marginBottom:36,display:'flex',flexDirection:'column',gap:10,alignItems:'center'}}>
-          {[
-            {n:'1', text:'Start with a custom portrait.'},
-            {n:'2', text:'Add an original song.'},
-            {n:'3', text:'Choose your keepsake.'},
-          ].map(({n,text})=>(
-            <div key={n} style={{display:'flex',alignItems:'baseline',gap:14,fontSize:'clamp(16px,1.6vw,20px)',color:'var(--cream)',lineHeight:1.4,fontWeight:300}}>
-              <span style={{fontFamily:'Cormorant Garamond,serif',fontSize:'clamp(20px,2vw,26px)',color:'var(--gold)',fontWeight:500,fontStyle:'italic'}}>{n}.</span>
-              <span>{text}</span>
-            </div>
-          ))}
-          <div style={{marginTop:8,fontSize:11,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600}}>From $49</div>
+          <div style={{marginTop:12,fontSize:11,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600}}>From $49</div>
         </div>
         
         {/* Upload Dropbox - Right on homepage */}
