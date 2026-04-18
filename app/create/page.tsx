@@ -1345,7 +1345,7 @@ export default function CreatePage() {
                   const linesForProduct = cart.filter(ci => ci.productId === p.id)
                   return (
                     <div key={p.id} className="card" style={{padding:0,overflow:'hidden',display:'flex',flexDirection:'column'}}>
-                      <ProductMockup productId={p.id} category={p.category} previewUrl={preview} isSelected={linesForProduct.length>0} />
+                      <ProductMockup productId={p.id} category={p.category} previewUrl={preview} isSelected={!!linesForProduct.length} />
                       <div style={{padding:'10px 12px',flex:1,display:'flex',flexDirection:'column'}}>
                         <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:2}}>
                           <div className="serif" style={{fontSize:14,fontWeight:400}}>{p.name}</div>
