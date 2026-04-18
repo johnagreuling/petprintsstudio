@@ -14,27 +14,77 @@ export async function POST(req: NextRequest) {
     const stripe = getStripe()
     const {
       imageUrl,
-      primaryProductId,           // NEW: product ID string instead of full object
-      extras,                      // array of full product objects from client
+      primaryProductId,           // LEGACY: product ID string (old path)
+      extras,                      // LEGACY: array of full product objects (old path)
       extraSizes,
       extraColors,
       styleName,
       petName,
       petType,
-      songGenre,                   // NEW: chosen music genre
-      songAnswers,                 // NEW: answers to song questionnaire
+      songGenre,
+      songAnswers,
       sessionFolder,
+      cart,                        // NEW (Commit 3 of cart refactor): CartItem[] from new UI
     } = await req.json()
 
-    // Look up primary product server-side from the id
-    const primaryProduct = PRODUCTS.find(p => p.id === primaryProductId)
-    if (!primaryProduct) {
+    // ── NEW PATH (Commit 3 of cart refactor): if `cart` is present, use it. ──
+    //   Otherwise fall through to the LEGACY path below. Both paths build the
+    //   same Stripe checkout session shape — they just source line items
+    //   differently.
+    const isNewCartPath = Array.isArray(cart) && cart.length > 0
+
+    // Look up primary product server-side (LEGACY path — only used if !isNewCartPath)
+    const primaryProduct = isNewCartPath
+      ? null
+      : PRODUCTS.find(p => p.id === primaryProductId)
+    if (!isNewCartPath && !primaryProduct) {
       return NextResponse.json({ error: 'Invalid primary product id' }, { status: 400 })
     }
 
     const petLabel = petName ? `${petName}'s` : 'Your Pet'
     const lineItems: any[] = []
 
+    // ── NEW PATH: build line items from variant-aware cart ──
+    if (isNewCartPath) {
+      for (const item of cart) {
+        const variantSuffix = item.variantKey ? ` (${item.variantKey})` : ''
+        const qty = Math.max(1, Math.min(99, Number(item.quantity) || 1))
+        lineItems.push({
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `${petLabel} ${item.styleName} Portrait — ${item.productName}${variantSuffix}`,
+              description: `${item.category === 'Canvas' || item.category === 'Prints' ? 'Gallery-quality' : 'Premium'} pet portrait keepsake.`,
+              images: [item.portraitUrl],
+              metadata: {
+                lineId: String(item.lineId),
+                productId: String(item.productId),
+                variantId: String(item.variantId),
+                blueprintId: String(item.blueprintId),
+                variantKey: String(item.variantKey || ''),
+                imageUrl: String(item.portraitUrl),
+                styleName: String(item.styleName || ''),
+              },
+            },
+            unit_amount: Math.round(Number(item.unitPrice) * 100),
+          },
+          quantity: qty,
+        })
+      }
+      // Song line item ($0) — same as legacy path
+      lineItems.push({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: `🎵 Custom ${songGenre || 'Custom'} Song for ${petLabel}`,
+            description: `A one-of-a-kind AI-composed song written for ${petName || 'your pet'}, delivered via QR code on the portrait.`,
+          },
+          unit_amount: 0,
+        },
+        quantity: 1,
+      })
+    } else {
+    // ── LEGACY PATH (unchanged) ──
     // ── PRIMARY PORTRAIT PRODUCT ──
     lineItems.push({
       price_data: {
@@ -96,6 +146,7 @@ export async function POST(req: NextRequest) {
         quantity: 1,
       })
     }
+    } // end LEGACY else-branch
 
     // Stringify song answers for metadata (Stripe metadata values must be strings, max 500 chars)
     const songAnswersStr = JSON.stringify(songAnswers || {}).slice(0, 499)
@@ -126,28 +177,39 @@ export async function POST(req: NextRequest) {
       success_url: `${process.env.NEXT_PUBLIC_APP_URL}/order-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/create`,
       metadata: {
-        imageUrl,
+        imageUrl: imageUrl || (isNewCartPath && cart[0]?.portraitUrl) || '',
         petName: petName || '',
         petType: petType || '',
         styleName: styleName || '',
-        primaryProductId: primaryProduct.id,
+        primaryProductId: isNewCartPath ? '' : (primaryProduct?.id || ''),
         songGenre: songGenre || '',
         songAnswers: songAnswersStr,
         sessionFolder: sessionFolder || '',
-        extraProductIds: (extras || []).map((e: any) => e.id).join(','),
+        extraProductIds: isNewCartPath ? '' : (extras || []).map((e: any) => e.id).join(','),
+        // NEW PATH markers — webhook uses these to reconstruct the order
+        cartPath: isNewCartPath ? 'v2' : 'legacy',
+        cartLineCount: isNewCartPath ? String(cart.length) : '0',
+        cartTotal: isNewCartPath
+          ? String(cart.reduce((s: number, i: any) => s + (Number(i.unitPrice) || 0) * (Number(i.quantity) || 1), 0))
+          : '0',
       },
     })
 
     // ── Fire-and-forget: generate song brief + send admin email ──
     // Don't await — return checkout URL immediately so user gets to Stripe fast.
+    // Derive the "hero" image URL for the song brief email — new path uses
+    // the first cart item's portrait, legacy path uses the top-level imageUrl.
+    const heroImageUrl = imageUrl || (isNewCartPath && cart[0]?.portraitUrl) || ''
+    const heroStyleName = styleName || (isNewCartPath && cart[0]?.styleName) || ''
+
     fireSongBriefAndEmail({
       petName: petName || '',
       petType: petType || 'pet',
-      styleName: styleName || '',
+      styleName: heroStyleName,
       songGenre: songGenre || '',
       songAnswers: songAnswers || {},
       sessionFolder: sessionFolder || '',
-      firstImageUrl: imageUrl,
+      firstImageUrl: heroImageUrl,
     }).catch(e => console.error('Song brief/email failed (non-blocking):', e))
 
     return NextResponse.json({ url: session.url })
