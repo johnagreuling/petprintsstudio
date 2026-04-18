@@ -467,10 +467,10 @@ export default function Home() {
                 accent: '#C4622D',
               },
             ].map(p=>(
-              <div key={p.sense} className="card" style={{padding:'48px 32px',textAlign:'center',borderTop:`3px solid ${p.accent}`}}>
-                <div style={{fontSize:14,letterSpacing:'.4em',textTransform:'uppercase',color:p.accent,marginBottom:18,fontWeight:800}}>{p.sense}</div>
-                <h3 className="serif" style={{fontSize:24,fontWeight:400,color:'var(--cream)',marginBottom:16,lineHeight:1.25}}>{p.headline}</h3>
-                <p style={{fontSize:13,color:'var(--muted)',lineHeight:1.85}}>{p.body}</p>
+              <div key={p.sense} className="card" style={{padding:'56px 36px',textAlign:'center',borderTop:`3px solid ${p.accent}`}}>
+                <div style={{fontSize:20,letterSpacing:'.42em',textTransform:'uppercase',color:p.accent,marginBottom:22,fontWeight:800}}>{p.sense}</div>
+                <h3 className="serif" style={{fontSize:'clamp(28px,3.2vw,40px)',fontWeight:400,color:'var(--cream)',marginBottom:20,lineHeight:1.18}}>{p.headline}</h3>
+                <p style={{fontSize:16,color:'var(--muted)',lineHeight:1.7}}>{p.body}</p>
               </div>
             ))}
           </div>
