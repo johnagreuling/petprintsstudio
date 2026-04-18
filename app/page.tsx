@@ -245,7 +245,7 @@ export default function Home() {
         </div>
 
         {/* ── Hero Portrait Slider ─────────────────────────────────
-            Horizontal scroll slider with all 32 curated portraits.
+            Horizontal scroll slider with curated portraits.
             Left/right arrows on desktop, native momentum thumb-flick on iOS.
             scroll-snap centers each card as it comes into view. ── */}
         {heroShowcase.length > 0 && (
@@ -451,7 +451,7 @@ export default function Home() {
               {
                 sense: 'See',
                 headline: 'A Portrait That Looks Like Them',
-                body: '32 hand-tuned artistic styles, from classical oil to neon pop. Every detail preserved — their eyes, their markings, the way they carry themselves. Not a filter. Fine art.',
+                body: 'Hand-tuned artistic styles, from classical oil to neon pop. Every detail preserved — their eyes, their markings, the way they carry themselves. Not a filter. Fine art.',
                 accent: 'var(--gold)',
               },
               {
@@ -533,10 +533,10 @@ export default function Home() {
       <section style={{padding:'80px 60px',background:'#0A0A0A',borderTop:'1px solid var(--border)'}} className="section-padding">
         <div style={{maxWidth:1100,margin:'0 auto',textAlign:'center'}}>
           <p style={{fontSize:12,color:'rgba(201,168,76,.6)',letterSpacing:'.08em',marginBottom:48}}>
-            32 custom-tuned styles &nbsp;&middot;&nbsp; Every one included &nbsp;&middot;&nbsp; <Link href="/styles" style={{color:'var(--gold)',textDecoration:'none',borderBottom:'1px solid rgba(201,168,76,.4)'}}>Explore styles →</Link>
+            Curated artistic styles &nbsp;&middot;&nbsp; Every one included &nbsp;&middot;&nbsp; <Link href="/styles" style={{color:'var(--gold)',textDecoration:'none',borderBottom:'1px solid rgba(201,168,76,.4)'}}>Explore styles →</Link>
           </p>
           <div className="stats-bar" style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:40,justifyContent:'center'}}>
-            {[['32','Portraits Per Story'],['1,000+','Pet Stories Told'],['♪','Beautiful Original Music'],['4.9★','Customer Average']].map(([n,l1])=>(
+            {[['✓','Curated Styles'],['1,000+','Pet Stories Told'],['♪','Beautiful Original Music'],['4.9★','Customer Average']].map(([n,l1])=>(
               <div key={l1} style={{textAlign:'center'}}>
                 <div className="serif" style={{fontSize:36,color:'var(--gold)',lineHeight:1,marginBottom:4}}>{n}</div>
                 <div style={{fontSize:9,letterSpacing:'.22em',textTransform:'uppercase',color:'var(--muted)',marginTop:6,lineHeight:1.6}}>{l1}</div>

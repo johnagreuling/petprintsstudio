@@ -888,7 +888,7 @@ export default function CreatePage() {
             <div style={{display:'grid',gridTemplateColumns:'1fr 2.5fr',gap:3}}>
               <button className="btn-out" onClick={()=>setStep('upload')}>← Back</button>
               <button className="btn-gold" disabled={selectedStyles.length === 0} onClick={handleGenerate}>
-                {selectedStyles.length === 0 ? 'Pick at Least 1 Style' : `Generate ${selectedStyles.length * GEN_LIMITS.INITIAL_PER_STYLE} Portraits →`}
+                {selectedStyles.length === 0 ? 'Pick a Style to Start' : `Generate Portraits →`}
               </button>
             </div>
             <div style={{marginTop:16,textAlign:'center',fontSize:11,color:'var(--muted)'}}>
