@@ -327,8 +327,8 @@ export default function Home() {
       </section>
 
       {/* ── SONG PLAYER — right at the top so visitors can play while browsing ── */}
-      <section style={{padding:'56px 60px',background:'#0A0A0A'}} className="section-padding">
-        <div style={{maxWidth:800,margin:'0 auto',textAlign:'center',padding:'48px 32px',background:'linear-gradient(135deg,rgba(167,139,250,.05),rgba(10,10,10,.4))',border:'1px solid rgba(167,139,250,.15)',borderRadius:10}}>
+      <section style={{padding:'28px 60px 44px',background:'#0A0A0A'}} className="section-padding">
+        <div style={{maxWidth:800,margin:'0 auto',textAlign:'center',padding:'36px 32px',background:'linear-gradient(135deg,rgba(167,139,250,.05),rgba(10,10,10,.4))',border:'1px solid rgba(167,139,250,.15)',borderRadius:10}}>
           <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'#A78BFA',marginBottom:14}}>Every Pet Gets a Song</div>
           <h3 className="serif" style={{fontSize:'clamp(24px,4vw,36px)',marginBottom:12,fontWeight:400,color:'var(--cream)',lineHeight:1.15}}>Press Play. Hear the Difference.</h3>
           <p style={{fontSize:14,color:'var(--muted)',marginBottom:28,maxWidth:440,margin:'0 auto 28px',lineHeight:1.8}}>
