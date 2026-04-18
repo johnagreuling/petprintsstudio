@@ -5,8 +5,9 @@ import WatermarkedImage from '@/components/WatermarkedImage'
 import SizeCropPreview from '@/components/SizeCropPreview'
 import {
   PRODUCTS, ART_STYLES, SONG_QUESTIONS, SONG_GENRES, GEN_LIMITS,
-  findPrimaryProduct,
+  findPrimaryProduct, buildLineId, cartSubtotal, cartItemCount,
 } from '@/lib/config'
+import type { CartItem } from '@/lib/config'
 
 type Step = 'upload' | 'styles' | 'generating' | 'gallery' | 'checkout'
 
@@ -79,6 +80,7 @@ export default function CreatePage() {
   const [cartExtraSizes, setCartExtraSizes] = useState<Record<string, string>>({})
   const [cartExtraColors, setCartExtraColors] = useState<Record<string, string>>({})
   const [checkoutLoading, setCheckoutLoading] = useState(false)
+  const [cart, setCart] = useState<CartItem[]>([])
   const [productDetail, setProductDetail] = useState<typeof PRODUCTS[0] | null>(null)
   const [savedSession, setSavedSession] = useState<{sessionFolder:string;images:any[];petName:string;createdAt:string}|null>(null)
 
@@ -213,6 +215,51 @@ export default function CreatePage() {
 
   // ── Sizes available for selected medium ──
   const availableSizes = PRODUCTS.filter(p => p.category === selectedMedium).map(p => ({ size: p.size, price: p.price, popular: p.popular }))
+
+  useEffect(() => {
+    if (!picked || !primaryProduct) {
+      setCart([])
+      return
+    }
+    const next: CartItem[] = []
+    next.push({
+      lineId: buildLineId(primaryProduct.id, primaryProduct.size, picked.url, picked.styleName),
+      productId: primaryProduct.id,
+      productName: primaryProduct.name,
+      variantKey: primaryProduct.size,
+      variantId: (primaryProduct as any).printifyVariantId,
+      blueprintId: (primaryProduct as any).printifyBlueprintId,
+      quantity: 1,
+      unitPrice: primaryProduct.price,
+      portraitUrl: picked.url,
+      styleName: picked.styleName,
+      category: primaryProduct.category,
+      addedAt: Date.now(),
+    })
+    for (const extraId of cartExtras) {
+      const pr = PRODUCTS.find(x => x.id === extraId)
+      if (!pr) continue
+      const sz = cartExtraSizes[extraId] || ''
+      const cl = cartExtraColors[extraId] || ''
+      const variantKey = [cl, sz].filter(Boolean).join(' / ')
+      next.push({
+        lineId: buildLineId(pr.id, variantKey, picked.url, picked.styleName),
+        productId: pr.id,
+        productName: pr.name,
+        variantKey: variantKey,
+        variantId: (pr as any).printifyVariantId,
+        blueprintId: (pr as any).printifyBlueprintId,
+        quantity: 1,
+        unitPrice: pr.price,
+        portraitUrl: picked.url,
+        styleName: picked.styleName,
+        category: pr.category,
+        addedAt: Date.now(),
+      })
+    }
+    setCart(next)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [picked?.url, picked?.styleName, primaryProduct?.id, cartExtras, cartExtraSizes, cartExtraColors])
 
   // ── File handlers ──
   const handleFile = (file: File) => {
