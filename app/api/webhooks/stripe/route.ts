@@ -142,7 +142,13 @@ async function fulfillOrder(session: any, stripe: Stripe) {
   // Build Printify line items
   const printifyLineItems: any[] = []
 
+  console.log('🔍 DEBUG meta:', JSON.stringify(meta, null, 2))
+  console.log('🔍 DEBUG primaryProductId received:', JSON.stringify(meta.primaryProductId), 'type:', typeof meta.primaryProductId)
+  console.log('🔍 DEBUG address built:', JSON.stringify(address))
+  console.log('🔍 DEBUG PRODUCTS sample IDs:', PRODUCTS.slice(0,5).map(p => p.id))
+
   const primaryProduct = PRODUCTS.find(p => p.id === meta.primaryProductId)
+  console.log('🔍 DEBUG primaryProduct found:', primaryProduct ? primaryProduct.id : 'NULL')
   if (primaryProduct && address) {
     printifyLineItems.push({
       print_provider_id: primaryProduct.printifyProviderId || 1,
