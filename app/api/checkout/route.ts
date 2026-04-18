@@ -103,18 +103,18 @@ export async function POST(req: NextRequest) {
       price_data: {
         currency: 'usd',
         product_data: {
-          name: `${petLabel} ${styleName} Portrait — ${primaryProduct.name} ${primaryProduct.size}`,
-          description: `AI-generated ${(styleName || '').toLowerCase()} pet portrait on ${primaryProduct.name.toLowerCase()}. Includes custom ${songGenre || 'custom'} song with QR code.`,
+          name: `${petLabel} ${styleName} Portrait — ${primaryProduct!.name} ${primaryProduct!.size}`,
+          description: `AI-generated ${(styleName || '').toLowerCase()} pet portrait on ${primaryProduct!.name.toLowerCase()}. Includes custom ${songGenre || 'custom'} song with QR code.`,
           images: [imageUrl],
           metadata: {
-            productId: primaryProduct.id,
-            size: primaryProduct.size,
-            variantId: String(primaryProduct.printifyVariantId),
-            blueprintId: String(primaryProduct.printifyBlueprintId),
+            productId: primaryProduct!.id,
+            size: primaryProduct!.size,
+            variantId: String(primaryProduct!.printifyVariantId),
+            blueprintId: String(primaryProduct!.printifyBlueprintId),
             imageUrl,
           },
         },
-        unit_amount: Math.round(primaryProduct.price * 100),
+        unit_amount: Math.round(primaryProduct!.price * 100),
       },
       quantity: 1,
     })
