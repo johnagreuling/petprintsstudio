@@ -214,9 +214,18 @@ export default function Home() {
           See Them. <em style={{color:'var(--gold)'}}>Hear</em> Them.<br/><em style={{color:'var(--gold)'}}>Feel</em> Them.
         </h1>
 
-        <p className="fu fu3" style={{fontSize:18,lineHeight:1.75,color:'var(--muted)',maxWidth:600,marginBottom:36,fontWeight:300,letterSpacing:'.005em'}}>
-          Custom portraits that capture their magic. Original songs that bring their spirit to life. Beautiful top-quality individualized items you can touch and feel.
-        </p>
+        <div className="fu fu3" style={{maxWidth:640,marginBottom:36,display:'flex',flexDirection:'column',gap:10}}>
+          {[
+            {label:'See',text:'Your beautiful custom portrait.'},
+            {label:'Hear',text:'A song you help write, just for your pet.'},
+            {label:'Feel',text:'Their love — every time you touch our luxury goods made in their likeness.'},
+          ].map(({label,text})=>(
+            <div key={label} style={{display:'flex',alignItems:'baseline',gap:12,fontSize:'clamp(14px,1.4vw,17px)',color:'var(--muted)',lineHeight:1.55,fontWeight:300,letterSpacing:'.005em',textAlign:'left'}}>
+              <span style={{color:'var(--gold)',fontWeight:600,letterSpacing:'.2em',textTransform:'uppercase',fontSize:'clamp(10px,1vw,11px)',minWidth:38,flexShrink:0}}>{label}</span>
+              <span>{text}</span>
+            </div>
+          ))}
+        </div>
 
                 <div className="fu fu3" style={{marginBottom:36,display:'flex',flexDirection:'column',gap:10,alignItems:'center'}}>
           {[
@@ -476,47 +485,6 @@ export default function Home() {
            ════════════════════════════════════════════════════════════ */}
       <section id="the-experience" style={{padding:'80px 60px',background:'#0A0A0A'}} className="section-padding">
         <div style={{maxWidth:1100,margin:'0 auto'}}>
-
-          {/* The philosophy — multi-sensory */}
-          <div style={{textAlign:'center',marginBottom:80}}>
-            <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:20}}>The Philosophy</div>
-            <h2 className="serif" style={{fontSize:'clamp(30px,4.5vw,56px)',fontWeight:400,marginBottom:32,lineHeight:1.1,maxWidth:800,margin:'0 auto 32px'}}>
-              Our pets delight every sense.<br/><em style={{color:'var(--gold)'}}>So should how we celebrate them.</em>
-            </h2>
-            <p style={{fontSize:15,lineHeight:1.9,color:'var(--muted)',maxWidth:540,margin:'0 auto'}}>
-              Not a generic portrait of a dog. A portrait of <em>your</em> dog — the one who tilts her head when you say &ldquo;walk,&rdquo; who stole the couch cushion three years ago and never gave it back.
-            </p>
-          </div>
-
-          {/* Three sensory pillars — SEE / HEAR / FEEL */}
-          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:3,marginBottom:80}} className="responsive-grid-3col">
-            {[
-              {
-                sense: 'See',
-                headline: 'A Portrait That Looks Like Them',
-                body: 'Your beautiful custom portrait.',
-                accent: 'var(--gold)',
-              },
-              {
-                sense: 'Hear',
-                headline: 'A Song Written Just for Them',
-                body: 'A beautiful song you help write, just for your pet.',
-                accent: '#A78BFA',
-              },
-              {
-                sense: 'Feel',
-                headline: 'Products You Can Actually Hold',
-                body: 'Their love, every time you touch our top-quality luxury goods made in their likeness.',
-                accent: '#C4622D',
-              },
-            ].map(p=>(
-              <div key={p.sense} className="card" style={{padding:'56px 36px',textAlign:'center',borderTop:`3px solid ${p.accent}`}}>
-                <div style={{fontSize:20,letterSpacing:'.42em',textTransform:'uppercase',color:p.accent,marginBottom:22,fontWeight:800}}>{p.sense}</div>
-                <h3 className="serif" style={{fontSize:'clamp(28px,3.2vw,40px)',fontWeight:400,color:'var(--cream)',marginBottom:20,lineHeight:1.18}}>{p.headline}</h3>
-                <p style={{fontSize:16,color:'var(--muted)',lineHeight:1.7}}>{p.body}</p>
-              </div>
-            ))}
-          </div>
 
           {/* Portrait examples — the SEE pillar brought to life */}
           <div style={{marginBottom:80}}>
