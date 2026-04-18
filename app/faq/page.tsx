@@ -4,7 +4,7 @@ import Link from 'next/link'
 const FAQS = [
   {
     q: 'How does it work?',
-    a: 'Upload a clear photo of your pet, tell us a little about them (name, personality, favorite things), and we generate 32 custom portraits in different artistic styles. You pick your favorite, choose a product, and we handle printing and shipping.',
+    a: 'Upload a clear photo of your pet, tell us a little about them (name, personality, favorite things), pick a style from our curated library, and we generate your portrait. You pick your favorite, choose a product, and we handle printing and shipping.',
   },
   {
     q: 'How long does it take to get my portraits?',
@@ -16,7 +16,7 @@ const FAQS = [
   },
   {
     q: 'What are the 32 styles?',
-    a: 'We offer 32 hand-tuned artistic styles across five families: Classic Portraits (museum black, Rembrandt, baroque), Painterly Fine Art (oil, watercolor, impressionist, charcoal), Golden Hour (coastal, autumn, snow day), Lifestyle (convertible ride, library study, yacht marina), and Pop & Fantasy (neon glow, comic hero, retro pop). Every style is included in every order.',
+    a: 'We offer a curated library of hand-tuned artistic styles across five families: Classic Portraits (museum black, Rembrandt, baroque), Painterly Fine Art (oil, watercolor, impressionist, charcoal), Golden Hour (coastal, autumn, snow day), Lifestyle (convertible ride, library study, yacht marina), and Pop & Fantasy (neon glow, comic hero, retro pop). Every style is included in every order.',
   },
   {
     q: 'What products do you offer?',
@@ -36,7 +36,7 @@ const FAQS = [
   },
   {
     q: 'What if I don\'t like any of the portraits?',
-    a: 'We stand behind our work. If none of the 32 styles capture your pet the way you envisioned, contact us and we\'ll work with you to make it right. Your satisfaction matters more than a single sale.',
+    a: 'We stand behind our work. If none of our styles capture your pet the way you envisioned, contact us and we\'ll work with you to make it right. Your satisfaction matters more than a single sale.',
   },
   {
     q: 'Do you ship internationally?',
