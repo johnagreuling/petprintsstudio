@@ -185,3 +185,51 @@ export function buildMemoryPrompt(answers: Record<string, string>, style: typeof
   if (answers.perfectDay) parts.push(`Scene: ${answers.perfectDay}`)
   return parts.join(', ')
 }
+
+
+// ─────────────────────────────────────────────────────────────────
+//  CART SYSTEM — variant-aware, quantity-aware line items
+//  Added 2026-04-18 as foundation for the new catalog + cart refactor.
+//  Each CartItem represents a single product variant in the cart.
+//  Two of the same variant = quantity: 2 (not two line items).
+//  Different variants (e.g. Tee M + Tee L) = two separate line items.
+// ─────────────────────────────────────────────────────────────────
+
+export interface CartItem {
+  lineId: string              // unique per line (e.g. "tshirt-Black-L-<ts>")
+  productId: string           // maps to PRODUCTS[].id
+  productName: string         // "Premium Tee", "Canvas Print", etc.
+  variantKey: string          // "Black / L" / "16\u00d720" / "iPhone 15 Pro" / "" if N/A
+  variantId: number           // Printify variant ID
+  blueprintId: number         // Printify blueprint ID
+  quantity: number            // 1 or more
+  unitPrice: number           // price per unit in dollars
+  portraitUrl: string         // which generated portrait to print
+  styleName: string           // which art style (e.g. "Bold Impasto")
+  category: string            // "Canvas" | "Prints" | "Home" | "Apparel" | "Accessories"
+  addedAt: number             // Date.now() when added
+}
+
+// Look up a product by its id. Returns undefined if not found.
+export function findProductById(id: string) {
+  return PRODUCTS.find(p => p.id === id)
+}
+
+// Build a stable lineId from its semantic parts. Two identical CartItem variants
+// with the same portrait+style produce the same lineId so the cart can merge quantity.
+export function buildLineId(productId: string, variantKey: string, portraitUrl: string, styleName: string): string {
+  const variantTag = variantKey ? variantKey.replace(/[^a-zA-Z0-9]/g, "_") : "default"
+  const portraitTag = (portraitUrl || "").split("/").pop()?.replace(/\.[^.]+$/, "").slice(0, 40) || "np"
+  const styleTag = (styleName || "nostyle").replace(/[^a-zA-Z0-9]/g, "_").slice(0, 24)
+  return `${productId}__${variantTag}__${styleTag}__${portraitTag}`
+}
+
+// Pure utility: compute cart subtotal in dollars.
+export function cartSubtotal(cart: CartItem[]): number {
+  return cart.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0)
+}
+
+// Pure utility: total item count across all line items (for nav badge, etc).
+export function cartItemCount(cart: CartItem[]): number {
+  return cart.reduce((sum, item) => sum + item.quantity, 0)
+}
