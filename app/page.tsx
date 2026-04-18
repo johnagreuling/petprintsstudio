@@ -548,18 +548,35 @@ export default function Home() {
             </div>
             <div className="responsive-grid-3col" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:3}}>
               {[
-                {q:'The portrait we got of our puppy Hercules is the most amazing piece of art in our home. We ordered the 24x36 impasto and it looks like it belongs in a gallery — my wife cannot stop talking about it. The custom song somehow captured exactly how much we love him. My wife is an interior designer and she’s already used several of these pieces in client homes. Also, we love the king-size blanket!',name:'Ryan S.',role:'Boulder, Colorado'},
-                {q:'I was completely blown away when I opened ours. The portrait captured Bear’s personality perfectly — it feels like fine art and I love every time I see him. The song is amazing. My husband and I played it as soon as we got the package and we can’t stop listening to ‘Bear’s Mountain.’ We also ordered two beach towels and they are such a hit — awesome prints. Everything felt special and beautifully made.',name:'Emily R.',role:'Cashiers, North Carolina'},
-                {q:'Our daughter gave us one of the best gifts we’ve ever received — a beautiful portrait of my old friend Ranger. We hung the print in the living room and it still stops me every time I walk by. The sweatshirts are incredible too. But the custom song was the real surprise — it brought a tear to my eye and our whole family can’t stop playing it. Truly touching. Best gift I’ve ever gotten.',name:'Mark T.',role:'Austin, Texas'},
+                {q:'The portrait we got of our puppy Hercules is the most amazing piece of art in our home. We ordered the 24x36 impasto and it looks like it belongs in a gallery — my wife cannot stop talking about it. The custom song somehow captured exactly how much we love him. My wife is an interior designer and she’s already used several of these pieces in client homes. Also, we love the king-size blanket!',pet:'/testimonial-hercules.jpg',petName:'Hercules',name:'Ryan S.',role:'Boulder, Colorado'},
+                {q:'I was completely blown away when I opened ours. The portrait captured Bear’s personality perfectly — it feels like fine art and I love every time I see him. The song is amazing. My husband and I played it as soon as we got the package and we can’t stop listening to ‘Bear’s Mountain.’ We also ordered two beach towels and they are such a hit — awesome prints. Everything felt special and beautifully made.',pet:'/testimonial-bear.jpg',petName:'Bear',name:'Emily R.',role:'Cashiers, North Carolina'},
+                {q:'Our daughter gave us one of the best gifts we’ve ever received — a beautiful portrait of my old friend Ranger. We hung the print in the living room and it still stops me every time I walk by. The sweatshirts are incredible too. But the custom song was the real surprise — it brought a tear to my eye and our whole family can’t stop playing it. Truly touching. Best gift I’ve ever gotten.',pet:'/testimonial-ranger.jpg',petName:'Ranger',name:'Mark T.',role:'Austin, Texas'},
               ].map((t,i)=>(
-                <div key={i} className="card" style={{padding:'32px 28px'}}>
-                  <div className="serif" style={{fontSize:48,color:'var(--gold)',opacity:.15,lineHeight:.7,marginBottom:18}}>&ldquo;</div>
-                  <p style={{fontSize:14,lineHeight:1.85,fontStyle:'italic',color:'rgba(245,240,232,.85)',marginBottom:24}}>{t.q}</p>
-                  <div style={{borderTop:'1px solid var(--border)',paddingTop:16}}>
-                    <div style={{fontWeight:600,fontSize:12}}>{t.name}</div>
-                    <div style={{fontSize:10,color:'var(--gold)',marginTop:3}}>{t.role}</div>
-                  </div>
+                <div key={i} className="card" style={{padding:0,overflow:'hidden',display:'flex',flexDirection:'column'}}>
+              {/* Hero image — the art in a real home */}
+              {t.pet && (
+                <div style={{position:'relative',aspectRatio:'4/5',overflow:'hidden',background:'#0d0d0d'}}>
+                  <img
+                    src={t.pet}
+                    alt={`${t.petName}'s portrait in ${t.name}'s home`}
+                    style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}
+                    onError={(e)=>{(e.target as HTMLImageElement).style.display='none';}}
+                  />
+                  {/* Pet name badge */}
+                  <div style={{position:'absolute',bottom:12,left:12,background:'rgba(10,10,10,.82)',backdropFilter:'blur(6px)',padding:'6px 12px',fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600,border:'1px solid rgba(201,168,76,.2)'}}>{t.petName}</div>
                 </div>
+              )}
+
+              {/* Quote + signature */}
+              <div style={{padding:'26px 26px 24px',display:'flex',flexDirection:'column',flex:1}}>
+                <div style={{display:'flex',gap:3,marginBottom:14,color:'var(--gold)',fontSize:12,letterSpacing:'.15em'}}>★ ★ ★ ★ ★</div>
+                <p style={{fontSize:14,lineHeight:1.8,fontStyle:'italic',color:'rgba(245,240,232,.88)',marginBottom:20,flex:1}}>{t.q}</p>
+                <div style={{borderTop:'1px solid var(--border)',paddingTop:14}}>
+                  <div style={{fontWeight:600,fontSize:13}}>{t.name}</div>
+                  <div style={{fontSize:10,color:'var(--gold)',marginTop:3,letterSpacing:'.1em',textTransform:'uppercase'}}>{t.role}</div>
+                </div>
+              </div>
+            </div>
               ))}
             </div>
           </div>
