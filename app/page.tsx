@@ -211,7 +211,7 @@ export default function Home() {
         <div style={{position:'absolute',top:'70%',left:'20%',width:400,height:400,background:'radial-gradient(circle,rgba(196,98,45,.04) 0%,transparent 70%)',pointerEvents:'none'}} />
 
         <h1 className="serif fu fu2" style={{fontSize:'clamp(52px,8vw,108px)',lineHeight:.96,marginBottom:28,fontWeight:400,maxWidth:1040,letterSpacing:'-.02em'}}>
-          See Them. <em style={{color:'var(--gold)'}}>Hear</em> Them.<br/><em style={{color:'var(--gold)'}}>Feel</em> Them.
+          <em style={{color:'var(--gold)'}}>See</em> Them. <em style={{color:'var(--gold)'}}>Hear</em> Them.<br/><em style={{color:'var(--gold)'}}>Feel</em> Them.
         </h1>
 
         <div className="fu fu3" style={{marginBottom:36,display:'flex',flexDirection:'column',gap:20,alignItems:'center',maxWidth:820,margin:'0 auto 36px'}}>
