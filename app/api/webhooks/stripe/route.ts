@@ -61,7 +61,7 @@ async function fulfillOrder(session: any, stripe: Stripe) {
   console.log(`════════════════════════════════════════\n`)
 
   // Get full line items from Stripe for accurate pricing
-  const lineItems = await stripe.checkout.sessions.listLineItems(session.id)
+  const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { expand: ['data.price.product'] })
   const totalCents = session.amount_total || lineItems.data.reduce((sum: number, item: any) => sum + (item.amount_total || 0), 0)
 
   // Record order in database
@@ -150,29 +150,56 @@ async function fulfillOrder(session: any, stripe: Stripe) {
   // Build Printify line items
   const printifyLineItems: any[] = []
 
+  const isNewCartPath = meta.cartPath === 'v2'
 
-  const primaryProduct = PRODUCTS.find(p => p.id === meta.primaryProductId)
-  if (primaryProduct && address) {
-    printifyLineItems.push({
-      print_provider_id: primaryProduct.printifyProviderId || 1,
-      blueprint_id: primaryProduct.printifyBlueprintId,
-      variant_id: Number(primaryProduct.printifyVariantId),
-      print_areas: { front: accessibleImageUrl },
-      quantity: 1,
-    })
-  }
+  if (isNewCartPath && address) {
+    // ── NEW PATH: iterate Stripe line items, read per-item metadata we stuffed at checkout ──
+    for (const li of lineItems.data) {
+      const product = (li.price?.product as any)
+      const pm = (product?.metadata || {}) as Record<string, string>
+      // Skip the $0 song line item (no variantId)
+      const vId = Number(pm.variantId)
+      const bId = Number(pm.blueprintId)
+      if (!vId || !bId) continue
+      // Look up provider id from our config by productId
+      const prod = PRODUCTS.find(p => p.id === pm.productId)
+      const providerId = prod?.printifyProviderId || 1
+      // Per-item image URL if present, otherwise fall back to accessibleImageUrl
+      const imgUrl = pm.imageUrl || accessibleImageUrl
+      printifyLineItems.push({
+        print_provider_id: providerId,
+        blueprint_id: bId,
+        variant_id: vId,
+        print_areas: { front: imgUrl },
+        quantity: Number(li.quantity) || 1,
+      })
+    }
+    console.log(`🛒 NEW PATH: built ${printifyLineItems.length} Printify line items from cart`)
+  } else {
+    // ── LEGACY PATH (unchanged) ──
+    const primaryProduct = PRODUCTS.find(p => p.id === meta.primaryProductId)
+    if (primaryProduct && address) {
+      printifyLineItems.push({
+        print_provider_id: primaryProduct.printifyProviderId || 1,
+        blueprint_id: primaryProduct.printifyBlueprintId,
+        variant_id: Number(primaryProduct.printifyVariantId),
+        print_areas: { front: accessibleImageUrl },
+        quantity: 1,
+      })
+    }
 
-  if (meta.extraProductIds) {
-    for (const id of meta.extraProductIds.split(',').filter(Boolean)) {
-      const p = PRODUCTS.find(x => x.id === id)
-      if (p) {
-        printifyLineItems.push({
-          print_provider_id: p.printifyProviderId || 1,
-          blueprint_id: p.printifyBlueprintId,
-          variant_id: p.printifyVariantId,
-          print_areas: { front: accessibleImageUrl },
-          quantity: 1,
-        })
+    if (meta.extraProductIds) {
+      for (const id of meta.extraProductIds.split(',').filter(Boolean)) {
+        const p = PRODUCTS.find(x => x.id === id)
+        if (p) {
+          printifyLineItems.push({
+            print_provider_id: p.printifyProviderId || 1,
+            blueprint_id: p.printifyBlueprintId,
+            variant_id: p.printifyVariantId,
+            print_areas: { front: accessibleImageUrl },
+            quantity: 1,
+          })
+        }
       }
     }
   }
