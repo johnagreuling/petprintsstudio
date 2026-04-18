@@ -257,7 +257,7 @@ export default function Home() {
             Left/right arrows on desktop, native momentum thumb-flick on iOS.
             scroll-snap centers each card as it comes into view. ── */}
         {heroShowcase.length > 0 && (
-          <div className="fu fu4" style={{position:'relative',width:'100%',maxWidth:1200,margin:'0 auto 48px'}}>
+          <div className="fu fu4" style={{position:'relative',width:'100%',maxWidth:1200,margin:'0 auto 8px'}}>
             {/* Edge fade masks */}
             <div aria-hidden className="slider-fade-left" style={{position:'absolute',left:0,top:0,bottom:0,width:80,background:'linear-gradient(to right,#0A0A0A 0%,rgba(10,10,10,.6) 50%,transparent 100%)',pointerEvents:'none',zIndex:2}}/>
             <div aria-hidden className="slider-fade-right" style={{position:'absolute',right:0,top:0,bottom:0,width:80,background:'linear-gradient(to left,#0A0A0A 0%,rgba(10,10,10,.6) 50%,transparent 100%)',pointerEvents:'none',zIndex:2}}/>
@@ -327,7 +327,7 @@ export default function Home() {
 
             {/* Helper hint below slider */}
             <div style={{textAlign:'center',marginTop:14,fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'rgba(245,240,232,.3)'}}>
-              Swipe · {heroShowcase.length} curated styles
+              Swipe · our curated library
             </div>
           </div>
         )}
@@ -335,7 +335,7 @@ export default function Home() {
       </section>
 
       {/* ── SONG PLAYER — right at the top so visitors can play while browsing ── */}
-      <section style={{padding:'14px 60px 16px',background:'#0A0A0A'}} className="section-padding">
+      <section style={{padding:'24px 60px',background:'#0A0A0A'}} className="section-padding">
         <div style={{maxWidth:800,margin:'0 auto',textAlign:'center',padding:'28px 32px',background:'linear-gradient(135deg,rgba(167,139,250,.05),rgba(10,10,10,.4))',border:'1px solid rgba(167,139,250,.15)',borderRadius:10}}>
           <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'#A78BFA',marginBottom:14}}>Every Pet Gets a Song</div>
           <h3 className="serif" style={{fontSize:'clamp(24px,4vw,36px)',marginBottom:12,fontWeight:400,color:'var(--cream)',lineHeight:1.15}}>Press Play. Hear the Magic.</h3>
