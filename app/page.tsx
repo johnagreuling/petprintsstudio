@@ -548,9 +548,9 @@ export default function Home() {
             </div>
             <div className="responsive-grid-3col" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:3}}>
               {[
-                {q:'My golden Rocky looks like actual royalty. I cried when I opened the box. Already ordered three more for the family.',name:'Sarah M.',role:'Golden Retriever mom, Denver'},
-                {q:'The Memory Portrait of my two cats is the most personal gift I have ever given anyone. My mom called it a masterpiece.',name:'James T.',role:'Cat parent, Austin'},
-                {q:'I told them Rocky loves the Broncos, rides in my Mustang, and his tennis ball. The portrait had all of it. I was speechless.',name:'Mike R.',role:'Lab mix owner, Boulder'},
+                {q:'The portrait we got of our puppy Hercules is the most amazing piece of art in our home. We ordered the 24x36 impasto and it looks like it belongs in a gallery — my wife cannot stop talking about it. The custom song somehow captured exactly how much we love him. My wife is an interior designer and she’s already used several of these pieces in client homes. Also, we love the king-size blanket!',name:'Ryan S.',role:'Boulder, Colorado'},
+                {q:'I was completely blown away when I opened ours. The portrait captured Bear’s personality perfectly — it feels like fine art and I love every time I see him. The song is amazing. My husband and I played it as soon as we got the package and we can’t stop listening to ‘Bear’s Mountain.’ We also ordered two beach towels and they are such a hit — awesome prints. Everything felt special and beautifully made.',name:'Emily R.',role:'Cashiers, North Carolina'},
+                {q:'Our daughter gave us one of the best gifts we’ve ever received — a beautiful portrait of my old friend Ranger. We hung the print in the living room and it still stops me every time I walk by. The sweatshirts are incredible too. But the custom song was the real surprise — it brought a tear to my eye and our whole family can’t stop playing it. Truly touching. Best gift I’ve ever gotten.',name:'Mark T.',role:'Austin, Texas'},
               ].map((t,i)=>(
                 <div key={i} className="card" style={{padding:'32px 28px'}}>
                   <div className="serif" style={{fontSize:48,color:'var(--gold)',opacity:.15,lineHeight:.7,marginBottom:18}}>&ldquo;</div>
