@@ -85,13 +85,25 @@ export default function CreatePage() {
   const [cartExtraColors, setCartExtraColors] = useState<Record<string, string>>({})
   const [cartExtraQty, setCartExtraQty] = useState<Record<string, number>>({})
   const [checkoutLoading, setCheckoutLoading] = useState(false)
-  const { items: cart, addItem, clearCart: clearGlobalCart } = useCart()
+  const { items: cart, addItem, clearCart: clearGlobalCart, setOrderMeta, clearOrderMeta } = useCart()
   const [justAddedId, setJustAddedId] = useState<string | null>(null)
   const [productDetail, setProductDetail] = useState<typeof PRODUCTS[0] | null>(null)
   const [savedSession, setSavedSession] = useState<{sessionFolder:string;images:any[];petName:string;createdAt:string}|null>(null)
 
   const fileRef = useRef<HTMLInputElement>(null)
   const cropRef = useRef<HTMLDivElement>(null)
+
+  // [C4f] Mirror creation-step state into cart orderMeta so /cart can forward
+  // songGenre, petName, petType, sessionFolder, songAnswers to /api/checkout.
+  useEffect(() => {
+    setOrderMeta({
+      songGenre,
+      petName: answers.petName || '',
+      petType: answers.petBreed || '',
+      sessionFolder,
+      songAnswers,
+    })
+  }, [songGenre, answers.petName, answers.petBreed, sessionFolder, songAnswers, setOrderMeta])
 
   // ── Resume previous session ──
   useEffect(() => {
@@ -485,44 +497,6 @@ export default function CreatePage() {
       setTimeout(() => { setExpandingStyle(null); setExpandProgress(0) }, 600)
     }
   }
-
-  // ── Checkout ──
-  const handleCheckout = async () => {
-    if (!picked) return
-    if (!primaryProduct && cart.length === 0) { setError('Please pick at least one product'); return }
-    if (!songGenre) { setError('Please pick a music genre for their song'); return }
-    setError('')
-    setCheckoutLoading(true)
-    try {
-      const extras = PRODUCTS.filter(p => cartExtras.includes(p.id))
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          imageUrl: picked.url,
-          primaryProductId: primaryProduct?.id || '',
-          extras,
-          extraSizes: cartExtraSizes,
-          extraColors: cartExtraColors,
-          extraQty: cartExtraQty,
-          cart,
-          styleName: picked.styleName,
-          petName: answers.petName || '',
-          petType: answers.petBreed || '',
-          songGenre,
-          songAnswers,
-          sessionFolder,
-        }),
-      })
-      if (!res.ok) throw new Error('Checkout failed')
-      const { url } = await res.json()
-      window.location.href = url
-    } catch {
-      setError('Checkout failed — please try again')
-      setCheckoutLoading(false)
-    }
-  }
-
   // ── PRODUCT MOCKUP IMAGES ──
   const PRODUCT_IMAGES: Record<string, string> = {
     mug_20oz: '/products/mug.png',
@@ -1176,6 +1150,51 @@ export default function CreatePage() {
                 </div>
               </div>
 
+              {/* [C4f] Primary product Add to Cart — the portrait itself */}
+              {picked && primaryProduct && (
+                <div style={{marginBottom:16}}>
+                  {cart.filter(ci => ci.productId === primaryProduct.id).reduce((a,ci)=>a+ci.quantity,0) > 0 && (
+                    <div style={{margin:'0 0 8px',fontSize:10,letterSpacing:'.18em',textTransform:'uppercase',color:'var(--gold)',textAlign:'center',opacity:.85}}>
+                      In Cart · {cart.filter(ci => ci.productId === primaryProduct.id).reduce((a,ci)=>a+ci.quantity,0)}
+                    </div>
+                  )}
+                  <button
+                    onClick={()=>{
+                      if (!picked || !primaryProduct) return
+                      const ts = Date.now()
+                      addItem({
+                        lineId: `${primaryProduct.id}_${ts}`,
+                        productId: primaryProduct.id,
+                        productName: primaryProduct.name,
+                        variantKey: primaryProduct.size,
+                        variantId: (primaryProduct as any).printifyVariantId,
+                        blueprintId: (primaryProduct as any).printifyBlueprintId,
+                        quantity: 1,
+                        unitPrice: primaryProduct.price,
+                        portraitUrl: picked.url,
+                        styleName: picked.styleName,
+                        category: primaryProduct.category,
+                        addedAt: ts,
+                      })
+                      setJustAddedId(primaryProduct.id)
+                      setTimeout(()=>setJustAddedId(cur => cur === primaryProduct.id ? null : cur), 1400)
+                    }}
+                    style={{
+                      width:'100%',padding:'14px 16px',fontSize:11,fontWeight:700,letterSpacing:'.2em',textTransform:'uppercase',
+                      background: justAddedId === primaryProduct.id ? 'var(--gold)' : 'rgba(201,168,76,.12)',
+                      border:'1px solid var(--gold)',
+                      color: justAddedId === primaryProduct.id ? 'var(--ink)' : 'var(--gold)',
+                      cursor:'pointer',transition:'all .18s',
+                      transform: justAddedId === primaryProduct.id ? 'scale(.99)' : 'scale(1)',
+                    }}
+                  >
+                    {justAddedId === primaryProduct.id
+                      ? '✓ Added to Cart'
+                      : (cart.some(ci => ci.productId === primaryProduct.id) ? `+ Add Another ${primaryProduct.name}` : `+ Add ${primaryProduct.name} ${primaryProduct.size} to Cart`)}
+                  </button>
+                </div>
+              )}
+
               {/* Skip-primary toggle — lets users checkout with just keepsakes */}
 
               {/* Medium toggle */}
@@ -1336,41 +1355,19 @@ export default function CreatePage() {
               </div>
             </div>
 
-            {/* ═══════════ RECEIPT ═══════════ */}
-            <div style={{background:'#141414',border:'1px solid rgba(201,168,76,.2)',padding:'26px 28px',marginBottom:24}}>
-              <div style={{fontSize:10,letterSpacing:'.28em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16,fontWeight:700}}>Your Experience</div>
-              {primaryProduct && (
-                <div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}>
-                  <span style={{fontSize:14}}>👁️ {primaryProduct.name} {primaryProduct.size}</span>
-                  <span style={{fontSize:14}}>${primaryProduct.price}</span>
-                </div>
-              )}
-              <div style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}>
-                <span style={{fontSize:14,color:'var(--purple)'}}>🎵 Custom Pet Song{songGenre ? ` (${songGenre})` : ''}</span>
-                <span style={{fontSize:14,color:'var(--purple)',fontWeight:600}}>Included</span>
-              </div>
-              {cartExtras.map(id=>{
-                const p=PRODUCTS.find(x=>x.id===id)!; const sz=cartExtraSizes[id]; const cl=cartExtraColors[id];
-                const detail=[cl,sz].filter(Boolean).join(' / ')
-                return <div key={id} style={{display:'flex',justifyContent:'space-between',marginBottom:10,alignItems:'baseline'}}>
-                  <span style={{fontSize:14}}>🤲 {p.name} {detail ? `(${detail})` : ''}</span>
-                  <span style={{fontSize:14}}>${p.price}</span>
-                </div>
-              })}
-              <div style={{borderTop:'1px solid rgba(201,168,76,.15)',paddingTop:14,marginTop:10,display:'flex',justifyContent:'space-between',alignItems:'baseline'}}>
-                <span style={{fontSize:12,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase'}}>Total</span>
-                <span className="serif" style={{fontSize:32,color:'var(--gold)'}}>
-                  ${((primaryProduct?.price||0)+cartExtras.reduce((sum,id)=>sum+(PRODUCTS.find(p=>p.id===id)?.price||0),0)).toFixed(2)}
-                </span>
-              </div>
-            </div>
-
-            {error&&<div style={{color:'#C4622D',fontSize:13,marginBottom:16,padding:'12px 16px',background:'rgba(196,98,45,.08)',border:'1px solid rgba(196,98,45,.2)'}}>{error}</div>}
-
-            <div style={{display:'grid',gridTemplateColumns:'1fr 2.5fr',gap:3}}>
+            {/* [C4f] Cart is the single source of truth — View Cart routes to /cart */}
+            <div style={{display:'grid',gridTemplateColumns:'1fr 2.5fr',gap:3,marginBottom:20}}>
               <button className="btn-out" onClick={()=>setStep('gallery')}>← Back</button>
-              <button className="btn-gold" onClick={handleCheckout} disabled={checkoutLoading || !songGenre || (!primaryProduct && cart.length === 0)}>
-                {checkoutLoading ? '⏳ Redirecting to Stripe...' : 'Proceed to Secure Checkout →'}
+              <button
+                className="btn-gold"
+                onClick={()=>{ if (cart.length > 0 && songGenre) window.location.href = '/cart' }}
+                disabled={cart.length === 0 || !songGenre}
+              >
+                {cart.length === 0
+                  ? 'Add an item above to continue'
+                  : !songGenre
+                    ? 'Pick a music genre to continue'
+                    : `View Cart (${cart.length}) →`}
               </button>
             </div>
 

@@ -5,19 +5,33 @@ import SiteNav from '@/components/SiteNav'
 import { useState } from 'react'
 
 export default function CartPage() {
-  const { items, updateQty, removeItem, subtotal, itemCount, hydrated, clearCart } = useCart()
+  const { items, updateQty, removeItem, subtotal, itemCount, hydrated, clearCart, orderMeta, clearOrderMeta } = useCart()
   const [checkingOut, setCheckingOut] = useState(false)
   const [checkoutError, setCheckoutError] = useState('')
 
   const handleCheckout = async () => {
     if (items.length === 0) return
+    if (!orderMeta.songGenre) {
+      setCheckoutError('Finish your song setup on the Create page before checking out.')
+      return
+    }
     setCheckingOut(true)
     setCheckoutError('')
     try {
+      const first = items[0]
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cart: items }),
+        body: JSON.stringify({
+          cart: items,
+          songGenre: orderMeta.songGenre || '',
+          petName: orderMeta.petName || '',
+          petType: orderMeta.petType || '',
+          songAnswers: orderMeta.songAnswers || {},
+          sessionFolder: orderMeta.sessionFolder || '',
+          imageUrl: first?.portraitUrl || '',
+          styleName: first?.styleName || '',
+        }),
       })
       const data = await res.json()
       if (data.url) {
@@ -128,6 +142,12 @@ export default function CartPage() {
           <div style={{fontSize:11,color:'var(--muted)',textAlign:'right'}}>Shipping & taxes calculated at checkout</div>
         </div>
 
+        {items.length > 0 && !orderMeta.songGenre && (
+          <div style={{background:'rgba(201,168,76,.08)',border:'1px solid rgba(201,168,76,.3)',padding:'14px 18px',marginBottom:16,color:'var(--cream)',fontSize:13}}>
+            <strong style={{color:'var(--gold)'}}>One step left:</strong> <Link href="/create" style={{color:'var(--gold)',textDecoration:'underline'}}>Finish your song setup on the Create page →</Link>
+          </div>
+        )}
+
         {checkoutError && (
           <div style={{background:'rgba(220,38,38,.1)',border:'1px solid rgba(220,38,38,.3)',padding:'12px 16px',marginBottom:16,color:'#ff9b9b',fontSize:13}}>
             {checkoutError}
@@ -136,15 +156,15 @@ export default function CartPage() {
 
         <button
           onClick={handleCheckout}
-          disabled={checkingOut}
-          style={{width:'100%',background:'var(--gold)',color:'var(--ink)',padding:'18px 24px',fontSize:12,fontWeight:700,letterSpacing:'.2em',textTransform:'uppercase',border:'none',cursor:checkingOut?'default':'pointer',opacity:checkingOut?.6:1,marginBottom:12}}
+          disabled={checkingOut || !orderMeta.songGenre}
+          style={{width:'100%',background:'var(--gold)',color:'var(--ink)',padding:'18px 24px',fontSize:12,fontWeight:700,letterSpacing:'.2em',textTransform:'uppercase',border:'none',cursor:(checkingOut||!orderMeta.songGenre)?'default':'pointer',opacity:(checkingOut||!orderMeta.songGenre)?.6:1,marginBottom:12}}
         >
-          {checkingOut ? 'Redirecting to checkout…' : `Proceed to Checkout · $${subtotal.toFixed(2)}`}
+          {checkingOut ? 'Redirecting to checkout…' : !orderMeta.songGenre ? 'Finish song setup on Create page →' : `Proceed to Checkout · $${subtotal.toFixed(2)}`}
         </button>
 
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',fontSize:11,color:'var(--muted)'}}>
           <Link href="/shop" style={{color:'var(--muted)',textDecoration:'none',letterSpacing:'.12em',textTransform:'uppercase'}}>← Keep Shopping</Link>
-          <button onClick={clearCart} style={{background:'none',border:'none',color:'var(--muted)',fontSize:11,letterSpacing:'.12em',textTransform:'uppercase',cursor:'pointer'}}>Clear Cart</button>
+          <button onClick={()=>{ clearCart(); clearOrderMeta() }} style={{background:'none',border:'none',color:'var(--muted)',fontSize:11,letterSpacing:'.12em',textTransform:'uppercase',cursor:'pointer'}}>Clear Cart</button>
         </div>
       </div>
 

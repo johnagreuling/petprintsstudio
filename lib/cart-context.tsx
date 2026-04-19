@@ -7,6 +7,14 @@
 import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react'
 import type { CartItem } from './config'
 
+export interface OrderMeta {
+  songGenre?: string
+  petName?: string
+  petType?: string
+  sessionFolder?: string
+  songAnswers?: Record<string, string>
+}
+
 interface CartContextValue {
   items: CartItem[]
   addItem: (item: CartItem) => void
@@ -16,17 +24,22 @@ interface CartContextValue {
   subtotal: number
   itemCount: number
   hydrated: boolean
+  orderMeta: OrderMeta
+  setOrderMeta: (patch: Partial<OrderMeta>) => void
+  clearOrderMeta: () => void
 }
 
 const CartContext = createContext<CartContextValue | null>(null)
 
 const STORAGE_KEY = 'pps_cart_v1'
+const META_STORAGE_KEY = 'pps_order_meta_v1'
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
+  const [orderMeta, setOrderMetaState] = useState<OrderMeta>({})
   const [hydrated, setHydrated] = useState(false)
 
-  // Load from localStorage once on client mount
+  // Load cart + orderMeta from localStorage once on client mount
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
@@ -34,13 +47,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
         const parsed = JSON.parse(raw)
         if (Array.isArray(parsed)) setItems(parsed)
       }
+      const metaRaw = localStorage.getItem(META_STORAGE_KEY)
+      if (metaRaw) {
+        const metaParsed = JSON.parse(metaRaw)
+        if (metaParsed && typeof metaParsed === 'object') setOrderMetaState(metaParsed)
+      }
     } catch (e) {
       // ignore parse errors
     }
     setHydrated(true)
   }, [])
 
-  // Persist to localStorage whenever items change (after hydration)
+  // Persist cart to localStorage whenever items change (after hydration)
   useEffect(() => {
     if (!hydrated) return
     try {
@@ -49,6 +67,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
       // ignore quota errors
     }
   }, [items, hydrated])
+
+  // Persist orderMeta to localStorage whenever it changes (after hydration)
+  useEffect(() => {
+    if (!hydrated) return
+    try {
+      localStorage.setItem(META_STORAGE_KEY, JSON.stringify(orderMeta))
+    } catch (e) {
+      // ignore quota errors
+    }
+  }, [orderMeta, hydrated])
 
   const addItem = useCallback((item: CartItem) => {
     setItems(prev => [...prev, item])
@@ -70,11 +98,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems([])
   }, [])
 
+  const setOrderMeta = useCallback((patch: Partial<OrderMeta>) => {
+    setOrderMetaState(prev => ({ ...prev, ...patch }))
+  }, [])
+
+  const clearOrderMeta = useCallback(() => {
+    setOrderMetaState({})
+  }, [])
+
   const subtotal = items.reduce((sum, i) => sum + (i.unitPrice * i.quantity), 0)
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0)
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQty, clearCart, subtotal, itemCount, hydrated }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateQty, clearCart, subtotal, itemCount, hydrated, orderMeta, setOrderMeta, clearOrderMeta }}>
       {children}
     </CartContext.Provider>
   )
@@ -94,6 +130,9 @@ export function useCart(): CartContextValue {
       subtotal: 0,
       itemCount: 0,
       hydrated: false,
+      orderMeta: {},
+      setOrderMeta: () => {},
+      clearOrderMeta: () => {},
     }
   }
   return ctx
