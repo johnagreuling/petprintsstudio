@@ -188,13 +188,31 @@ export default function Home() {
         .bookend-grid{display:grid;grid-template-columns:1fr 2fr 1fr}
         .steps-grid{grid-template-columns:repeat(6,1fr)}
         .product-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+
+        /* M4a — home mobile polish */
+        @media (max-width: 720px) {
+          .home-hero {
+            padding: 110px 20px 60px !important;
+            min-height: auto !important;
+          }
+          .home-hero h1 {
+            font-size: 44px !important;
+            line-height: 1.02 !important;
+            margin-bottom: 20px !important;
+          }
+          .home-stats {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 24px !important;
+          }
+        }
+
       `}</style>
 
       {/* NAV */}
       <SiteNav currentPage="home" />
 
       {/* HERO */}
-      <section className="hero-section" style={{minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'140px 24px 80px',position:'relative',overflow:'hidden'}}>
+      <section className="hero-section home-hero" style={{minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'140px 24px 80px',position:'relative',overflow:'hidden'}}>
         {/* Ambient glow */}
         <div style={{position:'absolute',top:'35%',left:'50%',transform:'translate(-50%,-50%)',width:800,height:800,background:'radial-gradient(circle,rgba(201,168,76,.06) 0%,transparent 70%)',pointerEvents:'none'}} />
         <div style={{position:'absolute',top:'70%',left:'20%',width:400,height:400,background:'radial-gradient(circle,rgba(196,98,45,.04) 0%,transparent 70%)',pointerEvents:'none'}} />
@@ -485,7 +503,7 @@ export default function Home() {
           <p style={{fontSize:12,color:'rgba(201,168,76,.6)',letterSpacing:'.08em',marginBottom:48}}>
             Curated artistic styles &nbsp;&middot;&nbsp; Every one included &nbsp;&middot;&nbsp; <Link href="/styles" style={{color:'var(--gold)',textDecoration:'none',borderBottom:'1px solid rgba(201,168,76,.4)'}}>Explore styles →</Link>
           </p>
-          <div className="stats-bar" style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:40,justifyContent:'center'}}>
+          <div className="stats-bar home-stats" style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:40,justifyContent:'center'}}>
             {[['✓','Curated Styles'],['1,000+','Pet Stories Told'],['♪','Beautiful Original Music'],['4.9★','Customer Average']].map(([n,l1])=>(
               <div key={l1} style={{textAlign:'center'}}>
                 <div className="serif" style={{fontSize:36,color:'var(--gold)',lineHeight:1,marginBottom:4}}>{n}</div>
