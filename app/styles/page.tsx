@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import SiteNav from '@/components/SiteNav'
 import Link from 'next/link'
 
 type Style = {
@@ -190,19 +191,7 @@ export default function StylesGallery() {
         }
       `}</style>
 
-      <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, padding: '20px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(10,10,10,.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid var(--border)' }}>
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
-          <span style={{ fontSize: 22 }}>🐾</span>
-          <span className="serif" style={{ fontSize: 22, letterSpacing: '.06em', color: 'var(--cream)' }}>Pet Prints Studio</span>
-        </Link>
-        <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
-          <Link href="/#how-it-works" style={{ color: 'rgba(245,240,232,.5)', textDecoration: 'none', fontSize: 11, letterSpacing: '.18em', textTransform: 'uppercase' }}>How It Works</Link>
-          <Link href="/styles" style={{ color: 'var(--gold)', textDecoration: 'none', fontSize: 11, letterSpacing: '.18em', textTransform: 'uppercase', borderBottom: '1px solid var(--gold)', paddingBottom: 2 }}>Styles</Link>
-          <Link href="/shop" style={{ color: 'var(--muted)', textDecoration: 'none', fontSize: 11, letterSpacing: '.18em', textTransform: 'uppercase' }}>Catalog</Link>
-          <Link href="/#the-experience" style={{ color: 'rgba(245,240,232,.5)', textDecoration: 'none', fontSize: 11, letterSpacing: '.18em', textTransform: 'uppercase' }}>The Experience</Link>
-          <Link href="/create" style={{ background: 'var(--gold)', color: 'var(--ink)', padding: '10px 24px', fontSize: 11, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', textDecoration: 'none' }}>🐾 Start Their Story</Link>
-        </div>
-      </nav>
+      <SiteNav currentPage="styles" />
 
       <section style={{ paddingTop: 140, paddingBottom: 40, textAlign: 'center', padding: '140px 48px 40px' }}>
         <div style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 16 }}>32 Custom-Tuned Styles &bull; Every One Included</div>

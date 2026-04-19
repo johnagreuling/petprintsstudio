@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import SiteNav from '@/components/SiteNav'
 import { useState, useEffect, useRef } from 'react'
 import { ART_STYLES, PRODUCTS } from '@/lib/config'
 
@@ -192,18 +193,7 @@ export default function Home() {
       `}</style>
 
       {/* NAV */}
-      <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:100,padding:'16px 20px',display:'flex',alignItems:'center',justifyContent:'space-between',background:'rgba(10,10,10,.95)',backdropFilter:'blur(16px)',borderBottom:'1px solid var(--border)'}}>
-        <Link href="/" style={{display:'flex',alignItems:'center',gap:8,textDecoration:'none'}}>
-          <span style={{fontSize:20}}>🐾</span>
-          <span className="serif" style={{fontSize:18,letterSpacing:'.06em',color:'var(--cream)'}}>Pet Prints Studio</span>
-        </Link>
-        <div className="mobile-hide" style={{display:'flex',gap:36,alignItems:'center'}}>
-          <a href="#how-it-works">How It Works</a>
-          <Link href="/styles" style={{color:'var(--muted)',textDecoration:'none',fontSize:12,letterSpacing:'.12em',textTransform:'uppercase'}}>Styles</Link>
-          <Link href="/shop" style={{color:'var(--muted)',textDecoration:'none',fontSize:12,letterSpacing:'.12em',textTransform:'uppercase'}}>Catalog</Link>
-        </div>
-        <Link href="/create" className="btn-gold" style={{padding:'10px 20px',fontSize:10}}>Begin Their Story</Link>
-      </nav>
+      <SiteNav currentPage="home" />
 
       {/* HERO */}
       <section className="hero-section" style={{minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'140px 24px 80px',position:'relative',overflow:'hidden'}}>

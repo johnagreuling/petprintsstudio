@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import SiteNav from '@/components/SiteNav'
 import { PRODUCTS, productImage } from '@/lib/config'
 
 const CATEGORY_ORDER = ['Canvas', 'Prints', 'Home', 'Apparel', 'Accessories']
@@ -20,17 +21,7 @@ export default function ShopCatalog() {
 
   return (
     <div style={{minHeight:'100vh',background:'var(--ink)',color:'var(--cream)'}}>
-      <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:50,padding:'20px 40px',background:'rgba(10,10,10,.92)',backdropFilter:'blur(16px)',borderBottom:'1px solid rgba(245,240,232,.06)',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-        <Link href="/" style={{display:'flex',alignItems:'center',gap:12,textDecoration:'none'}}>
-          <span style={{fontSize:24}}>🐾</span>
-          <span className="serif" style={{fontSize:18,letterSpacing:'.06em',color:'var(--cream)'}}>Pet Prints Studio</span>
-        </Link>
-        <div style={{display:'flex',gap:28,alignItems:'center'}}>
-          <Link href="/styles" style={{color:'var(--muted)',textDecoration:'none',fontSize:11,letterSpacing:'.18em',textTransform:'uppercase'}}>Styles</Link>
-          <Link href="/shop" style={{color:'var(--gold)',textDecoration:'none',fontSize:11,letterSpacing:'.18em',textTransform:'uppercase',borderBottom:'1px solid var(--gold)',paddingBottom:2}}>Catalog</Link>
-        </div>
-        <Link href="/create" className="btn-gold" style={{padding:'10px 20px',fontSize:10}}>Begin Their Story</Link>
-      </nav>
+      <SiteNav currentPage="shop" />
 
       <section style={{padding:'140px 24px 40px',textAlign:'center',maxWidth:1200,margin:'0 auto'}}>
         <div style={{fontSize:10,letterSpacing:'.4em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>The Catalog</div>

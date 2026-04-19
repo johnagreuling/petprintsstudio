@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import SiteNav from '@/components/SiteNav'
 
 const FAQS = [
   {
@@ -69,16 +70,7 @@ export default function FAQ() {
       `}</style>
 
       {/* Nav */}
-      <nav style={{padding:'18px 48px',display:'flex',justifyContent:'space-between',alignItems:'center',borderBottom:'1px solid rgba(245,240,232,.06)'}}>
-        <Link href="/" style={{textDecoration:'none',color:'var(--cream)',display:'flex',alignItems:'center',gap:8}}>
-          <span>🐾</span><span className="serif" style={{fontSize:20}}>Pet Prints Studio</span>
-        </Link>
-        <div style={{display:'flex',gap:24,alignItems:'center'}}>
-          <Link href="/styles" style={{color:'var(--muted)',textDecoration:'none',fontSize:11,letterSpacing:'.18em',textTransform:'uppercase'}}>Styles</Link>
-          <Link href="/shop" style={{color:'var(--muted)',textDecoration:'none',fontSize:11,letterSpacing:'.18em',textTransform:'uppercase'}}>Catalog</Link>
-          <Link href="/create" style={{background:'var(--gold)',color:'var(--ink)',padding:'12px 28px',fontSize:10,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',textDecoration:'none'}}>Start Their Story</Link>
-        </div>
-      </nav>
+      <SiteNav currentPage="faq" />
 
       {/* Content */}
       <div style={{maxWidth:720,margin:'0 auto',padding:'80px 24px 120px'}}>
