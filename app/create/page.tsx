@@ -86,6 +86,7 @@ export default function CreatePage() {
   const [cartExtraQty, setCartExtraQty] = useState<Record<string, number>>({})
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const { items: cart, addItem, clearCart: clearGlobalCart } = useCart()
+  const [justAddedId, setJustAddedId] = useState<string | null>(null)
   const [productDetail, setProductDetail] = useState<typeof PRODUCTS[0] | null>(null)
   const [savedSession, setSavedSession] = useState<{sessionFolder:string;images:any[];petName:string;createdAt:string}|null>(null)
 
@@ -1318,9 +1319,16 @@ export default function CreatePage() {
                           <button onClick={(e)=>{e.stopPropagation(); setCartExtraQty(prev=>({...prev,[p.id]: Math.min(10,(prev[p.id]||1)+1)}))}} style={{width:22,height:22,fontSize:13,background:'#1a1a1a',border:'1px solid rgba(245,240,232,.15)',color:'var(--cream)',cursor:'pointer'}}>+</button>
                         </div>
                       )}
+                      {isOn && cart.filter(ci => ci.productId === p.id).reduce((a,ci)=>a+ci.quantity,0) > 0 && (
+                        <div style={{margin:'0 4px 4px',fontSize:9,letterSpacing:'.18em',textTransform:'uppercase',color:'var(--gold)',textAlign:'center',opacity:.85}}>
+                          In Cart · {cart.filter(ci => ci.productId === p.id).reduce((a,ci)=>a+ci.quantity,0)}
+                        </div>
+                      )}
                       {isOn && (
-                        <button onClick={(e)=>{ e.stopPropagation(); if(!picked) return; const sz=cartExtraSizes[p.id]||''; const cl=cartExtraColors[p.id]||''; const vk=[cl,sz].filter(Boolean).join(' / '); const qty=cartExtraQty[p.id]||1; const ts=Date.now(); addItem({lineId:`${p.id}_${ts}`,productId:p.id,productName:p.name,variantKey:vk,variantId:(p as any).printifyVariantId,blueprintId:(p as any).printifyBlueprintId,quantity:qty,unitPrice:p.price,portraitUrl:picked.url,styleName:picked.styleName,category:p.category,addedAt:ts}); setCartExtraQty(prev=>({...prev,[p.id]:1})); }}
-                          style={{margin:'4px 4px 8px',padding:'6px 10px',fontSize:10,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase',background:'rgba(201,168,76,.12)',border:'1px solid var(--gold)',color:'var(--gold)',cursor:'pointer',width:'calc(100% - 8px)'}}>+ Add another to cart</button>
+                        <button onClick={(e)=>{ e.stopPropagation(); if(!picked) return; const sz=cartExtraSizes[p.id]||''; const cl=cartExtraColors[p.id]||''; const vk=[cl,sz].filter(Boolean).join(' / '); const qty=cartExtraQty[p.id]||1; const ts=Date.now(); addItem({lineId:`${p.id}_${ts}`,productId:p.id,productName:p.name,variantKey:vk,variantId:(p as any).printifyVariantId,blueprintId:(p as any).printifyBlueprintId,quantity:qty,unitPrice:p.price,portraitUrl:picked.url,styleName:picked.styleName,category:p.category,addedAt:ts}); setCartExtraQty(prev=>({...prev,[p.id]:1})); setJustAddedId(p.id); setTimeout(()=>setJustAddedId(cur => cur === p.id ? null : cur), 1400); }}
+                          style={{margin:'4px 4px 8px',padding:'8px 10px',fontSize:10,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',background: justAddedId === p.id ? 'var(--gold)' : 'rgba(201,168,76,.12)',border:'1px solid var(--gold)',color: justAddedId === p.id ? 'var(--ink)' : 'var(--gold)',cursor:'pointer',width:'calc(100% - 8px)',transition:'all .18s',transform: justAddedId === p.id ? 'scale(.97)' : 'scale(1)'}}>
+                          {justAddedId === p.id ? '✓ Added to Cart' : (cart.some(ci => ci.productId === p.id) ? '+ Add Another' : '+ Add to Cart')}
+                        </button>
                       )}
                     </div>
                   )
