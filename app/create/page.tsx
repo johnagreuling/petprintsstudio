@@ -285,6 +285,70 @@ export default function CreatePage() {
     r.readAsDataURL(file)
   }
 
+
+  // Commit the current crop to a new File + preview, so the backend receives the cropped image.
+  // Renders what's visible inside the 320x320 crop frame to a canvas, then replaces uploadedFile.
+  const commitCrop = async () => {
+    if (!preview || !uploadedFile) { setShowCrop(false); return }
+    try {
+      const img = new window.Image()
+      img.crossOrigin = 'anonymous'
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve()
+        img.onerror = () => reject(new Error('img load failed'))
+        img.src = preview
+      })
+      // The preview <img> in the modal uses maxWidth:100% maxHeight:100% inside a 320x320 container,
+      // meaning it's displayed at a "fit" size. Compute that fit size.
+      const FRAME = 320
+      const fitScale = Math.min(FRAME / img.naturalWidth, FRAME / img.naturalHeight)
+      const fitW = img.naturalWidth * fitScale
+      const fitH = img.naturalHeight * fitScale
+      // The transform is: translate(-50% + offsetX, -50% + offsetY) scale(zoom), origin center.
+      // So in frame coordinates, the image's visible region is centered at (FRAME/2 + offsetX, FRAME/2 + offsetY)
+      // and has size (fitW * zoom) x (fitH * zoom).
+      // We want the part of the natural image that maps to the FRAME window [0..FRAME, 0..FRAME].
+      // Scale from frame back to natural pixels: natPerFramePx = 1 / (fitScale * cropZoom)
+      const natPerFramePx = 1 / (fitScale * cropZoom)
+      // In frame coords, the image's top-left is at:
+      //   centerX - (fitW*zoom)/2 = FRAME/2 + offsetX - (fitW*zoom)/2
+      //   centerY - (fitH*zoom)/2 = FRAME/2 + offsetY - (fitH*zoom)/2
+      const imgLeftInFrame = FRAME/2 + cropOffset.x - (fitW * cropZoom)/2
+      const imgTopInFrame  = FRAME/2 + cropOffset.y - (fitH * cropZoom)/2
+      // Source rect in natural pixels = ( (0 - imgLeftInFrame) to (FRAME - imgLeftInFrame) ) in frame coords,
+      // converted to natural pixels by dividing by (fitScale * cropZoom)
+      const sx = Math.max(0, (0 - imgLeftInFrame) / (fitScale * cropZoom))
+      const sy = Math.max(0, (0 - imgTopInFrame)  / (fitScale * cropZoom))
+      const sw = Math.min(img.naturalWidth  - sx, FRAME / (fitScale * cropZoom))
+      const sh = Math.min(img.naturalHeight - sy, FRAME / (fitScale * cropZoom))
+      // Output size: keep at least 1024px on the shorter side for quality
+      const OUT = 1024
+      const canvas = document.createElement('canvas')
+      canvas.width = OUT
+      canvas.height = OUT
+      const ctx = canvas.getContext('2d')
+      if (!ctx) { setShowCrop(false); return }
+      ctx.imageSmoothingEnabled = true
+      ctx.imageSmoothingQuality = 'high'
+      ctx.fillStyle = '#000'
+      ctx.fillRect(0, 0, OUT, OUT)
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, OUT, OUT)
+      const blob: Blob = await new Promise((resolve, reject) => {
+        canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob failed')), 'image/jpeg', 0.92)
+      })
+      const croppedFile = new File([blob], uploadedFile.name.replace(/\.[^.]+$/, '') + '_cropped.jpg', { type: 'image/jpeg' })
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.92)
+      setUploadedFile(croppedFile)
+      setPreview(dataUrl)
+      setCropOffset({ x: 0, y: 0 })
+      setCropZoom(1)
+      setShowCrop(false)
+    } catch (e) {
+      console.error('crop commit failed', e)
+      setShowCrop(false)
+    }
+  }
+
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault(); setIsDragging(false)
     const f = e.dataTransfer.files[0]
@@ -737,7 +801,7 @@ export default function CreatePage() {
                 </div>
                 <div style={{marginTop:24,display:'flex',gap:16}}>
                   <button onClick={()=>{setCropOffset({x:0,y:0});setCropZoom(1)}} className="btn-out">Reset</button>
-                  <button onClick={()=>setShowCrop(false)} className="btn-gold">Done</button>
+                  <button onClick={commitCrop} className="btn-gold">Done</button>
                 </div>
               </div>
             )}
