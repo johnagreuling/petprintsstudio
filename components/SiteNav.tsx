@@ -1,11 +1,13 @@
 'use client'
 import Link from 'next/link'
 import { useState } from 'react'
+import { useCart } from '@/lib/cart-context'
 
 type NavPage = 'home' | 'styles' | 'shop' | 'about' | 'faq' | 'shipping' | null
 
 export default function SiteNav({ currentPage = null }: { currentPage?: NavPage }) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const { itemCount } = useCart()
 
   const linkStyle = (active: boolean) => ({
     color: active ? 'var(--gold)' : 'var(--muted)',
@@ -55,6 +57,20 @@ export default function SiteNav({ currentPage = null }: { currentPage?: NavPage 
         <div className="nav-desktop-links" style={{display:'flex',gap:28,alignItems:'center'}}>
           <Link href="/styles" style={linkStyle(currentPage === 'styles')}>Styles</Link>
           <Link href="/shop" style={linkStyle(currentPage === 'shop')}>Catalog</Link>
+          <Link href="/cart" style={{
+            color: itemCount > 0 ? 'var(--gold)' : 'var(--muted)',
+            textDecoration: 'none',
+            fontSize: 11,
+            letterSpacing: '.18em',
+            textTransform: 'uppercase' as const,
+            paddingBottom: 2,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            transition: 'color .2s',
+          }}>
+            🛒 Cart{itemCount > 0 ? ` (${itemCount})` : ''}
+          </Link>
         </div>
 
         {/* Desktop CTA button */}
@@ -114,6 +130,10 @@ export default function SiteNav({ currentPage = null }: { currentPage?: NavPage 
         >
           <Link href="/styles" style={mobileLinkStyle(currentPage === 'styles')} onClick={() => setMenuOpen(false)}>Styles</Link>
           <Link href="/shop" style={mobileLinkStyle(currentPage === 'shop')} onClick={() => setMenuOpen(false)}>Catalog</Link>
+          <Link href="/cart" style={{
+            ...mobileLinkStyle(false),
+            color: itemCount > 0 ? 'var(--gold)' : 'var(--cream)',
+          }} onClick={() => setMenuOpen(false)}>🛒 Cart{itemCount > 0 ? ` (${itemCount})` : ''}</Link>
           <Link href="/create" style={{
             background: 'var(--gold)',
             color: 'var(--ink)',
