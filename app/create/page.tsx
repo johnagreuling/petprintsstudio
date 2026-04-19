@@ -250,7 +250,7 @@ export default function CreatePage() {
         variantKey: variantKey,
         variantId: (pr as any).printifyVariantId,
         blueprintId: (pr as any).printifyBlueprintId,
-        quantity: 1,
+        quantity: cartExtraQty[extraId] || 1,
         unitPrice: pr.price,
         portraitUrl: picked.url,
         styleName: picked.styleName,
@@ -260,7 +260,7 @@ export default function CreatePage() {
     }
     setCart(next)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [picked?.url, picked?.styleName, primaryProduct?.id, cartExtras, cartExtraSizes, cartExtraColors])
+  }, [picked?.url, picked?.styleName, primaryProduct?.id, cartExtras, cartExtraSizes, cartExtraColors, cartExtraQty])
 
   // ── File handlers ──
   const handleFile = (file: File) => {
@@ -476,6 +476,8 @@ export default function CreatePage() {
           extras,
           extraSizes: cartExtraSizes,
           extraColors: cartExtraColors,
+          extraQty: cartExtraQty,
+          cart,
           styleName: picked.styleName,
           petName: answers.petName || '',
           petType: answers.petBreed || '',
