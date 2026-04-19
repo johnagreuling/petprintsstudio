@@ -654,11 +654,22 @@ export default function CreatePage() {
           .input,.select{font-size:16px !important;padding:14px 16px !important}
           [style*="gridTemplateColumns:'1fr 1fr'"][style*="gap:16"]{grid-template-columns:1fr !important;gap:12px !important}
         }
+
+          /* M3 — mobile-responsive create page */
+          @media (max-width: 720px) {
+            .create-container { padding: 28px 16px 60px !important; }
+            .create-style-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 6px !important; margin-bottom: 24px !important; }
+            .create-loading-thumbs { grid-template-columns: repeat(2, 1fr) !important; gap: 6px !important; }
+            .create-portrait-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+            .create-pet-fields { grid-template-columns: 1fr !important; gap: 12px !important; }
+            .create-nav-buttons { grid-template-columns: 1fr !important; gap: 8px !important; }
+            .create-nav-buttons button { width: 100% !important; }
+          }
       `}</style>
       <SiteNav currentPage={null} />
       <CreateSteps stepNum={stepNum as 1|2|3|4} />
 
-      <div style={{maxWidth:860,margin:'0 auto',padding:'56px 24px 80px'}}>
+      <div className="create-container" style={{maxWidth:860,margin:'0 auto',padding:'56px 24px 80px'}}>
 
         {/* ── RESUME SESSION BANNER ── */}
         {step==='upload' && savedSession && (
@@ -767,7 +778,7 @@ export default function CreatePage() {
               <input ref={fileRef} type="file" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif" style={{display:'none'}} onChange={e=>e.target.files?.[0]&&handleFile(e.target.files[0])}/>
             </div>
 
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,marginTop:24}}>
+            <div className="create-pet-fields" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,marginTop:24}}>
               <div>
                 <label style={{fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--muted)',display:'block',marginBottom:8}}>Pet's Name <span style={{opacity:.5}}>(optional)</span></label>
                 <input className="input" placeholder="Rocky, Luna, Biscuit..." value={answers.petName||''} onChange={e=>setAnswers(a=>({...a,petName:e.target.value}))}/>
@@ -868,7 +879,7 @@ export default function CreatePage() {
             </div>
 
             {/* Style grid */}
-            <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:2,marginBottom:40}}>
+            <div className="create-style-grid" style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:2,marginBottom:40}}>
               {filteredStyles.map(s=>{
                 const isOn = selectedStyles.includes(s.id)
                 const atCap = selectedStyles.length >= GEN_LIMITS.MAX_STYLES_INITIAL && !isOn
@@ -904,7 +915,7 @@ export default function CreatePage() {
 
             {error&&<div style={{color:'#C4622D',fontSize:13,marginBottom:16,padding:'12px 16px',background:'rgba(196,98,45,.08)',border:'1px solid rgba(196,98,45,.15)'}}>{error}</div>}
 
-            <div style={{display:'grid',gridTemplateColumns:'1fr 2.5fr',gap:3}}>
+            <div className="create-nav-buttons" style={{display:'grid',gridTemplateColumns:'1fr 2.5fr',gap:3}}>
               <button className="btn-out" onClick={()=>setStep('upload')}>← Back</button>
               <button className="btn-gold" disabled={selectedStyles.length === 0} onClick={handleGenerate}>
                 {selectedStyles.length === 0 ? 'Pick a Style to Start' : `Generate Portraits →`}
@@ -949,7 +960,7 @@ export default function CreatePage() {
               </div>
             </div>
             {generated.length>0&&(
-              <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:4,maxWidth:480,margin:'0 auto'}}>
+              <div className="create-loading-thumbs" style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:4,maxWidth:480,margin:'0 auto'}}>
                 {generated.map((img,i)=>(
                   <div key={img.url} style={{animation:`fadeInScale .6s ease-out ${Math.min(i,12)*40}ms both`}}>
                     <WatermarkedImage src={img.url} alt={img.styleName} width={200} height={300} displayRatio="2/3" style={{opacity:.95}}/>
@@ -1002,7 +1013,7 @@ export default function CreatePage() {
                       <span style={{fontSize:9,opacity:.6}}>({countForStyle}/{GEN_LIMITS.MAX_PER_STYLE})</span>
                       <span style={{flex:1,height:1,background:'linear-gradient(to right,rgba(201,168,76,.25),rgba(245,240,232,.04))'}}/>
                     </div>
-                    <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:6}}>
+                    <div className="create-portrait-grid" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:6}}>
                       {imgs.map((img,i)=>{
                         const isPicked = picked?.url===img.url
                         const delay = Math.min(globalIdx++, 14) * 40
