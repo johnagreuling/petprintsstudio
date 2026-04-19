@@ -1,4 +1,15 @@
 /* ════════════════════════════════════════════════════════════════
+   CSS Variables — site-wide design tokens
+   ════════════════════════════════════════════════════════════════ */
+:root {
+  --gold: #C9A84C;
+  --cream: #F5F0E8;
+  --ink: #0A0A0A;
+  --muted: rgba(245, 240, 232, .5);
+  --border: rgba(245, 240, 232, .08);
+}
+
+/* ════════════════════════════════════════════════════════════════
    Typography — Cormorant Garamond for .serif class
    (Extracted from app/page.tsx so it applies on every page)
    ════════════════════════════════════════════════════════════════ */
@@ -151,3 +162,7 @@ body { background: #0A0A0A; color: #F5F0E8; font-family: 'DM Sans', sans-serif; 
     grid-template-columns: 1fr !important;
   }
 }
+
+/* nav link reset — prevent default browser link colors leaking into nav */
+nav a, nav a:visited { color: inherit; }
+
