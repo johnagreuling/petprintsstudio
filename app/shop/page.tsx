@@ -66,7 +66,7 @@ export default function ShopCatalog() {
       <section className="shop-bottom-cta" style={{padding:'80px 24px',textAlign:'center',background:'rgba(201,168,76,.03)',borderTop:'1px solid rgba(245,240,232,.06)'}}>
         <h3 className="serif" style={{fontSize:32,fontWeight:400,marginBottom:14}}>Ready to see your pet?</h3>
         <p style={{color:'var(--muted)',fontSize:14,marginBottom:26,maxWidth:480,margin:'0 auto 26px'}}>
-          Upload one photo. Pick an art style. Get 24 portraits in under 60 seconds.
+          Upload a photo.
         </p>
         <Link href="/create" className="btn-gold" style={{padding:'14px 28px',fontSize:11,letterSpacing:'.2em'}}>Begin Their Story →</Link>
       </section>
