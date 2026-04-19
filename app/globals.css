@@ -1,4 +1,12 @@
 /* ════════════════════════════════════════════════════════════════
+   Typography — Cormorant Garamond for .serif class
+   (Extracted from app/page.tsx so it applies on every page)
+   ════════════════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+.serif { font-family: 'Cormorant Garamond', serif; }
+
+/* ════════════════════════════════════════════════════════════════
    Global Base
    ════════════════════════════════════════════════════════════════ */
 * { box-sizing: border-box; margin: 0; padding: 0; }
