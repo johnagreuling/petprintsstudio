@@ -86,7 +86,6 @@ export default function CreatePage() {
   const [cartExtraQty, setCartExtraQty] = useState<Record<string, number>>({})
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const { items: cart, addItem, clearCart: clearGlobalCart } = useCart()
-  const [justAddedId, setJustAddedId] = useState<string | null>(null)
   const [productDetail, setProductDetail] = useState<typeof PRODUCTS[0] | null>(null)
   const [savedSession, setSavedSession] = useState<{sessionFolder:string;images:any[];petName:string;createdAt:string}|null>(null)
 
@@ -1320,49 +1319,8 @@ export default function CreatePage() {
                         </div>
                       )}
                       {isOn && (
-                        {(() => {
-                          const inCartQty = cart.filter(ci => ci.productId === p.id).reduce((a,ci)=>a+ci.quantity, 0)
-                          const justAdded = justAddedId === p.id
-                          return (
-                            <div style={{margin:'4px 4px 8px'}}>
-                              {inCartQty > 0 && (
-                                <div style={{fontSize:9,letterSpacing:'.18em',textTransform:'uppercase',color:'var(--gold)',marginBottom:4,textAlign:'center',opacity:.85}}>
-                                  In Cart · {inCartQty}
-                                </div>
-                              )}
-                              <button
-                                onClick={(e)=>{
-                                  e.stopPropagation()
-                                  if(!picked) return
-                                  const sz=cartExtraSizes[p.id]||''
-                                  const cl=cartExtraColors[p.id]||''
-                                  const vk=[cl,sz].filter(Boolean).join(' / ')
-                                  const qty=cartExtraQty[p.id]||1
-                                  const ts=Date.now()
-                                  addItem({lineId:`${p.id}_${ts}`,productId:p.id,productName:p.name,variantKey:vk,variantId:(p as any).printifyVariantId,blueprintId:(p as any).printifyBlueprintId,quantity:qty,unitPrice:p.price,portraitUrl:picked.url,styleName:picked.styleName,category:p.category,addedAt:ts})
-                                  setCartExtraQty(prev=>({...prev,[p.id]:1}))
-                                  setJustAddedId(p.id)
-                                  setTimeout(()=>setJustAddedId(cur => cur === p.id ? null : cur), 1400)
-                                }}
-                                style={{
-                                  padding:'8px 10px',
-                                  fontSize:10,
-                                  fontWeight:700,
-                                  letterSpacing:'.14em',
-                                  textTransform:'uppercase',
-                                  background: justAdded ? 'var(--gold)' : 'rgba(201,168,76,.12)',
-                                  border:'1px solid var(--gold)',
-                                  color: justAdded ? 'var(--ink)' : 'var(--gold)',
-                                  cursor:'pointer',
-                                  width:'100%',
-                                  transition:'all .18s',
-                                  transform: justAdded ? 'scale(.98)' : 'scale(1)',
-                                }}>
-                                {justAdded ? '✓ Added to Cart' : (inCartQty > 0 ? '+ Add Another' : '+ Add to Cart')}
-                              </button>
-                            </div>
-                          )
-                        })()}
+                        <button onClick={(e)=>{ e.stopPropagation(); if(!picked) return; const sz=cartExtraSizes[p.id]||''; const cl=cartExtraColors[p.id]||''; const vk=[cl,sz].filter(Boolean).join(' / '); const qty=cartExtraQty[p.id]||1; const ts=Date.now(); addItem({lineId:`${p.id}_${ts}`,productId:p.id,productName:p.name,variantKey:vk,variantId:(p as any).printifyVariantId,blueprintId:(p as any).printifyBlueprintId,quantity:qty,unitPrice:p.price,portraitUrl:picked.url,styleName:picked.styleName,category:p.category,addedAt:ts}); setCartExtraQty(prev=>({...prev,[p.id]:1})); }}
+                          style={{margin:'4px 4px 8px',padding:'6px 10px',fontSize:10,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase',background:'rgba(201,168,76,.12)',border:'1px solid var(--gold)',color:'var(--gold)',cursor:'pointer',width:'calc(100% - 8px)'}}>+ Add another to cart</button>
                       )}
                     </div>
                   )
