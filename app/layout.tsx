@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
 import './globals.css'
 import { Analytics } from '@/components/Analytics'
+import { CartProvider } from '@/lib/cart-context'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -40,8 +41,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
       <body>
-        {children}
-        <Analytics />
+        <CartProvider>
+          {children}
+          <Analytics />
+        </CartProvider>
       </body>
     </html>
   )
