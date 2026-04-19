@@ -200,6 +200,7 @@ export default function Home() {
         <div className="mobile-hide" style={{display:'flex',gap:36,alignItems:'center'}}>
           <a href="#how-it-works">How It Works</a>
           <Link href="/styles" style={{color:'var(--muted)',textDecoration:'none',fontSize:12,letterSpacing:'.12em',textTransform:'uppercase'}}>Styles</Link>
+          <Link href="/shop" style={{color:'var(--muted)',textDecoration:'none',fontSize:12,letterSpacing:'.12em',textTransform:'uppercase'}}>Catalog</Link>
         </div>
         <Link href="/create" className="btn-gold" style={{padding:'10px 20px',fontSize:10}}>Begin Their Story</Link>
       </nav>
