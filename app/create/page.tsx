@@ -461,7 +461,8 @@ export default function CreatePage() {
 
   // ── Checkout ──
   const handleCheckout = async () => {
-    if (!picked || !primaryProduct) return
+    if (!picked) return
+    if (!primaryProduct && cart.length === 0) { setError('Please pick at least one product'); return }
     if (!songGenre) { setError('Please pick a music genre for their song'); return }
     setError('')
     setCheckoutLoading(true)
@@ -472,7 +473,7 @@ export default function CreatePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           imageUrl: picked.url,
-          primaryProductId: primaryProduct.id,
+          primaryProductId: primaryProduct?.id || '',
           extras,
           extraSizes: cartExtraSizes,
           extraColors: cartExtraColors,
@@ -1333,7 +1334,7 @@ export default function CreatePage() {
 
             <div style={{display:'grid',gridTemplateColumns:'1fr 2.5fr',gap:3}}>
               <button className="btn-out" onClick={()=>setStep('gallery')}>← Back</button>
-              <button className="btn-gold" onClick={handleCheckout} disabled={checkoutLoading || !songGenre || !primaryProduct}>
+              <button className="btn-gold" onClick={handleCheckout} disabled={checkoutLoading || !songGenre || (!primaryProduct && cart.length === 0)}>
                 {checkoutLoading ? '⏳ Redirecting to Stripe...' : 'Proceed to Secure Checkout →'}
               </button>
             </div>
