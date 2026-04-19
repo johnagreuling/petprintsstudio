@@ -71,6 +71,7 @@ export default function CreatePage() {
 
   // ── Checkout state (NEW) ──
   const [selectedMedium, setSelectedMedium] = useState<'Canvas' | 'Prints'>('Canvas')
+  const [skipPrimary, setSkipPrimary] = useState(false)
   const [selectedSize, setSelectedSize] = useState('16×20"')
   const [songAnswers, setSongAnswers] = useState<Record<string, string>>({})
   const [songGenre, setSongGenre] = useState<string>('')
@@ -218,12 +219,12 @@ export default function CreatePage() {
   const availableSizes = PRODUCTS.filter(p => p.category === selectedMedium).map(p => ({ size: p.size, price: p.price, popular: p.popular }))
 
   useEffect(() => {
-    if (!picked || !primaryProduct) {
+    if (!picked || (!primaryProduct && !skipPrimary)) {
       setCart([])
       return
     }
     const next: CartItem[] = []
-    next.push({
+    if (!skipPrimary && primaryProduct) next.push({
       lineId: buildLineId(primaryProduct.id, primaryProduct.size, picked.url, picked.styleName),
       productId: primaryProduct.id,
       productName: primaryProduct.name,
@@ -260,7 +261,7 @@ export default function CreatePage() {
     }
     setCart(next)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [picked?.url, picked?.styleName, primaryProduct?.id, cartExtras, cartExtraSizes, cartExtraColors, cartExtraQty])
+  }, [picked?.url, picked?.styleName, primaryProduct?.id, cartExtras, cartExtraSizes, cartExtraColors, cartExtraQty, skipPrimary])
 
   // ── File handlers ──
   const handleFile = (file: File) => {
@@ -1153,6 +1154,17 @@ export default function CreatePage() {
                       <span className="serif" style={{fontSize:24,color:'var(--gold)'}}>${primaryProduct.price}</span>
                     </div>
                   )}
+                </div>
+              </div>
+
+              {/* Skip-primary toggle — lets users checkout with just keepsakes */}
+              <div style={{marginBottom:16,padding:'10px 14px',background:skipPrimary?'rgba(201,168,76,.08)':'#141414',border:`1px solid ${skipPrimary?'var(--gold)':'rgba(245,240,232,.1)'}`,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'space-between',transition:'all .2s'}} onClick={()=>setSkipPrimary(v=>!v)}>
+                <div>
+                  <div style={{fontSize:13,fontWeight:500,color:skipPrimary?'var(--gold)':'var(--cream)',marginBottom:2}}>Skip the print — just keepsakes</div>
+                  <div style={{fontSize:10,color:'var(--muted)'}}>No Canvas or Fine Art Print. Order mugs, apparel, blankets, etc. only.</div>
+                </div>
+                <div style={{width:40,height:22,borderRadius:11,background:skipPrimary?'var(--gold)':'rgba(245,240,232,.15)',position:'relative',transition:'background .2s',flexShrink:0}}>
+                  <div style={{position:'absolute',top:2,left:skipPrimary?20:2,width:18,height:18,borderRadius:'50%',background:skipPrimary?'#141414':'#f5f0e8',transition:'left .2s'}}></div>
                 </div>
               </div>
 
