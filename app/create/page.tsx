@@ -1287,12 +1287,14 @@ export default function CreatePage() {
                               <button key={s} onClick={()=>setCartExtraSizes(prev=>({...prev,[p.id]:s}))} style={{padding:'4px 10px',fontSize:9,fontWeight:600,background: cartExtraSizes[p.id]===s ? 'var(--gold)' : '#1a1a1a',color: cartExtraSizes[p.id]===s ? 'var(--ink)' : 'var(--muted)',border: `1px solid ${cartExtraSizes[p.id]===s ? 'var(--gold)' : 'rgba(245,240,232,.1)'}`,cursor:'pointer'}}>{s}</button>
                             ))}
                           </div>
-                          <div style={{display:'flex',alignItems:'center',gap:6,marginTop:5}}>
-                            <span style={{fontSize:9,color:'var(--muted)',letterSpacing:'.1em',textTransform:'uppercase'}}>Qty</span>
-                            <button onClick={(e)=>{e.stopPropagation(); setCartExtraQty(prev=>({...prev,[p.id]: Math.max(1,(prev[p.id]||1)-1)}))}} style={{width:20,height:20,fontSize:12,background:'#1a1a1a',border:'1px solid rgba(245,240,232,.15)',color:'var(--cream)',cursor:'pointer'}}>-</button>
-                            <span style={{fontSize:11,minWidth:16,textAlign:'center'}}>{cartExtraQty[p.id]||1}</span>
-                            <button onClick={(e)=>{e.stopPropagation(); setCartExtraQty(prev=>({...prev,[p.id]: Math.min(10,(prev[p.id]||1)+1)}))}} style={{width:20,height:20,fontSize:12,background:'#1a1a1a',border:'1px solid rgba(245,240,232,.15)',color:'var(--cream)',cursor:'pointer'}}>+</button>
-                          </div>
+                        </div>
+                      )}
+                      {isOn && (
+                        <div style={{padding:'6px 4px',display:'flex',alignItems:'center',gap:6}}>
+                          <span style={{fontSize:9,color:'var(--muted)',letterSpacing:'.1em',textTransform:'uppercase'}}>Qty</span>
+                          <button onClick={(e)=>{e.stopPropagation(); setCartExtraQty(prev=>({...prev,[p.id]: Math.max(1,(prev[p.id]||1)-1)}))}} style={{width:22,height:22,fontSize:13,background:'#1a1a1a',border:'1px solid rgba(245,240,232,.15)',color:'var(--cream)',cursor:'pointer'}}>-</button>
+                          <span style={{fontSize:12,minWidth:18,textAlign:'center'}}>{cartExtraQty[p.id]||1}</span>
+                          <button onClick={(e)=>{e.stopPropagation(); setCartExtraQty(prev=>({...prev,[p.id]: Math.min(10,(prev[p.id]||1)+1)}))}} style={{width:22,height:22,fontSize:13,background:'#1a1a1a',border:'1px solid rgba(245,240,232,.15)',color:'var(--cream)',cursor:'pointer'}}>+</button>
                         </div>
                       )}
                     </div>
