@@ -10,7 +10,11 @@ export default function About() {
         .serif{font-family:'Cormorant Garamond',serif}
         *{box-sizing:border-box;margin:0;padding:0}
         :root{--gold:#C9A84C;--cream:#F5F0E8;--ink:#0A0A0A;--muted:rgba(245,240,232,.5);--border:rgba(245,240,232,.08)}
-      `}</style>
+      `}
+          @media (max-width: 720px) {
+            .about-values { grid-template-columns: 1fr !important; gap: 12px !important; }
+            h1 { font-size: 36px !important; line-height: 1.05 !important; }
+          }</style>
 
       <SiteNav currentPage="about" />
 
@@ -41,7 +45,7 @@ export default function About() {
           </p>
         </div>
 
-        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:3,marginBottom:48}}>
+        <div className="about-values" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:3,marginBottom:48}}>
           {[
             {n:'32',l:'Custom Art Styles'},
             {n:'1,000+',l:'Portraits Created'},
