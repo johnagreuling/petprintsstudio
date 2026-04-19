@@ -238,28 +238,11 @@ export default function CreatePage() {
       category: primaryProduct.category,
       addedAt: Date.now(),
     })
-    for (const extraId of cartExtras) {
-      const pr = PRODUCTS.find(x => x.id === extraId)
-      if (!pr) continue
-      const sz = cartExtraSizes[extraId] || ''
-      const cl = cartExtraColors[extraId] || ''
-      const variantKey = [cl, sz].filter(Boolean).join(' / ')
-      next.push({
-        lineId: buildLineId(pr.id, variantKey, picked.url, picked.styleName),
-        productId: pr.id,
-        productName: pr.name,
-        variantKey: variantKey,
-        variantId: (pr as any).printifyVariantId,
-        blueprintId: (pr as any).printifyBlueprintId,
-        quantity: cartExtraQty[extraId] || 1,
-        unitPrice: pr.price,
-        portraitUrl: picked.url,
-        styleName: picked.styleName,
-        category: pr.category,
-        addedAt: Date.now(),
-      })
-    }
-    setCart(next)
+    // Merge: keep user-added extras (non-Canvas/Prints), refresh primary from picker state.
+    setCart(prev => {
+      const userAdded = prev.filter(ci => ci.category !== 'Canvas' && ci.category !== 'Prints')
+      return [...next, ...userAdded]
+    })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [picked?.url, picked?.styleName, primaryProduct?.id, cartExtras, cartExtraSizes, cartExtraColors, cartExtraQty, skipPrimary])
 
@@ -1308,6 +1291,10 @@ export default function CreatePage() {
                           <span style={{fontSize:12,minWidth:18,textAlign:'center'}}>{cartExtraQty[p.id]||1}</span>
                           <button onClick={(e)=>{e.stopPropagation(); setCartExtraQty(prev=>({...prev,[p.id]: Math.min(10,(prev[p.id]||1)+1)}))}} style={{width:22,height:22,fontSize:13,background:'#1a1a1a',border:'1px solid rgba(245,240,232,.15)',color:'var(--cream)',cursor:'pointer'}}>+</button>
                         </div>
+                      )}
+                      {isOn && (
+                        <button onClick={(e)=>{ e.stopPropagation(); if(!picked) return; const sz=cartExtraSizes[p.id]||''; const cl=cartExtraColors[p.id]||''; const vk=[cl,sz].filter(Boolean).join(' / '); const qty=cartExtraQty[p.id]||1; const ts=Date.now(); setCart(prev=>[...prev,{lineId:`${p.id}_${ts}`,productId:p.id,productName:p.name,variantKey:vk,variantId:(p as any).printifyVariantId,blueprintId:(p as any).printifyBlueprintId,quantity:qty,unitPrice:p.price,portraitUrl:picked.url,styleName:picked.styleName,category:p.category,addedAt:ts}]); setCartExtraQty(prev=>({...prev,[p.id]:1})); }}
+                          style={{margin:'4px 4px 8px',padding:'6px 10px',fontSize:10,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase',background:'rgba(201,168,76,.12)',border:'1px solid var(--gold)',color:'var(--gold)',cursor:'pointer',width:'calc(100% - 8px)'}}>+ Add another to cart</button>
                       )}
                     </div>
                   )
