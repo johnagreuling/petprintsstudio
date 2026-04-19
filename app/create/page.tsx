@@ -4,6 +4,7 @@ import Link from 'next/link'
 import WatermarkedImage from '@/components/WatermarkedImage'
 import SizeCropPreview from '@/components/SizeCropPreview'
 import SiteNav from '@/components/SiteNav'
+import CreateSteps from '@/components/CreateSteps'
 import {
   PRODUCTS, ART_STYLES, SONG_QUESTIONS, SONG_GENRES, GEN_LIMITS,
   findPrimaryProduct, buildLineId, cartSubtotal, cartItemCount,
@@ -655,6 +656,7 @@ export default function CreatePage() {
         }
       `}</style>
       <SiteNav currentPage={null} />
+      <CreateSteps stepNum={stepNum as 1|2|3|4} />
 
       <div style={{maxWidth:860,margin:'0 auto',padding:'56px 24px 80px'}}>
 
