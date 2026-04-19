@@ -25,9 +25,9 @@ export default function ShopCatalog() {
 
       <section style={{padding:'140px 24px 40px',textAlign:'center',maxWidth:1200,margin:'0 auto'}}>
         <div style={{fontSize:10,letterSpacing:'.4em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>The Catalog</div>
-        <h1 className="serif" style={{fontSize:52,fontWeight:400,letterSpacing:'-.02em',lineHeight:1.1,marginBottom:20}}>Everything we make</h1>
-        <p style={{fontSize:16,color:'var(--muted)',maxWidth:620,margin:'0 auto',lineHeight:1.6}}>
-          Gallery-wrapped canvases. Heavyweight tees. Jumbo mugs. Every product is hand-selected for the one thing we care about: how it feels when their portrait is on it.
+        <h1 className="serif" style={{fontSize:52,fontWeight:400,letterSpacing:'-.02em',lineHeight:1.1,marginBottom:20}}>Everything We Make</h1>
+        <p style={{fontSize:22,color:'rgba(245,240,232,.75)',maxWidth:760,margin:'0 auto',lineHeight:1.55,fontWeight:300}}>
+          Gallery-wrapped canvases. Luxury modern fit soft tees. Every product is hand-selected for the one thing we care about: Quality. All of our products represent the most premium offerings available in each category. These are not disposable novelty gifts. These are quality luxury goods that you will be proud to own for years to come.
         </p>
       </section>
 
