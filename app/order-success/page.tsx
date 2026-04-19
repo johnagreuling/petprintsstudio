@@ -1,10 +1,14 @@
 'use client'
 import Link from 'next/link'
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
+import posthog from 'posthog-js'
 
 function Success() {
   const params = useSearchParams()
+  useEffect(() => {
+    posthog.capture('order_completed', { session_id: params.get('session_id') || '' })
+  }, [])
   return (
     <div style={{background:'#0A0A0A',color:'#F5F0E8',minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'40px 24px',fontFamily:"'DM Sans',sans-serif"}}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');.serif{font-family:'Cormorant Garamond',serif}@keyframes pop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}.pop{animation:pop .7s cubic-bezier(.34,1.56,.64,1) forwards}`}</style>

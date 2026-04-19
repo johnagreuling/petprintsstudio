@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { PRODUCTS } from '@/lib/config'
+import { getPostHogClient } from '@/lib/posthog-server'
 
 function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) {
@@ -224,6 +225,22 @@ export async function POST(req: NextRequest) {
       sessionFolder: sessionFolder || '',
       firstImageUrl: heroImageUrl,
     }).catch(e => console.error('Song brief/email failed (non-blocking):', e))
+
+    const distinctId = req.headers.get('x-posthog-distinct-id') || sessionFolder || session.id
+    const posthog = getPostHogClient()
+    posthog.capture({
+      distinctId,
+      event: 'checkout_session_created',
+      properties: {
+        stripe_session_id: session.id,
+        cart_path: isNewCartPath ? 'v2' : 'legacy',
+        item_count: isNewCartPath ? (cart?.length ?? 0) : 1,
+        song_genre: songGenre || '',
+        pet_name: petName || '',
+        pet_type: petType || '',
+        session_folder: sessionFolder || '',
+      },
+    })
 
     return NextResponse.json({ url: session.url })
   } catch (err) {

@@ -1,6 +1,7 @@
 'use client'
 import { useSearchParams } from 'next/navigation'
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import posthog from 'posthog-js'
 import Link from 'next/link'
 import WatermarkedImage from '@/components/WatermarkedImage'
 import SizeCropPreview from '@/components/SizeCropPreview'
@@ -382,6 +383,10 @@ export default function CreatePage() {
 
   // ── Toggle style selection (max 4 on initial pick) ──
   const toggleStyle = (id: string) => {
+    if (!selectedStyles.includes(id) && selectedStyles.length < GEN_LIMITS.MAX_STYLES_INITIAL) {
+      const style = dynamicStyles.find(s => s.id === id)
+      posthog.capture('style_selected', { style_id: id, style_name: style?.name })
+    }
     setSelectedStyles(prev => {
       if (prev.includes(id)) return prev.filter(x => x !== id)
       if (prev.length >= GEN_LIMITS.MAX_STYLES_INITIAL) return prev  // cap at 4
@@ -410,6 +415,7 @@ export default function CreatePage() {
         headers: { 'Content-Type': uploadedFile.type },
       })
       if (!uploadRes.ok) throw new Error('Upload failed')
+      posthog.capture('photo_uploaded', { pet_name: answers.petName || '', pet_type: answers.petBreed || '' })
       setUploadedUrl(url); setProgress(20); setProgressMsg('Analyzing your pet...')
 
       // NOTE: Song brief is now generated at CHECKOUT time (when we have song answers + genre)
@@ -450,6 +456,7 @@ export default function CreatePage() {
             if (d.type === 'image') { imgs.push(d.image); setGenerated([...imgs]) }
             if (d.type === 'done') {
               setGenerated(d.images); setProgress(100); setProgressMsg('Done!')
+              posthog.capture('portraits_generated', { portrait_count: d.images?.length ?? 0, style_count: selectedStyles.length, pet_name: answers.petName || '', pet_type: answers.petBreed || '' })
               if (d.sessionFolder) {
                 setSessionFolder(d.sessionFolder)
                 try {
@@ -470,6 +477,7 @@ export default function CreatePage() {
       }
       setStep('gallery')
     } catch (e) {
+      posthog.captureException(e)
       setError(e instanceof Error ? e.message : 'Something went wrong')
       setStep('styles')
     }
@@ -1207,6 +1215,7 @@ export default function CreatePage() {
                         category: primaryProduct.category,
                         addedAt: ts,
                       })
+                      posthog.capture('portrait_added_to_cart', { product_id: primaryProduct.id, product_name: primaryProduct.name, product_size: primaryProduct.size, product_category: primaryProduct.category, unit_price: primaryProduct.price, style_name: picked.styleName })
                       setJustAddedId(primaryProduct.id)
                       setTimeout(()=>setJustAddedId(cur => cur === primaryProduct.id ? null : cur), 1400)
                     }}
@@ -1375,7 +1384,7 @@ export default function CreatePage() {
                         </div>
                       )}
                       {isOn && (
-                        <button onClick={(e)=>{ e.stopPropagation(); if(!picked) return; const sz=cartExtraSizes[p.id]||''; const cl=cartExtraColors[p.id]||''; const vk=[cl,sz].filter(Boolean).join(' / '); const qty=cartExtraQty[p.id]||1; const ts=Date.now(); addItem({lineId:`${p.id}_${ts}`,productId:p.id,productName:p.name,variantKey:vk,variantId:(p as any).printifyVariantId,blueprintId:(p as any).printifyBlueprintId,quantity:qty,unitPrice:p.price,portraitUrl:picked.url,styleName:picked.styleName,category:p.category,addedAt:ts}); setCartExtraQty(prev=>({...prev,[p.id]:1})); setJustAddedId(p.id); setTimeout(()=>setJustAddedId(cur => cur === p.id ? null : cur), 1400); }}
+                        <button onClick={(e)=>{ e.stopPropagation(); if(!picked) return; const sz=cartExtraSizes[p.id]||''; const cl=cartExtraColors[p.id]||''; const vk=[cl,sz].filter(Boolean).join(' / '); const qty=cartExtraQty[p.id]||1; const ts=Date.now(); addItem({lineId:`${p.id}_${ts}`,productId:p.id,productName:p.name,variantKey:vk,variantId:(p as any).printifyVariantId,blueprintId:(p as any).printifyBlueprintId,quantity:qty,unitPrice:p.price,portraitUrl:picked.url,styleName:picked.styleName,category:p.category,addedAt:ts}); posthog.capture('portrait_added_to_cart', { product_id: p.id, product_name: p.name, product_category: p.category, unit_price: p.price, quantity: qty, style_name: picked.styleName }); setCartExtraQty(prev=>({...prev,[p.id]:1})); setJustAddedId(p.id); setTimeout(()=>setJustAddedId(cur => cur === p.id ? null : cur), 1400); }}
                           style={{margin:'4px 4px 8px',padding:'8px 10px',fontSize:10,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',background: justAddedId === p.id ? 'var(--gold)' : 'rgba(201,168,76,.12)',border:'1px solid var(--gold)',color: justAddedId === p.id ? 'var(--ink)' : 'var(--gold)',cursor:'pointer',width:'calc(100% - 8px)',transition:'all .18s',transform: justAddedId === p.id ? 'scale(.97)' : 'scale(1)'}}>
                           {justAddedId === p.id ? '✓ Added to Cart' : (cart.some(ci => ci.productId === p.id) ? '+ Add Another' : '+ Add to Cart')}
                         </button>

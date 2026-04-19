@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import posthog from 'posthog-js'
 
 interface SessionData {
   petName: string
@@ -65,7 +66,10 @@ export default function SongPage() {
     const audio = audioRef.current
     if (!audio || !session?.songUrl) return
     if (playing) { audio.pause(); setPlaying(false) }
-    else { audio.play(); setPlaying(true) }
+    else {
+      posthog.capture('song_played', { session_id: sessionId, pet_name: session?.petName || '', song_title: session?.songTitle || '' })
+      audio.play(); setPlaying(true)
+    }
   }
 
   function formatTime(s: number) {

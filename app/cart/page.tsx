@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useCart } from '@/lib/cart-context'
 import SiteNav from '@/components/SiteNav'
 import { useState } from 'react'
+import posthog from 'posthog-js'
 
 export default function CartPage() {
   const { items, updateQty, removeItem, subtotal, itemCount, hydrated, clearCart, orderMeta, clearOrderMeta } = useCart()
@@ -15,6 +16,7 @@ export default function CartPage() {
       setCheckoutError('Finish your song setup on the Create page before checking out.')
       return
     }
+    posthog.capture('checkout_started', { item_count: items.length, subtotal: subtotal, song_genre: orderMeta.songGenre || '' })
     setCheckingOut(true)
     setCheckoutError('')
     try {

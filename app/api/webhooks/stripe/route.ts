@@ -6,6 +6,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { PRODUCTS } from '@/lib/config'
 import { createOrder, updateOrderStatus } from '@/lib/db'
 import { upscaleForPrint } from '@/lib/upscale'
+import { getPostHogClient } from '@/lib/posthog-server'
 
 function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) throw new Error('STRIPE_SECRET_KEY is not configured')
@@ -288,6 +289,21 @@ async function fulfillOrder(session: any, stripe: Stripe) {
       totalCents,
     })
   }
+
+  const posthog = getPostHogClient()
+  posthog.capture({
+    distinctId: customer.email || session.id,
+    event: 'order_fulfilled',
+    properties: {
+      stripe_session_id: session.id,
+      printify_order_id: printifyOrderId || '',
+      total_cents: totalCents,
+      pet_name: meta.petName || '',
+      style_name: meta.styleName || '',
+      customer_email: customer.email || '',
+      cart_path: meta.cartPath || 'legacy',
+    },
+  })
 
   console.log(`\n✅ ORDER FULFILLMENT COMPLETE: ${session.id}\n`)
 }
