@@ -12,3 +12,18 @@ export function getPostHogClient() {
   }
   return posthogClient
 }
+
+
+/**
+ * [I1.1] Defensive wrapper - capture an event but never let a PostHog failure
+ * break a money-critical route. If capture throws, we log and swallow.
+ */
+export async function safeCapture(args: Parameters<PostHog['capture']>[0]) {
+  try {
+    const client = getPostHogClient()
+    client.capture(args)
+    await client.flush().catch(e => console.warn('[posthog] flush failed (non-fatal):', e))
+  } catch (e) {
+    console.warn('[posthog] safeCapture failed (non-fatal):', e)
+  }
+}

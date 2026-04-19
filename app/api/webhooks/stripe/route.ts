@@ -6,7 +6,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { PRODUCTS } from '@/lib/config'
 import { createOrder, updateOrderStatus } from '@/lib/db'
 import { upscaleForPrint } from '@/lib/upscale'
-import { getPostHogClient } from '@/lib/posthog-server'
+import { safeCapture } from '@/lib/posthog-server'
 
 function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) throw new Error('STRIPE_SECRET_KEY is not configured')
@@ -290,8 +290,7 @@ async function fulfillOrder(session: any, stripe: Stripe) {
     })
   }
 
-  const posthog = getPostHogClient()
-  posthog.capture({
+  await safeCapture({
     distinctId: customer.email || session.id,
     event: 'order_fulfilled',
     properties: {

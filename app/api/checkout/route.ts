@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { PRODUCTS } from '@/lib/config'
-import { getPostHogClient } from '@/lib/posthog-server'
+import { safeCapture } from '@/lib/posthog-server'
 
 function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) {
@@ -227,8 +227,7 @@ export async function POST(req: NextRequest) {
     }).catch(e => console.error('Song brief/email failed (non-blocking):', e))
 
     const distinctId = req.headers.get('x-posthog-distinct-id') || sessionFolder || session.id
-    const posthog = getPostHogClient()
-    posthog.capture({
+    await safeCapture({
       distinctId,
       event: 'checkout_session_created',
       properties: {
