@@ -138,8 +138,6 @@ export default function Home() {
         .style-btn img{width:100%;aspect-ratio:1;object-fit:cover;display:block;transition:transform .4s ease}
         .style-btn:hover img,.style-btn.active img{transform:scale(1.05)}
         .style-btn-info{padding:16px 18px}
-        nav a{text-decoration:none;color:var(--muted);font-size:11px;letter-spacing:.18em;text-transform:uppercase;transition:color .3s}
-        nav a:hover{color:var(--cream)}
         @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
         .fu{animation:fadeUp .8s ease forwards}
         .fu1{animation-delay:.05s}.fu2{animation-delay:.1s}.fu3{animation-delay:.18s}.fu4{animation-delay:.28s}
