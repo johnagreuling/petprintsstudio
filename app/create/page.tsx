@@ -10,6 +10,7 @@ import {
   findPrimaryProduct, buildLineId, cartSubtotal, cartItemCount,
 } from '@/lib/config'
 import type { CartItem } from '@/lib/config'
+import { useCart } from '@/lib/cart-context'
 
 type Step = 'upload' | 'styles' | 'generating' | 'gallery' | 'checkout'
 
@@ -84,7 +85,7 @@ export default function CreatePage() {
   const [cartExtraColors, setCartExtraColors] = useState<Record<string, string>>({})
   const [cartExtraQty, setCartExtraQty] = useState<Record<string, number>>({})
   const [checkoutLoading, setCheckoutLoading] = useState(false)
-  const [cart, setCart] = useState<CartItem[]>([])
+  const { items: cart, addItem, clearCart: clearGlobalCart } = useCart()
   const [productDetail, setProductDetail] = useState<typeof PRODUCTS[0] | null>(null)
   const [savedSession, setSavedSession] = useState<{sessionFolder:string;images:any[];petName:string;createdAt:string}|null>(null)
 
@@ -220,33 +221,8 @@ export default function CreatePage() {
   // ── Sizes available for selected medium ──
   const availableSizes = PRODUCTS.filter(p => p.category === selectedMedium).map(p => ({ size: p.size, price: p.price, popular: p.popular }))
 
-  useEffect(() => {
-    if (!picked || (!primaryProduct && !skipPrimary)) {
-      setCart([])
-      return
-    }
-    const next: CartItem[] = []
-    if (!skipPrimary && primaryProduct) next.push({
-      lineId: buildLineId(primaryProduct.id, primaryProduct.size, picked.url, picked.styleName),
-      productId: primaryProduct.id,
-      productName: primaryProduct.name,
-      variantKey: primaryProduct.size,
-      variantId: (primaryProduct as any).printifyVariantId,
-      blueprintId: (primaryProduct as any).printifyBlueprintId,
-      quantity: 1,
-      unitPrice: primaryProduct.price,
-      portraitUrl: picked.url,
-      styleName: picked.styleName,
-      category: primaryProduct.category,
-      addedAt: Date.now(),
-    })
-    // Merge: keep user-added extras (non-Canvas/Prints), refresh primary from picker state.
-    setCart(prev => {
-      const userAdded = prev.filter(ci => ci.category !== 'Canvas' && ci.category !== 'Prints')
-      return [...next, ...userAdded]
-    })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [picked?.url, picked?.styleName, primaryProduct?.id, cartExtras, cartExtraSizes, cartExtraColors, cartExtraQty, skipPrimary])
+  // [C4e] Legacy auto-sync cart effect removed. All cart adds are now explicit via addItem().
+  // The old effect pushed primary canvas/print into local cart whenever picked changed.
 
   // ── File handlers ──
   const handleFile = (file: File) => {
@@ -1343,7 +1319,7 @@ export default function CreatePage() {
                         </div>
                       )}
                       {isOn && (
-                        <button onClick={(e)=>{ e.stopPropagation(); if(!picked) return; const sz=cartExtraSizes[p.id]||''; const cl=cartExtraColors[p.id]||''; const vk=[cl,sz].filter(Boolean).join(' / '); const qty=cartExtraQty[p.id]||1; const ts=Date.now(); setCart(prev=>[...prev,{lineId:`${p.id}_${ts}`,productId:p.id,productName:p.name,variantKey:vk,variantId:(p as any).printifyVariantId,blueprintId:(p as any).printifyBlueprintId,quantity:qty,unitPrice:p.price,portraitUrl:picked.url,styleName:picked.styleName,category:p.category,addedAt:ts}]); setCartExtraQty(prev=>({...prev,[p.id]:1})); }}
+                        <button onClick={(e)=>{ e.stopPropagation(); if(!picked) return; const sz=cartExtraSizes[p.id]||''; const cl=cartExtraColors[p.id]||''; const vk=[cl,sz].filter(Boolean).join(' / '); const qty=cartExtraQty[p.id]||1; const ts=Date.now(); addItem({lineId:`${p.id}_${ts}`,productId:p.id,productName:p.name,variantKey:vk,variantId:(p as any).printifyVariantId,blueprintId:(p as any).printifyBlueprintId,quantity:qty,unitPrice:p.price,portraitUrl:picked.url,styleName:picked.styleName,category:p.category,addedAt:ts}); setCartExtraQty(prev=>({...prev,[p.id]:1})); }}
                           style={{margin:'4px 4px 8px',padding:'6px 10px',fontSize:10,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase',background:'rgba(201,168,76,.12)',border:'1px solid var(--gold)',color:'var(--gold)',cursor:'pointer',width:'calc(100% - 8px)'}}>+ Add another to cart</button>
                       )}
                     </div>
