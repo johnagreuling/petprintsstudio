@@ -23,7 +23,7 @@ export default function ShopCatalog() {
     <div style={{minHeight:'100vh',background:'var(--ink)',color:'var(--cream)'}}>
       <SiteNav currentPage="shop" />
 
-      <section style={{padding:'140px 24px 40px',textAlign:'center',maxWidth:1200,margin:'0 auto'}}>
+      <section className="shop-hero" style={{padding:'140px 24px 40px',textAlign:'center',maxWidth:1200,margin:'0 auto'}}>
         <div style={{fontSize:10,letterSpacing:'.4em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>The Catalog</div>
         <h1 className="serif" style={{fontSize:52,fontWeight:400,letterSpacing:'-.02em',lineHeight:1.1,marginBottom:20}}>Everything We Make</h1>
         <p style={{fontSize:20,color:'rgba(245,240,232,.75)',maxWidth:760,margin:'0 auto',lineHeight:1.55,fontWeight:300}}>
@@ -31,16 +31,16 @@ export default function ShopCatalog() {
         </p>
       </section>
 
-      <section style={{maxWidth:1200,margin:'0 auto',padding:'20px 24px 80px'}}>
+      <section className="shop-grid-section" style={{maxWidth:1200,margin:'0 auto',padding:'20px 24px 80px'}}>
         {CATEGORY_ORDER.filter(cat => byCategory[cat]?.length > 0).map(cat => (
-          <div key={cat} style={{marginBottom:64}}>
-            <div style={{marginBottom:24,paddingBottom:14,borderBottom:'1px solid rgba(245,240,232,.08)'}}>
+          <div key={cat} className="shop-category-block" style={{marginBottom:64}}>
+            <div className="shop-category-header" style={{marginBottom:24,paddingBottom:14,borderBottom:'1px solid rgba(245,240,232,.08)'}}>
               <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:6}}>{cat}</div>
               <h2 className="serif" style={{fontSize:28,fontWeight:400,letterSpacing:'-.01em'}}>{CATEGORY_LABELS[cat] || cat}</h2>
             </div>
-            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:18}}>
+            <div className="shop-grid" style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:18}}>
               {byCategory[cat].map((p: any) => (
-                <div key={p.id} style={{background:'#141414',border:'1px solid rgba(245,240,232,.06)',padding:24,display:'flex',flexDirection:'column',minHeight:320}}>
+                <div key={p.id} className="shop-tile" style={{background:'#141414',border:'1px solid rgba(245,240,232,.06)',padding:24,display:'flex',flexDirection:'column',minHeight:320}}>
                   <div style={{width:'100%',aspectRatio:'1/1',background:'#0a0a0a',marginBottom:16,overflow:'hidden',display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
                     <img src={productImage(p.id)} alt={p.name} style={{width:'100%',height:'100%',objectFit:'cover'}} onError={(e)=>{(e.currentTarget as HTMLImageElement).style.display='none'}} />
                     <div style={{position:'absolute',fontSize:64,opacity:.22}}>{p.emoji}</div>
@@ -63,13 +63,54 @@ export default function ShopCatalog() {
         ))}
       </section>
 
-      <section style={{padding:'80px 24px',textAlign:'center',background:'rgba(201,168,76,.03)',borderTop:'1px solid rgba(245,240,232,.06)'}}>
+      <section className="shop-bottom-cta" style={{padding:'80px 24px',textAlign:'center',background:'rgba(201,168,76,.03)',borderTop:'1px solid rgba(245,240,232,.06)'}}>
         <h3 className="serif" style={{fontSize:32,fontWeight:400,marginBottom:14}}>Ready to see your pet?</h3>
         <p style={{color:'var(--muted)',fontSize:14,marginBottom:26,maxWidth:480,margin:'0 auto 26px'}}>
           Upload one photo. Pick an art style. Get 24 portraits in under 60 seconds.
         </p>
         <Link href="/create" className="btn-gold" style={{padding:'14px 28px',fontSize:11,letterSpacing:'.2em'}}>Begin Their Story →</Link>
       </section>
+
+      <style jsx>{`
+        @media (max-width: 720px) {
+          :global(.shop-hero) {
+            padding: 110px 20px 24px !important;
+          }
+          :global(.shop-hero h1) {
+            font-size: 36px !important;
+            line-height: 1.05 !important;
+          }
+          :global(.shop-hero p) {
+            font-size: 15px !important;
+            line-height: 1.55 !important;
+            max-width: 100% !important;
+            padding: 0 4px !important;
+          }
+          :global(.shop-grid-section) {
+            padding: 12px 16px 60px !important;
+          }
+          :global(.shop-category-block) {
+            margin-bottom: 44px !important;
+          }
+          :global(.shop-category-header h2) {
+            font-size: 22px !important;
+          }
+          :global(.shop-grid) {
+            grid-template-columns: 1fr !important;
+            gap: 14px !important;
+          }
+          :global(.shop-tile) {
+            padding: 18px !important;
+            min-height: auto !important;
+          }
+          :global(.shop-bottom-cta) {
+            padding: 56px 20px !important;
+          }
+          :global(.shop-bottom-cta h3) {
+            font-size: 26px !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }
