@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { PRODUCTS } from '@/lib/config'
+import { PRODUCTS, productImage } from '@/lib/config'
 
 const CATEGORY_ORDER = ['Canvas', 'Prints', 'Home', 'Apparel', 'Accessories']
 const CATEGORY_LABELS: Record<string, string> = {
@@ -50,7 +50,10 @@ export default function ShopCatalog() {
             <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:18}}>
               {byCategory[cat].map((p: any) => (
                 <div key={p.id} style={{background:'#141414',border:'1px solid rgba(245,240,232,.06)',padding:24,display:'flex',flexDirection:'column',minHeight:320}}>
-                  <div style={{fontSize:48,marginBottom:16}}>{p.emoji}</div>
+                  <div style={{width:'100%',aspectRatio:'1/1',background:'#0a0a0a',marginBottom:16,overflow:'hidden',display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
+                    <img src={productImage(p.id)} alt={p.name} style={{width:'100%',height:'100%',objectFit:'cover'}} onError={(e)=>{(e.currentTarget as HTMLImageElement).style.display='none'}} />
+                    <div style={{position:'absolute',fontSize:64,opacity:.22}}>{p.emoji}</div>
+                  </div>
                   <div style={{flex:1}}>
                     <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:4}}>
                       <div className="serif" style={{fontSize:17,fontWeight:400}}>{p.name}</div>

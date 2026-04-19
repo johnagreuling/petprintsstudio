@@ -233,3 +233,28 @@ export function cartSubtotal(cart: CartItem[]): number {
 export function cartItemCount(cart: CartItem[]): number {
   return cart.reduce((sum, item) => sum + item.quantity, 0)
 }
+
+
+// ─────────────────────────────────────────────────────────────────
+//  PRODUCT IMAGE RESOLVER
+//  Maps product id to the custom product image in /public.
+//  Used by /shop catalog and anywhere else a product thumbnail is needed.
+// ─────────────────────────────────────────────────────────────────
+export function productImage(productId: string): string {
+  if (productId.startsWith('canvas_')) return '/portrait-on-wall.png'
+  if (productId.startsWith('print_'))  return '/portrait-lifestyle.png'
+  if (productId.startsWith('blanket_')) return '/products/blanket.png'
+  const map: Record<string, string> = {
+    baby_blanket: '/products/baby-blanket.png',
+    beach_towel:  '/products/beach-towel.png',
+    mug_20oz:     '/products/mug.png',
+    pillow:       '/products/pillow.png',
+    tshirt:       '/products/tee.png',
+    kids_tee:     '/products/tee.png',
+    hoodie:       '/products/hoodie.png',
+    kids_hoodie:  '/products/hoodie.png',
+    tote:         '/products/tote.png',
+    phone_case:   '/products/phone.png',
+  }
+  return map[productId] || '/products/mug.png'
+}
