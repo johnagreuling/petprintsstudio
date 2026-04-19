@@ -516,7 +516,7 @@ export default function Home() {
 
       {/* CTA BAND */}
       <section style={{background:'var(--gold)',padding:'80px 60px',textAlign:'center'}}>
-        <div style={{fontSize:10,letterSpacing:'.35em',textTransform:'uppercase',color:'rgba(10,10,10,.5)',marginBottom:16}}>See Them &nbsp;·&nbsp; Hear Them &nbsp;·&nbsp; Feel Them</div>
+        <div style={{fontSize:9,letterSpacing:'.28em',textTransform:'uppercase',color:'rgba(10,10,10,.5)',marginBottom:10}}>See Them &nbsp;·&nbsp; Hear Them &nbsp;·&nbsp; Feel Them</div>
         <h2 className="serif" style={{fontSize:'clamp(32px,5vw,68px)',color:'var(--ink)',fontWeight:400,marginBottom:16}}>
           Give a Gift<br/>They&rsquo;ll Never Forget.
         </h2>
