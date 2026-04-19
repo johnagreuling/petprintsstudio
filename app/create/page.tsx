@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 import WatermarkedImage from '@/components/WatermarkedImage'
 import SizeCropPreview from '@/components/SizeCropPreview'
+import SiteNav from '@/components/SiteNav'
 import {
   PRODUCTS, ART_STYLES, SONG_QUESTIONS, SONG_GENRES, GEN_LIMITS,
   findPrimaryProduct, buildLineId, cartSubtotal, cartItemCount,
@@ -653,26 +654,7 @@ export default function CreatePage() {
           [style*="gridTemplateColumns:'1fr 1fr'"][style*="gap:16"]{grid-template-columns:1fr !important;gap:12px !important}
         }
       `}</style>
-
-      {/* NAV */}
-      <nav style={{padding:'18px 40px',display:'flex',alignItems:'center',justifyContent:'space-between',borderBottom:'1px solid rgba(245,240,232,.06)',position:'sticky',top:0,background:'#0A0A0A',zIndex:100}}>
-        <Link href="/" style={{display:'flex',alignItems:'center',gap:10,textDecoration:'none',color:'inherit'}}>
-          <span>🐾</span>
-          <span className="serif" style={{fontSize:20}}>Pet Prints Studio</span>
-        </Link>
-        <div style={{display:'flex',alignItems:'center',gap:0}}>
-          {['Upload','Styles','Pick','Checkout'].map((label,i)=>(
-            <div key={label} style={{display:'flex',alignItems:'center'}}>
-              <div style={{fontSize:10,letterSpacing:'.14em',textTransform:'uppercase',color:i+1===stepNum?'var(--cream)':i+1<stepNum?'var(--gold)':'var(--muted)',display:'flex',alignItems:'center',gap:6,fontWeight:i+1===stepNum?600:400}}>
-                <span className="step-dot" style={{color:i+1===stepNum?'var(--cream)':i+1<stepNum?'var(--gold)':'rgba(245,240,232,.2)'}}/>
-                {label}
-              </div>
-              {i<3&&<div style={{width:24,height:1,background:'rgba(245,240,232,.1)',margin:'0 6px'}}/>}
-            </div>
-          ))}
-        </div>
-        <div style={{width:140}}/>
-      </nav>
+      <SiteNav currentPage={null} />
 
       <div style={{maxWidth:860,margin:'0 auto',padding:'56px 24px 80px'}}>
 
