@@ -1,6 +1,6 @@
 'use client'
 import { useSearchParams } from 'next/navigation'
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo, Suspense } from 'react'
 import posthog from 'posthog-js'
 import Link from 'next/link'
 import WatermarkedImage from '@/components/WatermarkedImage'
@@ -38,7 +38,7 @@ const CATEGORY_LABELS: Record<string, { label: string; emoji: string }> = {
   pop_modern:          { label: 'Pop & Modern',        emoji: '⚡' },
 }
 
-export default function CreatePage() {
+function CreatePageInner() {
   const [step, setStep] = useState<Step>('upload')
 
   // ── Upload state ──
@@ -1490,5 +1490,13 @@ export default function CreatePage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function CreatePage() {
+  return (
+    <Suspense fallback={<div style={{minHeight:'100vh',background:'var(--ink)',color:'var(--muted)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:14}}>Loading…</div>}>
+      <CreatePageInner />
+    </Suspense>
   )
 }
