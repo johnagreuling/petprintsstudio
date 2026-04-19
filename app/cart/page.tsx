@@ -144,7 +144,7 @@ export default function CartPage() {
 
         {items.length > 0 && !orderMeta.songGenre && (
           <div style={{background:'rgba(201,168,76,.08)',border:'1px solid rgba(201,168,76,.3)',padding:'14px 18px',marginBottom:16,color:'var(--cream)',fontSize:13}}>
-            <strong style={{color:'var(--gold)'}}>One step left:</strong> <Link href="/create" style={{color:'var(--gold)',textDecoration:'underline'}}>Finish your song setup on the Create page →</Link>
+            <strong style={{color:'var(--gold)'}}>One step left:</strong> <Link href="/create?step=checkout" style={{color:'var(--gold)',textDecoration:'underline'}}>Make your song & checkout →</Link>
           </div>
         )}
 
@@ -159,7 +159,7 @@ export default function CartPage() {
           disabled={checkingOut || !orderMeta.songGenre}
           style={{width:'100%',background:'var(--gold)',color:'var(--ink)',padding:'18px 24px',fontSize:12,fontWeight:700,letterSpacing:'.2em',textTransform:'uppercase',border:'none',cursor:(checkingOut||!orderMeta.songGenre)?'default':'pointer',opacity:(checkingOut||!orderMeta.songGenre)?.6:1,marginBottom:12}}
         >
-          {checkingOut ? 'Redirecting to checkout…' : !orderMeta.songGenre ? 'Finish song setup on Create page →' : `Proceed to Checkout · $${subtotal.toFixed(2)}`}
+          {checkingOut ? 'Redirecting to checkout…' : !orderMeta.songGenre ? 'Make your song & checkout →' : `Proceed to Checkout · $${subtotal.toFixed(2)}`}
         </button>
 
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',fontSize:11,color:'var(--muted)'}}>

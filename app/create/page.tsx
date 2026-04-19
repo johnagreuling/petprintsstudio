@@ -1,4 +1,5 @@
 'use client'
+import { useSearchParams } from 'next/navigation'
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 import WatermarkedImage from '@/components/WatermarkedImage'
@@ -86,6 +87,36 @@ export default function CreatePage() {
   const [cartExtraQty, setCartExtraQty] = useState<Record<string, number>>({})
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const { items: cart, addItem, clearCart: clearGlobalCart, setOrderMeta, clearOrderMeta } = useCart()
+  const searchParams = useSearchParams()
+
+  // [C4f.2] Deep-link from /cart amber banner: ?step=checkout restores gallery
+  // + reconstructs picked from cart[0] so user lands in the song questionnaire.
+  const deepLinkHandled = useRef(false)
+  useEffect(() => {
+    if (deepLinkHandled.current) return
+    const qStep = searchParams?.get('step')
+    if (qStep !== 'checkout') return
+    if (cart.length === 0) return
+    deepLinkHandled.current = true
+    const first = cart[0]
+    if (first.portraitUrl && first.styleName) {
+      setPicked({
+        url: first.portraitUrl,
+        styleId: '',
+        styleName: first.styleName,
+        model: '',
+      })
+    }
+    try {
+      const saved = localStorage.getItem('pps_last_session')
+      if (saved) {
+        const sess = JSON.parse(saved)
+        if (sess?.images) setGenerated(sess.images)
+        if (sess?.sessionFolder) setSessionFolder(sess.sessionFolder)
+      }
+    } catch (e) {}
+    setStep('checkout')
+  }, [searchParams, cart])
   const [justAddedId, setJustAddedId] = useState<string | null>(null)
   const [productDetail, setProductDetail] = useState<typeof PRODUCTS[0] | null>(null)
   const [savedSession, setSavedSession] = useState<{sessionFolder:string;images:any[];petName:string;createdAt:string}|null>(null)
