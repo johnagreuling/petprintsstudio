@@ -3,3 +3,5 @@ node_modules/
 .env
 .env.local
 *.log
+.c4f-backup/
+.DS_Store
