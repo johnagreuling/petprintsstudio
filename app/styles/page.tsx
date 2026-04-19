@@ -198,6 +198,7 @@ export default function StylesGallery() {
         <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
           <Link href="/#how-it-works" style={{ color: 'rgba(245,240,232,.5)', textDecoration: 'none', fontSize: 11, letterSpacing: '.18em', textTransform: 'uppercase' }}>How It Works</Link>
           <Link href="/styles" style={{ color: 'var(--gold)', textDecoration: 'none', fontSize: 11, letterSpacing: '.18em', textTransform: 'uppercase', borderBottom: '1px solid var(--gold)', paddingBottom: 2 }}>Styles</Link>
+          <Link href="/shop" style={{ color: 'var(--muted)', textDecoration: 'none', fontSize: 11, letterSpacing: '.18em', textTransform: 'uppercase' }}>Catalog</Link>
           <Link href="/#the-experience" style={{ color: 'rgba(245,240,232,.5)', textDecoration: 'none', fontSize: 11, letterSpacing: '.18em', textTransform: 'uppercase' }}>The Experience</Link>
           <Link href="/create" style={{ background: 'var(--gold)', color: 'var(--ink)', padding: '10px 24px', fontSize: 11, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', textDecoration: 'none' }}>🐾 Start Their Story</Link>
         </div>

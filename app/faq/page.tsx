@@ -73,7 +73,11 @@ export default function FAQ() {
         <Link href="/" style={{textDecoration:'none',color:'var(--cream)',display:'flex',alignItems:'center',gap:8}}>
           <span>🐾</span><span className="serif" style={{fontSize:20}}>Pet Prints Studio</span>
         </Link>
-        <Link href="/create" style={{background:'var(--gold)',color:'var(--ink)',padding:'12px 28px',fontSize:10,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',textDecoration:'none'}}>Start Their Story</Link>
+        <div style={{display:'flex',gap:24,alignItems:'center'}}>
+          <Link href="/styles" style={{color:'var(--muted)',textDecoration:'none',fontSize:11,letterSpacing:'.18em',textTransform:'uppercase'}}>Styles</Link>
+          <Link href="/shop" style={{color:'var(--muted)',textDecoration:'none',fontSize:11,letterSpacing:'.18em',textTransform:'uppercase'}}>Catalog</Link>
+          <Link href="/create" style={{background:'var(--gold)',color:'var(--ink)',padding:'12px 28px',fontSize:10,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',textDecoration:'none'}}>Start Their Story</Link>
+        </div>
       </nav>
 
       {/* Content */}
