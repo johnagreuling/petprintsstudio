@@ -189,11 +189,18 @@ export default function StylesGallery() {
           [style*="left: -64"] { left: 4px !important; background: rgba(10,10,10,.8) !important; z-index: 5; }
           [style*="right: -64"] { right: 4px !important; background: rgba(10,10,10,.8) !important; z-index: 5; }
         }
+
+          /* M4b — /styles mobile polish */
+          @media (max-width: 720px) {
+            .styles-hero { padding: 96px 20px 28px !important; }
+            .styles-hero h1 { font-size: 36px !important; line-height: 1.05 !important; }
+            .styles-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+          }
       `}</style>
 
       <SiteNav currentPage="styles" />
 
-      <section style={{ paddingTop: 140, paddingBottom: 40, textAlign: 'center', padding: '140px 48px 40px' }}>
+      <section className="styles-hero" style={{ paddingTop: 140, paddingBottom: 40, textAlign: 'center', padding: '140px 48px 40px' }}>
         <div style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 16 }}>32 Custom-Tuned Styles &bull; Every One Included</div>
         <h1 className="serif" style={{ fontSize: 'clamp(40px,6vw,80px)', fontWeight: 400, marginBottom: 16, lineHeight: 1.05 }}>
           Every Portrait.<br /><em>A Different Story.</em>

@@ -14,6 +14,12 @@ export default function Shipping() {
         p,li{font-size:14px;line-height:1.85;color:var(--muted)}
         section{margin-bottom:48px;padding-bottom:48px;border-bottom:1px solid var(--border)}
         section:last-of-type{border-bottom:none}
+
+          /* M4b — /shipping mobile polish */
+          @media (max-width: 720px) {
+            .ship-rates { grid-template-columns: 1fr !important; gap: 10px !important; }
+            h1 { font-size: 36px !important; line-height: 1.05 !important; }
+          }
       `}</style>
 
       <SiteNav currentPage="shipping" />
@@ -27,7 +33,7 @@ export default function Shipping() {
         <section>
           <h2 className="serif">Shipping</h2>
           <p style={{marginBottom:16}}>All physical products are printed on demand and ship from our production partners in the United States. We ship to 11 countries worldwide.</p>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:3,marginBottom:24}}>
+          <div className="ship-rates" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:3,marginBottom:24}}>
             <div style={{background:'#141414',padding:'20px 24px',border:'1px solid var(--border)'}}>
               <div style={{fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)',marginBottom:8,fontWeight:600}}>Standard Shipping</div>
               <div style={{fontSize:20,fontWeight:600,color:'var(--cream)',marginBottom:4}}>Free</div>
