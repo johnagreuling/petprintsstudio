@@ -26,8 +26,8 @@ export default function ShopCatalog() {
       <section style={{padding:'140px 24px 40px',textAlign:'center',maxWidth:1200,margin:'0 auto'}}>
         <div style={{fontSize:10,letterSpacing:'.4em',textTransform:'uppercase',color:'var(--gold)',marginBottom:16}}>The Catalog</div>
         <h1 className="serif" style={{fontSize:52,fontWeight:400,letterSpacing:'-.02em',lineHeight:1.1,marginBottom:20}}>Everything We Make</h1>
-        <p style={{fontSize:24,color:'rgba(245,240,232,.75)',maxWidth:820,margin:'0 auto',lineHeight:1.55,fontWeight:300}}>
-          From gallery-wrapped canvases to luxury soft tees, heirloom blankets, and premium keepsakes, every piece in our collection is chosen for its quality, feel, and finish. These are not throwaway novelty items. They are beautifully made products designed to be loved and cherished for years to come.
+        <p style={{fontSize:20,color:'rgba(245,240,232,.75)',maxWidth:760,margin:'0 auto',lineHeight:1.55,fontWeight:300}}>
+          From gallery-wrapped canvases to luxury soft tees, heirloom blankets, and premium keepsakes, every piece in our collection is chosen for its quality, feel, and finish. These are not throwaway novelty items — they are beautifully made products designed to be loved and cherished for years to come.
         </p>
       </section>
 
