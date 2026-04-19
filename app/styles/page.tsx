@@ -170,9 +170,6 @@ export default function StylesGallery() {
 
           section { padding-left: 16px !important; padding-right: 16px !important; }
           section[style*="paddingTop: 140"], section[style*="padding: '140px"] { padding-top: 96px !important; }
-          .styles-hero { padding: 96px 20px 28px !important; }
-          .styles-hero h1 { font-size: 36px !important; line-height: 1.05 !important; }
-          .styles-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
 
           h1 { font-size: clamp(32px, 9vw, 48px) !important; line-height: 1.1 !important; }
           h2 { font-size: clamp(24px, 7vw, 36px) !important; }
@@ -196,7 +193,7 @@ export default function StylesGallery() {
 
       <SiteNav currentPage="styles" />
 
-      <section className="styles-hero" style={{ paddingTop: 140, paddingBottom: 40, textAlign: 'center', padding: '140px 48px 40px' }}>
+      <section style={{ paddingTop: 140, paddingBottom: 40, textAlign: 'center', padding: '140px 48px 40px' }}>
         <div style={{ fontSize: 10, letterSpacing: '.35em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 16 }}>32 Custom-Tuned Styles &bull; Every One Included</div>
         <h1 className="serif" style={{ fontSize: 'clamp(40px,6vw,80px)', fontWeight: 400, marginBottom: 16, lineHeight: 1.05 }}>
           Every Portrait.<br /><em>A Different Story.</em>
