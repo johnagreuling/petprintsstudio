@@ -276,25 +276,82 @@ function CreatePageInner() {
   // The old effect pushed primary canvas/print into local cart whenever picked changed.
 
   // ── File handlers ──
-  const handleFile = (file: File) => {
+  // Auto-resize oversized photos client-side so iPhone shots (often 30-100MB)
+  // don't choke uploads or hit Vercel limits. Print quality unchanged at 4800px
+  // longest edge — overspec'd to preserve max identity detail for the vision model.
+  const RESIZE_THRESHOLD_BYTES = 10 * 1024 * 1024
+  const RESIZE_MAX_EDGE = 4800
+  const RESIZE_JPEG_QUALITY = 0.92
+
+  const resizeImageIfNeeded = async (file: File): Promise<File> => {
+    if (file.size <= RESIZE_THRESHOLD_BYTES) return file
+    return new Promise((resolve) => {
+      const img = new Image()
+      const objUrl = URL.createObjectURL(file)
+      img.onload = () => {
+        URL.revokeObjectURL(objUrl)
+        const longest = Math.max(img.width, img.height)
+        const scale = longest > RESIZE_MAX_EDGE ? RESIZE_MAX_EDGE / longest : 1
+        const w = Math.round(img.width * scale)
+        const h = Math.round(img.height * scale)
+        const canvas = document.createElement('canvas')
+        canvas.width = w; canvas.height = h
+        const ctx = canvas.getContext('2d')
+        if (!ctx) { resolve(file); return }
+        ctx.drawImage(img, 0, 0, w, h)
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) { resolve(file); return }
+            const baseName = (file.name || 'photo').replace(/\.[^.]+$/, '')
+            const resized = new File([blob], `${baseName}.jpg`, {
+              type: 'image/jpeg',
+              lastModified: Date.now(),
+            })
+            console.log(`[resize] ${(file.size/1024/1024).toFixed(1)}MB ${img.width}x${img.height} -> ${(resized.size/1024/1024).toFixed(1)}MB ${w}x${h}`)
+            resolve(resized)
+          },
+          'image/jpeg',
+          RESIZE_JPEG_QUALITY,
+        )
+      }
+      img.onerror = () => { URL.revokeObjectURL(objUrl); resolve(file) }
+      img.src = objUrl
+    })
+  }
+
+  const handleFile = async (rawFile: File) => {
     setError('')
     setImageLoaded(false)
-    const sizeMB = file.size / (1024 * 1024)
-    if (file.size > 50 * 1024 * 1024) {
-      setError(`Your photo is ${sizeMB.toFixed(1)}MB. Max is 50MB. Try saving a smaller version.`)
-      setUploadedFile(null); setPreview('')
-      return
-    }
-    const fileName = (file.name || '').toLowerCase()
-    const isHeic = /\.(heic|heif)$/.test(fileName) || /heic|heif/.test(file.type)
+
+    const fileName = (rawFile.name || '').toLowerCase()
+    const isHeic = /\.(heic|heif)$/.test(fileName) || /heic|heif/.test(rawFile.type)
     if (isHeic) {
       setError('HEIC/HEIF photos from iPhones aren\'t supported by all browsers. Fix: on iPhone, go to Settings → Camera → Formats → Most Compatible (uploads JPG instead). Or open the photo on your computer and save/export as JPG.')
       setUploadedFile(null); setPreview('')
       return
     }
+
+    let file = rawFile
+    try {
+      if (rawFile.size > RESIZE_THRESHOLD_BYTES) {
+        file = await resizeImageIfNeeded(rawFile)
+      }
+    } catch (e) {
+      console.error('Resize failed, falling back to original:', e)
+      file = rawFile
+    }
+
+    const sizeMB = file.size / (1024 * 1024)
+    if (file.size > 50 * 1024 * 1024) {
+      setError(`Your photo is ${sizeMB.toFixed(1)}MB even after compression. Try a different photo or save a smaller version manually.`)
+      setUploadedFile(null); setPreview('')
+      return
+    }
+
     const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
     const validExt = /\.(jpe?g|png|webp|gif)$/i
-    if (!validTypes.includes(file.type) && !validExt.test(fileName)) {
+    const finalName = (file.name || '').toLowerCase()
+    if (!validTypes.includes(file.type) && !validExt.test(finalName)) {
       setError(`File type "${file.type || 'unknown'}" isn't supported. Please use JPG, PNG, or WEBP.`)
       setUploadedFile(null); setPreview('')
       return
@@ -830,7 +887,7 @@ function CreatePageInner() {
                 <div>
                   <div style={{fontSize:52,marginBottom:20}}>🐾</div>
                   <div style={{fontSize:18,marginBottom:8,fontWeight:500}}>Drop your photo here</div>
-                  <div style={{color:'var(--muted)',fontSize:13,marginBottom:20}}>or click to browse · JPG, PNG, WEBP · Max 50MB</div>
+                  <div style={{color:'var(--muted)',fontSize:13,marginBottom:20}}>or click to browse · JPG, PNG, WEBP · iPhone & Android photos welcome</div>
                   <div style={{color:'var(--muted)',fontSize:11,marginBottom:20,opacity:.7}}>iPhone users: set Camera → Formats → Most Compatible for best results</div>
                   <div style={{display:'inline-block',border:'1px solid var(--gold)',color:'var(--gold)',padding:'10px 28px',fontSize:11,letterSpacing:'.15em',textTransform:'uppercase'}}>Browse Files</div>
                 </div>
