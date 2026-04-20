@@ -33,6 +33,11 @@ export interface SubjectProfile {
   summary: string
   /** Structured identity traits — keys vary by subject type */
   traits: Record<string, string>
+  /** Additional subjects when the photo contains 2+ pets.
+   *  Each entry has the same shape as `traits` (13 pet fields).
+   *  Undefined or empty for single-subject photos.
+   *  Pet A lives in `traits`; Pet B, C, D... live here in order. */
+  additionalSubjects?: Record<string, string>[]
   /** Traits that MUST be preserved across all generations (subset of traits keys) */
   mustPreserve: string[]
   /** Raw analysis JSON from the vision model, for audit/debugging */

@@ -28,77 +28,180 @@ import {
 
 // ── Block 1: Subject Identity ────────────────────────────────────────────
 
-function buildIdentityBlock(subject: SubjectProfile): string {
+/** Emit the 13 labeled trait fields for one pet. Shared by single & multi. */
+function emitPetTraitFields(traits: Record<string, string>): string[] {
+  const traitLabels: Record<string, string> = {
+    species: 'Species',
+    breed: 'Breed',
+    coatColors: 'Coat Colors',
+    coatTexture: 'Coat Texture',
+    markings: 'Markings',
+    eyeColor: 'Eye Color',
+    earType: 'Ears',
+    muzzleShape: 'Muzzle',
+    noseColor: 'Nose',
+    bodySize: 'Body',
+    accessories: 'Accessories',
+    expression: 'Expression',
+    distinctiveFeatures: 'Distinctive Features',
+  }
   const lines: string[] = []
-
-  if (subject.subjectType === 'pet') {
-    lines.push('SUBJECT IDENTITY — PRESERVE EXACTLY FROM REFERENCE PHOTO:')
-    lines.push('')
-
-    // Emit every populated trait as a named field
-    const traitLabels: Record<string, string> = {
-      species: 'Species',
-      breed: 'Breed',
-      coatColors: 'Coat Colors',
-      coatTexture: 'Coat Texture',
-      markings: 'Markings',
-      eyeColor: 'Eye Color',
-      earType: 'Ears',
-      muzzleShape: 'Muzzle',
-      noseColor: 'Nose',
-      bodySize: 'Body',
-      accessories: 'Accessories',
-      expression: 'Expression',
-      distinctiveFeatures: 'Distinctive Features',
+  for (const key of PET_TRAIT_KEYS) {
+    const value = traits[key]
+    if (value && value.length > 2) {
+      const label = traitLabels[key] || key
+      lines.push(`${label}: ${value}`)
     }
+  }
+  return lines
+}
 
-    for (const key of PET_TRAIT_KEYS) {
-      const value = subject.traits[key]
-      if (value && value.length > 2) {
-        const label = traitLabels[key] || key
-        lines.push(`${label}: ${value}`)
-      }
-    }
-
-    // The preserve list — repeated per OpenAI cookbook to reduce drift
-    lines.push('')
-    lines.push('CRITICAL PRESERVATION LIST — Check every element:')
-    lines.push('✓ Exact face shape and all facial proportions')
-    lines.push('✓ Exact muzzle length, width, shape, and nose color')
-    lines.push('✓ Exact ear shape, set, fur coverage, and position')
-    lines.push('✓ Exact eye color, shape, spacing, and expression')
-    lines.push('✓ Exact coat colors, patterns, gradients, and markings')
-    lines.push('✓ Exact fur length, texture, curl pattern, and volume')
-    lines.push('✓ Exact body proportions and size impression')
-    lines.push('✓ All visible accessories (collar, tag, bandana)')
-    lines.push('')
-    lines.push('DO NOT: Substitute a generic breed example. DO NOT invent markings.')
-    lines.push('DO NOT change colors, age, body type, or expression.')
-    lines.push('This must clearly read as the SAME specific animal from the reference photo.')
-    lines.push('')
-    // STRONG anti-clothing rule — placed near identity (not in constraints) to maximize weight
-    const sourceAccessories = subject.traits.accessories || ''
-    const hasSourceAccessories = sourceAccessories && sourceAccessories !== 'none visible' && sourceAccessories.length > 5
-    lines.push('CLOTHING & COSTUME LOCK — ABSOLUTELY CRITICAL:')
-    if (hasSourceAccessories) {
-      lines.push(`The animal in the reference photo wears: ${sourceAccessories}`)
-      lines.push('Preserve ONLY these accessories. Do not add any additional clothing, costumes, jewelry, hats, scarves, ties, or accessories.')
-    } else {
-      lines.push('The animal in the reference photo wears NOTHING — no collar, no clothing, no accessories.')
-      lines.push('The output animal must wear NOTHING. No costumes, crowns, jewelry, scarves, bandanas, ties, hats, vests, capes, robes, or any clothing whatsoever.')
-      lines.push('No royal regalia, no holiday outfits, no themed costumes, no decorative items on the body.')
-    }
-    lines.push('Decorative elements from the style (velvet, gold, crowns, jewels) belong in the BACKGROUND ONLY — never on the animal.')
+/** Shared clothing-lock directive block — applied to single and multi. */
+function buildClothingLock(primaryTraits: Record<string, string>, subjectCount: number): string[] {
+  const lines: string[] = []
+  const sourceAccessories = primaryTraits.accessories || ''
+  const hasSourceAccessories = sourceAccessories && sourceAccessories !== 'none visible' && sourceAccessories.length > 5
+  const plural = subjectCount > 1
+  const subjectNoun = plural ? 'animals' : 'animal'
+  const wearsVerb = plural ? 'wear' : 'wears'
+  const subjectPronoun = plural ? 'them' : 'the animal'
+  const collarNoun = plural ? 'collars' : 'collar'
+  lines.push('CLOTHING & COSTUME LOCK — ABSOLUTELY CRITICAL:')
+  if (hasSourceAccessories) {
+    lines.push(`The ${subjectNoun} in the reference photo ${wearsVerb}: ${sourceAccessories}`)
+    lines.push('Preserve ONLY these accessories. Do not add any additional clothing, costumes, jewelry, hats, scarves, ties, or accessories.')
   } else {
+    lines.push(`The ${subjectNoun} in the reference photo ${wearsVerb} NOTHING — no ${collarNoun}, no clothing, no accessories.`)
+    lines.push(`The output ${subjectNoun} must wear NOTHING. No costumes, crowns, jewelry, scarves, bandanas, ties, hats, vests, capes, robes, or any clothing whatsoever.`)
+    lines.push('No royal regalia, no holiday outfits, no themed costumes, no decorative items on the body.')
+  }
+  lines.push(`Decorative elements from the style (velvet, gold, crowns, jewels) belong in the BACKGROUND ONLY — never on ${subjectPronoun}.`)
+  return lines
+}
+
+/** Single-subject identity block — BYTE-IDENTICAL to pre-multi-subject behavior. */
+function buildSingleSubjectIdentity(subject: SubjectProfile): string {
+  const lines: string[] = []
+  lines.push('SUBJECT IDENTITY — PRESERVE EXACTLY FROM REFERENCE PHOTO:')
+  lines.push('')
+
+  for (const line of emitPetTraitFields(subject.traits)) {
+    lines.push(line)
+  }
+
+  lines.push('')
+  lines.push('CRITICAL PRESERVATION LIST — Check every element:')
+  lines.push('✓ Exact face shape and all facial proportions')
+  lines.push('✓ Exact muzzle length, width, shape, and nose color')
+  lines.push('✓ Exact ear shape, set, fur coverage, and position')
+  lines.push('✓ Exact eye color, shape, spacing, and expression')
+  lines.push('✓ Exact coat colors, patterns, gradients, and markings')
+  lines.push('✓ Exact fur length, texture, curl pattern, and volume')
+  lines.push('✓ Exact body proportions and size impression')
+  lines.push('✓ All visible accessories (collar, tag, bandana)')
+  lines.push('')
+  lines.push('DO NOT: Substitute a generic breed example. DO NOT invent markings.')
+  lines.push('DO NOT change colors, age, body type, or expression.')
+  lines.push('This must clearly read as the SAME specific animal from the reference photo.')
+  lines.push('')
+
+  for (const line of buildClothingLock(subject.traits, 1)) {
+    lines.push(line)
+  }
+
+  return lines.join('\n')
+}
+
+/** Multi-subject identity block — enforces per-pet identity, arrangement,
+ *  style parity across enumerated axes, and edit-invariants. */
+function buildMultiSubjectIdentity(subject: SubjectProfile): string {
+  const allSubjects = [subject.traits, ...(subject.additionalSubjects || [])]
+  const n = allSubjects.length
+  const petLabel = (idx: number) => `Pet ${String.fromCharCode(65 + idx)}` // A, B, C, D...
+
+  const lines: string[] = []
+  lines.push(`SUBJECT IDENTITY — MULTI-SUBJECT PORTRAIT with ${n} co-equal primary subjects from reference photo.`)
+  lines.push('PRESERVE EACH SUBJECT EXACTLY. Describe and paint each distinctly.')
+  lines.push('')
+
+  // Per-pet labeled trait blocks
+  for (let i = 0; i < allSubjects.length; i++) {
+    lines.push(`${petLabel(i)} —`)
+    for (const line of emitPetTraitFields(allSubjects[i])) {
+      lines.push(line)
+    }
+    lines.push('')
+  }
+
+  // Edit-invariants (GPT review recommendation — frames this as a CONSTRAINED edit)
+  lines.push('EDIT INVARIANTS — WHAT MUST NOT CHANGE FROM THE SOURCE PHOTO:')
+  lines.push(`- Subject count: the output must contain exactly ${n} pets, no more, no less.`)
+  lines.push('- Subject identity: each pet retains its own distinct face, coat, markings, and features as described above.')
+  lines.push('- Spatial arrangement: preserve left/right positioning, foreground/background relationships, and which pet is nearer to the viewer. Each pet must appear in the same relative position as in the source photo.')
+  lines.push('- Relative size: preserve the natural size relationship between pets from the source photo.')
+  lines.push('Change ONLY the artistic style, rendering medium, and painterly finish. Do not reinterpret the scene.')
+  lines.push('')
+
+  // Critical multi-subject preservation
+  lines.push('CRITICAL MULTI-SUBJECT PRESERVATION:')
+  lines.push('- Each pet retains its own distinct identity. No feature blending, no averaging, no merging between pets.')
+  lines.push('- Every pet must be fully visible with its face readable at first glance.')
+  lines.push('- Every pet receives co-equal visual priority — no pet may be rendered as a secondary or background element.')
+  lines.push('- No pet may be cropped, shrunken, blurred, or de-emphasized relative to the others.')
+  lines.push('')
+
+  // Style parity — enumerate every axis where drift happens
+  lines.push('STYLE PARITY DIRECTIVE — APPLY IDENTICAL RENDERING LOGIC TO EVERY SUBJECT:')
+  lines.push('Render every pet with the exact same treatment across every axis:')
+  lines.push('- Identical detail level (no pet more detailed or sharper than another)')
+  lines.push('- Identical edge treatment (same stroke sharpness or softness on all subjects)')
+  lines.push('- Identical abstraction level (no pet more realistic or more abstract than the others)')
+  lines.push('- Identical lighting response (same highlights, same shadow falloff on every subject)')
+  lines.push('- Identical texture intensity (same paint thickness, same surface finish weight)')
+  lines.push('- Identical finish quality (same crispness, same polish, same final render pass)')
+  lines.push('The final image must read as one unified portrait of all pets together, not a main subject with companions.')
+  lines.push('')
+
+  // Per-pet preservation checklist
+  lines.push('CRITICAL PRESERVATION LIST — Check every element for EVERY pet:')
+  lines.push('✓ Exact face shape and facial proportions (per pet)')
+  lines.push('✓ Exact muzzle length, width, shape, and nose color (per pet)')
+  lines.push('✓ Exact ear shape, set, fur coverage, and position (per pet)')
+  lines.push('✓ Exact eye color, shape, spacing, and expression (per pet)')
+  lines.push('✓ Exact coat colors, patterns, gradients, and markings (per pet)')
+  lines.push('✓ Exact fur length, texture, curl pattern, and volume (per pet)')
+  lines.push('✓ Exact body proportions and size impression (per pet)')
+  lines.push('✓ All visible accessories per pet (collar, tag, bandana)')
+  lines.push('')
+  lines.push('DO NOT: Substitute generic breed examples. DO NOT invent markings on any pet.')
+  lines.push('DO NOT blend features between pets. DO NOT average their appearance.')
+  lines.push('Each pet must clearly read as the SAME specific animal from the reference photo — individually recognizable.')
+  lines.push('')
+
+  // Shared clothing lock
+  for (const line of buildClothingLock(subject.traits, n)) {
+    lines.push(line)
+  }
+
+  return lines.join('\n')
+}
+
+function buildIdentityBlock(subject: SubjectProfile): string {
+  if (subject.subjectType !== 'pet') {
     // Fallback for non-pet subjects (future use)
+    const lines: string[] = []
     lines.push('SUBJECT IDENTITY — PRESERVE EXACTLY:')
     lines.push(subject.summary)
     for (const [key, value] of Object.entries(subject.traits)) {
       if (value) lines.push(`${key}: ${value}`)
     }
+    return lines.join('\n')
   }
 
-  return lines.join('\n')
+  const hasAdditional = Array.isArray(subject.additionalSubjects) && subject.additionalSubjects.length > 0
+  return hasAdditional
+    ? buildMultiSubjectIdentity(subject)
+    : buildSingleSubjectIdentity(subject)
 }
 
 // ── Block 2: Composition ─────────────────────────────────────────────────
@@ -227,11 +330,17 @@ function buildConstraintsBlock(
   style: StyleTemplate,
   subject: SubjectProfile
 ): string {
-  // Universal constraints that apply to ALL generations
+  const totalSubjects = 1 + (subject.additionalSubjects?.length || 0)
+
+  // Universal constraints that apply to ALL generations.
+  // "no extra animals" is gated on subject count — for multi-pet it would
+  // actively fight the desired output, so we replace it with an exact-N directive.
   const universal = [
     'No text, letters, words, or writing of any kind',
     'No watermarks, signatures, or logos',
-    'No extra animals, people, or creatures',
+    totalSubjects === 1
+      ? 'No extra animals, people, or creatures'
+      : `The output must contain exactly ${totalSubjects} pets matching the reference photo — no additional animals, people, or creatures beyond those in the source`,
     'No extra limbs, tails, or anatomical errors',
     'No malformed paws, muzzle, or ears',
     'No duplicated features',
@@ -249,10 +358,19 @@ function buildConstraintsBlock(
     'Style decorative elements (velvet, gold, jewels) must stay in BACKGROUND only',
   ] : []
 
+  // Multi-subject-specific constraints — echo the identity-block invariants
+  // into the hard-constraints section for redundant enforcement
+  const multiSubjectConstraints = totalSubjects > 1 ? [
+    'No feature blending or averaging between pets — each retains its own distinct identity',
+    'No pet rendered at a different detail, abstraction, or finish level than the others',
+    'No pet positioned differently from its location in the source photo — preserve left/right, foreground/background, and relative scale',
+    'No pet rendered as a background or secondary element — every pet is a co-equal primary subject',
+  ] : []
+
   // Style-specific forbidden traits
   const styleForbidden = style.forbiddenTraits.map(t => `No ${t}`)
 
-  const all = [...universal, ...petConstraints, ...styleForbidden]
+  const all = [...universal, ...petConstraints, ...multiSubjectConstraints, ...styleForbidden]
 
   const lines: string[] = ['HARD CONSTRAINTS:']
   for (const c of all) {
@@ -295,8 +413,19 @@ export function buildPrompt(
 ): PromptPackage {
   const preamble = `Create a ${style.technique.split('.')[0].toLowerCase()} of the pet from the reference image.`
 
+  // Dynamic composition: for multi-subject, adjust scale + placement so all
+  // pets fit together without crowding. Single-pet leaves composition unchanged.
+  const totalSubjects = 1 + (subject.additionalSubjects?.length || 0)
+  const effectiveComposition: CompositionProfile = totalSubjects === 1
+    ? composition
+    : {
+        ...composition,
+        subjectScale: totalSubjects === 2 ? 45 : 35, // % per subject
+        subjectPlacement: 'centered unified group, all subjects equally visible, preserving relative arrangement from source',
+      }
+
   const identityBlock = buildIdentityBlock(subject)
-  const compositionBlock = buildCompositionBlock(composition, style.preferredFraming)
+  const compositionBlock = buildCompositionBlock(effectiveComposition, style.preferredFraming)
   const styleBlock = buildStyleBlock(style)
   const environmentBlock = buildEnvironmentBlock(style)
   const outputBlock = buildOutputBlock()
@@ -348,8 +477,17 @@ export function buildMemoryScenePrompt(
   personalDetails: string,
   composition: CompositionProfile = DEFAULT_COMPOSITION,
 ): PromptPackage {
+  const totalSubjects = 1 + (subject.additionalSubjects?.length || 0)
+  const effectiveComposition: CompositionProfile = totalSubjects === 1
+    ? composition
+    : {
+        ...composition,
+        subjectScale: totalSubjects === 2 ? 45 : 35,
+        subjectPlacement: 'centered unified group, all subjects equally visible, preserving relative arrangement from source',
+      }
+
   const identityBlock = buildIdentityBlock(subject)
-  const compositionBlock = buildCompositionBlock(composition, style.preferredFraming)
+  const compositionBlock = buildCompositionBlock(effectiveComposition, style.preferredFraming)
   const styleBlock = buildStyleBlock(style)
   const outputBlock = buildOutputBlock()
   const constraintsBlock = buildConstraintsBlock(style, subject)

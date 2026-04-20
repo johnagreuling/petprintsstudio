@@ -24,26 +24,38 @@ import { SubjectProfile, PET_TRAIT_KEYS } from './types'
  * - Specific: "golden apricot with cream chest blaze" not "light colored"
  * - Painter-oriented: describes what an artist needs to know to paint this exact animal
  */
-const PET_ANALYSIS_SYSTEM_PROMPT = `You are a master portrait painter's assistant. Your job is to describe the exact animal in this photo with the precision needed for an artist to paint a perfect likeness without ever seeing the original.
+const PET_ANALYSIS_SYSTEM_PROMPT = `You are a master portrait painter's assistant. Your job is to describe the exact animal(s) in this photo with the precision needed for an artist to paint a perfect likeness without ever seeing the original.
 
-Respond with ONLY a valid JSON object (no markdown, no backticks, no preamble). Every field must be a descriptive string, not a single word.
+FIRST, count the distinct pet subjects in the image. A "pet subject" is a dog or cat whose face and body are visible enough to render as a portrait subject. Do not count pets that are heavily obscured, only partially visible as a tail/paw, or clearly background elements.
 
-Required JSON fields:
+Then describe EACH pet individually in its own object. Describe ONLY that pet's features per object — do not blend descriptions across pets. If multiple pets share a trait (both are brown), still describe each separately.
+
+Respond with ONLY a valid JSON object in this exact shape (no markdown, no backticks, no preamble):
+
 {
-  "species": "dog or cat",
-  "breed": "specific breed or mix description, including coat type qualifier (e.g., 'Goldendoodle with loose curly coat', 'domestic shorthair tabby')",
-  "coatColors": "all colors present, with primary and secondary noted (e.g., 'golden apricot primary with cream highlights on chest and muzzle')",
-  "coatTexture": "length, curl pattern, density, sheen (e.g., 'medium-length loose wavy curls, soft and fluffy, matte finish')",
-  "markings": "any distinct patterns, patches, gradients, or color transitions (e.g., 'darker apricot on ears fading to cream on muzzle, white chest blaze')",
-  "eyeColor": "precise color and quality (e.g., 'dark brown, almost black, with warm amber reflection in light')",
-  "earType": "shape, set, position (e.g., 'medium floppy drop ears set level with eye line, covered in wavy fur')",
-  "muzzleShape": "length, width, shape (e.g., 'medium-length rounded muzzle with prominent black nose, slight beard')",
-  "noseColor": "exact nose color (e.g., 'solid black, slightly textured')",
-  "bodySize": "build and proportions (e.g., 'medium build, 40-50lbs, athletic but fluffy, legs proportional')",
-  "accessories": "any collars, harnesses, tags, bandanas, bows visible (e.g., 'red leather collar with round gold tag') or 'none visible'",
-  "expression": "emotional quality and mouth position (e.g., 'happy open-mouth smile, tongue slightly out, bright engaged eyes')",
-  "distinctiveFeatures": "1-3 most identifying traits a painter must get right (e.g., 'signature teddy bear face with round dark eyes, prominent fluffy golden curls framing face')"
-}`
+  "subjectCount": <integer>,
+  "subjects": [
+    {
+      "species": "dog or cat",
+      "breed": "specific breed or mix description, including coat type qualifier (e.g., 'Goldendoodle with loose curly coat', 'domestic shorthair tabby')",
+      "coatColors": "all colors present, with primary and secondary noted (e.g., 'golden apricot primary with cream highlights on chest and muzzle')",
+      "coatTexture": "length, curl pattern, density, sheen (e.g., 'medium-length loose wavy curls, soft and fluffy, matte finish')",
+      "markings": "any distinct patterns, patches, gradients, or color transitions (e.g., 'darker apricot on ears fading to cream on muzzle, white chest blaze')",
+      "eyeColor": "precise color and quality (e.g., 'dark brown, almost black, with warm amber reflection in light')",
+      "earType": "shape, set, position (e.g., 'medium floppy drop ears set level with eye line, covered in wavy fur')",
+      "muzzleShape": "length, width, shape (e.g., 'medium-length rounded muzzle with prominent black nose, slight beard')",
+      "noseColor": "exact nose color (e.g., 'solid black, slightly textured')",
+      "bodySize": "build and proportions (e.g., 'medium build, 40-50lbs, athletic but fluffy, legs proportional')",
+      "accessories": "any collars, harnesses, tags, bandanas, bows visible (e.g., 'red leather collar with round gold tag') or 'none visible'",
+      "expression": "emotional quality and mouth position (e.g., 'happy open-mouth smile, tongue slightly out, bright engaged eyes')",
+      "distinctiveFeatures": "1-3 most identifying traits a painter must get right (e.g., 'signature teddy bear face with round dark eyes, prominent fluffy golden curls framing face')",
+      "sourcePosition": "where this pet appears in the source image frame (e.g., 'left side, foreground', 'center-right, slightly behind', 'right side, eye level with Pet A')"
+    }
+    // ... one object per pet detected, in left-to-right or foreground-first order
+  ]
+}
+
+If only one pet is present, return an array of length 1. Every field in every object must be a descriptive string, not a single word.`
 
 /**
  * Extract a structured SubjectProfile from an uploaded pet photo.
@@ -103,13 +115,13 @@ export async function analyzePetSubject(
     }
 
     // Parse the JSON — handle potential markdown wrapping
-    let traits: Record<string, string>
+    let parsed: any
     try {
       const cleaned = content
         .replace(/^```json\s*/i, '')
         .replace(/```\s*$/i, '')
         .trim()
-      traits = JSON.parse(cleaned)
+      parsed = JSON.parse(cleaned)
     } catch (parseErr) {
       console.error('Failed to parse vision response as JSON:', content.slice(0, 200))
       // Fallback: use the raw text as a summary
@@ -122,22 +134,48 @@ export async function analyzePetSubject(
       }
     }
 
-    // Build a rich one-line summary from the structured data
+    // Normalize to always-array form. New contract: { subjectCount, subjects: [...] }.
+    // Legacy fallback: if the model returned the flat 13-field object (no subjects array),
+    // wrap it as a single-subject array.
+    let subjects: Record<string, string>[]
+    if (Array.isArray(parsed?.subjects) && parsed.subjects.length > 0) {
+      subjects = parsed.subjects
+    } else if (parsed && typeof parsed === 'object' && (parsed.species || parsed.breed)) {
+      // Legacy single-pet response shape
+      subjects = [parsed as Record<string, string>]
+    } else {
+      console.error('Vision response missing subjects:', JSON.stringify(parsed).slice(0, 200))
+      return buildFallbackProfile(fallbackSummary, petType)
+    }
+
+    // Kill switch: force single-subject mode if env flag disabled.
+    // Collapses multi-pet photos to Pet A only, preserving single-pet behavior.
+    if (process.env.MULTI_SUBJECT_ENABLED === 'false' && subjects.length > 1) {
+      console.log(`🔒 MULTI_SUBJECT_ENABLED=false — collapsing ${subjects.length} detected pets to 1`)
+      subjects = [subjects[0]]
+    }
+
+    const primary = subjects[0]
+    const additional = subjects.length > 1 ? subjects.slice(1) : undefined
+
+    // Build a rich one-line summary from the primary subject
     const summary = [
-      traits.breed || traits.species || petType || 'pet',
-      traits.coatColors ? `with ${traits.coatColors} coat` : '',
-      traits.distinctiveFeatures ? `— ${traits.distinctiveFeatures}` : '',
+      primary.breed || primary.species || petType || 'pet',
+      primary.coatColors ? `with ${primary.coatColors} coat` : '',
+      primary.distinctiveFeatures ? `— ${primary.distinctiveFeatures}` : '',
+      additional && additional.length > 0 ? `(+ ${additional.length} more pet${additional.length > 1 ? 's' : ''})` : '',
     ].filter(Boolean).join(' ')
 
-    // Determine which traits are critical for identity preservation
+    // Determine which traits are critical for identity preservation (primary only)
     const mustPreserve = PET_TRAIT_KEYS.filter(key =>
-      traits[key] && traits[key] !== 'none visible' && traits[key].length > 3
+      primary[key] && primary[key] !== 'none visible' && primary[key].length > 3
     )
 
     return {
       subjectType: 'pet',
       summary,
-      traits,
+      traits: primary,
+      additionalSubjects: additional,
       mustPreserve: mustPreserve as string[],
       rawAnalysis: content,
     }
