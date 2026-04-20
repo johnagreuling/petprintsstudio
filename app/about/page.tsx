@@ -34,7 +34,7 @@ export default function About() {
             We wanted something that actually captured who they are — their personality, their world, the little details that make them <em style={{color:'var(--cream)'}}>them</em>. So we built it.
           </p>
           <p style={{marginBottom:28}}>
-            Our portrait engine uses the latest AI generation models, hand-tuned across 32 artistic styles — from classical oil painting to neon pop art. But technology is only half the story. The other half is the questionnaire: we ask about your pet&rsquo;s name, personality, favorite things, and the details that matter to you. That information shapes every portrait, making each one genuinely unique.
+            Our portrait engine is a multi-model imaging chain developed in-house and tuned by hand — not a one-shot ChatGPT prompt. Every style is artist-curated, with layered passes that lock your pet&rsquo;s identity first and then apply the chosen aesthetic. The questionnaire feeds into every stage: pet name, personality, favorite places, the little things that matter. That&rsquo;s what shapes every portrait into something genuinely unique.
           </p>
           <p style={{marginBottom:28}}>
             Then we took it further. We compose an original song for each pet — their name in the lyrics, their spirit in the melody. A QR code on the portrait links to the song, so anyone who sees the art can hear the music. It&rsquo;s a complete sensory experience: something you can see, hear, and hold.
@@ -49,7 +49,7 @@ export default function About() {
 
         <div className="about-values" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:3,marginBottom:48}}>
           {[
-            {n:'32',l:'Custom Art Styles'},
+            {n:'✓',l:'Artist-Curated Styles'},
             {n:'1,000+',l:'Portraits Created'},
             {n:'4.9★',l:'Customer Rating'},
           ].map(({n,l})=>(

@@ -16,7 +16,7 @@ const FAQS = [
     a: 'A clear, well-lit, front-facing photo gives the best results. Natural light is ideal. Avoid heavy filters, extreme angles, or photos where your pet is very far away. The closer and clearer, the better the portrait will look.',
   },
   {
-    q: 'What are the 32 styles?',
+    q: 'What styles do you offer?',
     a: 'We offer a curated library of hand-tuned artistic styles across five families: Classic Portraits (museum black, Rembrandt, baroque), Painterly Fine Art (oil, watercolor, impressionist, charcoal), Golden Hour (coastal, autumn, snow day), Lifestyle (convertible ride, library study, yacht marina), and Pop & Fantasy (neon glow, comic hero, retro pop). Every style is included in every order.',
   },
   {

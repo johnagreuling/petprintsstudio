@@ -11,7 +11,7 @@ export default function Home() {
   const [heroShowcase, setHeroShowcase] = useState<HeroShowcase[]>([])
   const sliderRef = useRef<HTMLDivElement>(null)
 
-  // Load ALL curated portraits for the hero slider (32 if all picked)
+  // Load ALL curated portraits for the hero slider
   useEffect(() => {
     (async () => {
       try {

@@ -77,10 +77,10 @@ export const PRODUCT_CATEGORIES = ['Canvas', 'Prints', 'Home', 'Apparel', 'Acces
 //  GENERATION LIMITS — new flow (4/17 refactor)
 // ─────────────────────────────────────────────────────────────────
 export const GEN_LIMITS = {
-  MAX_STYLES_INITIAL: 4,   // max styles user can pick on initial round
-  INITIAL_PER_STYLE: 2,    // images generated per style on initial round
-  MAX_PER_STYLE: 3,        // total max per style across the whole session
-  MAX_TOTAL: 16,           // hard session cap across all styles
+  MAX_STYLES_INITIAL: 6,   // max styles user can pick on initial round
+  INITIAL_PER_STYLE: 1,    // images generated per style on initial round
+  MAX_PER_STYLE: 6,        // total max per style across the whole session
+  MAX_TOTAL: 24,           // hard session cap across all styles
 } as const
 
 // ─────────────────────────────────────────────────────────────────

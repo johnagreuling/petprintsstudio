@@ -870,7 +870,7 @@ function CreatePageInner() {
               <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Step 2 of {totalSteps}</div>
               <h1 className="serif" style={{fontSize:'clamp(32px,5vw,52px)',fontWeight:400,marginBottom:14,letterSpacing:'-.01em'}}>Pick Your <em style={{color:'var(--gold)'}}>Styles</em></h1>
               <p style={{color:'var(--muted)',fontSize:15,lineHeight:1.8,maxWidth:520,margin:'0 auto'}}>
-                Choose up to <strong style={{color:'var(--cream)'}}>{GEN_LIMITS.MAX_STYLES_INITIAL}</strong> styles to start. We'll generate <strong style={{color:'var(--cream)'}}>{GEN_LIMITS.INITIAL_PER_STYLE} portraits</strong> of each, then you can explore more from the gallery.
+                Pick your favorite styles to start — we'll render your pet in each one using our in-house imaging chain. From the gallery you can explore more variations of any style you love.
               </p>
             </div>
 
@@ -1431,7 +1431,7 @@ function CreatePageInner() {
           <div onClick={e=>e.stopPropagation()} style={{background:'#141414',border:'1px solid rgba(201,168,76,.2)',maxWidth:720,width:'100%',maxHeight:'85vh',overflow:'auto',cursor:'default',padding:32}}>
             <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:10}}>Add Another Style</div>
             <h3 className="serif" style={{fontSize:28,fontWeight:400,marginBottom:6}}>Pick one more style</h3>
-            <p style={{color:'var(--muted)',fontSize:13,marginBottom:24}}>We'll generate 1 portrait in this style. {GEN_LIMITS.MAX_TOTAL - totalGenerated} left in your session.</p>
+            <p style={{color:'var(--muted)',fontSize:13,marginBottom:24}}>We'll add another portrait in this style.</p>
             <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:6}}>
               {availableNewStyles.map(s => (
                 <button key={s.id} onClick={()=>{ setShowStylePicker(false); handleExpandStyle(s.id, `${s.emoji} ${s.name}`) }}
