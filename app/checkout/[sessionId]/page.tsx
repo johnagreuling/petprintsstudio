@@ -1,4 +1,5 @@
 'use client'
+import SiteNav from '@/components/SiteNav'
 import { useState, useEffect } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -77,7 +78,7 @@ function CheckoutPage() {
 
   if (!imageUrl) {
     return (
-      <div style={{background:'#0A0A0A',color:'#F5F0E8',minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'40px 24px',fontFamily:"'DM Sans',sans-serif"}}>
+      <><SiteNav /><div style={{background:'#0A0A0A',color:'#F5F0E8',minHeight:'calc(100vh - 74px)',display:'flex',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'114px 24px 40px',fontFamily:"'DM Sans',sans-serif"}}>
         <div>
           <div style={{fontSize:48,marginBottom:24}}>🐾</div>
           <h1 style={{fontSize:28,marginBottom:16}}>No Image Found</h1>
@@ -86,7 +87,7 @@ function CheckoutPage() {
             Create Your Portrait →
           </Link>
         </div>
-      </div>
+      </div></>
     )
   }
 
@@ -106,18 +107,9 @@ function CheckoutPage() {
         :root{--gold:#C9A84C;--cream:#F5F0E8;--ink:#0A0A0A;--muted:rgba(245,240,232,.45)}
       `}</style>
 
-      {/* Header */}
-      <header style={{padding:'20px 32px',borderBottom:'1px solid rgba(245,240,232,.06)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-        <Link href="/" style={{textDecoration:'none',color:'#F5F0E8',display:'flex',alignItems:'center',gap:10}}>
-          <span style={{fontSize:24}}>🐾</span>
-          <span style={{fontSize:18,fontWeight:500}}>Pet Prints Studio</span>
-        </Link>
-        <div style={{fontSize:11,color:'var(--gold)',letterSpacing:'.15em',textTransform:'uppercase'}}>
-          Checkout
-        </div>
-      </header>
+      <SiteNav />
 
-      <div style={{maxWidth:1100,margin:'0 auto',padding:'48px 24px 120px'}}>
+      <div style={{maxWidth:1100,margin:'0 auto',padding:'122px 24px 120px'}}>
         <div style={{textAlign:'center',marginBottom:48}}>
           <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',marginBottom:12}}>Your Portrait is Ready</div>
           <h1 className="serif" style={{fontSize:'clamp(32px,5vw,52px)',fontWeight:400,marginBottom:12}}>

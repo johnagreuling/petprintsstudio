@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import SiteNav from '@/components/SiteNav'
 
 interface SessionImage {
   url: string
@@ -101,13 +102,11 @@ export default function GalleryPage() {
         .dl-btn:hover { background: #C9A84C !important; color: #0A0A0A !important; }
       `}</style>
 
-      {/* NAV */}
-      <nav style={{position:'sticky',top:0,zIndex:100,background:'rgba(10,10,10,.97)',backdropFilter:'blur(16px)',borderBottom:'1px solid rgba(245,240,232,.06)',padding:'16px 40px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-        <div style={{display:'flex',alignItems:'center',gap:16}}>
-          <Link href="/" style={{color:'rgba(245,240,232,.4)',textDecoration:'none',fontSize:11,letterSpacing:'.15em',textTransform:'uppercase'}}>← Site</Link>
-          <span style={{color:'rgba(245,240,232,.15)'}}>|</span>
-          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:20}}>🐾 Studio Gallery</span>
-        </div>
+      <SiteNav />
+
+      {/* Gallery utility bar — search + session count, sits below SiteNav */}
+      <div style={{position:'sticky',top:74,zIndex:99,background:'rgba(10,10,10,.97)',backdropFilter:'blur(16px)',borderBottom:'1px solid rgba(245,240,232,.06)',padding:'14px 40px',display:'flex',alignItems:'center',justifyContent:'space-between',marginTop:74}}>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:18}}>Studio Gallery</div>
         <div style={{display:'flex',alignItems:'center',gap:16}}>
           <input
             placeholder="Search by pet name..."
@@ -117,9 +116,9 @@ export default function GalleryPage() {
           />
           <span style={{color:'rgba(245,240,232,.4)',fontSize:13}}>{filtered.length} sessions</span>
         </div>
-      </nav>
+      </div>
 
-      <div style={{display:'flex',height:'calc(100vh - 57px)'}}>
+      <div style={{display:'flex',height:'calc(100vh - 74px - 52px)'}}>
 
         {/* SESSION LIST */}
         <div style={{width:320,flexShrink:0,borderRight:'1px solid rgba(245,240,232,.06)',overflowY:'auto',padding:'16px'}}>

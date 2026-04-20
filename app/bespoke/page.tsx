@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import SiteNav from '@/components/SiteNav'
 
 export default function BespokePage() {
   const [email, setEmail] = useState('')
@@ -56,15 +57,9 @@ export default function BespokePage() {
         }
       `}</style>
 
-      <nav style={{padding:'18px 40px',display:'flex',alignItems:'center',justifyContent:'space-between',borderBottom:'1px solid rgba(245,240,232,.06)',position:'sticky',top:0,background:'#0A0A0A',zIndex:100}}>
-        <Link href="/" style={{display:'flex',alignItems:'center',gap:10,textDecoration:'none',color:'inherit'}}>
-          <span>🐾</span>
-          <span className="serif" style={{fontSize:20}}>Pet Prints Studio</span>
-        </Link>
-        <Link href="/create" style={{fontSize:11,letterSpacing:'.14em',textTransform:'uppercase',color:'var(--muted)',textDecoration:'none'}}>← Back to Create</Link>
-      </nav>
+      <SiteNav />
 
-      <main style={{maxWidth:720,margin:'0 auto',padding:'72px 24px 100px'}}>
+      <main style={{maxWidth:720,margin:'0 auto',padding:'146px 24px 100px'}}>
 
         {/* ── HERO ── */}
         <div style={{textAlign:'center',marginBottom:56}}>

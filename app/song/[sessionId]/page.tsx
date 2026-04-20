@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import SiteNav from '@/components/SiteNav'
 import { useParams } from 'next/navigation'
 import posthog from 'posthog-js'
 
@@ -89,18 +90,18 @@ export default function SongPage() {
   )
 
   if (error) return (
-    <div style={{background:'#0A0A0A',minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',color:'#F5F0E8',fontFamily:"'DM Sans',sans-serif",textAlign:'center',padding:40}}>
+    <><SiteNav /><div style={{background:'#0A0A0A',minHeight:'calc(100vh - 74px)',display:'flex',alignItems:'center',justifyContent:'center',color:'#F5F0E8',fontFamily:"'DM Sans',sans-serif",textAlign:'center',padding:'114px 40px 40px'}}>
       <div>
         <div style={{fontSize:64,marginBottom:24}}>🐾</div>
         <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:32,marginBottom:16}}>Session not found</div>
         <p style={{color:'rgba(245,240,232,.4)',marginBottom:32}}>This link may have expired or is invalid.</p>
         <Link href="/create" style={{background:'#C9A84C',color:'#0A0A0A',padding:'14px 32px',textDecoration:'none',fontWeight:700,fontSize:12,letterSpacing:'.1em',textTransform:'uppercase'}}>Create Your Own</Link>
       </div>
-    </div>
+    </div></>
   )
 
   return (
-    <div style={{background:'#0A0A0A',minHeight:'100vh',color:'#F5F0E8',fontFamily:"'DM Sans',sans-serif"}}>
+    <><SiteNav /><div style={{background:'#0A0A0A',minHeight:'calc(100vh - 74px)',color:'#F5F0E8',fontFamily:"'DM Sans',sans-serif",paddingTop:74}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
         *{box-sizing:border-box}
@@ -114,7 +115,7 @@ export default function SongPage() {
         .product-card{transition:all .2s}
       `}</style>
 
-      <div style={{position:'relative',minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'40px 24px',textAlign:'center'}}>
+      <div style={{position:'relative',minHeight:'calc(100vh - 74px)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'40px 24px',textAlign:'center'}}>
         {firstImg && (
           <div style={{position:'absolute',inset:0,overflow:'hidden',zIndex:0}}>
             <img src={firstImg} style={{width:'100%',height:'100%',objectFit:'cover',filter:'blur(40px)',opacity:.15,transform:'scale(1.1)'}} />
@@ -200,6 +201,6 @@ export default function SongPage() {
       </div>
 
       <div style={{textAlign:'center',padding:'24px',color:'rgba(245,240,232,.2)',fontSize:11,letterSpacing:'.1em'}}>© PET PRINTS STUDIO · petprintsstudio.com</div>
-    </div>
+    </div></>
   )
 }
