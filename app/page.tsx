@@ -212,22 +212,22 @@ export default function Home() {
       <SiteNav currentPage="home" />
 
       {/* HERO */}
-      <section className="hero-section home-hero" style={{minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'140px 24px 80px',position:'relative',overflow:'hidden'}}>
+      <section className="hero-section home-hero" style={{minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'110px 24px 48px',position:'relative',overflow:'hidden'}}>
         {/* Ambient glow */}
         <div style={{position:'absolute',top:'35%',left:'50%',transform:'translate(-50%,-50%)',width:800,height:800,background:'radial-gradient(circle,rgba(201,168,76,.06) 0%,transparent 70%)',pointerEvents:'none'}} />
         <div style={{position:'absolute',top:'70%',left:'20%',width:400,height:400,background:'radial-gradient(circle,rgba(196,98,45,.04) 0%,transparent 70%)',pointerEvents:'none'}} />
 
-        <h1 className="serif fu fu2" style={{fontSize:'clamp(52px,8vw,108px)',lineHeight:.96,marginBottom:28,fontWeight:400,maxWidth:1040,letterSpacing:'-.02em'}}>
+        <h1 className="serif fu fu2" style={{fontSize:'clamp(44px,6.5vw,92px)',lineHeight:.96,marginBottom:22,fontWeight:400,maxWidth:1040,letterSpacing:'-.02em'}}>
           <em style={{color:'var(--gold)'}}>See</em> Them. <em style={{color:'var(--gold)'}}>Hear</em> Them.<br/><em style={{color:'var(--gold)'}}>Feel</em> Them.
         </h1>
 
-        <div className="fu fu3" style={{marginBottom:36,display:'flex',flexDirection:'column',gap:20,alignItems:'center',maxWidth:820,margin:'0 auto 36px'}}>
+        <div className="fu fu3" style={{marginBottom:24,display:'flex',flexDirection:'column',gap:10,alignItems:'center',maxWidth:820,margin:'0 auto 24px'}}>
           {[
             {label:'See', text:'Your beautiful custom portrait.', accent:'var(--gold)'},
             {label:'Hear', text:'A song you help write, just for your pet.', accent:'#A78BFA'},
             {label:'Feel', text:'Their love — every time you touch our luxury goods customized with their likeness.', accent:'#C4622D'},
           ].map(({label,text,accent})=>(
-            <div key={label} style={{fontSize:'clamp(18px,2vw,24px)',color:'var(--cream)',lineHeight:1.5,fontWeight:300,textAlign:'center',letterSpacing:'.005em'}}>
+            <div key={label} style={{fontSize:'clamp(16px,1.6vw,20px)',color:'var(--cream)',lineHeight:1.4,fontWeight:300,textAlign:'center',letterSpacing:'.005em'}}>
               <span style={{color:accent,fontWeight:700,letterSpacing:'.28em',textTransform:'uppercase',fontSize:'clamp(12px,1.2vw,14px)',marginRight:14,verticalAlign:'middle'}}>{label}</span>
               <span style={{verticalAlign:'middle'}}>{text}</span>
             </div>
