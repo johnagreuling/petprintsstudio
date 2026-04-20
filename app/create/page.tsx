@@ -76,7 +76,6 @@ function CreatePageInner() {
 
   // ── Checkout state (NEW) ──
   const [selectedMedium, setSelectedMedium] = useState<'Canvas' | 'Prints'>('Canvas')
-  const [skipPrimary, setSkipPrimary] = useState(false)
   const [selectedSize, setSelectedSize] = useState('16×20"')
   const [songAnswers, setSongAnswers] = useState<Record<string, string>>({})
   const [songGenre, setSongGenre] = useState<string>('')
@@ -86,7 +85,6 @@ function CreatePageInner() {
   const [cartExtraSizes, setCartExtraSizes] = useState<Record<string, string>>({})
   const [cartExtraColors, setCartExtraColors] = useState<Record<string, string>>({})
   const [cartExtraQty, setCartExtraQty] = useState<Record<string, number>>({})
-  const [checkoutLoading, setCheckoutLoading] = useState(false)
   const { items: cart, addItem, clearCart: clearGlobalCart, setOrderMeta, clearOrderMeta } = useCart()
   const searchParams = useSearchParams()
 
@@ -418,8 +416,8 @@ function CreatePageInner() {
       posthog.capture('photo_uploaded', { pet_name: answers.petName || '', pet_type: answers.petBreed || '' })
       setUploadedUrl(url); setProgress(20); setProgressMsg('Analyzing your pet...')
 
-      // NOTE: Song brief is now generated at CHECKOUT time (when we have song answers + genre)
-      // not at generation time. See handleCheckout + /api/checkout.
+      // NOTE: Song brief is generated at CHECKOUT time (when we have song answers + genre)
+      // not at generation time. The cart forwards orderMeta → /api/checkout.
 
       setProgress(28); setProgressMsg('Generating your portraits...')
 
@@ -1236,8 +1234,6 @@ function CreatePageInner() {
                   </button>
                 </div>
               )}
-
-              {/* Skip-primary toggle — lets users checkout with just keepsakes */}
 
               {/* Medium toggle */}
               <div style={{marginBottom:16}}>
