@@ -50,9 +50,10 @@ Respond with ONLY a valid JSON object in this exact shape (no markdown, no backt
       "expression": "emotional quality and mouth position (e.g., 'happy open-mouth smile, tongue slightly out, bright engaged eyes')",
       "distinctiveFeatures": "1-3 most identifying traits a painter must get right (e.g., 'signature teddy bear face with round dark eyes, prominent fluffy golden curls framing face')"
     }
-    // ... one object per pet detected, in left-to-right or foreground-first order
   ]
 }
+
+The subjects array should contain one object per pet detected, in left-to-right or foreground-first order.
 
 If only one pet is present, return an array of length 1. Every field in every object must be a descriptive string, not a single word.`
 
@@ -113,16 +114,24 @@ export async function analyzePetSubject(
       return buildFallbackProfile(fallbackSummary, petType)
     }
 
-    // Parse the JSON — handle potential markdown wrapping
+    // Parse the JSON — handle potential markdown wrapping and stray comments
     let parsed: any
     try {
-      const cleaned = content
+      let cleaned = content
         .replace(/^```json\s*/i, '')
         .replace(/```\s*$/i, '')
         .trim()
+      // Strip JSON5-style line comments that GPT-4o sometimes emits
+      // (defensive: JSON.parse rejects `// ...` and `/* ... */`)
+      cleaned = cleaned
+        .replace(/^\s*\/\/.*$/gm, '')        // strip // line comments
+        .replace(/\/\*[\s\S]*?\*\//g, '')    // strip /* ... */ block comments
+        .replace(/,(\s*[}\]])/g, '$1')       // strip trailing commas before } or ]
       parsed = JSON.parse(cleaned)
-    } catch (parseErr) {
-      console.error('Failed to parse vision response as JSON:', content.slice(0, 200))
+    } catch (parseErr: any) {
+      console.error('🚨 Vision JSON parse FAILED:', parseErr.message)
+      console.error('  Raw content (first 500 chars):', content.slice(0, 500))
+      console.error('  Raw content (last 200 chars):', content.slice(-200))
       // Fallback: use the raw text as a summary
       return {
         subjectType: 'pet',
@@ -138,21 +147,27 @@ export async function analyzePetSubject(
     // wrap it as a single-subject array.
     let subjects: Record<string, string>[]
     if (Array.isArray(parsed?.subjects) && parsed.subjects.length > 0) {
-      subjects = parsed.subjects
+      // Filter out null/non-object entries defensively
+      subjects = parsed.subjects.filter((s: any) => s && typeof s === 'object')
+      if (subjects.length === 0) {
+        console.error('🚨 Vision subjects array was present but all entries were invalid')
+        return buildFallbackProfile(fallbackSummary, petType)
+      }
     } else if (parsed && typeof parsed === 'object' && (parsed.species || parsed.breed)) {
       // Legacy single-pet response shape
       subjects = [parsed as Record<string, string>]
     } else {
-      console.error('Vision response missing subjects:', JSON.stringify(parsed).slice(0, 200))
+      console.error('🚨 Vision response missing subjects. Parsed shape:', JSON.stringify(parsed).slice(0, 400))
       return buildFallbackProfile(fallbackSummary, petType)
     }
 
     // Kill switch: force single-subject mode if env flag disabled.
-    // Collapses multi-pet photos to Pet A only, preserving single-pet behavior.
     if (process.env.MULTI_SUBJECT_ENABLED === 'false' && subjects.length > 1) {
       console.log(`🔒 MULTI_SUBJECT_ENABLED=false — collapsing ${subjects.length} detected pets to 1`)
       subjects = [subjects[0]]
     }
+
+    console.log(`✓ Vision detected ${subjects.length} pet subject${subjects.length > 1 ? 's' : ''}`)
 
     const primary = subjects[0]
     const additional = subjects.length > 1 ? subjects.slice(1) : undefined
