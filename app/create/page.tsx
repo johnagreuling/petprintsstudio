@@ -1039,9 +1039,6 @@ function CreatePageInner() {
                   : `${generated.length} portraits · tap the one that feels most like them.`
                 }
               </p>
-              <div style={{marginTop:12,fontSize:11,color:atMaxTotal?'var(--rust)':'var(--muted)',letterSpacing:'.12em',textTransform:'uppercase'}}>
-                {totalGenerated} of {GEN_LIMITS.MAX_TOTAL} portraits generated
-              </div>
             </div>
 
             {(()=>{
@@ -1064,7 +1061,6 @@ function CreatePageInner() {
                     <div style={{fontSize:10,letterSpacing:'.24em',textTransform:'uppercase',color:'var(--gold)',marginBottom:18,display:'flex',alignItems:'center',gap:14}}>
                       <span style={{fontSize:16,filter:'grayscale(.2)'}}>{emoji}</span>
                       <span style={{fontWeight:600}}>{name}</span>
-                      <span style={{fontSize:9,opacity:.6}}>({countForStyle}/{GEN_LIMITS.MAX_PER_STYLE})</span>
                       <span style={{flex:1,height:1,background:'linear-gradient(to right,rgba(201,168,76,.25),rgba(245,240,232,.04))'}}/>
                     </div>
                     <div className="create-portrait-grid" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:6}}>
@@ -1109,17 +1105,23 @@ function CreatePageInner() {
               })
             })()}
 
-            {/* Add new style button */}
-            {!atMaxTotal && availableNewStyles.length > 0 && (
+            {/* Add new style button — or max-reached notice */}
+            {atMaxTotal ? (
+              <div style={{textAlign:'center',marginTop:32,marginBottom:40,padding:'28px 24px',border:'1px solid rgba(196,98,45,.4)',background:'rgba(196,98,45,.04)'}}>
+                <div style={{fontSize:11,letterSpacing:'.28em',textTransform:'uppercase',color:'var(--rust)',fontWeight:600}}>
+                  Maximum Images Generated
+                </div>
+                <div style={{fontSize:12,color:'var(--muted)',marginTop:10,lineHeight:1.6,maxWidth:440,margin:'10px auto 0'}}>
+                  You&rsquo;ve reached this session&rsquo;s limit. Pick your favorite and continue — or start a new session any time.
+                </div>
+              </div>
+            ) : availableNewStyles.length > 0 && (
               <div style={{textAlign:'center',marginTop:32,marginBottom:40,padding:'24px',border:'1px dashed rgba(201,168,76,.25)'}}>
                 <div style={{fontSize:10,letterSpacing:'.25em',textTransform:'uppercase',color:'var(--muted)',marginBottom:10}}>Want another look?</div>
                 <button onClick={()=>setShowStylePicker(true)} disabled={!!expandingStyle}
                   style={{background:'transparent',border:'1px solid var(--gold)',color:'var(--gold)',padding:'12px 28px',fontSize:11,letterSpacing:'.15em',textTransform:'uppercase',cursor:expandingStyle?'not-allowed':'pointer',opacity:expandingStyle?.5:1,fontWeight:600}}>
                   + Try a New Style
                 </button>
-                <div style={{fontSize:10,color:'var(--muted)',marginTop:10}}>
-                  {GEN_LIMITS.MAX_TOTAL - totalGenerated} portraits left in this session
-                </div>
               </div>
             )}
 
