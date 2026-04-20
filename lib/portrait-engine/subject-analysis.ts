@@ -48,8 +48,7 @@ Respond with ONLY a valid JSON object in this exact shape (no markdown, no backt
       "bodySize": "build and proportions (e.g., 'medium build, 40-50lbs, athletic but fluffy, legs proportional')",
       "accessories": "any collars, harnesses, tags, bandanas, bows visible (e.g., 'red leather collar with round gold tag') or 'none visible'",
       "expression": "emotional quality and mouth position (e.g., 'happy open-mouth smile, tongue slightly out, bright engaged eyes')",
-      "distinctiveFeatures": "1-3 most identifying traits a painter must get right (e.g., 'signature teddy bear face with round dark eyes, prominent fluffy golden curls framing face')",
-      "sourcePosition": "where this pet appears in the source image frame (e.g., 'left side, foreground', 'center-right, slightly behind', 'right side, eye level with Pet A')"
+      "distinctiveFeatures": "1-3 most identifying traits a painter must get right (e.g., 'signature teddy bear face with round dark eyes, prominent fluffy golden curls framing face')"
     }
     // ... one object per pet detected, in left-to-right or foreground-first order
   ]
@@ -83,7 +82,7 @@ export async function analyzePetSubject(
       },
       body: JSON.stringify({
         model: 'gpt-4o',
-        max_tokens: 800,
+        max_tokens: 2000,
         temperature: 0.2, // Low temperature for consistent, precise descriptions
         messages: [{
           role: 'user',
