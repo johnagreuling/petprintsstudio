@@ -241,7 +241,18 @@ export function cartItemCount(cart: CartItem[]): number {
 //  Used by /shop catalog and anywhere else a product thumbnail is needed.
 // ─────────────────────────────────────────────────────────────────
 export function productImage(productId: string): string {
-  if (productId.startsWith('canvas_')) return '/portrait-on-wall.png'
+  if (productId.startsWith('canvas_')) {
+    const sizeMap: Record<string, string> = {
+      canvas_8x10:  '/products/lifestyle/canvas/8x10.png',
+      canvas_11x14: '/products/lifestyle/canvas/11x14.png',
+      canvas_12x16: '/products/lifestyle/canvas/12x16.png',
+      canvas_16x20: '/products/lifestyle/canvas/16x20.png',
+      canvas_18x24: '/products/lifestyle/canvas/18x24.png',
+      canvas_20x30: '/products/lifestyle/canvas/20x30.png',
+      canvas_24x36: '/products/lifestyle/canvas/24x36.png',
+    }
+    return sizeMap[productId] || '/products/lifestyle/canvas/16x20.png'
+  }
   if (productId.startsWith('print_'))  return '/portrait-lifestyle.png'
   if (productId.startsWith('blanket_')) return '/products/blanket.png'
   const map: Record<string, string> = {
