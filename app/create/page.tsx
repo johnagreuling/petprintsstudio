@@ -135,6 +135,14 @@ function CreatePageInner() {
     })
   }, [songGenre, answers.petName, answers.petBreed, sessionFolder, songAnswers, setOrderMeta])
 
+  // Scroll to top when step changes so users land at the top of the new step
+  // (e.g., Make It Real -> checkout lands at SEE THEM, not mid-page at HEAR THEM)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+    }
+  }, [step])
+
   // ── Resume previous session ──
   useEffect(() => {
     try {
