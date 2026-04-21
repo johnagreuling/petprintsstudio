@@ -44,7 +44,6 @@ export default function ShopCatalog() {
                 <div key={p.id} className="shop-tile" style={{background:'#141414',border:'1px solid rgba(245,240,232,.06)',padding:24,display:'flex',flexDirection:'column',minHeight:320}}>
                   <div style={{width:'100%',aspectRatio:'1/1',background:'#0a0a0a',marginBottom:16,overflow:'hidden',display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
                     <Image src={productImage(p.id)} alt={p.name} fill sizes="(max-width:640px) 50vw, (max-width:900px) 33vw, 25vw" style={{objectFit:'cover'}} />
-                    <div style={{position:'absolute',fontSize:64,opacity:.22}}>{p.emoji}</div>
                   </div>
                   <div style={{flex:1}}>
                     <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:4}}>
