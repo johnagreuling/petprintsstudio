@@ -1,30 +1,25 @@
-import type { Metadata, Viewport } from 'next'
-import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
-import './globals.css'
-import { Analytics } from '@/components/Analytics'
-import { CartProvider } from '@/lib/cart-context'
-import MetaPixel from '@/components/MetaPixel'
+#!/usr/bin/env python3
+"""Install complete OG/Twitter metadata + Schema.org structured data."""
+import os, re
 
-const cormorant = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['400', '600'],
-  style: ['normal', 'italic'],
-  variable: '--font-cormorant',
-  display: 'block',
-  fallback: ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
-  adjustFontFallback: true,
-})
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+LAYOUT = 'app/layout.tsx'
+path = os.path.join(ROOT, LAYOUT)
 
-const dmSans = DM_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
-  variable: '--font-dm-sans',
-  display: 'block',
-  fallback: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', 'sans-serif'],
-  adjustFontFallback: true,
-})
+with open(path) as f:
+    content = f.read()
 
-export const metadata: Metadata = {
+if 'facebook-domain-verification' in content or 'metadataBase' in content:
+    print('  SKIP  layout.tsx already has OG metadata')
+    raise SystemExit(0)
+
+# Replace the simple metadata export with a comprehensive one
+old_metadata = re.search(r"export const metadata: Metadata = \{.*?\n\}\n", content, re.DOTALL)
+if not old_metadata:
+    print('  MISS  could not find metadata export')
+    raise SystemExit(1)
+
+new_metadata = """export const metadata: Metadata = {
   metadataBase: new URL('https://petprintsstudio.com'),
   title: {
     default: 'Pet Prints Studio — Custom Pet Portraits With a Song',
@@ -113,30 +108,29 @@ const jsonLd = {
     },
   ],
 }
+"""
 
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 5,
-  themeColor: '#0A0A0A',
-}
+content = content.replace(old_metadata.group(0), new_metadata)
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
+# Inject the JSON-LD script into the <html> tag in RootLayout
+old_html = '<html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>'
+new_html = '''<html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-      </head>
-      <body>
-        <MetaPixel />
-        <CartProvider>
-          {children}
-          <Analytics />
-        </CartProvider>
-      </body>
-    </html>
-  )
-}
+      </head>'''
+
+if old_html in content:
+    content = content.replace(old_html, new_html, 1)
+    print('  OK    JSON-LD injected into <head>')
+else:
+    print('  WARN  could not find <html> tag — JSON-LD not added')
+
+with open(path, 'w') as f:
+    f.write(content)
+
+print('  OK    Full OG/Twitter/icons/Schema metadata installed')
+print('')
+print('Build check: npm run build')
