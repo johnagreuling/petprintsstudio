@@ -139,9 +139,8 @@ export default function Home() {
         .style-btn img{width:100%;aspect-ratio:1;object-fit:cover;display:block;transition:transform .4s ease}
         .style-btn:hover img,.style-btn.active img{transform:scale(1.05)}
         .style-btn-info{padding:16px 18px}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-        .fu{animation:fadeUp .8s ease forwards}
-        .fu1{animation-delay:.05s}.fu2{animation-delay:.1s}.fu3{animation-delay:.18s}.fu4{animation-delay:.28s}
+        @keyframes fadeUp{from{opacity:0}to{opacity:1}}
+        .fu{animation:fadeUp .3s ease-out forwards}.fu1,.fu2,.fu3,.fu4{animation-delay:0s}
         @keyframes shimmer{0%,100%{opacity:.3}50%{opacity:.7}}
         .shimmer{animation:shimmer 3s ease infinite}
         .tag{display:inline-block;border:1px solid rgba(201,168,76,.3);color:var(--gold);font-size:10px;letter-spacing:.25em;text-transform:uppercase;padding:6px 14px;margin:4px}
