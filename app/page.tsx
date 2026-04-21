@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import SiteNav from '@/components/SiteNav'
 import { useState, useEffect, useRef } from 'react'
 import { ART_STYLES, PRODUCTS } from '@/lib/config'
@@ -317,7 +318,7 @@ export default function Home() {
                     display:'block',
                   }}
                 >
-                  <img src={item.url} alt={`${item.pet} — ${item.style}`} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} loading="lazy" />
+                  <Image src={item.url} alt={`${item.pet} — ${item.style}`} fill sizes="(max-width:640px) 50vw, 25vw" style={{objectFit:'cover'}} />
                   <div style={{
                     position:'absolute',
                     bottom:0,
@@ -377,7 +378,7 @@ export default function Home() {
             {/* Step 1 — Upload */}
             <div className="card" style={{padding:0,overflow:'hidden'}}>
               <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#1a1412',position:'relative'}}>
-                <img src="/process-upload.jpg" alt="Upload your pet's photo" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
+                <Image src="/process-upload.jpg" alt="Upload your pet's photo" fill sizes="(max-width:640px) 50vw, 25vw" style={{objectFit:'cover'}} />
                 <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.5) 0%,transparent 40%)'}} />
               </div>
               <div style={{padding:'20px 18px 24px'}}>
@@ -390,7 +391,7 @@ export default function Home() {
             {/* Step 2 — Tell Their Story */}
             <div className="card" style={{padding:0,overflow:'hidden'}}>
               <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#111',position:'relative'}}>
-                <img src="/step2-wyatt.jpg" alt="Wyatt's personalized portrait" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}} />
+                <Image src="/step2-wyatt.jpg" alt="Wyatt's personalized portrait" fill sizes="(max-width:640px) 50vw, 25vw" style={{objectFit:'cover'}} />
                 <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.5) 0%,transparent 40%)'}} />
               </div>
               <div style={{padding:'20px 18px 24px'}}>
@@ -406,7 +407,7 @@ export default function Home() {
                 <div style={{width:'100%',height:'100%',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gridTemplateRows:'repeat(3,1fr)',gap:4,padding:6}}>
                   {heroShowcase.slice(0, 9).map((s, i)=>(
                     <div key={i} style={{overflow:'hidden',borderRadius:3}}>
-                      <img src={s.url} alt={s.style} style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} loading="lazy"/>
+                      <Image src={s.url} alt={s.style} fill sizes="80px" style={{objectFit:'cover'}} />
                     </div>
                   ))}
                 </div>
@@ -421,7 +422,7 @@ export default function Home() {
             {/* Step 4 — We Handle the Rest */}
             <div className="card" style={{padding:0,overflow:'hidden'}}>
               <div style={{aspectRatio:'3/4',overflow:'hidden',background:'#1a1412',position:'relative'}}>
-                <img src="/step4-delivered.png" alt="Canvas portrait being unboxed" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}} onError={(e)=>{(e.target as HTMLImageElement).style.display='none'}}/>
+                <Image src="/step4-delivered.png" alt="Canvas portrait being unboxed" fill sizes="(max-width:640px) 50vw, 25vw" style={{objectFit:'cover'}} />
                 <div style={{position:'absolute',inset:0,background:'linear-gradient(to top,rgba(10,10,10,.5) 0%,transparent 40%)'}} />
               </div>
               <div style={{padding:'20px 18px 24px'}}>
@@ -436,7 +437,7 @@ export default function Home() {
 
       {/* Cinematic product shot — the portrait in a real home */}
       <div style={{position:'relative',width:'100%',height:'clamp(300px,50vw,560px)',overflow:'hidden'}}>
-        <img src="/portrait-on-wall.png" alt="Pet portrait hanging in a beautiful home" style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 35%',display:'block'}} />
+        <Image src="/portrait-on-wall.png" alt="Pet portrait hanging in a beautiful home" fill sizes="100vw" priority style={{objectFit:'cover',objectPosition:'center 35%'}} />
         <div style={{position:'absolute',inset:0,background:'linear-gradient(to bottom, rgba(10,10,10,.4) 0%, transparent 30%, transparent 70%, rgba(10,10,10,.8) 100%)'}} />
         <div style={{position:'absolute',bottom:28,left:0,right:0,textAlign:'center'}}>
           <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600}}>Gallery-Quality · Shipped to Your Door · Starting at $49</div>
@@ -464,11 +465,12 @@ export default function Home() {
               {/* Hero image — the art in a real home */}
               {t.pet && (
                 <div style={{position:'relative',aspectRatio:'4/5',overflow:'hidden',background:'#0d0d0d'}}>
-                  <img
+                  <Image
                     src={t.pet}
                     alt={`${t.petName}'s portrait in ${t.name}'s home`}
-                    style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}
-                    onError={(e)=>{(e.target as HTMLImageElement).style.display='none';}}
+                    fill
+                    sizes="(max-width:640px) 100vw, (max-width:900px) 50vw, 33vw"
+                    style={{objectFit:'cover'}}
                   />
                   {/* Pet name badge */}
                   <div style={{position:'absolute',bottom:12,left:12,background:'rgba(10,10,10,.82)',backdropFilter:'blur(6px)',padding:'6px 12px',fontSize:10,letterSpacing:'.2em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600,border:'1px solid rgba(201,168,76,.2)'}}>{t.petName}</div>

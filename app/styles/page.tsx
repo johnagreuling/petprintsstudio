@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import SiteNav from '@/components/SiteNav'
+import Image from 'next/image'
 import Link from 'next/link'
 
 type Style = {
@@ -250,7 +251,7 @@ export default function StylesGallery() {
                 onClick={() => setLightbox({ style, idx })}
               >
                 {style.showcaseUrl ? (
-                  <img src={style.showcaseUrl} alt={style.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                  <Image src={style.showcaseUrl} alt={style.name} fill sizes="(max-width:640px) 100vw, (max-width:900px) 50vw, 33vw" style={{ objectFit: 'cover' }} />
                 ) : (
                   <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
                     <div style={{ fontSize: 64 }}>{style.emoji}</div>
@@ -278,7 +279,7 @@ export default function StylesGallery() {
             <button onClick={next} style={{ position: 'absolute', right: -64, top: '40%', transform: 'translateY(-50%)', background: 'rgba(245,240,232,.08)', border: '1px solid rgba(245,240,232,.15)', color: 'var(--cream)', fontSize: 24, cursor: 'pointer', padding: '14px 18px' }}>›</button>
             <div style={{ aspectRatio: '3/4', overflow: 'hidden', marginBottom: 20 }}>
               {lightbox.style.showcaseUrl ? (
-                <img src={lightbox.style.showcaseUrl} alt={lightbox.style.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <Image src={lightbox.style.showcaseUrl} alt={lightbox.style.name} fill sizes="680px" style={{ objectFit: 'cover' }} />
               ) : (
                 <div style={{ width: '100%', height: '100%', background: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 80 }}>{lightbox.style.emoji}</div>
               )}

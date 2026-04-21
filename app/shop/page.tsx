@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import SiteNav from '@/components/SiteNav'
 import { PRODUCTS, productImage } from '@/lib/config'
 
@@ -42,7 +43,7 @@ export default function ShopCatalog() {
               {byCategory[cat].map((p: any) => (
                 <div key={p.id} className="shop-tile" style={{background:'#141414',border:'1px solid rgba(245,240,232,.06)',padding:24,display:'flex',flexDirection:'column',minHeight:320}}>
                   <div style={{width:'100%',aspectRatio:'1/1',background:'#0a0a0a',marginBottom:16,overflow:'hidden',display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
-                    <img src={productImage(p.id)} alt={p.name} style={{width:'100%',height:'100%',objectFit:'cover'}} onError={(e)=>{(e.currentTarget as HTMLImageElement).style.display='none'}} />
+                    <Image src={productImage(p.id)} alt={p.name} fill sizes="(max-width:640px) 50vw, (max-width:900px) 33vw, 25vw" style={{objectFit:'cover'}} />
                     <div style={{position:'absolute',fontSize:64,opacity:.22}}>{p.emoji}</div>
                   </div>
                   <div style={{flex:1}}>
