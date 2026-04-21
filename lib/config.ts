@@ -14,12 +14,12 @@ export const PRODUCTS = [
   { id: 'canvas_24x36',  name: 'Canvas Print', size: '24×36"', category: 'Canvas', price: 199, printifyBlueprintId: 1238, printifyProviderId: 48, printifyVariantId: 93946,  popular: false, emoji: '🖼️', description: 'Our largest format. Thick 1.5" gallery-wrapped canvas with the presence of a real art installation. Every brushstroke visible at this scale.' },
 
   // ── FINE ART PRINTS — Archival matte paper ──────────────────────────────
-  { id: 'print_8x10',   name: 'Fine Art Print', size: '8×10"',  category: 'Prints', price: 39,  printifyBlueprintId: 804, printifyProviderId: 72, printifyVariantId: 75288,  popular: false, emoji: '📄', description: 'Heavyweight 200gsm archival matte paper. Vibrant pigment inks designed for color accuracy and longevity. Frame it yourself for a custom look.' },
-  { id: 'print_11x14',  name: 'Fine Art Print', size: '11×14"', category: 'Prints', price: 49,  printifyBlueprintId: 804, printifyProviderId: 72, printifyVariantId: 100934, popular: false, emoji: '📄', description: 'Heavyweight 200gsm archival matte paper. Vibrant pigment inks designed for color accuracy and longevity. Frame it yourself for a custom look.' },
-  { id: 'print_12x16',  name: 'Fine Art Print', size: '12×16"', category: 'Prints', price: 55,  printifyBlueprintId: 804, printifyProviderId: 72, printifyVariantId: 75290,  popular: false, emoji: '📄', description: 'Heavyweight 200gsm archival matte paper. Vibrant pigment inks designed for color accuracy and longevity. Frame it yourself for a custom look.' },
-  { id: 'print_16x20',  name: 'Fine Art Print', size: '16×20"', category: 'Prints', price: 65,  printifyBlueprintId: 804, printifyProviderId: 72, printifyVariantId: 75292,  popular: true,  emoji: '📄', description: 'Our most popular print. Heavyweight 200gsm archival matte — the same paper used by fine art printmakers. Rich, accurate color that lasts.' },
-  { id: 'print_18x24',  name: 'Fine Art Print', size: '18×24"', category: 'Prints', price: 79,  printifyBlueprintId: 804, printifyProviderId: 72, printifyVariantId: 100938, popular: false, emoji: '📄', description: 'Heavyweight 200gsm archival matte paper. Vibrant pigment inks designed for color accuracy and longevity. Frame it yourself for a custom look.' },
-  { id: 'print_24x36',  name: 'Fine Art Print', size: '24×36"', category: 'Prints', price: 99,  printifyBlueprintId: 804, printifyProviderId: 72, printifyVariantId: 75296,  popular: false, emoji: '📄', description: 'Large format archival matte. At this size, the portrait has real presence — museum-scale detail on paper built to last.' },
+  { id: 'print_8x10',   name: 'Fine Art Print', size: '8×10"',  category: 'Prints', price: 39,  printifyBlueprintId: 804, printifyProviderId: 72, printifyVariantId: 75288,  popular: false, emoji: '📄', description: 'Heavyweight 200gsm archival matte paper. Vibrant pigment inks designed for color accuracy and longevity. Shown framed for inspiration — print ships unframed so you can frame it your way.' },
+  { id: 'print_11x14',  name: 'Fine Art Print', size: '11×14"', category: 'Prints', price: 49,  printifyBlueprintId: 804, printifyProviderId: 72, printifyVariantId: 100934, popular: false, emoji: '📄', description: 'Heavyweight 200gsm archival matte paper. Vibrant pigment inks designed for color accuracy and longevity. Shown framed for inspiration — print ships unframed so you can frame it your way.' },
+  { id: 'print_12x16',  name: 'Fine Art Print', size: '12×16"', category: 'Prints', price: 55,  printifyBlueprintId: 804, printifyProviderId: 72, printifyVariantId: 75290,  popular: false, emoji: '📄', description: 'Heavyweight 200gsm archival matte paper. Vibrant pigment inks designed for color accuracy and longevity. Shown framed for inspiration — print ships unframed so you can frame it your way.' },
+  { id: 'print_16x20',  name: 'Fine Art Print', size: '16×20"', category: 'Prints', price: 65,  printifyBlueprintId: 804, printifyProviderId: 72, printifyVariantId: 75292,  popular: true,  emoji: '📄', description: 'Our most popular print. Heavyweight 200gsm archival matte — the same paper used by fine art printmakers. Rich, accurate color that lasts. Shown framed for inspiration; ships unframed.' },
+  { id: 'print_18x24',  name: 'Fine Art Print', size: '18×24"', category: 'Prints', price: 79,  printifyBlueprintId: 804, printifyProviderId: 72, printifyVariantId: 100938, popular: false, emoji: '📄', description: 'Heavyweight 200gsm archival matte paper. Vibrant pigment inks designed for color accuracy and longevity. Shown framed for inspiration — print ships unframed so you can frame it your way.' },
+  { id: 'print_24x36',  name: 'Fine Art Print', size: '24×36"', category: 'Prints', price: 99,  printifyBlueprintId: 804, printifyProviderId: 72, printifyVariantId: 75296,  popular: false, emoji: '📄', description: 'Large format archival matte. At this size, the portrait has real presence — museum-scale detail on paper built to last. Shown framed for inspiration; ships unframed.' },
 
   // ── BLANKETS — Premium soft goods ───────────────────────────────────────
   { id: 'blanket_50x60', name: 'Velveteen Plush Blanket', size: '50×60"', category: 'Home', price: 69, printifyBlueprintId: 522, printifyProviderId: 99, printifyVariantId: 68323, popular: true,  emoji: '🛋️', description: 'We chose velveteen plush because nothing else prints this sharp or feels this soft. 300gsm heavyweight fabric with a silky hand-feel. Not a novelty throw — a real blanket you will actually use.' },
@@ -253,7 +253,17 @@ export function productImage(productId: string): string {
     }
     return sizeMap[productId] || '/products/lifestyle/canvas/16x20.png'
   }
-  if (productId.startsWith('print_'))  return '/portrait-lifestyle.png'
+  if (productId.startsWith('print_')) {
+    const sizeMap: Record<string, string> = {
+      print_8x10:  '/products/lifestyle/framed-print/8x10.png',
+      print_11x14: '/products/lifestyle/framed-print/11x14.png',
+      print_12x16: '/products/lifestyle/framed-print/12x16.png',
+      print_16x20: '/products/lifestyle/framed-print/16x20.png',
+      print_18x24: '/products/lifestyle/framed-print/18x24.png',
+      print_24x36: '/products/lifestyle/framed-print/24x36.png',
+    }
+    return sizeMap[productId] || '/products/lifestyle/framed-print/16x20.png'
+  }
   if (productId.startsWith('blanket_')) return '/products/blanket.png'
   const map: Record<string, string> = {
     baby_blanket: '/products/baby-blanket.png',
