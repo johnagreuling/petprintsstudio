@@ -114,7 +114,7 @@ export default function Home() {
   }, [heroShowcase.length])
 
   return (
-    <main style={{background:'#0A0A0A',color:'#F5F0E8',fontFamily:"'DM Sans',sans-serif",minHeight:'100vh'}}>
+    <main style={{background:'#0A0A0A',color:'#F5F0E8',fontFamily:"'DM Sans',sans-serif"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');
         *{box-sizing:border-box}
@@ -213,7 +213,7 @@ export default function Home() {
       <SiteNav currentPage="home" />
 
       {/* HERO */}
-      <section className="hero-section home-hero" style={{minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'110px 24px 48px',position:'relative',overflow:'hidden'}}>
+      <section className="hero-section home-hero" style={{display:'flex',flexDirection:'column',alignItems:'center',textAlign:'center',padding:'140px 24px 48px',position:'relative',overflow:'hidden'}}>
         {/* Ambient glow */}
         <div style={{position:'absolute',top:'35%',left:'50%',transform:'translate(-50%,-50%)',width:800,height:800,background:'radial-gradient(circle,rgba(201,168,76,.06) 0%,transparent 70%)',pointerEvents:'none'}} />
         <div style={{position:'absolute',top:'70%',left:'20%',width:400,height:400,background:'radial-gradient(circle,rgba(196,98,45,.04) 0%,transparent 70%)',pointerEvents:'none'}} />
