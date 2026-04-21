@@ -139,6 +139,24 @@ export async function initializeDatabase() {
     )
   `;
   
+  // Brand Assets (DAM — digital asset manager)
+  await sql`
+    CREATE TABLE IF NOT EXISTS brand_assets (
+      id SERIAL PRIMARY KEY,
+      filename VARCHAR(500) NOT NULL,
+      url VARCHAR(1000) NOT NULL,
+      r2_key VARCHAR(1000) NOT NULL,
+      category VARCHAR(50) DEFAULT 'uncategorized',
+      tags TEXT[] DEFAULT ARRAY[]::TEXT[],
+      file_size_bytes BIGINT DEFAULT 0,
+      content_type VARCHAR(100),
+      width INT,
+      height INT,
+      notes TEXT DEFAULT '',
+      uploaded_at TIMESTAMP DEFAULT NOW()
+    )
+  `;
+  
   // Create indexes for fast querying
   await sql`CREATE INDEX IF NOT EXISTS idx_sessions_pet_name ON sessions(pet_name)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_sessions_last_name ON sessions(customer_last_name)`;
@@ -156,6 +174,10 @@ export async function initializeDatabase() {
   await sql`CREATE INDEX IF NOT EXISTS idx_page_views_created_at ON page_views(created_at DESC)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_page_views_path ON page_views(path)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_page_views_visitor ON page_views(visitor_id)`;
+  
+  await sql`CREATE INDEX IF NOT EXISTS idx_brand_assets_category ON brand_assets(category)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_brand_assets_uploaded_at ON brand_assets(uploaded_at DESC)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_brand_assets_tags ON brand_assets USING GIN(tags)`;
 }
 
 // Save a new session
@@ -556,4 +578,158 @@ export async function getDashboardStats() {
     },
     conversionRate,
   };
+}
+
+
+// ============================================================================
+// BRAND ASSETS (DAM — digital asset manager)
+// ============================================================================
+
+export interface BrandAssetRecord {
+  id: number;
+  filename: string;
+  url: string;
+  r2_key: string;
+  category: string;
+  tags: string[];
+  file_size_bytes: number;
+  content_type: string | null;
+  width: number | null;
+  height: number | null;
+  notes: string;
+  uploaded_at: string;
+}
+
+export const BRAND_ASSET_CATEGORIES = [
+  'hero',
+  'lifestyle-canvas',
+  'lifestyle-print',
+  'lifestyle-apparel',
+  'lifestyle-home',
+  'ugc',
+  'logo',
+  'stock',
+  'campaign',
+  'uncategorized',
+] as const;
+
+export async function insertBrandAsset(data: {
+  filename: string;
+  url: string;
+  r2_key: string;
+  category?: string;
+  tags?: string[];
+  file_size_bytes?: number;
+  content_type?: string | null;
+  width?: number | null;
+  height?: number | null;
+  notes?: string;
+}) {
+  const category = data.category || 'uncategorized';
+  const tags = data.tags || [];
+  const result = await sql`
+    INSERT INTO brand_assets
+      (filename, url, r2_key, category, tags, file_size_bytes, content_type, width, height, notes)
+    VALUES
+      (${data.filename}, ${data.url}, ${data.r2_key}, ${category}, ${tags as any},
+       ${data.file_size_bytes || 0}, ${data.content_type || null}, ${data.width || null},
+       ${data.height || null}, ${data.notes || ''})
+    RETURNING *
+  `;
+  return result.rows[0] as BrandAssetRecord;
+}
+
+export async function getBrandAssets(opts: {
+  category?: string;
+  search?: string;
+  limit?: number;
+  offset?: number;
+} = {}) {
+  const limit = opts.limit ?? 200;
+  const offset = opts.offset ?? 0;
+
+  if (opts.category && opts.search) {
+    const s = `%${opts.search}%`;
+    const r = await sql`
+      SELECT * FROM brand_assets
+      WHERE category = ${opts.category}
+        AND (filename ILIKE ${s} OR notes ILIKE ${s} OR ${opts.search} = ANY(tags))
+      ORDER BY uploaded_at DESC
+      LIMIT ${limit} OFFSET ${offset}
+    `;
+    return r.rows as BrandAssetRecord[];
+  }
+  if (opts.category) {
+    const r = await sql`
+      SELECT * FROM brand_assets
+      WHERE category = ${opts.category}
+      ORDER BY uploaded_at DESC
+      LIMIT ${limit} OFFSET ${offset}
+    `;
+    return r.rows as BrandAssetRecord[];
+  }
+  if (opts.search) {
+    const s = `%${opts.search}%`;
+    const r = await sql`
+      SELECT * FROM brand_assets
+      WHERE filename ILIKE ${s} OR notes ILIKE ${s} OR ${opts.search} = ANY(tags)
+      ORDER BY uploaded_at DESC
+      LIMIT ${limit} OFFSET ${offset}
+    `;
+    return r.rows as BrandAssetRecord[];
+  }
+  const r = await sql`
+    SELECT * FROM brand_assets
+    ORDER BY uploaded_at DESC
+    LIMIT ${limit} OFFSET ${offset}
+  `;
+  return r.rows as BrandAssetRecord[];
+}
+
+export async function getBrandAssetCountsByCategory() {
+  const r = await sql`
+    SELECT category, COUNT(*)::int as count
+    FROM brand_assets
+    GROUP BY category
+  `;
+  return r.rows as { category: string; count: number }[];
+}
+
+export async function updateBrandAsset(id: number, updates: {
+  category?: string;
+  tags?: string[];
+  notes?: string;
+}) {
+  if (updates.category !== undefined && updates.tags !== undefined && updates.notes !== undefined) {
+    const r = await sql`
+      UPDATE brand_assets
+      SET category = ${updates.category}, tags = ${updates.tags as any}, notes = ${updates.notes}
+      WHERE id = ${id}
+      RETURNING *
+    `;
+    return r.rows[0] as BrandAssetRecord;
+  }
+  if (updates.category !== undefined) {
+    const r = await sql`UPDATE brand_assets SET category = ${updates.category} WHERE id = ${id} RETURNING *`;
+    return r.rows[0] as BrandAssetRecord;
+  }
+  if (updates.tags !== undefined) {
+    const r = await sql`UPDATE brand_assets SET tags = ${updates.tags as any} WHERE id = ${id} RETURNING *`;
+    return r.rows[0] as BrandAssetRecord;
+  }
+  if (updates.notes !== undefined) {
+    const r = await sql`UPDATE brand_assets SET notes = ${updates.notes} WHERE id = ${id} RETURNING *`;
+    return r.rows[0] as BrandAssetRecord;
+  }
+  return null;
+}
+
+export async function getBrandAssetById(id: number) {
+  const r = await sql`SELECT * FROM brand_assets WHERE id = ${id}`;
+  return r.rows[0] as BrandAssetRecord | undefined;
+}
+
+export async function deleteBrandAsset(id: number) {
+  const r = await sql`DELETE FROM brand_assets WHERE id = ${id} RETURNING *`;
+  return r.rows[0] as BrandAssetRecord | undefined;
 }
