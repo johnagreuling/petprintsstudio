@@ -75,7 +75,7 @@ export const metadata: Metadata = {
   },
   verification: {
     // Paste Google Search Console HTML tag content here (e.g. 'abc123xyz')
-    google: 'REPLACE_WITH_GOOGLE_VERIFICATION_CODE',
+    google: 'DEWfFcYLe0muMc194CkK15LyMGrKBDKuo5I9JBXfa24',
     // Paste Bing Webmaster verification code here
     other: {
       'msvalidate.01': 'REPLACE_WITH_BING_VERIFICATION_CODE',
