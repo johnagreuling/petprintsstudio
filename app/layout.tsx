@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     default: 'Pet Prints Studio — Custom Pet Portraits With a Song',
     template: '%s | Pet Prints Studio',
   },
-  description: 'Custom AI-generated pet portraits printed on fine art canvas, with an original song written about your pet. Upload a photo, pick a style, ship it to your door.',
+  description: 'Custom portraits, original songs, and fine luxury goods for pet people. Upload your pet, pick a style, get a one-of-a-kind portrait + song shipped to your door.',
   keywords: ['pet portrait', 'custom pet portrait', 'dog portrait canvas', 'pet memorial gift', 'ai pet portrait', 'custom pet song', 'personalized pet art'],
   authors: [{ name: 'Pet Prints Studio' }],
   creator: 'Pet Prints Studio',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     url: 'https://petprintsstudio.com',
     siteName: 'Pet Prints Studio',
     title: 'Pet Prints Studio — Custom Pet Portraits With a Song',
-    description: 'Custom pet portraits on fine art canvas + an original song about your pet. Upload. Pick a style. Ship to your door.',
+    description: 'Custom portraits, original songs, and fine luxury goods for pet people.',
     images: [
       {
         url: '/og-image.jpg',
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Pet Prints Studio — Custom Pet Portraits With a Song',
-    description: 'Custom pet portraits + an original song about your pet. Upload a photo, pick a style, we ship it.',
+    description: 'Custom portraits, original songs, and fine luxury goods for pet people.',
     images: ['/og-image.jpg'],
   },
   icons: {
