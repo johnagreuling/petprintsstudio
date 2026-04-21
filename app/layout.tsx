@@ -73,6 +73,14 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  verification: {
+    // Paste Google Search Console HTML tag content here (e.g. 'abc123xyz')
+    google: 'REPLACE_WITH_GOOGLE_VERIFICATION_CODE',
+    // Paste Bing Webmaster verification code here
+    other: {
+      'msvalidate.01': 'REPLACE_WITH_BING_VERIFICATION_CODE',
+    },
+  },
 }
 
 // Schema.org structured data for Google Rich Results
