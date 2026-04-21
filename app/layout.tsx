@@ -27,7 +27,7 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL('https://petprintsstudio.com'),
   title: {
-    default: 'Pet Prints Studio — Custom Pet Portraits With a Song',
+    default: 'Pet Prints Studio — Custom Pet Portraits, Songs & Luxury Goods',
     template: '%s | Pet Prints Studio',
   },
   description: 'Custom portraits, original songs, and fine luxury goods for pet people. Upload your pet, pick a style, get a one-of-a-kind portrait + song shipped to your door.',
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://petprintsstudio.com',
     siteName: 'Pet Prints Studio',
-    title: 'Pet Prints Studio — Custom Pet Portraits With a Song',
+    title: 'Pet Prints Studio — Custom Pet Portraits, Songs & Luxury Goods',
     description: 'Custom portraits, original songs, and fine luxury goods for pet people.',
     images: [
       {
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Pet Prints Studio — Custom Pet Portraits With a Song',
+    title: 'Pet Prints Studio — Custom Pet Portraits, Songs & Luxury Goods',
     description: 'Custom portraits, original songs, and fine luxury goods for pet people.',
     images: ['/og-image.jpg'],
   },
