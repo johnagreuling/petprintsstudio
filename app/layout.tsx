@@ -9,14 +9,18 @@ const cormorant = Cormorant_Garamond({
   weight: ['400', '600'],
   style: ['normal', 'italic'],
   variable: '--font-cormorant',
-  display: 'swap',
+  display: 'optional',
+  fallback: ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
+  adjustFontFallback: true,
 })
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600'],
   variable: '--font-dm-sans',
-  display: 'swap',
+  display: 'optional',
+  fallback: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Helvetica Neue', 'Arial', 'sans-serif'],
+  adjustFontFallback: true,
 })
 
 export const metadata: Metadata = {
