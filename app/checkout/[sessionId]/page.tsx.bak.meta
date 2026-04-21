@@ -5,7 +5,6 @@ import { useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { PRODUCTS, MEMORY_UPGRADE_PRICE, DIGITAL_BUNDLE_PRICE, ALL_IMAGES_PRICE, PET_SONG_PRICE } from '@/lib/config'
-import { track as metaTrack } from '@/lib/fb/track-client'
 
 function CheckoutPage() {
   const params = useParams()
@@ -32,23 +31,6 @@ function CheckoutPage() {
     const defaultProduct = PRODUCTS.find(p => p.id === 'canvas_16x20')
     if (defaultProduct) setPrimaryProduct(defaultProduct)
   }, [])
-
-  // [META-CAPI InitiateCheckout] fire once when page loads with valid data
-  const [firedInitCheckout, setFiredInitCheckout] = useState(false)
-  useEffect(() => {
-    if (!imageUrl || !primaryProduct || firedInitCheckout) return
-    setFiredInitCheckout(true)
-    metaTrack('InitiateCheckout', {
-      customData: {
-        value: primaryProduct.price + (isMemory ? MEMORY_UPGRADE_PRICE : 0),
-        currency: 'USD',
-        content_ids: [primaryProduct.id],
-        content_name: `${petName || 'Pet'} ${styleName}`,
-        content_type: 'product',
-        num_items: 1,
-      },
-    })
-  }, [imageUrl, primaryProduct, isMemory, petName, styleName, firedInitCheckout])
 
   const handleCheckout = async () => {
     if (!imageUrl || !primaryProduct) return

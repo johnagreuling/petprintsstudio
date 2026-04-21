@@ -2,7 +2,6 @@
 import { useSearchParams } from 'next/navigation'
 import { useState, useEffect, useRef, useCallback, useMemo, Suspense } from 'react'
 import posthog from 'posthog-js'
-import { track as metaTrack } from '@/lib/fb/track-client'
 import Link from 'next/link'
 import WatermarkedImage from '@/components/WatermarkedImage'
 import SizeCropPreview from '@/components/SizeCropPreview'
@@ -1448,7 +1447,7 @@ function CreatePageInner() {
                         </div>
                       )}
                       {isOn && (
-                        <button onClick={(e)=>{ e.stopPropagation(); if(!picked) return; const sz=cartExtraSizes[p.id]||''; const cl=cartExtraColors[p.id]||''; const vk=[cl,sz].filter(Boolean).join(' / '); const qty=cartExtraQty[p.id]||1; const ts=Date.now(); addItem({lineId:`${p.id}_${ts}`,productId:p.id,productName:p.name,variantKey:vk,variantId:(p as any).printifyVariantId,blueprintId:(p as any).printifyBlueprintId,quantity:qty,unitPrice:p.price,portraitUrl:picked.url,styleName:picked.styleName,category:p.category,addedAt:ts}); posthog.capture('portrait_added_to_cart', { product_id: p.id, product_name: p.name, product_category: p.category, unit_price: p.price, quantity: qty, style_name: picked.styleName }); metaTrack('AddToCart', /* [META-CAPI AddToCart] */ { customData: { content_ids: [p.id], content_name: p.name, content_type: 'product', value: p.price * qty, currency: 'USD', num_items: qty } }); setCartExtraQty(prev=>({...prev,[p.id]:1})); setJustAddedId(p.id); setTimeout(()=>setJustAddedId(cur => cur === p.id ? null : cur), 1400); }}
+                        <button onClick={(e)=>{ e.stopPropagation(); if(!picked) return; const sz=cartExtraSizes[p.id]||''; const cl=cartExtraColors[p.id]||''; const vk=[cl,sz].filter(Boolean).join(' / '); const qty=cartExtraQty[p.id]||1; const ts=Date.now(); addItem({lineId:`${p.id}_${ts}`,productId:p.id,productName:p.name,variantKey:vk,variantId:(p as any).printifyVariantId,blueprintId:(p as any).printifyBlueprintId,quantity:qty,unitPrice:p.price,portraitUrl:picked.url,styleName:picked.styleName,category:p.category,addedAt:ts}); posthog.capture('portrait_added_to_cart', { product_id: p.id, product_name: p.name, product_category: p.category, unit_price: p.price, quantity: qty, style_name: picked.styleName }); setCartExtraQty(prev=>({...prev,[p.id]:1})); setJustAddedId(p.id); setTimeout(()=>setJustAddedId(cur => cur === p.id ? null : cur), 1400); }}
                           style={{margin:'4px 4px 8px',padding:'8px 10px',fontSize:10,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',background: justAddedId === p.id ? 'var(--gold)' : 'rgba(201,168,76,.12)',border:'1px solid var(--gold)',color: justAddedId === p.id ? 'var(--ink)' : 'var(--gold)',cursor:'pointer',width:'calc(100% - 8px)',transition:'all .18s',transform: justAddedId === p.id ? 'scale(.97)' : 'scale(1)'}}>
                           {justAddedId === p.id ? '✓ Added to Cart' : (cart.some(ci => ci.productId === p.id) ? '+ Add Another' : '+ Add to Cart')}
                         </button>

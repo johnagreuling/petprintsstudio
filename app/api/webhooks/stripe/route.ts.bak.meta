@@ -87,37 +87,6 @@ async function fulfillOrder(session: any, stripe: Stripe) {
     console.error('Failed to record order in database:', err)
   }
 
-  // [META-CAPI Purchase] Server-side event to Meta. Idempotent via event_id.
-  try {
-    const { sendCapiEvent } = await import('@/lib/fb/capi')
-    const _fullName = (customer.name || shipping?.name || '').trim()
-    const [_firstName, ..._rest] = _fullName.split(' ')
-    await sendCapiEvent({
-      eventName: 'Purchase',
-      eventId: `purchase_${session.id}`,
-      actionSource: 'website',
-      eventSourceUrl: session.success_url || 'https://petprintsstudio.com/order-success',
-      userData: {
-        email: customer.email || undefined,
-        phone: customer.phone || undefined,
-        firstName: _firstName || undefined,
-        lastName: _rest.join(' ') || undefined,
-        externalId: (session.customer as string) || session.id,
-      },
-      customData: {
-        value: totalCents / 100,
-        currency: (session.currency || 'usd').toUpperCase(),
-        content_ids: [meta.primaryProductId].filter(Boolean),
-        content_name: `${meta.petName || 'Pet'} ${meta.styleName || 'Portrait'}`,
-        content_type: 'product',
-        num_items: lineItems.data.length,
-      },
-    })
-    console.log(`Meta Purchase event sent for ${session.id}`)
-  } catch (_err) {
-    console.error('Meta CAPI Purchase send failed (non-fatal):', _err)
-  }
-
   // Build shipping address
   const address = shipping ? {
     first_name: (shipping.name || customer.name || 'Customer').split(' ')[0],
