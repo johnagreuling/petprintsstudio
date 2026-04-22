@@ -78,7 +78,7 @@ export const metadata: Metadata = {
     google: 'DEWfFcYLe0muMc194CkK15LyMGrKBDKuo5I9JBXfa24',
     // Paste Bing Webmaster verification code here
     other: {
-      'msvalidate.01': 'REPLACE_WITH_BING_VERIFICATION_CODE',
+      'msvalidate.01': 'DAF3A09D63E6A5D256D5C68728BA4076',
     },
   },
 }
