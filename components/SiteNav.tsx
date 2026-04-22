@@ -47,10 +47,10 @@ export default function SiteNav({ currentPage = null }: { currentPage?: NavPage 
         background: 'rgba(10,10,10,.92)',
         backdropFilter: 'blur(16px)',
         borderBottom: '1px solid rgba(245,240,232,.06)',
-        height: 74,
+        height: 88,
       }} className="site-nav">
         <Link href="/" style={{display:'flex',alignItems:'center',gap:12,textDecoration:'none'}} onClick={() => setMenuOpen(false)}>
-          <Logo height={56} priority />
+          <Logo height={72} priority />
         </Link>
 
         {/* Desktop links */}
