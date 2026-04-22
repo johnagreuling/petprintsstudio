@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="700" viewBox="0 0 2000 700">
+<rect width="100%" height="100%" fill="#F6E7C9"/>
+<g transform="translate(140,80)">
+  <g stroke="#C8A15A" fill="none" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" transform="translate(0,0) scale(0.9)">
+    <path d="M 170 300 L 170 110 A 130 130 0 0 1 430 110 L 430 300" />
+    <path d="M 240 275 C 220 225, 220 178, 248 135 C 275 95, 312 82, 348 92 C 368 98, 388 110, 394 125" />
+    <path d="M 342 116 C 356 100, 385 98, 398 110 C 411 122, 408 138, 392 143" />
+    <path d="M 309 113 C 309 96, 321 87, 336 88 C 347 89, 356 97, 355 111" />
+    <path d="M 317 170 C 297 153, 264 157, 250 186 C 235 217, 247 247, 274 262 C 302 277, 336 265, 347 236" />
+    <path d="M 363 199 C 375 213, 383 232, 383 255" />
+    <path d="M 258 300 L 342 300" />
+    <path d="M 286 256 C 273 241, 249 243, 244 264 C 240 285, 256 301, 280 311 C 304 301, 320 285, 316 264 C 311 243, 287 241, 274 256" />
+  </g>
+  <g transform="translate(420,0)">
+    <text x="520" y="255" text-anchor="middle" fill="#3A2B21"
+          font-size="118" letter-spacing="10"
+          font-family="'Cormorant Garamond','Garamond','Baskerville','Times New Roman',serif">PET PRINTS</text>
+    <line x1="175" y1="365" x2="315" y2="365" stroke="#C8A15A" stroke-width="4"/>
+    <line x1="725" y1="365" x2="865" y2="365" stroke="#C8A15A" stroke-width="4"/>
+    <text x="520" y="390" text-anchor="middle" fill="#3A2B21"
+          font-size="72" letter-spacing="20"
+          font-family="'Cormorant Garamond','Garamond','Baskerville','Times New Roman',serif">STUDIO</text>
+    <line x1="265" y1="475" x2="440" y2="475" stroke="#C8A15A" stroke-width="4"/>
+    <line x1="600" y1="475" x2="775" y2="475" stroke="#C8A15A" stroke-width="4"/>
+    <path d="M 520 450
+             C 510 450, 493 452, 491 469
+             C 489 484, 502 495, 520 505
+             C 538 495, 551 484, 549 469
+             C 547 452, 530 450, 520 450" fill="none" stroke="#C8A15A" stroke-width="4"/>
+  </g>
+</g>
+</svg>

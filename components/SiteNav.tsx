@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { useCart } from '@/lib/cart-context'
+import Logo from '@/components/Logo'
 
 type NavPage = 'home' | 'styles' | 'shop' | 'about' | 'faq' | 'shipping' | null
 
@@ -49,8 +50,7 @@ export default function SiteNav({ currentPage = null }: { currentPage?: NavPage 
         height: 74,
       }} className="site-nav">
         <Link href="/" style={{display:'flex',alignItems:'center',gap:12,textDecoration:'none'}} onClick={() => setMenuOpen(false)}>
-          <span style={{fontSize:24}}>🐾</span>
-          <span className="serif" style={{fontSize:18,letterSpacing:'.06em',color:'var(--cream)',whiteSpace:'nowrap'}}>Pet Prints Studio</span>
+          <Logo height={32} priority />
         </Link>
 
         {/* Desktop links */}

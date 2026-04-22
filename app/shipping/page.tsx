@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Logo from '@/components/Logo'
 import SiteNav from '@/components/SiteNav'
 
 export default function Shipping() {
@@ -78,7 +79,7 @@ export default function Shipping() {
       </div>
 
       <footer style={{background:'#080808',padding:'44px 60px',display:'flex',justifyContent:'space-between',alignItems:'center',borderTop:'1px solid var(--border)',flexWrap:'wrap',gap:20}}>
-        <div style={{display:'flex',alignItems:'center',gap:10}}><span>🐾</span><span className="serif" style={{fontSize:18}}>Pet Prints Studio</span></div>
+        <Logo height={24} />
         <div style={{fontSize:11,color:'var(--muted)'}}>© 2025 Pet Prints Studio</div>
         <div style={{display:'flex',gap:24}}>
           {[{l:'FAQ',h:'/faq'},{l:'Shipping & Returns',h:'/shipping'},{l:'About',h:'/about'},{l:'Contact',h:'mailto:support@petprintsstudio.com'}].map(({l,h})=>(
