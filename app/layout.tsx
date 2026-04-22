@@ -69,6 +69,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://petprintsstudio.com',
   },
+  other: {
+    'fb:app_id': '3303399379822169',
+  },
   robots: {
     index: true,
     follow: true,
