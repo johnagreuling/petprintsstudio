@@ -82,6 +82,7 @@ export const metadata: Metadata = {
     // Paste Bing Webmaster verification code here
     other: {
       'msvalidate.01': 'DAF3A09D63E6A5D256D5C68728BA4076',
+      'facebook-domain-verification': '2jbgrke00k83txgkoy8xsyteqjias9',
     },
   },
 }
