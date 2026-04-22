@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
+import { requireAdminAuth } from '@/lib/admin-auth';
 
 // ═══════════════════════════════════════════════════════════════════════
 //  CURATE PICKS API
@@ -18,7 +19,9 @@ const r2 = new S3Client({
 
 const PICKS_KEY = 'showcase/picks.json'
 
-export async function GET() {
+export async function GET(request: Request) {
+  const authError = await requireAdminAuth(request);
+  if (authError) return authError;
   try {
     const res = await r2.send(new GetObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME!,
@@ -38,6 +41,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const authError = await requireAdminAuth(req);
+  if (authError) return authError;
   try {
     const { picks } = await req.json()
     if (!picks || typeof picks !== 'object') {

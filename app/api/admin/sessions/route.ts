@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { searchSessions, getSessionCount, initializeDatabase } from '@/lib/db';
+import { requireAdminAuth } from '@/lib/admin-auth';
 
 export async function GET(request: NextRequest) {
+  const authError = await requireAdminAuth(request);
+  if (authError) return authError;
   try {
     // Initialize DB on first call
     await initializeDatabase();

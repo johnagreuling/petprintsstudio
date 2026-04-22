@@ -7,6 +7,7 @@ import {
   BRAND_ASSET_CATEGORIES,
   initializeDatabase,
 } from '@/lib/db';
+import { requireAdminAuth } from '@/lib/admin-auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,6 +22,8 @@ const r2 = new S3Client({
 
 // PATCH /api/admin/assets/[id]
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const authError = await requireAdminAuth(req);
+  if (authError) return authError;
   try {
     await initializeDatabase();
     const { id: idStr } = await params;
@@ -54,6 +57,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
 // DELETE /api/admin/assets/[id]
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const authError = await requireAdminAuth(req);
+  if (authError) return authError;
   try {
     await initializeDatabase();
     const { id: idStr } = await params;

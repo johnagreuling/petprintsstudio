@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@vercel/postgres';
+import { requireAdminAuth } from '@/lib/admin-auth';
 
 interface OrderEmail {
   id: number;
@@ -18,6 +19,8 @@ interface SessionEmail {
 }
 
 export async function GET(request: NextRequest) {
+  const authError = await requireAdminAuth(request);
+  if (authError) return authError;
   const password = request.nextUrl.searchParams.get('password');
   
   if (password !== 'mason2024') {

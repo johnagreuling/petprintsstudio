@@ -11,6 +11,7 @@ import {
   getOrders,
   searchSessions
 } from '@/lib/db';
+import { requireAdminAuth } from '@/lib/admin-auth';
 
 // Helper to parse JSONB fields that may come back as strings
 function parseSessionImages(sessions: any[]) {
@@ -22,6 +23,8 @@ function parseSessionImages(sessions: any[]) {
 }
 
 export async function GET(request: Request) {
+  const authError = await requireAdminAuth(request);
+  if (authError) return authError;
   try {
     const { searchParams } = new URL(request.url);
     const days = parseInt(searchParams.get('days') || '30');

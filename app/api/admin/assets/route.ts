@@ -8,6 +8,7 @@ import {
   initializeDatabase,
   BRAND_ASSET_CATEGORIES,
 } from '@/lib/db';
+import { requireAdminAuth } from '@/lib/admin-auth';
 
 export const maxDuration = 60;
 export const runtime = 'nodejs';
@@ -75,6 +76,8 @@ function readImageDimensions(buf: Buffer, contentType: string): { width: number 
 
 // GET /api/admin/assets?category=&search=
 export async function GET(req: NextRequest) {
+  const authError = await requireAdminAuth(req);
+  if (authError) return authError;
   try {
     await initializeDatabase();
     const { searchParams } = new URL(req.url);
@@ -98,6 +101,8 @@ export async function GET(req: NextRequest) {
 
 // POST /api/admin/assets (multipart/form-data: file, category, tags?, notes?)
 export async function POST(req: NextRequest) {
+  const authError = await requireAdminAuth(req);
+  if (authError) return authError;
   try {
     await initializeDatabase();
     const formData = await req.formData();

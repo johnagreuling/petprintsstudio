@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import axios from 'axios'
+import { requireAdminAuth } from '@/lib/admin-auth';
 
 export async function POST(req: NextRequest) {
+  const authError = await requireAdminAuth(req);
+  if (authError) return authError;
   try {
     const { imageUrl, checkoutLink, customerEmail, customerPhone, petName, personalMessage } = await req.json()
 

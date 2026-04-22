@@ -7,6 +7,7 @@ import {
   DEFAULT_COMPOSITION,
   type SubjectProfile,
 } from '@/lib/portrait-engine';
+import { requireAdminAuth } from '@/lib/admin-auth';
 
 // ════════════════════════════════════════════════════════════════
 //  ADMIN STYLES API
@@ -39,7 +40,9 @@ const SAMPLE_PET: SubjectProfile = {
   rawAnalysis: '',
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const authError = await requireAdminAuth(request);
+  if (authError) return authError;
   try {
     // Get sample images from recent sessions for each style
     const styleImages: Record<string, string> = {};

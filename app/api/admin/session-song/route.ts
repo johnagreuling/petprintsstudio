@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
+import { requireAdminAuth } from '@/lib/admin-auth';
 
 export const dynamic = 'force-dynamic'
 
@@ -17,6 +18,8 @@ function checkAuth(req: NextRequest) {
 
 // PATCH: update session with song URL after generating in Suno
 export async function PATCH(req: NextRequest) {
+  const authError = await requireAdminAuth(req);
+  if (authError) return authError;
   if (!checkAuth(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   try {
     const { sessionFolder, songUrl, songTitle } = await req.json()
@@ -33,6 +36,8 @@ export async function PATCH(req: NextRequest) {
 
 // GET: retrieve suno prompt for a session
 export async function GET(req: NextRequest) {
+  const authError = await requireAdminAuth(req);
+  if (authError) return authError;
   if (!checkAuth(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const folder = req.nextUrl.searchParams.get('folder')
   if (!folder) return NextResponse.json({ error: 'folder param required' }, { status: 400 })
