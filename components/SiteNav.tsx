@@ -50,7 +50,7 @@ export default function SiteNav({ currentPage = null }: { currentPage?: NavPage 
         height: 74,
       }} className="site-nav">
         <Link href="/" style={{display:'flex',alignItems:'center',gap:12,textDecoration:'none'}} onClick={() => setMenuOpen(false)}>
-          <Logo height={40} priority />
+          <Logo height={56} priority />
         </Link>
 
         {/* Desktop links */}

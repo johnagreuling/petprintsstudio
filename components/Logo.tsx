@@ -18,15 +18,14 @@ export function Logo({
   className?: string
   priority?: boolean
 }) {
-  const width = Math.round(height * 3.2)  // horizontal logo is ~3.2:1
+  const width = Math.round(height * 2.28)  // logo is 2.28:1 after transparent-crop
   return (
     <Image
-      src="/logos/petprintsstudio_horizontal_transparent.svg"
+      src="/logo.png"
       alt="Pet Prints Studio"
       width={width}
       height={height}
       priority={priority}
-      unoptimized
       className={className}
       style={{ height, width: 'auto', display: 'block' }}
     />
