@@ -223,7 +223,7 @@ export default function Home() {
         </h1>
 
         <div className="fu fu3" style={{marginBottom:24,display:'flex',flexDirection:'column',gap:16,alignItems:'center',maxWidth:820,margin:'0 auto 24px'}}>
-          <div style={{fontSize:10,letterSpacing:'.3em',textTransform:'uppercase',color:'var(--gold)',fontWeight:600}}>A Multisensory Pet Experience</div>
+          <div style={{fontSize:13,letterSpacing:'.32em',textTransform:'uppercase',color:'var(--gold)',fontWeight:700}}>A Multisensory Pet Experience</div>
           <div className="serif" style={{fontSize:'clamp(20px,2.2vw,28px)',color:'var(--cream)',lineHeight:1.35,fontWeight:400,textAlign:'center',letterSpacing:'-.005em',maxWidth:700}}>
             A portrait, an original song, and an <em style={{color:'var(--gold)'}}>heirloom keepsake</em>.
           </div>
