@@ -156,6 +156,10 @@ export default function CartPage() {
           </div>
         )}
 
+        <div style={{background:'rgba(201,168,76,.06)',border:'1px solid rgba(201,168,76,.2)',padding:'12px 16px',marginBottom:14,fontSize:12,color:'var(--cream)',textAlign:'center',letterSpacing:'.02em'}}>
+          ✓ <strong style={{color:'var(--gold)'}}>100% Satisfaction Guarantee</strong> — we replace any item with print quality or defect issues, free of charge.
+        </div>
+
         <button
           onClick={handleCheckout}
           disabled={checkingOut || !orderMeta.songGenre}

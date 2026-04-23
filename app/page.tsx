@@ -258,6 +258,9 @@ export default function Home() {
               <div style={{display:'inline-block',background:'var(--gold)',color:'var(--ink)',padding:'13px 32px',fontSize:11,fontWeight:700,letterSpacing:'.18em',textTransform:'uppercase'}}>Start Their Story →</div>
             </div>
           </Link>
+          <div style={{textAlign:'center',marginTop:14,fontSize:11,letterSpacing:'.15em',textTransform:'uppercase',color:'var(--muted)',fontWeight:500}}>
+            ✓ Every order backed by our <span style={{color:'var(--gold)'}}>100% Satisfaction Guarantee</span>
+          </div>
         </div>
 
         {/* ── Hero Portrait Slider ─────────────────────────────────

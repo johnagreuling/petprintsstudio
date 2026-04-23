@@ -5,6 +5,10 @@ import SiteNav from '@/components/SiteNav'
 
 const FAQS = [
   {
+    q: "What if I have a problem with my print?",
+    a: "Every item we print is backed by our 100% Satisfaction Guarantee. If anything you ordered arrives with a print quality issue, defect, or damage, we will ship you a replacement free of charge. Just email us at support@petprintsstudio.com and we will make it right.",
+  },
+  {
     q: 'How does it work?',
     a: 'Upload a clear photo of your pet, tell us a little about them (name, personality, favorite things), pick a style from our curated library, and we generate your portrait. You pick your favorite, choose a product, and we handle printing and shipping.',
   },
