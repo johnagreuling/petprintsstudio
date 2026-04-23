@@ -33,8 +33,8 @@ const FAQS = [
     a: 'We compose an original song about your pet — their name in the lyrics, their personality in the melody. It\'s a full-length, professionally produced track delivered as an MP3. A QR code on your portrait links to the song so anyone can scan and listen.',
   },
   {
-    q: 'What does "starting at $49" mean?',
-    a: 'Fine art prints start at $39. Gallery-wrapped canvas prints start at $79 for 8×10". The most popular size is 16×20" canvas at $129. Digital portrait bundles, songs, and other products are add-ons you can select at checkout.',
+    q: 'How much does a Signature Experience cost?',
+    a: 'Our Signature Experience starts at $79 and includes your custom portrait, an original song written for your pet, and one heirloom keepsake — either an 8×10 canvas, a larger canvas (11×14 through 24×36), or a premium merchandise item. Individual items are also available starting at $24, and every order — no matter the item — includes your custom portrait and original song.',
   },
   {
     q: 'Can I get a portrait of multiple pets?',

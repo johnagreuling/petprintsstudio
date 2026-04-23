@@ -118,7 +118,7 @@ const jsonLd = {
         '@type': 'AggregateOffer',
         url: 'https://petprintsstudio.com/create',
         priceCurrency: 'USD',
-        lowPrice: '49',
+        lowPrice: '79',
         highPrice: '199',
         availability: 'https://schema.org/InStock',
       },
