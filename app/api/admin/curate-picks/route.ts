@@ -20,8 +20,6 @@ const r2 = new S3Client({
 const PICKS_KEY = 'showcase/picks.json'
 
 export async function GET(request: Request) {
-  const authError = await requireAdminAuth(request);
-  if (authError) return authError;
   try {
     const res = await r2.send(new GetObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME!,

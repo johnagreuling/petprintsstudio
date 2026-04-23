@@ -41,8 +41,6 @@ const SAMPLE_PET: SubjectProfile = {
 }
 
 export async function GET(request: Request) {
-  const authError = await requireAdminAuth(request);
-  if (authError) return authError;
   try {
     // Get sample images from recent sessions for each style
     const styleImages: Record<string, string> = {};
