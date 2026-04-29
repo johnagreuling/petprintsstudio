@@ -1,10 +1,8 @@
 // ════════════════════════════════════════════════════════════════════════════
 //  PORTRAIT ENGINE — Public API
 //
-//  Backwards-compatible with existing imports. New async store functions
-//  added for DB-backed reads. Existing sync code-path (ALL_STYLES,
-//  getActiveStyles) continues to work unchanged for any caller that
-//  doesn't yet need DB-driven editing.
+//  Import everything from here:
+//    import { analyzePetSubject, buildPrompt, ALL_STYLES, ... } from '@/lib/portrait-engine'
 // ════════════════════════════════════════════════════════════════════════════
 
 // Types
@@ -34,7 +32,7 @@ export {
   DEFAULT_COMPOSITION,
 } from './prompt-builder'
 
-// Code-defined style library (still works as fallback / static reference)
+// Style library
 export {
   ALL_STYLES,
   CATEGORY_INFO,
@@ -43,20 +41,3 @@ export {
   getActiveStyles,
   getStyleCatalog,
 } from './styles'
-
-// NEW: DB-backed store (preferred for any code that needs live edits)
-export {
-  readAllStyles,
-  readActiveStyles,
-  readStyleById,
-  readCategoryCatalog,
-  createStyle,
-  updateStyle,
-  deleteStyle,
-  setActive,
-  seedFromCode,
-  recordTest,
-  getTestCostStats,
-} from './style-store'
-
-export type { StyleUpsertInput } from './style-store'

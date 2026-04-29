@@ -1,128 +1,176 @@
-import { NextResponse } from 'next/server';
-import { sql } from '@vercel/postgres';
+import { NextResponse, NextRequest } from 'next/server'
+import { sql } from '@vercel/postgres'
 import {
-  getActiveStyles,
-  getStyleCatalog,
+  readActiveStyles,
+  readAllStyles,
+  readCategoryCatalog,
+  createStyle,
   buildPrompt,
   DEFAULT_COMPOSITION,
+  getTestCostStats,
   type SubjectProfile,
-} from '@/lib/portrait-engine';
-import { requireAdminAuth } from '@/lib/admin-auth';
+  type StyleUpsertInput,
+} from '@/lib/portrait-engine'
 
 // ════════════════════════════════════════════════════════════════
 //  ADMIN STYLES API
 //
-//  Reads from the portrait engine's style library (single source of truth).
-//  Builds a sample prompt for each style using a demo pet description.
-//  Pulls sample images from recent generation sessions in the database.
+//  GET   /api/admin/styles       — list all styles (active + inactive),
+//                                   with assembled prompt, sample image,
+//                                   categories, and cost stats.
+//  POST  /api/admin/styles       — create a new style.
 // ════════════════════════════════════════════════════════════════
 
-// Sample pet profile for generating example prompts in the admin view
 const SAMPLE_PET: SubjectProfile = {
   subjectType: 'pet',
-  summary: 'Goldendoodle with golden apricot coat — signature teddy bear face with round dark eyes',
+  summary: 'a tan standard poodle dog with curly fur, dark eyes, and a black nose',
   traits: {
     species: 'dog',
-    breed: 'Goldendoodle with loose curly coat',
-    coatColors: 'golden apricot primary with cream highlights on chest and muzzle',
-    coatTexture: 'medium-length loose wavy curls, soft and fluffy, matte finish',
-    markings: 'darker apricot on ears fading to cream on muzzle, lighter chest',
-    eyeColor: 'dark brown, warm and expressive',
-    earType: 'medium floppy drop ears, covered in wavy fur',
-    muzzleShape: 'medium-length rounded muzzle with prominent black nose',
-    noseColor: 'solid black',
-    bodySize: 'medium build, athletic but fluffy',
-    accessories: 'none visible',
-    expression: 'happy, relaxed, friendly with soft eyes',
-    distinctiveFeatures: 'signature teddy bear face with round dark eyes, prominent fluffy golden curls framing face',
+    breed: 'standard poodle',
+    coatColor: 'tan',
+    coatTexture: 'curly',
   },
-  mustPreserve: ['breed', 'coatColors', 'coatTexture', 'markings', 'eyeColor', 'earType', 'muzzleShape', 'distinctiveFeatures'],
+  mustPreserve: ['breed', 'coatColor', 'coatTexture'],
   rawAnalysis: '',
 }
 
-export async function GET(request: Request) {
+// ─── GET ─────────────────────────────────────────────────────────
+export async function GET(req: NextRequest) {
   try {
-    // Get sample images from recent sessions for each style
-    const styleImages: Record<string, string> = {};
-    
+    const url = new URL(req.url)
+    const includeInactive = url.searchParams.get('includeInactive') !== 'false'
+
+    // 1. Style data
+    const allStyles = includeInactive ? await readAllStyles() : await readActiveStyles()
+
+    // 2. Sample images from past sessions
+    const styleImages: Record<string, string> = {}
     try {
-      const result = await sql`
-        SELECT images FROM sessions 
-        WHERE images IS NOT NULL AND jsonb_array_length(images) > 0
-        ORDER BY created_at DESC 
-        LIMIT 30
-      `;
-      
-      for (const row of result.rows) {
-        const images = typeof row.images === 'string' ? JSON.parse(row.images) : row.images;
-        for (const img of images || []) {
-          const styleId = img.style_id || img.styleId;
-          if (styleId && !styleImages[styleId] && img.url) {
-            // Strip variant suffix (e.g., "museum_black_0" → "museum_black")
-            const baseId = styleId.replace(/_\d+$/, '');
-            if (!styleImages[baseId]) {
-              styleImages[baseId] = img.url;
-            }
-          }
+      const { rows } = await sql`
+        SELECT images FROM sessions
+        WHERE images IS NOT NULL
+        ORDER BY created_at DESC
+        LIMIT 200
+      `
+      for (const row of rows) {
+        const imgs = typeof row.images === 'string' ? JSON.parse(row.images) : row.images
+        for (const img of imgs || []) {
+          const sid = img.style_id || img.styleId
+          if (!sid || !img.url) continue
+          const baseId = sid.replace(/_\d+$/, '')
+          if (!styleImages[baseId]) styleImages[baseId] = img.url
         }
       }
-    } catch (dbErr) {
-      console.error('DB query for style images failed (non-fatal):', dbErr);
+    } catch (err) {
+      console.warn('[admin/styles] sessions image lookup failed (non-fatal):', err)
     }
 
-    // Build the style catalog from the portrait engine
-    const catalog = getStyleCatalog();
-    const allStyles = getActiveStyles();
+    // 3. Override sample with last test image if newer (admin tests are ground truth)
+    try {
+      const { rows: testRows } = await sql`
+        SELECT id, last_test_url FROM styles WHERE last_test_url IS NOT NULL
+      `
+      for (const row of testRows) {
+        if (row.last_test_url) styleImages[row.id] = row.last_test_url
+      }
+    } catch { /* table may not exist yet — fine */ }
 
-    // Build response: for each style, generate the sample prompt and attach sample image
-    const stylesWithPrompts = allStyles.map(style => {
-      const promptPackage = buildPrompt(SAMPLE_PET, style, DEFAULT_COMPOSITION);
-      
+    // 4. Build response per style with assembled prompt
+    const styles = allStyles.map(style => {
+      const promptPackage = buildPrompt(SAMPLE_PET, style, DEFAULT_COMPOSITION)
       return {
         id: style.id,
         name: style.name,
         emoji: style.emoji,
         category: style.category,
-        description: style.description,
         version: style.version,
-        // The full assembled prompt (what the API actually sends to OpenAI)
-        gptPrompt: promptPackage.fullPrompt,
-        // Individual blocks for inspection
-        blocks: promptPackage.blocks,
-        // Style-specific fields for reference
+        description: style.description,
         technique: style.technique,
         background: style.background,
         lighting: style.lighting,
         colorPalette: style.colorPalette,
         mood: style.mood,
         paintSurface: style.paintSurface,
-        preferredFraming: style.preferredFraming || 'preserve_source',
+        preferredFraming: (style as any).preferredFraming || 'preserve_source',
         forbiddenTraits: style.forbiddenTraits,
         styleConstraints: style.styleConstraints,
-        qualityTier: style.qualityTier || 'medium',
-        // Sample image from past generations
+        isActive: style.isActive !== false,
+        gptPrompt: promptPackage.fullPrompt,
+        blocks: promptPackage.blocks,
         sampleImageUrl: styleImages[style.id] || null,
-      };
-    });
+      }
+    })
+
+    // 5. Categories
+    const catalog = await readCategoryCatalog()
+    const categories = catalog.map(c => ({
+      id: c.category,
+      name: c.info.name,
+      description: c.info.description,
+      emoji: c.info.emoji,
+      styleCount: c.styles.length,
+    }))
+
+    // 6. Cost stats for the meter
+    const costs = await getTestCostStats()
 
     return NextResponse.json({
-      styles: stylesWithPrompts,
-      categories: catalog.map(c => ({
-        id: c.category,
-        name: c.info.name,
-        description: c.info.description,
-        emoji: c.info.emoji,
-        styleCount: c.styles.length,
-      })),
+      styles,
+      categories,
+      costs,
       meta: {
-        totalStyles: allStyles.length,
-        stylesWithSamples: Object.keys(styleImages).length,
-        engineVersion: '2.0',
+        totalStyles: styles.length,
+        activeStyles: styles.filter(s => s.isActive).length,
+        stylesWithSamples: styles.filter(s => s.sampleImageUrl).length,
+        engineVersion: '2.1',
         generatedAt: new Date().toISOString(),
-      }
-    });
+      },
+    })
   } catch (error) {
-    console.error('Styles API error:', error);
-    return NextResponse.json({ error: 'Failed to fetch styles', details: String(error) }, { status: 500 });
+    console.error('Styles API GET error:', error)
+    return NextResponse.json(
+      { error: 'Failed to fetch styles', details: String(error) },
+      { status: 500 }
+    )
+  }
+}
+
+// ─── POST ────────────────────────────────────────────────────────
+export async function POST(req: NextRequest) {
+  try {
+    const body = (await req.json()) as Partial<StyleUpsertInput>
+
+    // Required fields
+    const errors: string[] = []
+    if (!body.id || !/^[a-z0-9_]{2,40}$/.test(body.id))
+      errors.push('id (lowercase, digits, underscores; 2-40 chars)')
+    if (!body.name || body.name.trim().length < 2) errors.push('name')
+    if (!body.emoji) errors.push('emoji')
+    if (!body.category) errors.push('category')
+
+    if (errors.length) {
+      return NextResponse.json(
+        { error: 'Missing or invalid fields', fields: errors },
+        { status: 400 }
+      )
+    }
+
+    // Check for collision
+    const { rows } = await sql`SELECT id FROM styles WHERE id = ${body.id!} LIMIT 1`
+    if (rows.length > 0) {
+      return NextResponse.json(
+        { error: `Style id "${body.id}" already exists` },
+        { status: 409 }
+      )
+    }
+
+    const created = await createStyle(body as StyleUpsertInput)
+    return NextResponse.json({ ok: true, style: created }, { status: 201 })
+  } catch (error) {
+    console.error('Styles API POST error:', error)
+    return NextResponse.json(
+      { error: 'Failed to create style', details: String(error) },
+      { status: 500 }
+    )
   }
 }
