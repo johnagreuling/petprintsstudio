@@ -22,6 +22,23 @@ const CACHE_TTL_MS = 30_000
 function invalidateCache() { cache = null }
 
 // ─── Row → Template conversion ──────────────────────────────────
+// Coerces array | JSON-array string | JSON-string | comma-separated string
+function parseList(v: any): string[] {
+  if (Array.isArray(v)) return v
+  if (typeof v === 'string') {
+    const s = v.trim()
+    if (!s) return []
+    try {
+      const parsed = JSON.parse(s)
+      if (Array.isArray(parsed)) return parsed
+      if (typeof parsed === 'string') return parsed.split(',').map(x => x.trim()).filter(Boolean)
+    } catch {
+      return s.split(',').map(x => x.trim()).filter(Boolean)
+    }
+  }
+  return []
+}
+
 function rowToStyle(row: any): StyleTemplate {
   return {
     id: row.id,
@@ -37,12 +54,8 @@ function rowToStyle(row: any): StyleTemplate {
     mood: row.mood ?? '',
     paintSurface: row.paint_surface ?? '',
     preferredFraming: (row.preferred_framing ?? 'preserve_source') as FramingMode,
-    forbiddenTraits: Array.isArray(row.forbidden_traits)
-      ? row.forbidden_traits
-      : JSON.parse(row.forbidden_traits ?? '[]'),
-    styleConstraints: Array.isArray(row.style_constraints)
-      ? row.style_constraints
-      : JSON.parse(row.style_constraints ?? '[]'),
+    forbiddenTraits: parseList(row.forbidden_traits),
+    styleConstraints: parseList(row.style_constraints),
     isActive: row.is_active !== false,
   }
 }
@@ -62,7 +75,9 @@ export async function readAllStyles(): Promise<StyleTemplate[]> {
       cache = { stamp: now, styles: ALL_STYLES }
       return ALL_STYLES
     }
-    const styles = rows.map(rowToStyle)
+    const styles = rows
+      .map(r => { try { return rowToStyle(r) } catch (e) { console.warn('[style-store] bad row', r.id, e); return null } })
+      .filter((s): s is StyleTemplate => s !== null)
     cache = { stamp: now, styles }
     return styles
   } catch (err) {
@@ -125,8 +140,8 @@ export async function createStyle(input: StyleUpsertInput): Promise<StyleTemplat
       ${input.mood ?? ''},
       ${input.paintSurface ?? ''},
       ${input.preferredFraming ?? 'preserve_source'},
-      ${JSON.stringify(input.forbiddenTraits ?? [])}::jsonb,
-      ${JSON.stringify(input.styleConstraints ?? [])}::jsonb,
+      ${JSON.stringify(parseList(input.forbiddenTraits as any))}::jsonb,
+      ${JSON.stringify(parseList(input.styleConstraints as any))}::jsonb,
       ${input.isActive ?? true},
       ${input.sortOrder ?? 100},
       'admin'
@@ -161,8 +176,8 @@ export async function updateStyle(
       mood              = ${merged.mood ?? ''},
       paint_surface     = ${merged.paintSurface ?? ''},
       preferred_framing = ${merged.preferredFraming ?? 'preserve_source'},
-      forbidden_traits  = ${JSON.stringify(merged.forbiddenTraits ?? [])}::jsonb,
-      style_constraints = ${JSON.stringify(merged.styleConstraints ?? [])}::jsonb,
+      forbidden_traits  = ${JSON.stringify(parseList(merged.forbiddenTraits as any))}::jsonb,
+      style_constraints = ${JSON.stringify(parseList(merged.styleConstraints as any))}::jsonb,
       is_active         = ${merged.isActive !== false},
       updated_at        = NOW()
     WHERE id = ${id}
