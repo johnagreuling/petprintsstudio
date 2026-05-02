@@ -264,7 +264,7 @@ export async function POST(req: NextRequest) {
                 const promptPackage = buildPrompt(subjectProfile, style, DEFAULT_COMPOSITION)
                 const quality = style.qualityTier === 'high' ? 'high' : 'medium'
                 const fd = new FormData()
-                fd.append('model', 'gpt-image-1')
+                fd.append('model', 'gpt-image-2')
                 fd.append('prompt', promptPackage.fullPrompt)
                 fd.append('n', '1')
                 fd.append('size', '1024x1536')
@@ -349,7 +349,7 @@ export async function POST(req: NextRequest) {
               const promptPackage = buildMemoryScenePrompt(subjectProfile, style, sceneDesc, extras, DEFAULT_COMPOSITION)
               const quality = style.qualityTier === 'high' ? 'high' : 'medium'
               const fd = new FormData()
-              fd.append('model', 'gpt-image-1')
+              fd.append('model', 'gpt-image-2')
               fd.append('prompt', promptPackage.fullPrompt)
               fd.append('n', '1')
               fd.append('size', '1024x1536')
@@ -408,7 +408,7 @@ export async function POST(req: NextRequest) {
           createdAt: sessionStart,
           engineVersion: '2.0',
           generationParams: {
-            model: 'gpt-image-1',
+            model: 'gpt-image-2',
             size: '1024x1536',
             quality: 'tiered',
             inputFidelity: 'high',
@@ -426,7 +426,7 @@ export async function POST(req: NextRequest) {
             await logApiUsage({
               sessionId: sessionFolder,
               provider: 'openai',
-              model: 'gpt-image-1',
+              model: 'gpt-image-2',
               operation: 'image_edit',
               imagesGenerated: gptCount,
             })
