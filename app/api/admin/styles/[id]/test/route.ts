@@ -88,7 +88,7 @@ export async function POST(req: NextRequest, ctx: RouteCtx) {
     // 3. Generate single image
     const t0 = Date.now()
     const result = await getOpenAI().images.edit({
-      model: 'gpt-image-2',
+      model: 'gpt-image-1',
       image: imgFile,
       prompt: promptPackage.fullPrompt,
       size: '1024x1536',
