@@ -111,7 +111,7 @@ const jsonLd = {
     {
       '@type': 'Product',
       name: 'Custom Pet Portrait on Canvas',
-      description: 'Fine art canvas pet portrait in your choice of 8 painterly styles, with an original song written about your pet.',
+      description: 'Fine art canvas pet portrait in your choice of painterly styles, with an original song written about your pet.',
       image: 'https://petprintsstudio.com/og-image.jpg',
       brand: { '@id': 'https://petprintsstudio.com/#organization' },
       offers: {
