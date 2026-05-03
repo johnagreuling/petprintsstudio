@@ -269,7 +269,6 @@ export async function POST(req: NextRequest) {
                 fd.append('n', '1')
                 fd.append('size', '1024x1536')
                 fd.append('quality', quality)
-                fd.append('input_fidelity', 'high')
                 fd.append('image[]', new Blob([petImageBuffer as unknown as BlobPart], { type: 'image/jpeg' }), 'pet.jpg')
 
                 const res = await fetch('https://api.openai.com/v1/images/edits', {
@@ -354,7 +353,6 @@ export async function POST(req: NextRequest) {
               fd.append('n', '1')
               fd.append('size', '1024x1536')
               fd.append('quality', quality)
-              fd.append('input_fidelity', 'high')
               fd.append('image[]', new Blob([petImageBuffer as unknown as BlobPart], { type: 'image/jpeg' }), 'pet.jpg')
 
               const res = await fetch('https://api.openai.com/v1/images/edits', {

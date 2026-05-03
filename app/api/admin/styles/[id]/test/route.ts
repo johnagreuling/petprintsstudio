@@ -93,8 +93,6 @@ export async function POST(req: NextRequest, ctx: RouteCtx) {
       prompt: promptPackage.fullPrompt,
       size: '1024x1536',
       quality,
-      // @ts-ignore - input_fidelity not in SDK types yet but supported
-      input_fidelity: 'high',
       n: 1,
     })
     const elapsedMs = Date.now() - t0
